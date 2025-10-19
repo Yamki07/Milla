@@ -47,11 +47,21 @@ import kotlinx.coroutines.withContext
 
 class AlbumCoverPagerAdapter(
     fragmentManager: FragmentManager,
-    private val dataSet: List<Song>
+    private var dataSet: List<Song>
+
 ) : CustomFragmentStatePagerAdapter(fragmentManager) {
 
     private var currentColorReceiver: AlbumCoverFragment.ColorReceiver? = null
     private var currentColorReceiverPosition = -1
+
+    fun updateData(newDataSet: List<Song>) {
+        this.dataSet = newDataSet
+        notifyDataSetChanged()
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return POSITION_NONE
+    }
 
     override fun getItem(position: Int): Fragment {
         return AlbumCoverFragment.newInstance(dataSet[position])
