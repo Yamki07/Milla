@@ -556,7 +556,7 @@
     <string name="whats_new">Какво ново:</string>
     <string name="window">Прозорец</string>
     <string name="window_corner_edges">Заоблени ъгли</string>
-    <string name="x_has_been_set_as_ringtone">.</string>
+    <string name="x_has_been_set_as_ringtone">Set %1$s as your ringtone.</string>
     <string name="x_selected">Избрано %1$d</string>
     <string name="year">Година</string>
     <string name="you_have_to_select_at_least_one_category">Моля, изберете поне една категория.</string>
