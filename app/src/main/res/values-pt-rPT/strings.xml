@@ -451,8 +451,8 @@
     <string name="retro_music_pro">Música Retro Pro</string>
     <string name="ringtone_summary">Esta aplicação necessita de permissão para aceder às definições para definir músicas como toques</string>
     <string name="ringtone_title">Toque (opcional)</string>
-    <string name="permission_alarm_summary">The app needs permission to schedule exact alarms to set sleep timers</string>
-    <string name="permission_alarm_title">Alarm (Optional)</string>
+    <string name="permission_alarm_summary">A aplicação precisa de permissão para agendar alarmes exatos para definir os temporizadores de sono</string>
+    <string name="permission_alarm_title">Alarme (opcional)</string>
     <string name="saf_delete_failed">Erro ao eliminar ficheiro: %s</string>
     <!-- SAF -->
     <string name="saf_error_uri">Não é possível obter URI SAF</string>
