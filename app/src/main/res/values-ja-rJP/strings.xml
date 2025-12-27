@@ -24,7 +24,7 @@
     <string name="action_go_to_start_directory">最初のディレクトリに移動</string>
     <string name="action_grant">承諾</string>
     <string name="action_grid_size">グリッドサイズ</string>
-    <string name="action_grid_size_land">グリッドサイズ（土地）</string>
+    <string name="action_grid_size_land">グリッドサイズ（横向き）</string>
     <string name="action_new_playlist">新しいプレイリスト</string>
     <string name="action_next">次</string>
     <string name="action_play">再生</string>
@@ -105,8 +105,7 @@
     <string name="bug_report_no_title">問題のタイトルを入力してください</string>
     <string name="bug_report_no_username">有効なGitHubアカウントのユーザー名を入力してください</string>
     <string name="bug_report_success">バグ報告に成功しました</string>
-    <string name="bug_report_summary">予期しないエラーが発生しました。申し訳ございません。
-このバグが何度も発生する場合は、端末のアプリ設定より「データを削除する(Androidバージョンによって異なります)」を実行するか、概要をメールで送信してください。</string>
+    <string name="bug_report_summary">予期しないエラーが発生しました。申し訳ないですが、このバグが何度も発生する場合は、端末のアプリ設定より「アプリデータを削除」を実行するか、概要をメールで送信してください </string>
     <string name="bug_report_use_account">GitHubアカウントを使って送信</string>
     <string name="buy_now">今すぐ購入</string>
     <string name="cancel_current_timer">キャンセル</string>
@@ -521,7 +520,7 @@
     <string name="this_month">今月</string>
     <string name="this_week">今週</string>
     <string name="this_year">今年</string>
-    <string name="tiny">ティニー</string>
+    <string name="tiny">タイニー</string>
     <string name="tiny_card_style">小さいカード</string>
     <string name="title">主題</string>
     <string name="title_new_backup">新規バックアップ</string>
