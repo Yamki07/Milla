@@ -566,5 +566,5 @@
     <string name="scanning_folders_files">Scanne Ordner und Dateien…</string>
     <string name="scan_complete">Scan abgeschlossen: %1$d Medienelemente gefunden.</string>
     <string name="pref_save_last_directory_summary">Stelle das zuletzt verwendete Verzeichnis nach dem Wechsel der Ordneransicht wieder her</string>
-    <string name="pref_save_last_directory_title">Letztes Verzeichnis speichern.</string>
+    <string name="pref_save_last_directory_title">Letztes Verzeichnis speichern</string>
 </resources>
