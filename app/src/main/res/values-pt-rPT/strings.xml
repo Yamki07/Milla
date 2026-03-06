@@ -348,6 +348,7 @@
     <string name="pref_summary_colored_notification">"Colorir as notificações na capa do álbum"</string>
     <string name="pref_summary_cross_fade">Duração da transição entre músicas</string>
     <string name="pref_summary_desaturated_color">Segundo o guia do Material Design as cores do modo escuro não devem ser saturadas</string>
+    <string name="pref_summary_disable_speaker">Disable playback from the internal speaker</string>
     <string name="pref_summary_expand_now_playing_panel">Tocar na notificação vai mostrar o ecrã A reproduzir em vez do ecrã inicial</string>
     <string name="pref_summary_extra_controls">Adicionar controlos extras para o mini leitor</string>
     <string name="pref_summary_extra_song_info">Mostrar info. extras da música, como o formato, taxa de bits e frequência</string>
@@ -388,6 +389,7 @@
     <string name="pref_title_cross_fade">Crossfade (beta)</string>
     <string name="pref_title_custom_font">Utilizar tipo de letra Manrope</string>
     <string name="pref_title_desaturated_color">Cores não saturadas</string>
+    <string name="pref_title_disable_speaker">Disable internal speaker</string>
     <string name="pref_title_expand_now_playing_panel">Mostrar ecrã A reproduzir</string>
     <string name="pref_title_extra_controls">Controlos adicionais</string>
     <string name="pref_title_extra_song_info">Info. da música</string>
@@ -506,6 +508,7 @@
     <string name="sort_order_year_asc">Year ascending</string>
     <string name="sort_order_year_desc">Year descending</string>
     <string name="sort_order_z_a">Descendente</string>
+    <string name="speaker_disabled">Internal speaker playback is disabled</string>
     <string name="speech_not_supported">O seu dispositivo não suporta entrada de fala</string>
     <string name="speech_prompt">Procurar na sua biblioteca</string>
     <string name="stack">Pilha</string>
