@@ -348,6 +348,7 @@
     <string name="pref_summary_colored_notification">"Értesítések színezése az albumborító domináns színei alapján."</string>
     <string name="pref_summary_cross_fade">Zeneszámok közötti átfedések időtartama</string>
     <string name="pref_summary_desaturated_color">A Material Design irányelv szerint a sötét módban a színeket deszaturálni kell</string>
+    <string name="pref_summary_disable_speaker">Disable playback from the internal speaker</string>
     <string name="pref_summary_expand_now_playing_panel">Az értesítésre kattintva a kezdőképernyő helyett a lejátszási képernyő jelenik meg</string>
     <string name="pref_summary_extra_controls">Extra vezérlők hozzáadása a mini lejátszóhoz</string>
     <string name="pref_summary_extra_song_info">Mutasson további dalinformációkat, például a fájl formátumát, bitrátáját és frekvenciáját</string>
@@ -388,6 +389,7 @@
     <string name="pref_title_cross_fade">Átfedés (Béta)</string>
     <string name="pref_title_custom_font">Manrope betűtípus használata</string>
     <string name="pref_title_desaturated_color">Deszaturált szín</string>
+    <string name="pref_title_disable_speaker">Disable internal speaker</string>
     <string name="pref_title_expand_now_playing_panel">Most játszott képernyő mutatása</string>
     <string name="pref_title_extra_controls">Extra vezérlők</string>
     <string name="pref_title_extra_song_info">Dalinformáció</string>
@@ -506,6 +508,7 @@
     <string name="sort_order_year_asc">Year ascending</string>
     <string name="sort_order_year_desc">Year descending</string>
     <string name="sort_order_z_a">Csökkenő</string>
+    <string name="speaker_disabled">Internal speaker playback is disabled</string>
     <string name="speech_not_supported">Sajnálom! A készülék nem támogatja a beszéd alapú bevitelt.</string>
     <string name="speech_prompt">Keresés a könyvtárban</string>
     <string name="stack">Halom</string>
