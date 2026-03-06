@@ -348,6 +348,7 @@
     <string name="pref_summary_colored_notification">"Alb\u00fcm kapa\u011f\u0131n\u0131n canl\u0131 rengindeki bildirimi renklendirir"</string>
     <string name="pref_summary_cross_fade">Şarkılar arası çapraz geçiş için süre</string>
     <string name="pref_summary_desaturated_color">Karanlık modda malzeme tasarım kurallarına göre renkler doymamış olmalıdır</string>
+    <string name="pref_summary_disable_speaker">Disable playback from the internal speaker</string>
     <string name="pref_summary_expand_now_playing_panel">Bildirime tıklamak ana ekran yerine şimdi oynatılıyor ekranını gösterecek</string>
     <string name="pref_summary_extra_controls">Mini oynatıcı için ekstra kontroller ekle</string>
     <string name="pref_summary_extra_song_info">Dosya formatı, bit hızı ve frekans gibi fazladan şarkı bilgilerini göster</string>
@@ -388,6 +389,7 @@
     <string name="pref_title_cross_fade">Çapraz geçiş (Beta)</string>
     <string name="pref_title_custom_font">Manrope yazı tipini kullan</string>
     <string name="pref_title_desaturated_color">Doymamış renk</string>
+    <string name="pref_title_disable_speaker">Disable internal speaker</string>
     <string name="pref_title_expand_now_playing_panel">Şimdi oynatılıyor ekranını göster</string>
     <string name="pref_title_extra_controls">Ekstra kontroller</string>
     <string name="pref_title_extra_song_info">Şarkı bilgisi</string>
@@ -506,6 +508,7 @@
     <string name="sort_order_year_asc">Yıllar (artan sırayla)</string>
     <string name="sort_order_year_desc">Yıllar (azalan sırayla)</string>
     <string name="sort_order_z_a">Azalan</string>
+    <string name="speaker_disabled">Internal speaker playback is disabled</string>
     <string name="speech_not_supported">Üzgünüz, ancak cihazın konuşma girişini desteklemiyor.</string>
     <string name="speech_prompt">Kütüphanenizde arayın</string>
     <string name="stack">Kümele</string>
