@@ -349,6 +349,7 @@
     <string name="pref_summary_colored_notification">"Оцветява известието в доминиращия цвят на корицата на албума"</string>
     <string name="pref_summary_cross_fade">Продължителност на пазуите между песните</string>
     <string name="pref_summary_desaturated_color">Според стила Material Design, в тъмен режим, цветовете трябва да са леко ненаситени</string>
+    <string name="pref_summary_disable_speaker">Disable playback from the internal speaker</string>
     <string name="pref_summary_expand_now_playing_panel">Щракването върху известие ще покаже екрана за възпроизвеждане вместо началния екран</string>
     <string name="pref_summary_extra_controls">Добавете още контроли за миниплейъра</string>
     <string name="pref_summary_extra_song_info">Показване на допълнителна информация за песента като файлов формат, битрейт и честота</string>
@@ -389,6 +390,7 @@
     <string name="pref_title_cross_fade">Плавно затихване (бета-версия)</string>
     <string name="pref_title_custom_font">Използвайте шрифт Manrope</string>
     <string name="pref_title_desaturated_color">Матов цвят</string>
+    <string name="pref_title_disable_speaker">Disable internal speaker</string>
     <string name="pref_title_expand_now_playing_panel">Показване на екрана за възпроизвеждане</string>
     <string name="pref_title_extra_controls">Допълнителен контрол</string>
     <string name="pref_title_extra_song_info">Инфо за песента</string>
@@ -507,6 +509,7 @@
     <string name="sort_order_year_asc">Year ascending</string>
     <string name="sort_order_year_desc">Year descending</string>
     <string name="sort_order_z_a">Низходящо</string>
+    <string name="speaker_disabled">Internal speaker playback is disabled</string>
     <string name="speech_not_supported">Съжалявам! Вашето устройство не поддържа гласово въвеждане</string>
     <string name="speech_prompt">Търсете във вашата библиотека</string>
     <string name="stack">Стопка</string>
