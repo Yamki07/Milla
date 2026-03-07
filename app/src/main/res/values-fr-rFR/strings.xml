@@ -348,7 +348,7 @@
     <string name="pref_summary_colored_notification">"Colorie la notification avec la couleur dominante des pochettes d'albums"</string>
     <string name="pref_summary_cross_fade">Durée du fondu enchaîné entre les titres</string>
     <string name="pref_summary_desaturated_color">Selon les lignes directrices du Material Design, les couleurs devraient être désaturées en mode sombre</string>
-    <string name="pref_summary_disable_speaker">Disable playback from the internal speaker</string>
+    <string name="pref_summary_disable_speaker">Désactiver la lecture depuis le haut-parleur interne</string>
     <string name="pref_summary_expand_now_playing_panel">Toucher la notification affichera l\'écran de lecture en cours au lieu de l\'écran d\'accueil</string>
     <string name="pref_summary_extra_controls">Ajouter des contrôles supplémentaires pour le mini lecteur</string>
     <string name="pref_summary_extra_song_info">Afficher les informations supplémentaires du morceau, comme le format de fichier, le débit et la fréquence</string>
@@ -389,7 +389,7 @@
     <string name="pref_title_cross_fade">Fondu enchaîné (Bêta)</string>
     <string name="pref_title_custom_font">Utiliser la police Manrope</string>
     <string name="pref_title_desaturated_color">Couleur désaturée</string>
-    <string name="pref_title_disable_speaker">Disable internal speaker</string>
+    <string name="pref_title_disable_speaker">Désactiver le haut-parleur interne</string>
     <string name="pref_title_expand_now_playing_panel">Afficher l\'écran de lecture en cours</string>
     <string name="pref_title_extra_controls">Contrôles supplémentaires</string>
     <string name="pref_title_extra_song_info">Informations sur le titre</string>
@@ -508,7 +508,7 @@
     <string name="sort_order_year_asc">Année ascendant</string>
     <string name="sort_order_year_desc">Année descendant</string>
     <string name="sort_order_z_a">Descendant</string>
-    <string name="speaker_disabled">Internal speaker playback is disabled</string>
+    <string name="speaker_disabled">La lecture par haut-parleur interne est désactivée.</string>
     <string name="speech_not_supported">Désolé ! Votre appareil ne prend pas en charge la saisie vocale.</string>
     <string name="speech_prompt">Rechercher dans votre bibliothèque</string>
     <string name="stack">Empiler</string>
