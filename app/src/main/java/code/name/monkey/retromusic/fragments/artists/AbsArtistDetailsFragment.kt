@@ -270,6 +270,7 @@ abstract class AbsArtistDetailsFragment : AbsMainActivityFragment(R.layout.fragm
                 lifecycleScope.launch {
                     CustomArtistImageUtil.getInstance(requireContext())
                         .resetCustomArtistImage(artist)
+                    detailsViewModel.refreshArtistInfo()
                 }
                 forceDownload = true
                 return true
@@ -386,6 +387,8 @@ abstract class AbsArtistDetailsFragment : AbsMainActivityFragment(R.layout.fragm
                 if (uri != null) {
                     CustomArtistImageUtil.getInstance(requireContext())
                         .setCustomArtistImage(artist, uri)
+
+                    detailsViewModel.refreshArtistInfo()
                 }
             }
         }
