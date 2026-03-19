@@ -5,7 +5,7 @@
     <string name="accent_color">Barva zvýraznění</string>
     <string name="accent_color_desc">Barva motivu zvýraznění, výchozí je fialová</string>
     <string name="action_about">O aplikaci</string>
-    <string name="action_add_to_blacklist">Přidat na Černou listinu</string>
+    <string name="action_add_to_blacklist">Přidat na černou listinu</string>
     <string name="action_add_to_favorites">Přidat k oblíbeným</string>
     <string name="action_add_to_playing_queue">Přidat do fronty přehrávání</string>
     <string name="action_add_to_playlist">Přidat do seznamu skladeb</string>
@@ -20,7 +20,7 @@
     <string name="action_go_to_album">Přejít na album</string>
     <string name="action_go_to_artist">Přejít na interpreta</string>
     <string name="action_go_to_genre">Přejít na žánr</string>
-    <string name="action_go_to_lyrics">Přejít na texty</string>
+    <string name="action_go_to_lyrics">Přejít na text</string>
     <string name="action_go_to_start_directory">Přejít do začátečního adresáře</string>
     <string name="action_grant">Povolit přístup</string>
     <string name="action_grid_size">Velikost mřížky</string>
@@ -37,7 +37,7 @@
     <string name="action_remove_from_playlist">Odstranit ze seznamu skladeb</string>
     <string name="action_rename">Přejmenovat</string>
     <string name="action_save_playing_queue">Uložit frontu přehrávání</string>
-    <string name="action_scan">Skenovat</string>
+    <string name="action_scan">Prohledat</string>
     <string name="action_search">Hledat</string>
     <string name="action_set">Nastavit</string>
     <string name="action_set_as_ringtone">Nastavit jako tón vyzvánění</string>
@@ -55,7 +55,7 @@
     <string name="add_action">Přidat</string>
     <string name="add_playlist_title">"Přidat do seznamu skladeb"</string>
     <string name="add_time_framed_lryics">Add Time Framed Lyrics</string>
-    <string name="added_song_count_to_playlist">Přidána/přidány %1$d skladba/skladby do %2$s</string>
+    <string name="added_song_count_to_playlist">Přidána/přidány %1$d skladba (skladby) do %2$s</string>
     <string name="added_title_to_playing_queue">"Přidán 1 titul do fronty přehrávání."</string>
     <string name="added_x_titles_to_playing_queue">Přidán/přidány %1$d titul(y) do fronty přehrávání.</string>
     <string name="album">Album</string>
@@ -352,7 +352,7 @@
     <string name="pref_summary_colored_notification">"Vybarv\u00ed ozn\u00e1men\u00ed v \u017eiv\u00e9 barv\u011b krytu alba."</string>
     <string name="pref_summary_cross_fade">Doba prolínání mezi skladbami</string>
     <string name="pref_summary_desaturated_color">As per Material Design guide lines in dark mode colors should be desaturated</string>
-    <string name="pref_summary_disable_speaker">Disable playback from the internal speaker</string>
+    <string name="pref_summary_disable_speaker">Vypnout přehrávání ze vestavěného reproduktoru</string>
     <string name="pref_summary_expand_now_playing_panel">Clicking on the notification will show now playing screen instead of the home screen</string>
     <string name="pref_summary_extra_controls">Add extra controls for mini player</string>
     <string name="pref_summary_extra_song_info">Show extra Song information, such as file format, bitrate and frequency</string>
@@ -393,7 +393,7 @@
     <string name="pref_title_cross_fade">Prolínání (Beta)</string>
     <string name="pref_title_custom_font">Použít písmo Manrope</string>
     <string name="pref_title_desaturated_color">Desaturated color</string>
-    <string name="pref_title_disable_speaker">Disable internal speaker</string>
+    <string name="pref_title_disable_speaker">Vypnout vestavěný reproduktor</string>
     <string name="pref_title_expand_now_playing_panel">Show now playing screen</string>
     <string name="pref_title_extra_controls">Extra controls</string>
     <string name="pref_title_extra_song_info">Song info</string>
@@ -512,7 +512,7 @@
     <string name="sort_order_year_asc">Rok vzestupně</string>
     <string name="sort_order_year_desc">Rok sestupně</string>
     <string name="sort_order_z_a">Sestupně</string>
-    <string name="speaker_disabled">Internal speaker playback is disabled</string>
+    <string name="speaker_disabled">Přehrávání z vestavěného reproduktoru je vypnuto</string>
     <string name="speech_not_supported">Promiňte! Vaše zařízení nepodporuje vstup řeči</string>
     <string name="speech_prompt">Prohledat knihovnu</string>
     <string name="stack">Stack</string>
