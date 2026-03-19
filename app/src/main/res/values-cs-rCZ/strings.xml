@@ -65,7 +65,7 @@
         <item quantity="many">Skladeb</item>
         <item quantity="other">Skladeb</item>
     </plurals>
-    <string name="album_artist">Umělec Alba</string>
+    <string name="album_artist">Interpret</string>
     <string name="albums">Alba</string>
     <plurals name="albums">
         <item quantity="one">Album</item>
@@ -93,12 +93,12 @@
     <string name="backup_restore_title"><![CDATA[Záloha a obnova]]></string>
     <string name="backup_title">Zálohy</string>
     <string name="biography">Bio</string>
-    <string name="black_theme_name">Velmi černá</string>
+    <string name="black_theme_name">Jen černá</string>
     <string name="blacklist">Černá listina</string>
     <string name="bluetooth_summary">Aplikace potřebuje oprávnění zařízení v okolí pro kontrolu bluetooth zařízení</string>
     <string name="bluetooth_title">Zařízení v okolí</string>
     <string name="blur">Rozostření</string>
-    <string name="blur_card">Blur Card</string>
+    <string name="blur_card">Rozostřit karty</string>
     <string name="bug_report_failed">Hlášení se nepodařilo odeslat</string>
     <string name="bug_report_failed_invalid_token">Neplatný přístupový token. Prosím kontaktujte vývojáře aplikace.</string>
     <string name="bug_report_failed_issues_not_available">Ve vybraném repozitáři není povoleno hlášení chyb. Prosím kontaktujte vývojáře aplikace.</string>
@@ -137,8 +137,8 @@
     <string name="compact">Kompaktní</string>
     <string name="composer">Skladatel</string>
     <string name="copied_device_info_to_clipboard">Informace o zařízení zkopírovány do schránky.</string>
-    <string name="could_not_create_playlist">Nelze vytvo\u0159it playlist.</string>
-    <string name="could_not_download_album_cover">"Nelze st\u00e1hnout odpov\u00eddaj\u00edc\u00ed obal alba."</string>
+    <string name="could_not_create_playlist">Nelze vytvořit seznam skladeb.</string>
+    <string name="could_not_download_album_cover">"Nelze stáhnout odpovídající obrázek alba."</string>
     <string name="could_not_restore_purchase">Nepodařilo se obnovit nákup.</string>
     <string name="could_not_scan_files">Nelze skenovat %d soubory.</string>
     <string name="create_action">Vytvořit</string>
