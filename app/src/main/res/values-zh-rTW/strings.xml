@@ -387,7 +387,7 @@
     <string name="pref_title_cross_fade">淡入/淡出 (測試中)</string>
     <string name="pref_title_custom_font">使用 Manrope 字型</string>
     <string name="pref_title_desaturated_color">不飽和顏色</string>
-    <string name="pref_title_disable_speaker">Disable internal speaker</string>
+    <string name="pref_title_disable_speaker">停用內部揚聲器</string>
     <string name="pref_title_expand_now_playing_panel">顯示現正播放畫面</string>
     <string name="pref_title_extra_controls">更多控制項</string>
     <string name="pref_title_extra_song_info">音樂資訊</string>
