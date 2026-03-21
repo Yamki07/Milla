@@ -346,7 +346,7 @@
     <string name="pref_summary_colored_notification">"以鮮豔的專輯封面色調作為通知欄顏色"</string>
     <string name="pref_summary_cross_fade">歌曲淡化/淡出的持續時間</string>
     <string name="pref_summary_desaturated_color">根據 Material Design 指引，於深色模式時，顏色應不飽和</string>
-    <string name="pref_summary_disable_speaker">Disable playback from the internal speaker</string>
+    <string name="pref_summary_disable_speaker">停用內建揚聲器的播放功能</string>
     <string name="pref_summary_expand_now_playing_panel">按兩下通知欄以顯示現正播放畫面，而非首頁</string>
     <string name="pref_summary_extra_controls">於迷你播放列顯示更多控制鍵</string>
     <string name="pref_summary_extra_song_info">顯示更多歌曲資訊，例如檔案格式、位元速率、頻率</string>
@@ -387,7 +387,7 @@
     <string name="pref_title_cross_fade">淡入/淡出 (測試中)</string>
     <string name="pref_title_custom_font">使用 Manrope 字型</string>
     <string name="pref_title_desaturated_color">不飽和顏色</string>
-    <string name="pref_title_disable_speaker">停用內部揚聲器</string>
+    <string name="pref_title_disable_speaker">停用內建揚聲器</string>
     <string name="pref_title_expand_now_playing_panel">顯示現正播放畫面</string>
     <string name="pref_title_extra_controls">更多控制項</string>
     <string name="pref_title_extra_song_info">音樂資訊</string>
@@ -506,7 +506,7 @@
     <string name="sort_order_year_asc">年份升冪</string>
     <string name="sort_order_year_desc">年份降冪</string>
     <string name="sort_order_z_a">遞減</string>
-    <string name="speaker_disabled">Internal speaker playback is disabled</string>
+    <string name="speaker_disabled">已停用內建揚聲器播放</string>
     <string name="speech_not_supported">抱歉！您的裝置不支援語音輸入</string>
     <string name="speech_prompt">搜尋音樂庫</string>
     <string name="stack">堆疊風</string>
