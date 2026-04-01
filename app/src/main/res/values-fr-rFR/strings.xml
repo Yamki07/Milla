@@ -91,7 +91,7 @@
     <string name="biography">Biographie</string>
     <string name="black_theme_name">Noir Complet</string>
     <string name="blacklist">Liste noire</string>
-    <string name="bluetooth_summary">L\'application nécessite la permission des appareils à proximité pour vérifier la disponibilité d\'appareils Bluetooth</string>
+    <string name="bluetooth_summary">L\'application nécessite la permission de chercher des appareils à proximité pour vérifier la disponibilité d\'appareils Bluetooth</string>
     <string name="bluetooth_title">Appareils à proximité</string>
     <string name="blur">Flou</string>
     <string name="blur_card">Carte floue</string>
@@ -252,7 +252,7 @@
     <string name="message_pro_feature">%s est une fonctionnalité Pro.</string>
     <string name="message_restore_success">Restauration effectuée avec succès.</string>
     <string name="message_updated">Mis à jour</string>
-    <string name="message_welcome"><![CDATA[Bonjour ! <br>Bienvenue dans %s]]></string>
+    <string name="message_welcome"><![CDATA[Bonjour ! <br>Bienvenu dans %s]]></string>
     <string name="my_name">Nom</string>
     <string name="my_top_tracks">Plus jouées</string>
     <string name="never">Jamais</string>
