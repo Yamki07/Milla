@@ -571,4 +571,5 @@ https://play.google.com/store/apps/details?id=%s</string>
     <string name="scan_complete">Scansione completata: %1$d elementi multimediali trovati.</string>
     <string name="pref_save_last_directory_summary">Quando passi alla vista cartella, ripristina l\'ultimo percorso utilizzato</string>
     <string name="pref_save_last_directory_title">Salva l\'ultimo percorso</string>
+    <string name="artist_separator_helper_text">To add multiple artists, separate them with: %1$s</string>
 </resources>
