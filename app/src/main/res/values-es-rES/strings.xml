@@ -570,4 +570,5 @@
     <string name="scan_complete">Analisis completado: %1$d elementos encontrados.</string>
     <string name="pref_save_last_directory_summary">Al cambiar a la vista de carpetas, restaurar el último directorio usado</string>
     <string name="pref_save_last_directory_title">Guardar último directorio</string>
+    <string name="artist_separator_helper_text">To add multiple artists, separate them with: %1$s</string>
 </resources>
