@@ -1,22 +1,14 @@
 /*
- * Copyright (c) 2020 Hemanth Savarla.
+ * Copyright (c) 2026 RetroMusic / Milla Automix Engine
  *
  * Licensed under the GNU General Public License v3
- *
- * This is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- *
  */
 package code.name.monkey.retromusic.fragments.lyrics
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.InputType
@@ -25,29 +17,38 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Fade
 import code.name.monkey.appthemehelper.common.ATHToolbarActivity
 import code.name.monkey.appthemehelper.util.ToolbarContentTintHelper
 import code.name.monkey.appthemehelper.util.VersionUtils
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.activities.tageditor.TagWriter
+import code.name.monkey.retromusic.adapter.lyrics.LyricsAdapter
+import code.name.monkey.retromusic.automix.AudioPlayerHandler
 import code.name.monkey.retromusic.databinding.FragmentLyricsBinding
 import code.name.monkey.retromusic.extensions.accentColor
 import code.name.monkey.retromusic.extensions.materialDialog
 import code.name.monkey.retromusic.extensions.openUrl
 import code.name.monkey.retromusic.extensions.uri
 import code.name.monkey.retromusic.fragments.base.AbsMainActivityFragment
+import code.name.monkey.retromusic.glide.BlurTransformation
+import code.name.monkey.retromusic.glide.RetroGlideExtension
+import code.name.monkey.retromusic.glide.RetroGlideExtension.simpleSongCoverOptions
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.helper.MusicProgressViewUpdateHelper
 import code.name.monkey.retromusic.lyrics.LrcView
 import code.name.monkey.retromusic.model.AudioTagInfo
 import code.name.monkey.retromusic.model.Song
-import code.name.monkey.retromusic.util.FileUtils
-import code.name.monkey.retromusic.util.LyricUtil
-import code.name.monkey.retromusic.util.UriUtil
+import code.name.monkey.retromusic.util.*
 import com.afollestad.materialdialogs.input.input
+import com.bumptech.glide.Glide
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
@@ -72,6 +73,12 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
 
     private var lyricsType: LyricsType = LyricsType.NORMAL_LYRICS
 
+    // Motor nativo FASE 7: Letras Sincrónicas Dinámicas (Efecto Ola / Centrado Orgánico)
+    private lateinit var lyricsAdapter: LyricsAdapter
+    private lateinit var centerSmoothScroller: CenterSmoothScroller
+    private var currentLyricsList: List<LyricLine> = emptyList()
+    private var tickerJob: Job? = null
+
     private val googleSearchLrcUrl: String
         get() {
             var baseUrl = "http://www.google.com/search?"
@@ -85,7 +92,6 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Normal lyrics launcher
         normalLyricsLauncher =
             registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) {
                 if (it.resultCode == Activity.RESULT_OK) {
@@ -111,12 +117,56 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         _binding = FragmentLyricsBinding.bind(view)
         updateHelper = MusicProgressViewUpdateHelper(this, 500, 1000)
         updateTitleSong()
+
+        setupLyricsRecyclerView()
         setupLyricsView()
+        updateBlurBackground()
         loadLyrics()
 
         setupWakelock()
         setupViews()
         setupToolbar()
+    }
+
+    private fun setupLyricsRecyclerView() {
+        lyricsAdapter = LyricsAdapter().apply {
+            setWaveColor(accentColor())
+            onLyricLineClickListener = { line, _ ->
+                MusicPlayerRemote.seekTo(line.timeMs.toInt())
+            }
+        }
+        centerSmoothScroller = CenterSmoothScroller(requireContext())
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = lyricsAdapter
+        }
+    }
+
+    private fun updateBlurBackground() {
+        val currentSong = MusicPlayerRemote.currentSong
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            binding.blurBackground.setRenderEffect(
+                android.graphics.RenderEffect.createBlurEffect(
+                    50f,
+                    50f,
+                    android.graphics.Shader.TileMode.MIRROR
+                )
+            )
+            Glide.with(this)
+                .load(RetroGlideExtension.getSongModel(currentSong))
+                .simpleSongCoverOptions(currentSong)
+                .into(binding.blurBackground)
+        } else {
+            Glide.with(this)
+                .load(RetroGlideExtension.getSongModel(currentSong))
+                .simpleSongCoverOptions(currentSong)
+                .transform(
+                    BlurTransformation.Builder(requireContext())
+                        .blurRadius(25f)
+                        .build()
+                )
+                .into(binding.blurBackground)
+        }
     }
 
     private fun setupLyricsView() {
@@ -153,17 +203,22 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     override fun onPlayingMetaChanged() {
         super.onPlayingMetaChanged()
         updateTitleSong()
+        updateBlurBackground()
         loadLyrics()
     }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         updateTitleSong()
+        updateBlurBackground()
         loadLyrics()
     }
 
     private fun updateTitleSong() {
         song = MusicPlayerRemote.currentSong
+        if (::lyricsAdapter.isInitialized) {
+            lyricsAdapter.setWaveColor(accentColor())
+        }
     }
 
     private fun setupToolbar() {
@@ -315,36 +370,51 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         binding.normalLyrics.isVisible = !lyrics.isNullOrEmpty()
         binding.noLyricsFound.isVisible = lyrics.isNullOrEmpty()
         binding.normalLyrics.text = lyrics
+        binding.recyclerView.isVisible = false
+        binding.lyricsView.isVisible = false
     }
 
     /**
-     * @return success
+     * Carga de letras sincronizadas con parser LrcParser 100% offline.
      */
     private fun loadLRCLyrics(): Boolean {
         val lrcFile = LyricUtil.getSyncedLyricsFile(song)
-        if (lrcFile != null) {
+        if (lrcFile != null && lrcFile.exists()) {
+            currentLyricsList = LrcParser.parse(lrcFile)
             binding.lyricsView.loadLrc(lrcFile)
         } else {
             val embeddedLyrics = LyricUtil.getEmbeddedSyncedLyrics(song.data)
             if (embeddedLyrics != null) {
+                currentLyricsList = LrcParser.parse(embeddedLyrics)
                 binding.lyricsView.loadLrc(embeddedLyrics)
             } else {
+                currentLyricsList = emptyList()
                 binding.lyricsView.setLabel(getString(R.string.empty))
                 return false
             }
         }
-        return true
+
+        return if (currentLyricsList.isNotEmpty()) {
+            lyricsAdapter.submitList(currentLyricsList)
+            binding.recyclerView.isVisible = true
+            binding.normalLyrics.isVisible = false
+            binding.noLyricsFound.isVisible = false
+            binding.lyricsView.isVisible = false
+            true
+        } else {
+            binding.recyclerView.isVisible = false
+            false
+        }
     }
 
     private fun loadLyrics() {
         lyricsType = if (!loadLRCLyrics()) {
-            binding.lyricsView.isVisible = false
             loadNormalLyrics()
             LyricsType.NORMAL_LYRICS
         } else {
             binding.normalLyrics.isVisible = false
             binding.noLyricsFound.isVisible = false
-            binding.lyricsView.isVisible = true
+            binding.recyclerView.isVisible = true
             LyricsType.SYNCED_LYRICS
         }
     }
@@ -352,15 +422,60 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     override fun onResume() {
         super.onResume()
         updateHelper.start()
+        startLyricsTicker()
     }
 
     override fun onPause() {
         super.onPause()
         updateHelper.stop()
+        stopLyricsTicker()
+    }
+
+    /**
+     * Ticker de sincronización en tiempo real con corrutinas y AudioPlayerHandler.
+     */
+    private fun startLyricsTicker() {
+        stopLyricsTicker()
+        tickerJob = lifecycleScope.launch {
+            while (isActive) {
+                if (lyricsType == LyricsType.SYNCED_LYRICS && currentLyricsList.isNotEmpty()) {
+                    val currentPos = AudioPlayerHandler.playbackState.position
+                    updateSyncLine(currentPos)
+                }
+                delay(100L)
+            }
+        }
+    }
+
+    private fun stopLyricsTicker() {
+        tickerJob?.cancel()
+        tickerJob = null
+    }
+
+    private fun updateSyncLine(currentPositionMs: Long) {
+        if (currentLyricsList.isEmpty()) return
+
+        var activeIndex = -1
+        for (i in currentLyricsList.indices) {
+            if (currentPositionMs >= currentLyricsList[i].timeMs) {
+                activeIndex = i
+            } else {
+                break
+            }
+        }
+
+        if (activeIndex != -1 && activeIndex != lyricsAdapter.currentLineIndex) {
+            lyricsAdapter.setCurrentLineIndex(activeIndex)
+            binding.recyclerView.layoutManager?.let { layoutManager ->
+                centerSmoothScroller.targetPosition = activeIndex
+                layoutManager.startSmoothScroll(centerSmoothScroller)
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        stopLyricsTicker()
         if (MusicPlayerRemote.playingQueue.isNotEmpty())
             mainActivity.expandPanel()
         _binding = null

@@ -28,6 +28,12 @@
         android:title="@string/now_playing_queue"
         app:showAsAction="always" />
     <item
+        android:id="@+id/action_automix_settings"
+        android:icon="@drawable/ic_equalizer"
+        android:orderInCategory="3"
+        android:title="Automix DJ"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/action_playback_speed"
         android:icon="@drawable/ic_playback_speed"
         android:orderInCategory="4"

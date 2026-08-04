@@ -43,7 +43,11 @@ interface RoomRepository {
     suspend fun isSongFavorite(context: Context, songId: Long): Boolean
     fun checkPlaylistExists(playListId: Long): LiveData<Boolean>
     fun getPlaylist(playlistId: Long): LiveData<PlaylistWithSongs>
+    suspend fun updateSongAutomixData(songId: Long, bpm: Float, key: String, replayGain: Float, cueOut: Long)
+    suspend fun getUnscannedSongs(): List<SongEntity>
 }
+
+
 
 class RealRoomRepository(
     private val playlistDao: PlaylistDao,
@@ -180,4 +184,19 @@ class RealRoomRepository(
             songId
         ).isNotEmpty()
     }
+
+    @WorkerThread
+    override suspend fun updateSongAutomixData(
+        songId: Long,
+        bpm: Float,
+        key: String,
+        replayGain: Float,
+        cueOut: Long
+    ) {
+        playlistDao.updateSongAutomixData(songId, bpm, key, replayGain, cueOut)
+    }
+
+    @WorkerThread
+    override suspend fun getUnscannedSongs(): List<SongEntity> =
+        playlistDao.getUnscannedSongs()
 }

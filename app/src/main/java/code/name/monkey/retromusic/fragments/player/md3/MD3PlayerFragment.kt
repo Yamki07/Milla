@@ -22,6 +22,7 @@ import code.name.monkey.appthemehelper.util.ToolbarContentTintHelper
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.databinding.FragmentMd3PlayerBinding
 import code.name.monkey.retromusic.extensions.drawAboveSystemBars
+import code.name.monkey.retromusic.extensions.surfaceColor
 import code.name.monkey.retromusic.fragments.base.AbsPlayerFragment
 import code.name.monkey.retromusic.fragments.player.PlayerAlbumCoverFragment
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
@@ -61,7 +62,18 @@ class MD3PlayerFragment : AbsPlayerFragment(R.layout.fragment_md3_player) {
             ATHUtil.resolveColor(requireContext(), androidx.appcompat.R.attr.colorControlNormal),
             requireActivity()
         )
+
+        val drawable = android.graphics.drawable.GradientDrawable(
+            android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(
+                color.backgroundColor,
+                code.name.monkey.appthemehelper.util.ColorUtil.withAlpha(color.backgroundColor, 0.55f),
+                surfaceColor()
+            )
+        )
+        binding.root.background = drawable
     }
+
 
     override fun toggleFavorite(song: Song) {
         super.toggleFavorite(song)

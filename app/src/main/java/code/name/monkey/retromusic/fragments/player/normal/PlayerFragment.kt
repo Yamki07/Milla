@@ -23,6 +23,7 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
 import androidx.preference.PreferenceManager
+import code.name.monkey.appthemehelper.util.ColorUtil
 import code.name.monkey.appthemehelper.util.ToolbarContentTintHelper
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.SNOWFALL
@@ -63,10 +64,12 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
         )
         valueAnimator?.addUpdateListener { animation ->
             if (isAdded) {
+                val animValue = animation.animatedValue as Int
                 val drawable = DrawableGradient(
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     intArrayOf(
-                        animation.animatedValue as Int,
+                        animValue,
+                        ColorUtil.withAlpha(animValue, 0.55f),
                         surfaceColor()
                     ), 0
                 )
@@ -97,10 +100,9 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
             requireActivity()
         )
 
-        if (PreferenceUtil.isAdaptiveColor) {
-            colorize(color.backgroundColor)
-        }
+        colorize(color.backgroundColor)
     }
+
 
     override fun toggleFavorite(song: Song) {
         super.toggleFavorite(song)

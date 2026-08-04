@@ -31,8 +31,20 @@ import code.name.monkey.appthemehelper.common.ATHToolbarActivity
 import code.name.monkey.appthemehelper.util.ColorUtil
 import code.name.monkey.appthemehelper.util.ToolbarContentTintHelper
 import code.name.monkey.retromusic.*
+import code.name.monkey.retromusic.adapter.FlowBubblesAdapter
 import code.name.monkey.retromusic.adapter.HomeAdapter
+import code.name.monkey.retromusic.automix.AutomixBottomSheet
+import code.name.monkey.retromusic.automix.AutomixRadioEngine
 import code.name.monkey.retromusic.databinding.FragmentHomeBinding
+import code.name.monkey.retromusic.adapter.FlowBubblesAdapter.Companion.toAutomixSongEntity
+import code.name.monkey.retromusic.repository.SongRepository
+import android.widget.Toast
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.koin.core.context.GlobalContext
+
+
 import code.name.monkey.retromusic.dialogs.CreatePlaylistDialog
 import code.name.monkey.retromusic.dialogs.ImportPlaylistDialog
 import code.name.monkey.retromusic.extensions.accentColor
@@ -67,7 +79,9 @@ class HomeFragment :
         mainActivity.setSupportActionBar(binding.toolbar)
         mainActivity.supportActionBar?.title = null
         setupListeners()
+        setupFlowBubbles(view)
         binding.titleWelcome.text = String.format("%s", userName)
+
 
         enterTransition = MaterialFadeThrough().addTarget(binding.contentContainer)
         reenterTransition = MaterialFadeThrough().addTarget(binding.contentContainer)
@@ -107,7 +121,38 @@ class HomeFragment :
         }
     }
 
+    private fun setupFlowBubbles(view: View) {
+        val flowRecyclerView = view.findViewById<androidx.recyclerview.widget.RecyclerView>(R.id.flowBubblesRecyclerView) ?: return
+        flowRecyclerView.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(
+            requireContext(),
+            androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        flowRecyclerView.adapter = FlowBubblesAdapter(
+            FlowBubblesAdapter.getDefaultItems()
+        ) { item ->
+            when (item.id) {
+                1 -> {
+                    Toast.makeText(requireContext(), "Iniciando Modo DJ Set Universal 🔮", Toast.LENGTH_SHORT).show()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val songRepo = GlobalContext.get().get<SongRepository>()
+                        val songs = songRepo.songs().map { it.toAutomixSongEntity() }
+                        if (songs.isNotEmpty()) {
+                            AutomixRadioEngine.getInstance(requireContext()).startUniversalDjSet(songs.first(), songs)
+                        }
+                    }
+                }
+                2 -> FlowBubblesAdapter.showMoodDialog(requireContext())
+                3 -> FlowBubblesAdapter.showGenreDialog(requireContext())
+                4 -> Toast.makeText(requireContext(), "Radio Playlist y compatibilidad Camelot activada", Toast.LENGTH_SHORT).show()
+                5 -> AutomixBottomSheet.newInstance().show(parentFragmentManager, AutomixBottomSheet.TAG)
+            }
+        }
+    }
+
+
     private fun setupListeners() {
+
         binding.bannerImage?.setOnClickListener {
             findNavController().navigate(
                 R.id.user_info_fragment, null, null, FragmentNavigatorExtras(

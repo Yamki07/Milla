@@ -6,46 +6,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:paddingBottom="@dimen/mini_player_height">
+    android:background="@android:color/black">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
+    <!-- Background inmersivo con Blur estilo Apple Music -->
+    <ImageView
+        android:id="@+id/blurBackground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="0dp"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:fabAlignmentMode="end"
-        app:hideOnScroll="true"
-        app:titleMargin="0dp"
-        app:titleMarginStart="0dp"
-        tools:backgroundTint="@color/md_red_400">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:contentDescription="@null" />
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/colorSurface"
-            android:gravity="start"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="@string/lyrics"
-            app:titleMargin="0dp"
-            app:titleMarginStart="0dp"
-            app:titleTextAppearance="@style/ToolbarTextAppearanceNormal" />
-    </com.google.android.material.appbar.AppBarLayout>
+    <!-- Capa de oscurecimiento para maximizar el contraste y legibilidad -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#73000000" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_height="match_parent">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             android:scrollbars="vertical">
 
             <TextView
@@ -54,15 +38,27 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/normal_lyrics_padding"
                 android:textIsSelectable="true"
+                android:textColor="@android:color/white"
                 android:textSize="@dimen/lyrics_text_size"
                 tools:text="@tools:sample/lorem[100]" />
         </ScrollView>
 
+        <!-- RecyclerView nativo para Letras Sincrónicas con Efecto Ola y centrado am-lyrics -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingTop="200dp"
+            android:paddingBottom="200dp"
+            android:scrollbars="none" />
+
+        <!-- LrcView heredado mantenido en gone por compatibilidad de binding -->
         <code.name.monkey.retromusic.lyrics.LrcView
             android:id="@+id/lyricsView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            android:visibility="gone"
             app:lrcLabel="@string/no_lyrics_found"
             app:lrcNormalTextSize="24sp"
             app:lrcPadding="8dp"
@@ -75,9 +71,41 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/no_lyrics_found"
+            android:textColor="@android:color/white"
             android:textSize="24sp"
             android:visibility="gone" />
     </FrameLayout>
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:padding="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:fabAlignmentMode="end"
+        app:elevation="0dp"
+        app:titleMargin="0dp"
+        app:titleMarginStart="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:contentInsetStartWithNavigation="0dp"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="@string/lyrics"
+            app:titleTextColor="@android:color/white"
+            app:titleMargin="0dp"
+            app:titleMarginStart="0dp"
+            app:titleTextAppearance="@style/ToolbarTextAppearanceNormal" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/edit_button"

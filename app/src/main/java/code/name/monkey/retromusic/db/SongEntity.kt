@@ -48,5 +48,9 @@ class SongEntity(
     val artistName: String,
     val composer: String?,
     @ColumnInfo(name = "album_artist")
-    val albumArtist: String?
+    val albumArtist: String?,
+    val bpm: Float = 0f,
+    val replayGain: Float = 0f,
+    val musicalKey: String = "",
+    val cueOutMs: Long = 0L
 ) : Parcelable

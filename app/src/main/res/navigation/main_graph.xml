@@ -126,4 +126,10 @@
     <fragment
         android:id="@+id/lyrics_fragment"
         android:name="code.name.monkey.retromusic.fragments.lyrics.LyricsFragment" />
+
+    <fragment
+        android:id="@+id/action_deezer"
+        android:name="code.name.monkey.retromusic.fragments.deezer.DeezerFragment"
+        android:label="@string/milla_internet"
+        tools:layout="@layout/fragment_deezer" />
 </navigation>

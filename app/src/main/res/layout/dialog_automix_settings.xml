@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mezcla Automix DJ 🎛️"
+        android:textAppearance="@style/TextViewHeadline6"
+        android:textStyle="bold"
+        android:paddingBottom="12dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Duración del Crossfade (2s - 15s)"
+        android:textAppearance="@style/TextViewBody2"
+        android:paddingTop="8dp" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/crossfadeSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:valueFrom="2.0"
+        android:valueTo="15.0"
+        android:stepSize="1.0"
+        android:value="6.0" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/crossfadeValueText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="6 segundos"
+        android:textAppearance="@style/TextViewCaption"
+        android:paddingBottom="12dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Curva de Transición"
+        android:textAppearance="@style/TextViewBody2"
+        android:paddingTop="8dp" />
+
+    <RadioGroup
+        android:id="@+id/curveRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="4dp"
+        android:paddingBottom="12dp">
+
+        <RadioButton
+            android:id="@+id/radioAuto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Auto IA (Recomendado según BPM/RMS)"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/radioHighEnergy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Alta Energía (Latino / Salsa / Bomba - 3s a 5s)" />
+
+        <RadioButton
+            android:id="@+id/radioHarmonic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Armónico (Pop / Reguetón - lineal 6s a 10s)" />
+
+        <RadioButton
+            android:id="@+id/radioEqualPower"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Equal Power (Rock / Baladas - suave)" />
+    </RadioGroup>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/beatmatchSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Beatmatching Armónico (Sincronizar Pitch/BPM)"
+        android:checked="true"
+        android:paddingTop="8dp"
+        android:paddingBottom="16dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/applyButton"
+        style="@style/Widget.MaterialComponents.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aplicar Ajustes DJ" />
+
+</LinearLayout>

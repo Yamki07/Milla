@@ -143,6 +143,7 @@ object PreferenceUtil {
         CategoryInfo(CategoryInfo.Category.Albums, true),
         CategoryInfo(CategoryInfo.Category.Artists, true),
         CategoryInfo(CategoryInfo.Category.Playlists, true),
+        CategoryInfo(CategoryInfo.Category.Deezer, true),
         CategoryInfo(CategoryInfo.Category.Genres, false),
         CategoryInfo(CategoryInfo.Category.Folder, false),
         CategoryInfo(CategoryInfo.Category.Search, false)
@@ -158,12 +159,19 @@ object PreferenceUtil {
                 gson.toJson(defaultCategories, collectionType)
             )
             return try {
-                Gson().fromJson(data, collectionType)
-            } catch (e: JsonSyntaxException) {
+                val list: MutableList<CategoryInfo> = Gson().fromJson(data, collectionType)
+                defaultCategories.forEach { def ->
+                    if (list.none { it.category == def.category }) {
+                        list.add(def)
+                    }
+                }
+                list
+            } catch (e: Exception) {
                 e.printStackTrace()
-                return defaultCategories
+                defaultCategories
             }
         }
+
         set(value) {
             val collectionType = object : TypeToken<List<CategoryInfo?>?>() {}.type
             sharedPreferences.edit {

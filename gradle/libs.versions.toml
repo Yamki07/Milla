@@ -60,6 +60,10 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room_ver
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room_version" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room_version" }
 
+#work
+androidx-work-runtime-ktx = { module = "androidx.work:work-runtime-ktx", version = "2.9.1" }
+
+
 #google_play
 google-feature-delivery = { module = "com.google.android.play:feature-delivery", version.ref = "google_featureDelivery_version" }
 google-play-services-cast-framework = { module = "com.google.android.gms:play-services-cast-framework", version.ref = "playServicesCastFramework" }

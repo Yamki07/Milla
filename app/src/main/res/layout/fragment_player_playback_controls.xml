@@ -108,6 +108,21 @@
         tools:text="@tools:sample/full_names" />
 
     <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/automixButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/roundSelector"
+        android:padding="12dp"
+        android:scaleType="fitCenter"
+        android:contentDescription="Mesa de mezclas Automix"
+        app:layout_constraintBottom_toTopOf="@+id/shuffleButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/songTotalTime"
+        app:srcCompat="@drawable/ic_equalizer"
+        tools:ignore="MissingPrefix"
+        tools:tint="@color/md_black_1000" />
+
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/repeatButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

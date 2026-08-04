@@ -357,7 +357,9 @@ class MusicService : MediaBrowserServiceCompat(),
         mPackageValidator = PackageValidator(this, R.xml.allowed_media_browser_callers)
         mMusicProvider.setMusicService(this)
         storage = PersistentStorage.getInstance(this)
+        code.name.monkey.retromusic.workers.BpmScannerWorker.schedule(this)
     }
+
 
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(widgetIntentReceiver)

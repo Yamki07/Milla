@@ -51,10 +51,13 @@ class MainActivity : AbsCastActivity() {
         updateTabs()
         AppRater.appLaunched(this)
 
+        code.name.monkey.retromusic.workers.BpmScannerWorker.scheduleOneTime(this)
+
         setupNavigationController()
 
         WhatsNewFragment.showChangeLog(this)
     }
+
 
     private fun setupNavigationController() {
         val navController = findNavController(R.id.fragment_container)
@@ -92,7 +95,7 @@ class MainActivity : AbsCastActivity() {
                 currentFragment(R.id.fragment_container)?.enterTransition = null
             }
             when (destination.id) {
-                R.id.action_home, R.id.action_song, R.id.action_album, R.id.action_artist, R.id.action_folder, R.id.action_playlist, R.id.action_genre, R.id.action_search -> {
+                R.id.action_home, R.id.action_song, R.id.action_album, R.id.action_artist, R.id.action_folder, R.id.action_playlist, R.id.action_genre, R.id.action_search, R.id.action_deezer -> {
                     // Save the last tab
                     if (PreferenceUtil.rememberLastTab) {
                         saveTab(destination.id)

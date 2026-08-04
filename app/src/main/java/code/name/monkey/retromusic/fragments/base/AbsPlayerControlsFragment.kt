@@ -72,6 +72,9 @@ abstract class AbsPlayerControlsFragment(@LayoutRes layout: Int) : AbsMusicServi
 
     open val previousButton: ImageButton? = null
 
+    open val automixButton: ImageButton? = null
+
+
     open val songTotalTime: TextView? = null
 
     open val songCurrentProgress: TextView? = null
@@ -196,7 +199,9 @@ abstract class AbsPlayerControlsFragment(@LayoutRes layout: Int) : AbsMusicServi
         setUpPrevNext()
         setUpShuffleButton()
         setUpRepeatButton()
+        setUpAutomixButton()
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setUpPrevNext() {
@@ -212,10 +217,19 @@ abstract class AbsPlayerControlsFragment(@LayoutRes layout: Int) : AbsMusicServi
         repeatButton.setOnClickListener { MusicPlayerRemote.cycleRepeatMode() }
     }
 
+    private fun setUpAutomixButton() {
+        automixButton?.setOnClickListener {
+            code.name.monkey.retromusic.automix.AutomixBottomSheet.newInstance()
+                .show(parentFragmentManager, "AUTOMIX_BOTTOM_SHEET")
+        }
+    }
+
     fun updatePrevNextColor() {
         nextButton?.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
         previousButton?.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
+        automixButton?.setColorFilter(lastPlaybackControlsColor, PorterDuff.Mode.SRC_IN)
     }
+
 
     fun updateShuffleState() {
         shuffleButton.setColorFilter(

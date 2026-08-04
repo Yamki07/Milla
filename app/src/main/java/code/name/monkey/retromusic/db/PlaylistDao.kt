@@ -72,4 +72,12 @@ interface PlaylistDao {
 
     @Query("SELECT EXISTS(SELECT * FROM PlaylistEntity WHERE playlist_id = :playlistId)")
     fun checkPlaylistExists(playlistId: Long): LiveData<Boolean>
+
+    @Query("UPDATE SongEntity SET bpm = :bpm, musicalKey = :key, replayGain = :replayGain, cueOutMs = :cueOut WHERE id = :songId")
+    suspend fun updateSongAutomixData(songId: Long, bpm: Float, key: String, replayGain: Float, cueOut: Long)
+
+    @Query("SELECT * FROM SongEntity WHERE bpm = 0 OR cueOutMs = 0")
+    suspend fun getUnscannedSongs(): List<SongEntity>
 }
+
+

@@ -27,5 +27,10 @@
         android:enabled="true"
         android:icon="@drawable/ic_queue_music"
         android:title="@string/playlists" />
+    <item
+        android:id="@+id/action_deezer"
+        android:enabled="true"
+        android:icon="@drawable/ic_website"
+        android:title="@string/milla_internet" />
 
 </menu>

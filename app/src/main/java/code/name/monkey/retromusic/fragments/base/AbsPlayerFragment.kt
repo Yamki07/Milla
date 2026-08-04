@@ -95,6 +95,12 @@ abstract class AbsPlayerFragment(@LayoutRes layout: Int) : AbsMusicServiceFragme
     ): Boolean {
         val song = MusicPlayerRemote.currentSong
         when (item.itemId) {
+            R.id.action_automix_settings -> {
+                code.name.monkey.retromusic.automix.AutomixBottomSheet.newInstance()
+                    .show(childFragmentManager, "AUTOMIX_BOTTOM_SHEET")
+                return true
+            }
+
             R.id.action_playback_speed -> {
                 PlaybackSpeedDialog.newInstance().show(childFragmentManager, "PLAYBACK_SETTINGS")
                 return true
