@@ -96,6 +96,7 @@ import code.name.monkey.retromusic.util.MusicUtil.toggleFavorite
 import code.name.monkey.retromusic.util.PackageValidator
 import code.name.monkey.retromusic.util.PreferenceUtil.crossFadeDuration
 import code.name.monkey.retromusic.util.PreferenceUtil.isAlbumArtOnLockScreen
+import code.name.monkey.retromusic.util.PreferenceUtil.isAutomixEnabled
 import code.name.monkey.retromusic.util.PreferenceUtil.isBluetoothSpeaker
 import code.name.monkey.retromusic.util.PreferenceUtil.isBlurredAlbumArt
 import code.name.monkey.retromusic.util.PreferenceUtil.isHeadsetPlugged
@@ -762,6 +763,11 @@ class MusicService : MediaBrowserServiceCompat(),
             position = nextPosition
             prepareNextImpl()
             notifyChange(META_CHANGED)
+            // Auto Mix DJ: actualizar el cueOutMs para la nueva canción activa
+            if (PreferenceUtil.isAutomixEnabled) {
+                (playbackManager.playback as? CrossFadePlayer)
+                    ?.updateAutomixCueOut(currentSong.id)
+            }
         }
     }
 

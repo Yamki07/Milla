@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.PowerManager
 import androidx.core.net.toUri
 import code.name.monkey.retromusic.R
+import code.name.monkey.retromusic.repository.RoomRepository
 import code.name.monkey.retromusic.extensions.showToast
 import code.name.monkey.retromusic.extensions.uri
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
@@ -26,6 +27,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /** @author Prathamesh M */
 
@@ -50,6 +52,8 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
     override var callbacks: PlaybackCallbacks? = null
     private var crossFadeDuration = PreferenceUtil.crossFadeDuration
     var isCrossFading = false
+    // Auto Mix DJ: cueOutMs leído desde Room DB para la canción actual
+    private var automixCueOutMs: Long = 0L
 
     init {
         player1.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
@@ -317,26 +321,70 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
     }
 
     fun onDurationUpdated(progress: Int, total: Int) {
-        if (total > 0 && (total - progress).div(1000) == crossFadeDuration) {
+        // AUTO MIX DJ MODE: dispara la transición en el cueOutMs exacto detectado por BpmScanner
+        if (PreferenceUtil.isAutomixEnabled && automixCueOutMs > 0L) {
+            val remainingMs = (total - progress).toLong()
+            // Lanzar crossfade cuando queden entre 500ms y 8000ms del punto de salida
+            if (remainingMs in 500L..8000L && (total - progress) <= (total - automixCueOutMs.toInt() + 500)) {
+                triggerAutomixTransition()
+                return
+            }
+        }
+        // MODO CROSSFADE CLÁSICO: fallback si Auto Mix está desactivado
+        if (!PreferenceUtil.isAutomixEnabled && total > 0 && (total - progress).div(1000) == crossFadeDuration) {
             getNextPlayer()?.let { player ->
                 val nextSong = MusicPlayerRemote.nextSong
-                // Switch to other player (Crossfade) only if next song exists
-                // If we get an empty song it's can be because the app was cleared from background
-                // And MusicPlayerRemote don't have access to MusicService
                 if (nextSong != null && nextSong != Song.emptySong) {
                     nextDataSource = null
                     setDataSourceImpl(player, nextSong.uri.toString()) { success ->
                         if (success) switchPlayer()
                     }
-
-                }
-                // So we have to use the previously stored nextDataSource value
-                else if (!nextDataSource.isNullOrEmpty()) {
+                } else if (!nextDataSource.isNullOrEmpty()) {
                     setDataSourceImpl(player, nextDataSource!!) { success ->
                         if (success) switchPlayer()
                         nextDataSource = null
                     }
                 }
+            }
+        }
+    }
+
+    /**
+     * Lanza la transición DJ usando el cueOutMs real de la canción actual.
+     * Llamado cuando Auto Mix está activo y el reproductor llega al punto de salida óptimo.
+     */
+    private fun triggerAutomixTransition() {
+        if (isCrossFading) return // Evitar doble trigger
+        getNextPlayer()?.let { player ->
+            val nextSong = MusicPlayerRemote.nextSong
+            if (nextSong != null && nextSong != Song.emptySong) {
+                nextDataSource = null
+                setDataSourceImpl(player, nextSong.uri.toString()) { success ->
+                    if (success) switchPlayer()
+                }
+            } else if (!nextDataSource.isNullOrEmpty()) {
+                setDataSourceImpl(player, nextDataSource!!) { success ->
+                    if (success) switchPlayer()
+                    nextDataSource = null
+                }
+            }
+        }
+    }
+
+    /**
+     * Actualiza el cueOutMs cuando cambia la canción actual.
+     * Llamado desde MusicService cuando se carga una nueva pista.
+     */
+    fun updateAutomixCueOut(songId: Long) {
+        launch {
+            try {
+                val repository = org.koin.java.KoinJavaComponent.get(RoomRepository::class.java)
+                val data = withContext(Dispatchers.IO) {
+                    repository.getAutomixDataBySongId(songId)
+                }
+                automixCueOutMs = data?.cueOutMs ?: 0L
+            } catch (e: Exception) {
+                automixCueOutMs = 0L
             }
         }
     }

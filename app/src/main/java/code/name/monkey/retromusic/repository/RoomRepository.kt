@@ -45,6 +45,7 @@ interface RoomRepository {
     fun getPlaylist(playlistId: Long): LiveData<PlaylistWithSongs>
     suspend fun updateSongAutomixData(songId: Long, bpm: Float, key: String, replayGain: Float, cueOut: Long)
     suspend fun getUnscannedSongs(): List<SongEntity>
+    suspend fun getAutomixDataBySongId(songId: Long): SongEntity?
 }
 
 
@@ -199,4 +200,8 @@ class RealRoomRepository(
     @WorkerThread
     override suspend fun getUnscannedSongs(): List<SongEntity> =
         playlistDao.getUnscannedSongs()
+
+    @WorkerThread
+    override suspend fun getAutomixDataBySongId(songId: Long): SongEntity? =
+        playlistDao.getAutomixDataBySongId(songId)
 }

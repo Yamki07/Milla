@@ -78,6 +78,7 @@ interface PlaylistDao {
 
     @Query("SELECT * FROM SongEntity WHERE bpm = 0 OR cueOutMs = 0")
     suspend fun getUnscannedSongs(): List<SongEntity>
+
+    @Query("SELECT * FROM SongEntity WHERE id = :songId LIMIT 1")
+    suspend fun getAutomixDataBySongId(songId: Long): SongEntity?
 }
-
-
