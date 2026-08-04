@@ -42,8 +42,8 @@
 
     <fragment
         android:id="@+id/action_deezer"
-        android:name="code.name.monkey.retromusic.fragments.deezer.DeezerFragment"
+        android:name="code.name.monkey.retromusic.fragments.millay.MillayFragment"
         android:label="@string/milla_internet"
-        tools:layout="@layout/fragment_deezer" />
+        tools:layout="@layout/fragment_millay" />
 
 </navigation>

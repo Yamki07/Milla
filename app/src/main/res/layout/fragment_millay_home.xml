@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tab 1 — Inicio Millay: Burbujas de Flow, Moods y Top Charts -->
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:paddingBottom="88dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Sección: Flow y Modos de Escucha -->
+        <include layout="@layout/layout_flow_bubbles_section" />
+
+        <!-- Separador -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/sectionTopCharts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:text="🔥 Top Charts"
+            android:textAppearance="@style/TextViewHeadline6"
+            android:textStyle="bold" />
+
+        <!-- RecyclerView de Top Charts (horizontal, tarjetas) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/topChartsRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingHorizontal="12dp"
+            android:orientation="horizontal" />
+
+        <!-- Separador -->
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/sectionRecommended"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="8dp"
+            android:text="⭐ Recomendados"
+            android:textAppearance="@style/TextViewHeadline6"
+            android:textStyle="bold" />
+
+        <!-- RecyclerView de recomendaciones (lista vertical) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recommendedRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp" />
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

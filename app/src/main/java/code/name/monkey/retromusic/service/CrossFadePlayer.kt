@@ -27,7 +27,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /** @author Prathamesh M */
 
@@ -376,13 +375,13 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
      * Llamado desde MusicService cuando se carga una nueva pista.
      */
     fun updateAutomixCueOut(songId: Long) {
-        launch {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
-                val repository = org.koin.java.KoinJavaComponent.get(RoomRepository::class.java)
-                val data = withContext(Dispatchers.IO) {
+                val repository: RoomRepository =
+                    org.koin.java.KoinJavaComponent.get(RoomRepository::class.java)
+                val entity: code.name.monkey.retromusic.db.SongEntity? =
                     repository.getAutomixDataBySongId(songId)
-                }
-                automixCueOutMs = data?.cueOutMs ?: 0L
+                automixCueOutMs = entity?.cueOutMs ?: 0L
             } catch (e: Exception) {
                 automixCueOutMs = 0L
             }

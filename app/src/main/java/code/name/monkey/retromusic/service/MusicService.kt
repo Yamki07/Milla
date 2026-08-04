@@ -764,7 +764,7 @@ class MusicService : MediaBrowserServiceCompat(),
             prepareNextImpl()
             notifyChange(META_CHANGED)
             // Auto Mix DJ: actualizar el cueOutMs para la nueva canción activa
-            if (PreferenceUtil.isAutomixEnabled) {
+            if (isAutomixEnabled) {
                 (playbackManager.playback as? CrossFadePlayer)
                     ?.updateAutomixCueOut(currentSong.id)
             }
