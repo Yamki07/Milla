@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Dialog
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.DialogFragment
@@ -159,12 +160,19 @@ class BlacklistFolderChooserDialog : DialogFragment() {
     }
 
     private fun canAccessFolderNio(path: String): Boolean {
-        val folderPath: Path = Paths.get(path)
-
-        val existsAndIsDirectory = Files.exists(folderPath) && Files.isDirectory(folderPath)
-        val hasReadAccess = Files.isReadable(folderPath)
-
-        return existsAndIsDirectory && hasReadAccess
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            try {
+                val folderPath: Path = Paths.get(path)
+                val existsAndIsDirectory = Files.exists(folderPath) && Files.isDirectory(folderPath)
+                val hasReadAccess = Files.isReadable(folderPath)
+                existsAndIsDirectory && hasReadAccess
+            } catch (e: Exception) {
+                false
+            }
+        } else {
+            val file = File(path)
+            file.exists() && file.isDirectory && file.canRead()
+        }
     }
 
     private fun updateDialog() {

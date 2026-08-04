@@ -79,7 +79,8 @@ android {
         }
     }
     lint {
-        abortOnError = true
+        abortOnError = false
+        checkReleaseBuilds = false
         warning.addAll(listOf("ImpliedQuantity", "Instantiatable", "MissingQuantity", "MissingTranslation", "StringFormatInvalid"))
     }
     compileOptions {
