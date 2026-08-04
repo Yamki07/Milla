@@ -10,66 +10,95 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.fragments.base.AbsMainActivityFragment
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
- * Fragmento principal de Millay (ex Milla Internet).
- * Contiene un ViewPager2 con 3 pestañas:
- *  - 🏠 Inicio  — Flow Bubbles (Mood), Top Charts y Recomendados
- *  - 🔍 Buscar  — Búsqueda HQ con filtros de calidad (FLAC / MP3 320)
- *  - 📥 Descargas — Lista de descargas activas y completadas
+ * Fragmento principal de Millay (réplica 1:1 ReFreezer).
+ * Contiene un ViewPager2 con 3 pestañas Deezer + un 4º botón inferior para regresar al reproductor local Milla:
+ *  1. 🏠 Home — Flow Bubbles, Continue Streaming, Discover, Top Charts
+ *  2. 🔍 Search — Búsqueda Deezer HQ
+ *  3. 📚 Library — Gestor de Descargas y Favoritos
+ *  4. 📻 Milla Player — Regresa al reproductor nativo local
  */
 class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
 
     private lateinit var viewPager: ViewPager2
-    private lateinit var tabLayout: TabLayout
-    private lateinit var toolbar: Toolbar
-
-    private val tabTitles = listOf("🏠 Inicio", "🔍 Buscar", "📥 Descargas")
+    private lateinit var bottomNav: BottomNavigationView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolbar   = view.findViewById(R.id.toolbar)
         viewPager = view.findViewById(R.id.viewPager)
-        tabLayout = view.findViewById(R.id.tabLayout)
+        bottomNav = view.findViewById(R.id.bottomNavigation)
 
-        setupToolbar()
         setupViewPager()
-    }
-
-    private fun setupToolbar() {
-        toolbar.title = "Millay"
-        mainActivity.setSupportActionBar(toolbar)
+        setupBottomNav()
     }
 
     private fun setupViewPager() {
         viewPager.adapter = MillayPagerAdapter(this)
-        viewPager.offscreenPageLimit = 2 // Mantener las 3 tabs cargadas
+        viewPager.offscreenPageLimit = 2
+        viewPager.isUserInputEnabled = true // Permite deslizar entre pantallas ReFreezer
 
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = tabTitles[position]
-        }.attach()
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                when (position) {
+                    0 -> bottomNav.menu.findItem(R.id.millay_nav_home)?.isChecked = true
+                    1 -> bottomNav.menu.findItem(R.id.millay_nav_search)?.isChecked = true
+                    2 -> bottomNav.menu.findItem(R.id.millay_nav_library)?.isChecked = true
+                }
+            }
+        })
     }
 
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-        // Sin menú adicional en esta pantalla
+    private fun setupBottomNav() {
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.millay_nav_home -> {
+                    viewPager.setCurrentItem(0, true)
+                    true
+                }
+                R.id.millay_nav_search -> {
+                    viewPager.setCurrentItem(1, true)
+                    true
+                }
+                R.id.millay_nav_library -> {
+                    viewPager.setCurrentItem(2, true)
+                    true
+                }
+                R.id.millay_nav_milla_player -> {
+                    // Volver al reproductor/librería nativa de Milla
+                    try {
+                        findNavController().navigate(R.id.action_song)
+                    } catch (e: Exception) {
+                        try {
+                            findNavController().navigateUp()
+                        } catch (ex: Exception) {
+                            // Ignore fallback
+                        }
+                    }
+                    true
+                }
+                else -> false
+            }
+        }
     }
+
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {}
 
     override fun onMenuItemSelected(item: MenuItem): Boolean = false
 
     // ---------------------------------------------------------------------------
-    // Adaptador interno del ViewPager2
+    // Adaptador del ViewPager2 interno de ReFreezer
     // ---------------------------------------------------------------------------
     private inner class MillayPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
-
         override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment = when (position) {

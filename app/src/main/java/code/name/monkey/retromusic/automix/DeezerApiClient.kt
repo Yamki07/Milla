@@ -6,6 +6,7 @@
 package code.name.monkey.retromusic.automix
 
 import android.util.Log
+import code.name.monkey.retromusic.db.SongEntity
 import code.name.monkey.retromusic.model.Song
 import okhttp3.Cookie
 import okhttp3.CookieJar
@@ -64,18 +65,18 @@ object DeezerApiClient {
                     val json = JSONObject(body)
                     val results = json.getJSONObject("results")
                     apiToken = results.getString("checkForm")
-                    Log.d(TAG, "Sesión Deezer iniciada con éxito. Token: $apiToken")
+                    Log.d(TAG, "Sesión Deezer iniciada con api_token=$apiToken")
                     onSuccess()
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error iniciando sesión ARL: $e")
+                Log.e(TAG, "Error al autenticar sesión Deezer con ARL: $e")
                 onError(e)
             }
         }.start()
     }
 
     /**
-     * Realiza una búsqueda GET al endpoint público de Deezer y devuelve las pistas mapeadas al modelo [Song].
+     * Realiza una búsqueda de canciones en Deezer por palabra clave (título, artista o género).
      */
     fun searchTracks(
         query: String,
@@ -169,18 +170,15 @@ object DeezerApiClient {
                     val resString = response.body?.string() ?: ""
                     val json = JSONObject(resString)
                     val results = json.getJSONObject("results")
-
-                    // Extraer token de pista para el CDN de Deezer
                     val trackToken = results.getString("TRACK_TOKEN")
 
-                    // Construir la solicitud de la URL final en CDN
                     val cdnUrl = "https://media.deezer.com/v1/get_url"
                     val cdnPayload = JSONObject().apply {
                         put("license_token", apiToken)
                         put("media", JSONObject().apply {
                             put("type", "FULL")
                             put("formats", listOf(JSONObject().apply {
-                                put("cipher", "BF_CBC_STRIPE") // Algoritmo Blowfish de Deezer
+                                put("cipher", "BF_CBC_STRIPE")
                                 put("format", if (quality == 9) "FLAC" else "MP3_320")
                             }))
                         })
@@ -215,4 +213,27 @@ object DeezerApiClient {
             }
         }.start()
     }
+}
+
+/**
+ * Convierte un modelo Song de RetroMusic a SongEntity para la base de datos de Automix.
+ */
+fun Song.toSongEntity(): SongEntity {
+    return SongEntity(
+        playlistCreatorId = 0L,
+        id = this.id,
+        title = this.title,
+        trackNumber = this.trackNumber,
+        year = this.year,
+        duration = this.duration,
+        data = this.data,
+        dateModified = this.dateModified,
+        albumId = this.albumId,
+        albumName = this.albumName,
+        artistId = this.artistId,
+        artistName = this.artistName,
+        composer = this.composer,
+        albumArtist = this.albumArtist,
+        bpm = 120f
+    )
 }

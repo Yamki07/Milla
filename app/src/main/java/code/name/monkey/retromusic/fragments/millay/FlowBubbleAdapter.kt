@@ -5,6 +5,7 @@
  */
 package code.name.monkey.retromusic.fragments.millay
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +14,19 @@ import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
 import com.google.android.material.card.MaterialCardView
 
+data class FlowBubble(
+    val name: String,
+    val subtitle: String,
+    val colorHex: String,
+    val emoji: String
+)
+
 /**
- * Adaptador de burbujas de Flow (Mood / Género) para la pantalla de Inicio de Millay.
- * Muestra un grid horizontal de íconos circulares con emoji, título y subtítulo.
+ * Adaptador de burbujas de Flow (Mood / Género) ReFreezer.
  */
 class FlowBubbleAdapter(
-    private val bubbles: List<MillayHomeFragment.FlowBubble>,
-    private val onBubbleClick: (MillayHomeFragment.FlowBubble) -> Unit
+    private val bubbles: List<FlowBubble>,
+    private val onBubbleClick: (FlowBubble) -> Unit
 ) : RecyclerView.Adapter<FlowBubbleAdapter.BubbleViewHolder>() {
 
     inner class BubbleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -38,8 +45,12 @@ class FlowBubbleAdapter(
     override fun onBindViewHolder(holder: BubbleViewHolder, position: Int) {
         val bubble = bubbles[position]
         holder.emoji.text    = bubble.emoji
-        holder.title.text    = bubble.title
+        holder.title.text    = bubble.name
         holder.subtitle.text = bubble.subtitle
+        try {
+            holder.card.setCardBackgroundColor(Color.parseColor(bubble.colorHex))
+        } catch (e: Exception) {}
+
         holder.itemView.setOnClickListener { onBubbleClick(bubble) }
     }
 
