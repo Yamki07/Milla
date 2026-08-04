@@ -24,6 +24,7 @@ import code.name.monkey.retromusic.ALBUM_SONG_SORT_ORDER
 import code.name.monkey.retromusic.ALBUM_SORT_ORDER
 import code.name.monkey.retromusic.APPBAR_MODE
 import code.name.monkey.retromusic.ARTIST_ALBUM_SORT_ORDER
+import code.name.monkey.retromusic.AUTOMIX_KEY
 import code.name.monkey.retromusic.ARTIST_DETAIL_SONG_SORT_ORDER
 import code.name.monkey.retromusic.ARTIST_GRID_SIZE
 import code.name.monkey.retromusic.ARTIST_GRID_SIZE_LAND
@@ -822,6 +823,9 @@ object PreferenceUtil {
             .getInt(CROSS_FADE_DURATION, 0)
 
     val isCrossfadeEnabled get() = crossFadeDuration > 0
+
+    val isAutomixEnabled
+        get() = sharedPreferences.getBoolean(AUTOMIX_KEY, false)
 
     val materialYou
         get() = sharedPreferences.getBoolean(MATERIAL_YOU, VersionUtils.hasS())

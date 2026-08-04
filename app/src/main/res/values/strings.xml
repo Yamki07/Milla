@@ -190,7 +190,7 @@
     <string name="folders">Folders</string>
     <string name="follow_system">Follow system</string>
     <string name="for_you">For you</string>
-    <string name="milla_internet">Milla Internet</string>
+    <string name="milla_internet">Millay</string>
     <string name="free">Free</string>
     <string name="full">Full</string>
     <string name="full_card">Full card</string>
@@ -343,6 +343,8 @@
     <string name="pref_summary_album_artists_only">Show Album Artists in the Artist category</string>
     <string name="pref_summary_audio_ducking">Lower the volume when a system sound is played or a notification is received</string>
     <string name="pref_summary_audio_fade">Fade audio when song is paused or played</string>
+    <string name="pref_title_automix">Auto Mix DJ</string>
+    <string name="pref_summary_automix">Mezcla automática de canciones sincronizando BPM y tonalidad (Camelot). Activa para una sesión continua estilo DJ.</string>
     <string name="pref_summary_blacklist">The content of blacklisted folders is hidden from your library.</string>
     <string name="pref_summary_bluetooth_playback">Start playing as soon as connected to bluetooth device</string>
     <string name="pref_summary_blurred_album_art">Blur the album cover on the lockscreen. Can cause problems with third party apps and widgets</string>

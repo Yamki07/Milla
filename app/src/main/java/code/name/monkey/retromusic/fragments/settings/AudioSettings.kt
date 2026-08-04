@@ -19,9 +19,12 @@ import android.content.Intent
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.media.audiofx.AudioEffect
 import android.os.Bundle
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.preference.Preference
+import androidx.preference.SwitchPreferenceCompat
 import code.name.monkey.appthemehelper.util.VersionUtils
+import code.name.monkey.retromusic.AUTOMIX_KEY
 import code.name.monkey.retromusic.BLUETOOTH_PLAYBACK
 import code.name.monkey.retromusic.EQUALIZER
 import code.name.monkey.retromusic.R
@@ -45,6 +48,22 @@ class AudioSettings : AbsSettingsFragment() {
             NavigationUtil.openEqualizer(requireActivity())
             true
         }
+
+        // Auto Mix DJ toggle
+        val automixPreference: SwitchPreferenceCompat? = findPreference(AUTOMIX_KEY)
+        automixPreference?.setOnPreferenceChangeListener { _, newValue ->
+            val isEnabled = newValue as Boolean
+            if (isEnabled) {
+                Toast.makeText(
+                    requireContext(),
+                    "🎛️ Auto Mix DJ activado — las canciones se mezclarán automáticamente",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            // Persist via SharedPreferences (handled automatically by the preference framework)
+            true
+        }
+
         val bluetoothPreference: Preference? = findPreference(BLUETOOTH_PLAYBACK)
         if (VersionUtils.hasS()) {
             bluetoothPreference?.setOnPreferenceChangeListener { _, newValue ->
@@ -78,3 +97,4 @@ class AudioSettings : AbsSettingsFragment() {
         addPreferencesFromResource(R.xml.pref_audio)
     }
 }
+
