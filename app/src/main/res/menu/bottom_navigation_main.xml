@@ -18,11 +18,6 @@
         android:icon="@drawable/ic_album"
         android:title="@string/albums" />
     <item
-        android:id="@+id/action_artist"
-        android:enabled="true"
-        android:icon="@drawable/ic_artist"
-        android:title="@string/artists" />
-    <item
         android:id="@+id/action_playlist"
         android:enabled="true"
         android:icon="@drawable/ic_queue_music"

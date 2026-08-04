@@ -141,9 +141,9 @@ object PreferenceUtil {
         CategoryInfo(CategoryInfo.Category.Home, true),
         CategoryInfo(CategoryInfo.Category.Songs, true),
         CategoryInfo(CategoryInfo.Category.Albums, true),
-        CategoryInfo(CategoryInfo.Category.Artists, true),
         CategoryInfo(CategoryInfo.Category.Playlists, true),
         CategoryInfo(CategoryInfo.Category.Deezer, true),
+        CategoryInfo(CategoryInfo.Category.Artists, false),
         CategoryInfo(CategoryInfo.Category.Genres, false),
         CategoryInfo(CategoryInfo.Category.Folder, false),
         CategoryInfo(CategoryInfo.Category.Search, false)
@@ -163,6 +163,16 @@ object PreferenceUtil {
                 defaultCategories.forEach { def ->
                     if (list.none { it.category == def.category }) {
                         list.add(def)
+                    }
+                }
+                var visibleCount = 0
+                list.forEach { item ->
+                    if (item.visible) {
+                        if (visibleCount >= 5) {
+                            item.visible = false
+                        } else {
+                            visibleCount++
+                        }
                     }
                 }
                 list

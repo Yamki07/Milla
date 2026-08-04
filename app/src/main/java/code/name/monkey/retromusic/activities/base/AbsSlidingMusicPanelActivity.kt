@@ -464,11 +464,13 @@ abstract class AbsSlidingMusicPanelActivity : AbsMusicServiceActivity(),
     fun updateTabs() {
         binding.navigationView.menu.clear()
         val currentTabs: List<CategoryInfo> = PreferenceUtil.libraryCategory
+        var addedCount = 0
         for (tab in currentTabs) {
-            if (tab.visible) {
+            if (tab.visible && addedCount < 5) {
                 val menu = tab.category
                 binding.navigationView.menu.add(0, menu.id, 0, menu.stringRes)
                     .setIcon(menu.icon)
+                addedCount++
             }
         }
         if (binding.navigationView.menu.size() == 1) {
