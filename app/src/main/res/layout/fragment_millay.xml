@@ -1,16 +1,400 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Layout de Millay con WebView nativo optimizado cargando Monochrome Web UI 1:1 -->
-<RelativeLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/millayRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#090A0F">
+    android:background="#080A12">
 
-    <WebView
-        android:id="@+id/millayWebView"
+    <!-- Background gradient gradient blob -->
+    <View
+        android:id="@+id/millayGradientBlob"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="-80dp"
+        android:alpha="0.18"
+        android:background="@drawable/millay_blob_gradient" />
+
+    <!-- Main scrollable content -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/millayScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#090A0F"
-        android:overScrollMode="never" />
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
-</RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="120dp">
+
+            <!-- ─────────── SEARCH HEADER ─────────── -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingTop="56dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/millayGreeting"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.5"
+                        android:fontFamily="@font/manrope"
+                        android:text="Hola, bienvenido"
+                        android:textColor="#FFFFFF"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope_bold"
+                        android:text="Millay"
+                        android:textColor="#FFFFFF"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/millayQualityBadge"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/millay_badge_bg"
+                    android:contentDescription="HQ"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_hdr_strong" />
+
+            </LinearLayout>
+
+            <!-- ─────────── SEARCH BAR (Glassmorphism) ─────────── -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="20dp">
+
+                <EditText
+                    android:id="@+id/millaySearchInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="@drawable/millay_search_bg"
+                    android:drawableStart="@drawable/ic_search"
+                    android:drawablePadding="12dp"
+                    android:elevation="4dp"
+                    android:fontFamily="@font/manrope"
+                    android:hint="Buscar canciones, artistas, álbumes..."
+                    android:imeOptions="actionSearch"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:singleLine="true"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#66FFFFFF"
+                    android:textSize="15sp" />
+
+            </FrameLayout>
+
+            <!-- ─────────── RESULTS STATE ─────────── -->
+            <!-- Loading Spinner -->
+            <FrameLayout
+                android:id="@+id/millayLoadingContainer"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:visibility="gone">
+
+                <ProgressBar
+                    android:id="@+id/millayProgressBar"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:indeterminateTint="#FF4B8B" />
+
+            </FrameLayout>
+
+            <!-- ─────────── HOME CONTENT ─────────── -->
+            <LinearLayout
+                android:id="@+id/millayHomeContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingTop="8dp">
+
+                <!-- Hot & New Albums -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/manrope_bold"
+                    android:text="Top Albums"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/millayTopAlbumsList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:layout_marginBottom="24dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <!-- Hot & New Tracks -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/manrope_bold"
+                    android:text="Nuevos Lanzamientos"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/millayTopTracksList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:layout_marginBottom="24dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                <!-- Genres -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/manrope_bold"
+                    android:text="Explorar Géneros"
+                    android:textColor="#FFFFFF"
+                    android:textSize="20sp" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/millayGenresList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginBottom="24dp"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="2" />
+
+            </LinearLayout>
+
+            <!-- ─────────── TRACK RESULTS LIST ─────────── -->
+            <LinearLayout
+                android:id="@+id/millayResultsHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="8dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/millayResultsLabel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/manrope_bold"
+                    android:text="Resultados"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/millayResultsCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.5"
+                    android:fontFamily="@font/manrope"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/millayTracksList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:visibility="gone" />
+
+            <!-- ─────────── ERROR STATE ─────────── -->
+            <LinearLayout
+                android:id="@+id/millayErrorState"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="40dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_bold"
+                    android:gravity="center"
+                    android:text="⚠️"
+                    android:textSize="40sp" />
+
+                <TextView
+                    android:id="@+id/millayErrorMessage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:alpha="0.6"
+                    android:fontFamily="@font/manrope"
+                    android:gravity="center"
+                    android:text="Error al buscar. Verifica tu conexión."
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/millayRetryButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/millay_pill_btn"
+                    android:fontFamily="@font/manrope_bold"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:text="Reintentar"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- ─────────── MINI PLAYER BAR (Glassmorphism floating) ─────────── -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/millayMiniPlayer"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="80dp"
+        android:elevation="12dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="#CC1A1D2E"
+        app:cardCornerRadius="18dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp">
+
+            <!-- Album art -->
+            <ImageView
+                android:id="@+id/millayMiniArt"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/millay_art_placeholder"
+                android:contentDescription="Portada"
+                android:scaleType="centerCrop" />
+
+            <!-- Track info -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/millayMiniTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:fontFamily="@font/manrope_bold"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:text="—"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/millayMiniArtist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.55"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/manrope"
+                    android:singleLine="true"
+                    android:text="—"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <!-- Controls -->
+            <ImageButton
+                android:id="@+id/millayMiniPlayPause"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/millay_circle_btn"
+                android:contentDescription="Play/Pause"
+                android:padding="8dp"
+                android:src="@drawable/ic_play_arrow_white_32dp" />
+
+            <ImageButton
+                android:id="@+id/millayMiniNext"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Siguiente"
+                android:padding="6dp"
+                android:src="@drawable/ic_skip_next"
+                android:tint="#AAFFFFFF" />
+
+            <ImageButton
+                android:id="@+id/millayMiniDownload"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Descargar"
+                android:padding="6dp"
+                android:src="@drawable/ic_playlist_add"
+                android:tint="#FF4B8B" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

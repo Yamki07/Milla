@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Blob gradient circle for the background visual effect -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:angle="135"
+        android:centerColor="#9B59B6"
+        android:endColor="#3498DB"
+        android:startColor="#FF4B8B"
+        android:type="radial"
+        android:gradientRadius="50%p" />
+</shape>

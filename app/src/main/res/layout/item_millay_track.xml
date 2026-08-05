@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="4dp"
+    android:elevation="2dp"
+    app:cardBackgroundColor="#11FFFFFF"
+    app:cardCornerRadius="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <!-- Album Art (rounded) -->
+        <FrameLayout
+            android:layout_width="56dp"
+            android:layout_height="56dp">
+
+            <ImageView
+                android:id="@+id/millayTrackArt"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:background="@drawable/millay_art_placeholder"
+                android:contentDescription="Portada"
+                android:scaleType="centerCrop" />
+
+            <!-- HQ badge overlay -->
+            <TextView
+                android:id="@+id/millayTrackQualityBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:background="#CC121420"
+                android:fontFamily="@font/manrope_bold"
+                android:paddingStart="3dp"
+                android:paddingTop="1dp"
+                android:paddingEnd="3dp"
+                android:paddingBottom="1dp"
+                android:text="HQ"
+                android:textColor="#FF4B8B"
+                android:textSize="8sp"
+                android:visibility="gone" />
+
+        </FrameLayout>
+
+        <!-- Track Info -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/millayTrackTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:fontFamily="@font/manrope_bold"
+                android:singleLine="true"
+                android:text="Track Title"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/millayTrackArtist"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:alpha="0.55"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/manrope"
+                    android:singleLine="true"
+                    android:text="Artist"
+                    android:textColor="#FFFFFF"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/millayTrackDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.35"
+                    android:fontFamily="@font/manrope"
+                    android:text="3:30"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/millayTrackAlbum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.35"
+                android:ellipsize="end"
+                android:fontFamily="@font/manrope"
+                android:singleLine="true"
+                android:text="Album"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/millayTrackPlay"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/millay_circle_btn"
+                android:contentDescription="Reproducir"
+                android:padding="8dp"
+                android:src="@drawable/ic_play_arrow_white_32dp" />
+
+            <ImageButton
+                android:id="@+id/millayTrackDownload"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Descargar"
+                android:padding="7dp"
+                android:src="@drawable/ic_playlist_add"
+                android:tint="#FF4B8B" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

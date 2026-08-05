@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Circular button background for play controls -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <gradient
+        android:angle="135"
+        android:endColor="#C0395BAA"
+        android:startColor="#E0FF4B8B"
+        android:type="linear" />
+</shape>
