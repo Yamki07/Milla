@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milla Automix + Millay (ReFreezer 1:1 Preview)</title>
+    <!-- Modern Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #090A0F;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --accent-pink: #FF007A;
+            --accent-orange: #FF5722;
+            --accent-cyan: #00E5FF;
+            --accent-purple: #9C27B0;
+            --text-primary: #FFFFFF;
+            --text-secondary: #9092A6;
+            --nav-bg: #12131C;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #030305;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Phone Mockup Wrapper */
+        .device-container {
+            width: 410dp;
+            width: 410px;
+            height: 840px;
+            background: var(--bg-dark);
+            border-radius: 40px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 0 10px #1E1F2B;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Status Bar */
+        .status-bar {
+            height: 38px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #A0A2B6;
+            z-index: 10;
+        }
+
+        /* Content Area */
+        .app-view {
+            flex: 1;
+            overflow-y: auto;
+            display: none;
+            padding-bottom: 140px;
+            scroll-behavior: smooth;
+        }
+
+        .app-view.active {
+            display: block;
+        }
+
+        .app-view::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ---------------- Home View ---------------- */
+        .home-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px 12px 24px;
+        }
+
+        .home-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+        }
+
+        .icon-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: scale(1.05);
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            padding: 20px 24px 12px 24px;
+            color: var(--text-primary);
+        }
+
+        /* Flow Bubbles Carousel */
+        .bubbles-carousel {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 0 24px;
+            scrollbar-width: none;
+        }
+
+        .bubbles-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .flow-bubble-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .flow-bubble-item:hover {
+            transform: translateY(-4px);
+        }
+
+        .bubble-circle {
+            width: 82px;
+            height: 82px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bubble-circle::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent);
+        }
+
+        .bubble-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        /* Continue Streaming Carousel */
+        .artist-carousel {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 0 24px;
+        }
+
+        .artist-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .artist-img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.5);
+            transition: transform 0.2s ease;
+        }
+
+        .artist-item:hover .artist-img {
+            transform: scale(1.05);
+        }
+
+        .artist-name {
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 8px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+
+        /* Discover Mixes & Top Charts Grid */
+        .cards-carousel {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding: 0 24px;
+        }
+
+        .mix-card {
+            width: 145px;
+            flex-shrink: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mix-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .mix-cover {
+            width: 125px;
+            height: 125px;
+            border-radius: 12px;
+            object-fit: cover;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.4);
+        }
+
+        .mix-tag {
+            font-size: 10px;
+            font-weight: 800;
+            color: var(--accent-pink);
+            text-transform: uppercase;
+            margin-top: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .mix-title {
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 2px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* ---------------- Search View ---------------- */
+        .search-container {
+            padding: 20px 24px;
+        }
+
+        .search-input-box {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .search-input-box i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        .search-input {
+            width: 100%;
+            height: 48px;
+            background: #181924;
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 0 20px 0 44px;
+            color: #FFF;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .quality-chips {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chip {
+            padding: 6px 16px;
+            border-radius: 20px;
+            background: #181924;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid var(--card-border);
+        }
+
+        .chip.active {
+            background: var(--accent-pink);
+            border-color: var(--accent-pink);
+        }
+
+        .song-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            cursor: pointer;
+        }
+
+        .song-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .song-thumb {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .song-details h4 {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .song-details p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* ---------------- Library / Downloads View ---------------- */
+        .download-item {
+            background: #151622;
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .download-progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            margin-top: 6px;
+            overflow: hidden;
+        }
+
+        .download-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-pink), var(--accent-cyan));
+            width: 78%;
+        }
+
+        .quality-badge {
+            background: rgba(0, 229, 255, 0.15);
+            color: var(--accent-cyan);
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 229, 255, 0.3);
+        }
+
+        /* ---------------- RetroMusic Player View ---------------- */
+        .milla-player-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .vinyl-container {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: #111;
+            border: 8px solid #222;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            animation: rotateVinyl 12s linear infinite;
+        }
+
+        @keyframes rotateVinyl {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .vinyl-art {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* ---------------- Mini Player (Persistent Bottom) ---------------- */
+        .mini-player {
+            position: absolute;
+            bottom: 64px;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: rgba(20, 21, 32, 0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 50;
+        }
+
+        .mini-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .mini-thumb {
+            width: 44px;
+            height: 44px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .mini-details h4 {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .mini-details p {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .quality-pill {
+            background: linear-gradient(135deg, #FF007A, #7928CA);
+            color: #FFF;
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-left: 6px;
+        }
+
+        .mini-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 18px;
+        }
+
+        /* ---------------- Bottom Navigation (4 Icons) ---------------- */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: var(--nav-bg);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--text-secondary);
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            flex: 1;
+        }
+
+        .nav-item i {
+            font-size: 18px;
+        }
+
+        .nav-item.active {
+            color: var(--accent-pink);
+        }
+
+        .nav-item.milla-switch {
+            color: var(--accent-cyan);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="device-container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <span>18:14</span>
+            <div style="display:flex; gap:8px;">
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-signal"></i>
+                <i class="fa-solid fa-battery-full"></i>
+            </div>
+        </div>
+
+        <!-- 1. HOME VIEW (ReFreezer Replica) -->
+        <div id="view-home" class="app-view active">
+            <div class="home-header">
+                <h1>Home</h1>
+                <div class="header-actions">
+                    <div class="icon-btn" onclick="switchTab('library')"><i class="fa-solid fa-download"></i></div>
+                    <div class="icon-btn"><i class="fa-solid fa-gear"></i></div>
+                </div>
+            </div>
+
+            <!-- Flow Section -->
+            <div class="section-title">Flow: play how you feel</div>
+            <div class="bubbles-carousel">
+                <div class="flow-bubble-item" onclick="playSong('Universal Flow', 'Deezer Mix', 'https://e-cdns-images.dzcdn.net/images/cover/9812dd6ff8b813ed946e3ee9e5590924/500x500.jpg')">
+                    <div class="bubble-circle" style="background: linear-gradient(135deg, #FF007A, #7928CA);">🎵</div>
+                    <span class="bubble-name">Flow</span>
+                </div>
+                <div class="flow-bubble-item" onclick="playSong('Hard Workout', 'Fitness Beats', 'https://e-cdns-images.dzcdn.net/images/artist/b1784c04ce834dd9b8b09062eeebaaeb/500x500.jpg')">
+                    <div class="bubble-circle" style="background: linear-gradient(135deg, #FF5722, #FF9800);">👟</div>
+                    <span class="bubble-name">Workout</span>
+                </div>
+                <div class="flow-bubble-item" onclick="playSong('Chill Vibes', 'Ambient Stream', 'https://e-cdns-images.dzcdn.net/images/artist/f29a0b06920839e94c2db6e001944890/500x500.jpg')">
+                    <div class="bubble-circle" style="background: linear-gradient(135deg, #00BCD4, #00E5FF);">🛋️</div>
+                    <span class="bubble-name">Chill</span>
+                </div>
+                <div class="flow-bubble-item" onclick="playSong('Party EDM', 'Dance Festival', 'https://e-cdns-images.dzcdn.net/images/artist/3331cfad93dd3901b0f58980bfaaa45b/500x500.jpg')">
+                    <div class="bubble-circle" style="background: linear-gradient(135deg, #9C27B0, #E91E63);">🎉</div>
+                    <span class="bubble-name">Party</span>
+                </div>
+            </div>
+
+            <!-- Continue Streaming -->
+            <div class="section-title">Continue streaming</div>
+            <div class="artist-carousel">
+                <div class="artist-item" onclick="playSong('I\'m Good (Blue)', 'David Guetta & Bebe Rexha', 'https://e-cdns-images.dzcdn.net/images/artist/f29a0b06920839e94c2db6e001944890/500x500.jpg')">
+                    <img class="artist-img" src="https://e-cdns-images.dzcdn.net/images/artist/f29a0b06920839e94c2db6e001944890/500x500.jpg" alt="David Guetta">
+                    <span class="artist-name">David Guetta</span>
+                </div>
+                <div class="artist-item" onclick="playSong('Year of Summer', 'Wildstylez ft. Niels Geusebroek', 'https://e-cdns-images.dzcdn.net/images/artist/b1784c04ce834dd9b8b09062eeebaaeb/500x500.jpg')">
+                    <img class="artist-img" src="https://e-cdns-images.dzcdn.net/images/artist/b1784c04ce834dd9b8b09062eeebaaeb/500x500.jpg" alt="Wildstylez">
+                    <span class="artist-name">Wildstylez</span>
+                </div>
+                <div class="artist-item" onclick="playSong('Animals', 'Martin Garrix', 'https://e-cdns-images.dzcdn.net/images/artist/3331cfad93dd3901b0f58980bfaaa45b/500x500.jpg')">
+                    <img class="artist-img" src="https://e-cdns-images.dzcdn.net/images/artist/3331cfad93dd3901b0f58980bfaaa45b/500x500.jpg" alt="Martin Garrix">
+                    <span class="artist-name">Martin Garrix</span>
+                </div>
+            </div>
+
+            <!-- Discover -->
+            <div class="section-title">Discover</div>
+            <div class="cards-carousel">
+                <div class="mix-card" onclick="playSong('The Business', 'Tiësto', 'https://e-cdns-images.dzcdn.net/images/cover/9812dd6ff8b813ed946e3ee9e5590924/500x500.jpg')">
+                    <img class="mix-cover" src="https://e-cdns-images.dzcdn.net/images/cover/9812dd6ff8b813ed946e3ee9e5590924/500x500.jpg">
+                    <div class="mix-tag">DAILY MIX</div>
+                    <div class="mix-title">Featuring Tiësto, Dimitri Vegas & Like Mike</div>
+                </div>
+                <div class="mix-card" onclick="playSong('Lessons In Love', 'Headhunterz & Psyko Punkz', 'https://e-cdns-images.dzcdn.net/images/cover/77b8b4033ce2a10bebb3288ec7b09bf9/500x500.jpg')">
+                    <img class="mix-cover" src="https://e-cdns-images.dzcdn.net/images/cover/77b8b4033ce2a10bebb3288ec7b09bf9/500x500.jpg">
+                    <div class="mix-tag">DAILY MIX</div>
+                    <div class="mix-title">Featuring Psyko Punkz, D-Block & S-te-Fan</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. SEARCH VIEW -->
+        <div id="view-search" class="app-view">
+            <div class="search-container">
+                <h1 style="font-family:'Outfit'; font-size:28px; margin-bottom:16px;">Buscar en Deezer</h1>
+                <div class="search-input-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="search-input" placeholder="Canciones, artistas o álbumes HQ..." value="David Guetta">
+                </div>
+                <div class="quality-chips">
+                    <div class="chip active">FLAC (1411kbps)</div>
+                    <div class="chip">MP3 320kbps</div>
+                </div>
+
+                <div class="song-row" onclick="playSong('I\'m Good (Blue)', 'David Guetta & Bebe Rexha', 'https://e-cdns-images.dzcdn.net/images/artist/f29a0b06920839e94c2db6e001944890/500x500.jpg')">
+                    <div class="song-info">
+                        <img class="song-thumb" src="https://e-cdns-images.dzcdn.net/images/artist/f29a0b06920839e94c2db6e001944890/500x500.jpg">
+                        <div class="song-details">
+                            <h4>I'm Good (Blue)</h4>
+                            <p>David Guetta & Bebe Rexha</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-download" style="color:var(--accent-cyan)"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. LIBRARY / DOWNLOADS VIEW -->
+        <div id="view-library" class="app-view">
+            <div style="padding: 20px 24px;">
+                <h1 style="font-family:'Outfit'; font-size:28px; margin-bottom:16px;">Descargas & Librería</h1>
+                
+                <div class="download-item">
+                    <img src="https://e-cdns-images.dzcdn.net/images/artist/f29a0b06920839e94c2db6e001944890/500x500.jpg" style="width:44px; height:44px; border-radius:8px;">
+                    <div style="flex:1;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h4 style="font-size:13px; font-weight:700;">I'm Good (Blue).flac</h4>
+                            <span class="quality-badge">FLAC 1062kbps</span>
+                        </div>
+                        <div class="download-progress-bar">
+                            <div class="download-progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. RETROMUSIC PLAYER VIEW -->
+        <div id="view-milla" class="app-view">
+            <div class="milla-player-view">
+                <h3 style="font-family:'Outfit'; font-size:20px; margin-top:20px;">Reproductor Nativo Milla</h3>
+                <p style="color:var(--text-secondary); font-size:12px;">Modo Reproducción Local & Automix DJ</p>
+                <div class="vinyl-container">
+                    <img class="vinyl-art" id="milla-art" src="https://e-cdns-images.dzcdn.net/images/artist/f29a0b06920839e94c2db6e001944890/500x500.jpg">
+                </div>
+                <h2 id="milla-title" style="font-size:18px;">I'm Good (Blue)</h2>
+                <p id="milla-artist" style="color:var(--accent-cyan); font-size:14px; margin-top:4px;">David Guetta, Bebe Rexha</p>
+            </div>
+        </div>
+
+        <!-- Persistent Mini Player Bar -->
+        <div class="mini-player">
+            <div class="mini-left">
+                <img id="current-art" class="mini-thumb" src="https://e-cdns-images.dzcdn.net/images/artist/f29a0b06920839e94c2db6e001944890/500x500.jpg">
+                <div class="mini-details">
+                    <h4 id="current-title">I'm Good (Blue) <span class="quality-pill">FLAC 1062kbps</span></h4>
+                    <p id="current-artist">David Guetta, Bebe Rexha</p>
+                </div>
+            </div>
+            <div class="mini-controls">
+                <i class="fa-solid fa-backward-step" style="color:var(--text-secondary)"></i>
+                <i class="fa-solid fa-pause" style="color:#FFF"></i>
+                <i class="fa-solid fa-forward-step" style="color:var(--text-secondary)"></i>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation Bar (4 Icons) -->
+        <div class="bottom-nav">
+            <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" id="nav-search" onclick="switchTab('search')">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Search</span>
+            </div>
+            <div class="nav-item" id="nav-library" onclick="switchTab('library')">
+                <i class="fa-solid fa-layer-group"></i>
+                <span>Library</span>
+            </div>
+            <div class="nav-item milla-switch" id="nav-milla" onclick="switchTab('milla')">
+                <i class="fa-solid fa-compact-disc"></i>
+                <span>Milla Player</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+            document.getElementById('view-' + tabName).classList.add('active');
+            document.getElementById('nav-' + tabName).classList.add('active');
+        }
+
+        function playSong(title, artist, artUrl) {
+            document.getElementById('current-title').innerHTML = title + ' <span class="quality-pill">FLAC 1062kbps</span>';
+            document.getElementById('current-artist').innerText = artist;
+            document.getElementById('current-art').src = artUrl;
+
+            document.getElementById('milla-title').innerText = title;
+            document.getElementById('milla-artist').innerText = artist;
+            document.getElementById('milla-art').src = artUrl;
+        }
+    </script>
+</body>
+</html>

@@ -1,27 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Layout de Millay con WebView nativo optimizado cargando Monochrome Web UI 1:1 -->
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?android:colorBackground">
+    android:background="#090A0F">
 
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/viewPager"
+    <WebView
+        android:id="@+id/millayWebView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottomNavigation" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="?android:colorBackground"
-        app:elevation="8dp"
-        app:itemIconTint="@color/selector_bottom_nav"
-        app:itemTextColor="@color/selector_bottom_nav"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/menu_millay_bottom_nav" />
+        android:background="#090A0F"
+        android:overScrollMode="never" />
 
 </RelativeLayout>
