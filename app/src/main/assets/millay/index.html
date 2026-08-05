@@ -10,7 +10,7 @@
         <meta name="theme-color" content="#000000" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <base href="/" />
+
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Monochrome" />
         <meta
@@ -78,9 +78,9 @@
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-        <link rel="apple-touch-icon" href="/assets/logo.svg" />
-        <link rel="manifest" href="/manifest.json" />
-        <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="./assets/logo.svg" />
+        <link rel="manifest" href="./manifest.json" />
+        <link rel="icon" href="./assets/logo.svg" type="image/svg+xml" />
         <link
             rel="preload"
             as="style"
@@ -141,8 +141,9 @@
                     console.error('theme loading failed', e);
                 }
             })();
-        </script>
-        <link rel="stylesheet" href="/styles.css" />
+        </script>
+      <script type="module" crossorigin src="./assets/index-C_3zXXCO.js"></script>
+      <link rel="stylesheet" crossorigin href="./assets/index-3uZBGPli.css">
     </head>
 
     <body>
@@ -289,19 +290,19 @@
                     class="fullscreen-mobile-lyrics-toggle"
                     title="Hide Lyrics"
                 >
-                    <use svg="!lucide/mic-vocal.svg" size="18" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                 </button>
                 <button id="toggle-ui-btn" class="fullscreen-ui-toggle" title="Toggle UI">
-                    <use svg="!lucide/eye-off.svg" size="24" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                 </button>
                 <div class="fullscreen-top-actions">
                     <button id="toggle-fullscreen-lyrics-btn" class="fullscreen-lyrics-toggle" title="Hide Lyrics">
-                        <use svg="!lucide/mic-vocal.svg" size="20" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                     </button>
                     <button id="fs-visualizer-btn" class="fs-visualizer-btn" title="Disable Visualizer">
-                        <use svg="!lucide/audio-lines.svg" size="20" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                     </button>
-                    <button id="close-fullscreen-cover-btn" title="Close"><use svg="!lucide/x.svg" size="24" /></button>
+                    <button id="close-fullscreen-cover-btn" title="Close"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg></button>
                 </div>
                 <div class="fullscreen-shell">
                     <div class="fullscreen-main-view">
@@ -337,19 +338,19 @@
                                 </div>
                                 <div class="fullscreen-actions">
                                     <button id="fs-like-btn" class="btn-icon like-btn" title="Like">
-                                        <use svg="!lucide/heart.svg" class="heart-icon" size="24" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="heart-icon"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button id="fs-add-playlist-btn" class="btn-icon" title="Add to Playlist">
-                                        <use svg="!lucide/square-pen.svg" size="24" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button id="fs-download-btn" class="btn-icon" title="Download">
-                                        <use svg="!lucide/download.svg" size="24" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button id="fs-cast-btn" class="btn-icon" title="Cast">
-                                        <use svg="!lucide/cast.svg" size="24" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button id="fs-queue-btn" class="btn-icon" title="Queue">
-                                        <use svg="!lucide/list.svg" size="24" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                 </div>
                                 <div id="fullscreen-next-track" style="display: none">
@@ -373,19 +374,19 @@
                                 </div>
                                 <div class="fullscreen-buttons">
                                     <button id="fs-shuffle-btn" title="Shuffle">
-                                        <use svg="!lucide/shuffle.svg" size="24" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button id="fs-prev-btn" title="Previous">
-                                        <use svg="!lucide/arrow-left-to-line.svg" size="24" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button id="fs-play-pause-btn" class="play-pause-btn" title="Play">
-                                        <use svg="./images/play-large.svg" size="32" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="m5 3 14 9-14 9z"/></svg>
                                     </button>
                                     <button id="fs-next-btn" title="Next">
-                                        <use svg="!lucide/arrow-right-to-line.svg" size="24" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button id="fs-repeat-btn" title="Repeat">
-                                        <use svg="!lucide/repeat.svg" size="24" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button
                                         id="fs-quality-btn"
@@ -393,14 +394,14 @@
                                         title="Quality"
                                         style="display: none"
                                     >
-                                        <use svg="!lucide/pencil-line.svg" size="20" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                         <span class="fs-quality-label">Auto</span>
                                     </button>
                                     <div id="fs-quality-menu" class="fs-quality-menu" style="display: none"></div>
                                 </div>
                                 <div class="fullscreen-volume-container">
                                     <button id="fs-volume-btn" class="fs-volume-btn" title="Mute">
-                                        <use svg="!lucide/volume-1.svg" size="24" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <div id="fs-volume-bar" class="fs-volume-bar">
                                         <div id="fs-volume-fill" class="fs-volume-fill"></div>
@@ -458,7 +459,7 @@
                             gap: 0.5rem;
                         "
                     >
-                        <use svg="!lucide/upload.svg" size="16" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         <span id="playlist-cover-btn-text">Upload</span>
                     </button>
                     <button
@@ -816,7 +817,7 @@
                                 cursor: pointer;
                             "
                         >
-                            <use svg="!lucide/upload.svg" size="16" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                             <span>Upload</span>
                         </button>
                         <button
@@ -873,7 +874,7 @@
                                 cursor: pointer;
                             "
                         >
-                            <use svg="!lucide/upload.svg" size="16" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                             <span>Upload</span>
                         </button>
                         <button
@@ -1060,7 +1061,7 @@
                         id="email-auth-modal-close"
                         title="Close"
                     >
-                        <use svg="!lucide/x.svg" size="20" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                     </button>
                 </div>
                 <input
@@ -1352,7 +1353,7 @@
                             gap: 0.5rem;
                         "
                     >
-                        <use svg="!lucide/chevron-left.svg" size="16" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         Back
                     </button>
                     <div style="flex: 1; overflow-y: auto; padding-right: 0.5rem">
@@ -1410,7 +1411,7 @@
                     style="flex: 1; overflow-y: auto; min-height: 0"
                 >
                     <div class="track-list-search-container" style="margin: 0 0 1rem 0">
-                        <use svg="!lucide/search.svg" class="search-icon" size="20" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="search-icon"><circle cx="12" cy="12" r="10"/></svg>
                         <input
                             type="search"
                             id="theme-store-search"
@@ -1422,7 +1423,7 @@
                     <div id="community-themes-grid" class="card-grid"></div>
                     <div id="theme-store-loading" style="text-align: center; padding: 2rem; display: none">
                         <div class="animate-spin" style="display: inline-block">
-                            <use svg="!lucide/loader-circle.svg" size="24" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </div>
                     </div>
                 </div>
@@ -1619,7 +1620,7 @@
             <div class="modal-overlay"></div>
             <div class="modal-content">
                 <h3 style="color: #ef4444; display: flex; align-items: center; gap: 0.5rem">
-                    <use svg="!lucide/triangle-alert.svg" size="24" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                     Photosensitivity Warning
                 </h3>
                 <p style="margin: 1rem 0; line-height: 1.5">
@@ -1732,7 +1733,7 @@
                 <div class="sidebar-content">
                     <div class="sidebar-logo">
                         <a href="./" class="sidebar-logo-link">
-                            <use svg="./images/monochrome-logo.svg" size="200" class="app-logo" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" class="app-logo app-logo" viewBox="14.75 14.75 70.5 70.5"><path fill="currentColor" d="M38.25 14.75h47v47h-23.5v-23.5h-23.5Zm-23.5 23.5h23.5v23.5h23.5v23.5h-47Z"/></svg>
                             <span>Monochrome</span>
                         </a>
                         <button
@@ -1741,7 +1742,7 @@
                             style="margin-left: auto"
                             title="Collapse Sidebar"
                         >
-                            <use svg="!lucide/chevron-left.svg" size="20" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                     </div>
 
@@ -1749,31 +1750,31 @@
                         <ul>
                             <li class="nav-item" id="sidebar-nav-home">
                                 <a href="/">
-                                    <use svg="!lucide/house.svg" size="24" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Home</span>
                                 </a>
                             </li>
                             <li class="nav-item" id="sidebar-nav-library">
                                 <a href="/library">
-                                    <use svg="!lucide/library.svg" size="24" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Library</span>
                                 </a>
                             </li>
                             <li class="nav-item" id="sidebar-nav-recent">
                                 <a href="/recent">
-                                    <use svg="./images/recent.svg" size="24" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5M12 7v5l4 2"/></svg>
                                     <span>Recent</span>
                                 </a>
                             </li>
                             <li class="nav-item" id="sidebar-nav-unreleased">
                                 <a href="/unreleased">
-                                    <use svg="./images/squares.svg" size="24" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg>
                                     <span>Unreleased</span>
                                 </a>
                             </li>
                             <li class="nav-item" id="sidebar-nav-donate">
                                 <a href="/donate">
-                                    <use svg="!lucide/hand-heart.svg" size="24" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Donate</span>
                                 </a>
                                 <div id="sidebar-donate-goal-container" class="sidebar-donate-goal">
@@ -1785,7 +1786,7 @@
                             </li>
                             <li class="nav-item" id="sidebar-nav-settings">
                                 <a href="/settings">
-                                    <use svg="!lucide/settings.svg" size="24" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Settings</span>
                                 </a>
                             </li>
@@ -1804,31 +1805,31 @@
                                 <ul>
                                     <li class="nav-item" id="sidebar-nav-about-bottom">
                                         <a href="/about">
-                                            <use svg="!lucide/info.svg" size="24" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                             <span>About</span>
                                         </a>
                                     </li>
                                     <li class="nav-item" id="sidebar-nav-mobile">
                                         <a href="/mobile">
-                                            <use svg="!lucide/smartphone.svg" size="24" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                             <span>Mobile</span>
                                         </a>
                                     </li>
                                     <li class="nav-item" id="sidebar-nav-discordbtn">
                                         <a href="discord.html" target="_blank">
-                                            <use svg="./images/discord.svg" size="64" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" preserveAspectRatio="xMidYMid" viewBox="0 -28.5 256 256"><path fill="#8e8e96" d="M216.856 16.597A208.5 208.5 0 0 0 164.042 0c-2.275 4.113-4.933 9.645-6.766 14.046q-29.538-4.442-58.533 0c-1.832-4.4-4.55-9.933-6.846-14.046a207.8 207.8 0 0 0-52.855 16.638C5.618 67.147-3.443 116.4 1.087 164.956c22.169 16.555 43.653 26.612 64.775 33.193A161 161 0 0 0 79.735 175.3a136.4 136.4 0 0 1-21.846-10.632 109 109 0 0 0 5.356-4.237c42.122 19.702 87.89 19.702 129.51 0a132 132 0 0 0 5.355 4.237 136 136 0 0 1-21.886 10.653c4.006 8.02 8.638 15.67 13.873 22.848 21.142-6.58 42.646-16.637 64.815-33.213 5.316-56.288-9.08-105.09-38.056-148.36M85.474 135.095c-12.645 0-23.015-11.805-23.015-26.18s10.149-26.2 23.015-26.2 23.236 11.804 23.015 26.2c.02 14.375-10.148 26.18-23.015 26.18m85.051 0c-12.645 0-23.014-11.805-23.014-26.18s10.148-26.2 23.014-26.2c12.867 0 23.236 11.804 23.015 26.2 0 14.375-10.148 26.18-23.015 26.18"/></svg>
                                             <span>Discord</span>
                                         </a>
                                     </li>
                                     <li class="nav-item" id="sidebar-nav-party">
                                         <a href="/parties" id="sidebar-party-btn">
-                                            <use svg="!lucide/users.svg" size="24" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                             <span>Parties</span>
                                         </a>
                                     </li>
                                     <li class="nav-item" id="sidebar-nav-githubbtn" style="display: none">
                                         <a href="https://github.com/monochrome-music/monochrome" target="_blank">
-                                            <use svg="./images/github.svg" size="24" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" width="24" height="24"><title>GitHub</title><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
                                             <span>GitHub</span>
                                         </a>
                                     </li>
@@ -1844,17 +1845,17 @@
                 <header class="main-header">
                     <div class="navigation-controls desktop-only">
                         <button id="nav-back" class="nav-btn" title="Go Back">
-                            <use svg="!lucide/chevron-left.svg" size="24" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                         <button id="nav-forward" class="nav-btn" title="Go Forward">
-                            <use svg="!lucide/chevron-right.svg" size="24" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                     </div>
                     <button class="hamburger-menu" id="hamburger-btn" title="Open navigation">
-                        <use svg="!lucide/menu.svg" size="24" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                     </button>
                     <form class="search-bar" id="search-form">
-                        <use svg="!lucide/search.svg" class="search-icon" size="24" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="search-icon"><circle cx="12" cy="12" r="10"/></svg>
                         <input
                             type="search"
                             id="search-input"
@@ -1889,7 +1890,7 @@
                             "
                         >
                             <span id="header-account-icon" class="header-account-icon-wrap">
-                                <use svg="!lucide/user.svg" size="20" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                             </span>
                             <img
                                 crossorigin="anonymous"
@@ -1936,7 +1937,7 @@
                                                 font-size: 0.85rem;
                                             "
                                         >
-                                            <use svg="!lucide/radio.svg" size="16" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                             Start Infinite Radio
                                         </button>
                                     </div>
@@ -1946,7 +1947,7 @@
                                         title="Refresh"
                                         style="padding: 4px 8px"
                                     >
-                                        <use svg="!lucide/rotate-cw.svg" size="16" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                 </div>
                                 <div class="track-list" id="home-recommended-songs"></div>
@@ -1967,7 +1968,7 @@
                                         title="Refresh"
                                         style="padding: 4px 8px"
                                     >
-                                        <use svg="!lucide/rotate-cw.svg" size="16" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                 </div>
                                 <div class="card-grid" id="home-recommended-albums"></div>
@@ -1988,7 +1989,7 @@
                                         title="Refresh"
                                         style="padding: 4px 8px"
                                     >
-                                        <use svg="!lucide/rotate-cw.svg" size="16" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                 </div>
                                 <div class="card-grid" id="home-recommended-artists"></div>
@@ -2009,7 +2010,7 @@
                                         title="Clear History"
                                         style="padding: 4px 8px"
                                     >
-                                        <use svg="!lucide/trash.svg" size="16" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                 </div>
                                 <div class="card-grid" id="home-recent-mixed"></div>
@@ -2229,7 +2230,7 @@
                                 id="library-create-playlist-card"
                             >
                                 <div class="library-create-dashed-art">
-                                    <use svg="!lucide/list-music.svg" size="28" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                 </div>
                                 <div class="card-info">
                                     <h4 class="card-title">Create playlist</h4>
@@ -2241,7 +2242,7 @@
                                 id="library-create-folder-card"
                             >
                                 <div class="library-create-dashed-art">
-                                    <use svg="!lucide/folder-plus.svg" size="28" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                 </div>
                                 <div class="card-info">
                                     <h4 class="card-title">Create folder</h4>
@@ -2266,7 +2267,7 @@
                                 style="display: none"
                             >
                                 <form class="library-liked-search track-list-search-container" onsubmit="return false;">
-                                    <use svg="!lucide/search.svg" class="search-icon" size="18" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="search-icon"><circle cx="12" cy="12" r="10"/></svg>
                                     <input
                                         type="search"
                                         id="library-liked-tracks-search"
@@ -2293,7 +2294,7 @@
                                         class="btn-icon library-liked-view-btn"
                                         title="List view"
                                     >
-                                        <use svg="!lucide/layout-list.svg" size="18" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button
                                         type="button"
@@ -2301,7 +2302,7 @@
                                         class="btn-icon library-liked-view-btn"
                                         title="Card view"
                                     >
-                                        <use svg="!lucide/layout-grid.svg" size="18" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button
                                         id="shuffle-liked-tracks-btn"
@@ -2316,7 +2317,7 @@
                                         "
                                         title="Shuffle Liked Tracks"
                                     >
-                                        <use svg="!lucide/shuffle.svg" size="16" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                     <button
                                         id="download-liked-tracks-btn"
@@ -2331,7 +2332,7 @@
                                         "
                                         title="Download Liked Tracks"
                                     >
-                                        <use svg="!lucide/download.svg" size="16" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     </button>
                                 </div>
                             </div>
@@ -2350,7 +2351,7 @@
                             <div class="track-list" id="library-local-container">
                                 <div id="local-files-intro" style="padding: 20px; text-align: center">
                                     <button id="select-local-folder-btn" class="btn-secondary">
-                                        <use svg="!lucide/folder.svg" size="20" />
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                         <span id="select-local-folder-text">Select Music Folder</span>
                                     </button>
                                     <p
@@ -2402,7 +2403,7 @@
                     >
                         <h2 class="section-title" style="margin-bottom: 0">Recently played</h2>
                         <button class="btn-secondary" id="clear-history-btn" title="Clear History">
-                            <use svg="!lucide/trash-2.svg" size="16" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                             <span>Clear</span>
                         </button>
                     </div>
@@ -2429,7 +2430,7 @@
                             <div class="meta" id="podcasts-detail-meta"></div>
                             <div class="detail-header-actions">
                                 <button id="play-podcasts-btn" class="btn-primary" title="Play Latest Episode">
-                                    <use svg="./images/play.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="m7 3 14 9-14 9z"/></svg>
                                     <span>Play Latest</span>
                                 </button>
                             </div>
@@ -2471,11 +2472,11 @@
                             <div class="meta" id="tracker-artist-detail-meta"></div>
                             <div class="detail-header-actions">
                                 <button id="play-tracker-artist-btn" class="btn-primary" title="Shuffle Play">
-                                    <use svg="./images/play.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="m7 3 14 9-14 9z"/></svg>
                                     <span>Shuffle Play</span>
                                 </button>
                                 <button id="download-tracker-artist-btn" class="btn-primary" title="Download">
-                                    <use svg="!lucide/download.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Download All</span>
                                 </button>
                             </div>
@@ -2503,23 +2504,23 @@
                             <div class="ratings" id="album-detail-ratings-users"></div>
                             <div class="detail-header-actions">
                                 <button id="play-album-btn" class="btn-primary" title="Play Album">
-                                    <use svg="./images/play.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="m7 3 14 9-14 9z"/></svg>
                                     <span>Play Album</span>
                                 </button>
                                 <button id="shuffle-album-btn" class="btn-primary" title="Shuffle">
-                                    <use svg="!lucide/shuffle.svg" size="18" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Shuffle</span>
                                 </button>
                                 <button id="album-mix-btn" class="btn-primary" style="display: none" title="Mix">
-                                    <use svg="./images/mix.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3z"/></svg>
                                     <span>Mix</span>
                                 </button>
                                 <button id="download-album-btn" class="btn-primary" title="Download">
-                                    <use svg="!lucide/download.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Download</span>
                                 </button>
                                 <button id="add-album-to-playlist-btn" class="btn-secondary" title="Add to Playlist">
-                                    <use svg="!lucide/plus.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Add to Playlist</span>
                                 </button>
                                 <button
@@ -2529,7 +2530,7 @@
                                     data-type="album"
                                     title="Save to Favorites"
                                 >
-                                    <use svg="!lucide/heart.svg" class="heart-icon" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="heart-icon"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Save</span>
                                 </button>
                                 <button
@@ -2539,7 +2540,7 @@
                                     data-type="album"
                                     title="More options"
                                 >
-                                    <use svg="!lucide/ellipsis-vertical.svg" size="24" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                             </div>
                         </div>
@@ -2600,15 +2601,15 @@
                             <div class="meta" id="playlist-detail-description" class="detail-description"></div>
                             <div class="detail-header-actions">
                                 <button id="play-playlist-btn" class="btn-primary" title="Play">
-                                    <use svg="./images/play.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="m7 3 14 9-14 9z"/></svg>
                                     <span>Play</span>
                                 </button>
                                 <button id="shuffle-playlist-btn" class="btn-primary" title="Shuffle">
-                                    <use svg="!lucide/shuffle.svg" size="18" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Shuffle</span>
                                 </button>
                                 <button id="download-playlist-btn" class="btn-primary" title="Download">
-                                    <use svg="!lucide/download.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Download</span>
                                 </button>
                                 <button
@@ -2618,14 +2619,14 @@
                                     data-type="playlist"
                                     title="Save to Favorites"
                                 >
-                                    <use svg="!lucide/heart.svg" class="heart-icon" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="heart-icon"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Save</span>
                                 </button>
                             </div>
                         </div>
                     </header>
                     <form class="track-list-search-container" onsubmit="return false;">
-                        <use svg="!lucide/search.svg" class="search-icon" size="20" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="search-icon"><circle cx="12" cy="12" r="10"/></svg>
                         <input
                             type="search"
                             id="track-list-search-input"
@@ -2662,7 +2663,7 @@
                                 class="btn-secondary"
                                 title="Refresh Recommendations"
                             >
-                                <use svg="!lucide/rotate-cw.svg" size="18" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                             </button>
                         </div>
                         <div class="track-list" id="playlist-detail-recommended"></div>
@@ -2706,11 +2707,11 @@
                             <div class="meta" id="mix-detail-description" class="detail-description"></div>
                             <div class="detail-header-actions">
                                 <button id="play-mix-btn" class="btn-primary" title="Play">
-                                    <use svg="./images/play.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="m7 3 14 9-14 9z"/></svg>
                                     <span>Play</span>
                                 </button>
                                 <button id="download-mix-btn" class="btn-primary" title="Download">
-                                    <use svg="!lucide/download.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Download</span>
                                 </button>
                                 <button
@@ -2721,7 +2722,7 @@
                                     title="Save to Favorites"
                                     style="display: none"
                                 >
-                                    <use svg="!lucide/heart.svg" class="heart-icon" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="heart-icon"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Save</span>
                                 </button>
                             </div>
@@ -2748,19 +2749,19 @@
                             <div id="artist-detail-bio" class="artist-bio"></div>
                             <div class="detail-header-actions">
                                 <button id="play-artist-radio-btn" class="btn-primary" title="Artist Radio">
-                                    <use svg="!lucide/volume-1.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Radio</span>
                                 </button>
                                 <button id="shuffle-artist-btn" class="btn-primary" title="Shuffle">
-                                    <use svg="!lucide/shuffle.svg" size="18" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Shuffle</span>
                                 </button>
                                 <button id="artist-mix-btn" class="btn-primary" style="display: none" title="Mix">
-                                    <use svg="./images/mix.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3z"/></svg>
                                     <span>Mix</span>
                                 </button>
                                 <button id="download-discography-btn" class="btn-primary" title="Download">
-                                    <use svg="!lucide/download.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Download</span>
                                 </button>
                                 <button
@@ -2770,7 +2771,7 @@
                                     data-type="artist"
                                     title="Save to Favorites"
                                 >
-                                    <use svg="!lucide/heart.svg" class="heart-icon" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="heart-icon"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Save</span>
                                 </button>
                             </div>
@@ -2800,12 +2801,7 @@
                                 "
                             >
                                 In Your Library
-                                <use
-                                    svg="!lucide/chevron-right.svg"
-                                    size="22"
-                                    id="in-library-chevron"
-                                    style="transition: transform 0.25s ease; flex-shrink: 0"
-                                />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" id="in-library-chevron" style="transition: transform 0.25s ease; flex-shrink: 0"><circle cx="12" cy="12" r="10"/></svg>
                             </button>
                         </h2>
                         <div class="track-list" id="artist-detail-in-library" hidden></div>
@@ -2854,15 +2850,15 @@
                             </div>
                             <div class="detail-header-actions">
                                 <button id="play-track-btn" class="btn-primary" title="Play">
-                                    <use svg="./images/play.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="m7 3 14 9-14 9z"/></svg>
                                     <span>Play</span>
                                 </button>
                                 <button id="track-lyrics-btn" class="btn-secondary" title="Lyrics">
-                                    <use svg="./images/mic.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3M8 22h8"/></svg>
                                     <span>Lyrics</span>
                                 </button>
                                 <button id="share-track-btn" class="btn-secondary" title="Share">
-                                    <use svg="!lucide/share.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Share</span>
                                 </button>
                                 <button
@@ -2872,11 +2868,11 @@
                                     data-type="track"
                                     title="Save to Favorites"
                                 >
-                                    <use svg="!lucide/heart.svg" class="heart-icon" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="heart-icon"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Save</span>
                                 </button>
                                 <button id="download-track-btn" class="btn-secondary" title="Download">
-                                    <use svg="!lucide/download.svg" size="20" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                     <span>Download</span>
                                 </button>
                             </div>
@@ -2900,7 +2896,7 @@
                                 crossorigin="anonymous"
                                 referrerpolicy="no-referrer"
                                 id="profile-avatar"
-                                src="/assets/appicon.png"
+                                src="./assets/appicon.png"
                                 class="profile-avatar"
                                 alt="Avatar"
                             />
@@ -2973,7 +2969,7 @@
                         onsubmit="return false;"
                         style="margin: 1rem 0"
                     >
-                        <use svg="!lucide/search.svg" class="search-icon" size="20" />
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="search-icon"><circle cx="12" cy="12" r="10"/></svg>
                         <input
                             type="search"
                             id="settings-search-input"
@@ -4839,13 +4835,13 @@
                                                     aria-expanded="true"
                                                     aria-controls="autoeq-database-body"
                                                 >
-                                                    <use svg="!lucide/chevron-up.svg" size="18" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                                 </button>
                                             </div>
                                         </div>
                                         <div class="autoeq-database-body" id="autoeq-database-body">
                                             <div class="autoeq-database-search">
-                                                <use svg="!lucide/search.svg" size="16" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                                 <input
                                                     type="text"
                                                     id="autoeq-headphone-search"
@@ -4881,7 +4877,7 @@
                                                     title="Import measurement file"
                                                     aria-label="Import measurement file"
                                                 >
-                                                    <use svg="!lucide/file-input.svg" size="16" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                                 </button>
                                             </div>
                                         </div>
@@ -4918,7 +4914,7 @@
                                                     title="Import target curve"
                                                     aria-label="Import target curve"
                                                 >
-                                                    <use svg="!lucide/file-up.svg" size="16" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                                 </button>
                                                 <input
                                                     type="file"
@@ -4972,7 +4968,7 @@
                                                 title="Export EQ settings"
                                                 aria-label="Export EQ settings"
                                             >
-                                                <use svg="!lucide/download.svg" size="20" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                             </button>
                                         </div>
                                         <span
@@ -5008,7 +5004,7 @@
                                                     aria-label="Collapse EQ section"
                                                     aria-expanded="true"
                                                 >
-                                                    <use svg="!lucide/chevron-up.svg" size="18" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                                 </button>
                                             </div>
                                         </div>
@@ -5072,7 +5068,7 @@
                                                             title="Measure room with pink noise"
                                                             aria-label="Measure room with pink noise"
                                                         >
-                                                            <use svg="!lucide/mic.svg" size="16" />
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                                         </button>
                                                         <button
                                                             id="speaker-import-measurement-btn"
@@ -5080,7 +5076,7 @@
                                                             title="Import measurement file"
                                                             aria-label="Import measurement file"
                                                         >
-                                                            <use svg="!lucide/file-up.svg" size="16" />
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                                         </button>
                                                         <button
                                                             id="speaker-clear-measurement-btn"
@@ -5089,7 +5085,7 @@
                                                             aria-label="Clear measurement"
                                                             style="display: none"
                                                         >
-                                                            <use svg="!lucide/x.svg" size="16" />
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                                         </button>
                                                     </div>
                                                     <input
@@ -5116,7 +5112,7 @@
                                                             title="Import target curve"
                                                             aria-label="Import target curve"
                                                         >
-                                                            <use svg="!lucide/file-up.svg" size="16" />
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                                         </button>
                                                         <input
                                                             type="file"
@@ -5245,7 +5241,7 @@
                                                     aria-label="Collapse EQ section"
                                                     aria-expanded="true"
                                                 >
-                                                    <use svg="!lucide/chevron-up.svg" size="18" />
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                                 </button>
                                             </div>
                                         </div>
@@ -5264,7 +5260,7 @@
                                                 aria-label="Collapse EQ filters"
                                                 aria-expanded="true"
                                             >
-                                                <use svg="!lucide/chevron-up.svg" size="18" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                             </button>
                                         </div>
                                         <div class="autoeq-filters-content" id="autoeq-filters-content">
@@ -6289,7 +6285,7 @@
                                             >84QSJs6sq1GSS6f3HFL1Yc6QK3f73867aQduTnaxGdcvXTkpnduaU16f98akdwRo6HdPYfoNwn1GJijc3iLfGXhd5MLcfsk</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6303,7 +6299,7 @@
                                             >bc1qzl0kznz3xxdpmz2m77qe3mx8ds06tcvm7pk2t4</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6317,7 +6313,7 @@
                                             >bc1qf7elcxp394a7ly5pgqg0wsetzkkqn2xrlzpeh2</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6329,7 +6325,7 @@
                                         <span class="crypto-wallet-name">Bitcoin · P2PKH</span>
                                         <span class="crypto-wallet-addr">1NnLbNBH8RcTfbfEpZyf1iW1ezXv3XBAQR</span>
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6341,7 +6337,7 @@
                                         <span class="crypto-wallet-name">Bitcoin · P2SH</span>
                                         <span class="crypto-wallet-addr">3J3YpbRZtX7exyt962s5zbC9PMGQhZ4B7j</span>
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6355,7 +6351,7 @@
                                             >bc1p87xf6f8tnsnlt0tjkj9suysyq72kxz4a8fprgynggxk6p9mcr3wq5rhd43</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6369,7 +6365,7 @@
                                             >bc1q6luyymmww83d260925g6cvy8qjy4y4djg40cgqjcqszs9upes3xsy9nt6m</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6383,7 +6379,7 @@
                                             >sp1qq0wnt8ehzg9hes4kyc23s5h4mc0gcr69fp6clm4m5yjuc78v0as4xq5j3wz03v9jw4yslcmue7xy7ek80sm3lnw8eq7ce9tkjfs3d0rj3yhj6lw6</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6395,7 +6391,7 @@
                                         <span class="crypto-wallet-name">Bitcoin · Lightning</span>
                                         <span class="crypto-wallet-addr">oblongbalinese7350@cake.cash</span>
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6409,7 +6405,7 @@
                                             >ltc1qt9jspfdwcgas9q4sf5q9ajn7x9ka8mfywsehrr</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6423,7 +6419,7 @@
                                             >ltc1qqtsdhlae2rm67avrw7eal57j77845lz5kvz6qj</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6437,7 +6433,7 @@
                                             >ltcmweb1qq06pgdyw2xlwy64vhz3l903kmp84j0qgx9nu7er8ckr6tp2289r9sqe9ntqyzyd2usf298ln5cvpfc7wccsys320ajr5sx8hfy43eut74c2jae4c</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6453,7 +6449,7 @@
                                             >0x078A47E9bbe2e0D7aEb2B2B09302ceB2af964593</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6467,7 +6463,7 @@
                                             >2zdNcs4Uu2377Nzjc8P91qH7hHiyQs8E1f27A6icUSKx</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6481,7 +6477,7 @@
                                             >u120zcwxlt9azs36d07uafdnj7fzsa62stwuk4f2eruk272e8he0czxvyjquakhp968mvm0tuzmqx6ln7c5k3qdw2qem2ypk4p6s3hgczx</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6493,7 +6489,7 @@
                                         <span class="crypto-wallet-name">Tron (TRX)</span>
                                         <span class="crypto-wallet-addr">TQU2kovh58VnnPr1PUjZUhNY2a3UfM4ERh</span>
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6505,7 +6501,7 @@
                                         <span class="crypto-wallet-name">Dogecoin (DOGE)</span>
                                         <span class="crypto-wallet-addr">DNpErVMo3yPM6UFAStSfWuBbHPvUwx95D9</span>
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6519,7 +6515,7 @@
                                             >bitcoincash:qzg8j4ddjew3ptcr9g503qk0345kdr332s5jmrzeym</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                                 <button
                                     type="button"
@@ -6533,7 +6529,7 @@
                                             >nano_1qfmbi1b9tzocx9socbffy7z6te6r7z75byc7ofpfpqjpbfb1i3eaqe3etjz</span
                                         >
                                     </span>
-                                    <use svg="!lucide/copy.svg" size="18" class="crypto-wallet-copy-icon" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" class="crypto-wallet-copy-icon"><circle cx="12" cy="12" r="10"/></svg>
                                 </button>
                             </div>
                         </div>
@@ -6587,7 +6583,7 @@
                                 class="btn-primary"
                                 style="display: inline-flex; align-items: center; gap: 8px"
                             >
-                                <use svg="!lucide/download.svg" size="18" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                 Download for Android
                             </a>
                             <a
@@ -6595,7 +6591,7 @@
                                 class="btn-primary"
                                 style="display: inline-flex; align-items: center; gap: 8px"
                             >
-                                <use svg="!lucide/download.svg" size="18" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                                 Download for iOS
                             </a>
                         </div>
@@ -6730,7 +6726,7 @@
                     <img
                         crossorigin="anonymous"
                         referrerpolicy="no-referrer"
-                        src="/assets/appicon.png"
+                        src="./assets/appicon.png"
                         alt="Current Track Cover"
                         class="cover"
                         fetchpriority="high"
@@ -6748,17 +6744,17 @@
                     </div>
                     <div class="buttons">
                         <button id="shuffle-btn" title="Shuffle">
-                            <use svg="!lucide/shuffle.svg" size="24" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                         <button id="prev-btn" title="Previous">
-                            <use svg="!lucide/arrow-left-to-line.svg" size="24" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                         <button class="play-pause-btn" title="Play"></button>
                         <button id="next-btn" title="Next">
-                            <use svg="!lucide/arrow-right-to-line.svg" size="24" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                         <button id="repeat-btn" title="Repeat">
-                            <use svg="!lucide/repeat.svg" size="24" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                     </div>
                     <div class="progress-container">
@@ -6778,7 +6774,7 @@
                             aria-label="Open listening party"
                             style="display: none"
                         >
-                            <use svg="!lucide/users.svg" size="20" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                         <button
                             id="now-playing-like-btn"
@@ -6793,7 +6789,7 @@
                             class="desktop-only"
                             aria-label="Add to playlist"
                         >
-                            <use svg="!lucide/list-plus.svg" size="20" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
 
                         <button
@@ -6803,16 +6799,16 @@
                             title="Track Mix"
                             style="display: none"
                         >
-                            <use svg="./images/mix.svg" size="20" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3z"/></svg>
                         </button>
                         <button id="toggle-lyrics-btn" title="Lyrics" style="display: none" aria-label="Lyrics">
-                            <use svg="!lucide/mic-vocal.svg" size="20" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                         <button id="download-current-btn" title="Download current track" class="desktop-only">
-                            <use svg="!lucide/download.svg" size="20" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                         <button id="cast-btn" title="Cast">
-                            <use svg="!lucide/cast.svg" size="20" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
 
                         <button
@@ -6821,13 +6817,13 @@
                             title="Add to playlist"
                             aria-label="Add to playlist"
                         >
-                            <use svg="!lucide/list-plus.svg" size="20" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                         <button id="sleep-timer-btn" title="Sleep Timer" class="mobile-only">
-                            <use svg="!lucide/clock.svg" size="20" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                         <button id="queue-btn" title="Queue">
-                            <use svg="!lucide/list.svg" size="24" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                     </div>
                     <div class="volume-slider-row desktop-only">
@@ -6836,12 +6832,11 @@
                             <div id="volume-fill" class="volume-fill"></div>
                         </div>
                         <button id="sleep-timer-btn-desktop" title="Sleep Timer">
-                            <use svg="!lucide/clock.svg" size="20" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
                         </button>
                     </div>
                 </div>
             </footer>
-        </div>
-        <script type="module" src="/js/app.js"></script>
+        </div>
     </body>
 </html>
