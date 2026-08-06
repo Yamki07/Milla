@@ -88,6 +88,9 @@ object DeezerDownloadManager {
                 val streamUrl = fetchUrlSuspending(trackId, quality)
                 if (streamUrl.isNullOrEmpty()) {
                     _downloadState.value = DownloadState.Error(trackId, "No se pudo obtener el enlace de Deezer")
+                    withContext(Dispatchers.Main) {
+                        android.widget.Toast.makeText(context, "Error: Token expirado o URL no encontrada", android.widget.Toast.LENGTH_LONG).show()
+                    }
                     return@launch
                 }
 
@@ -111,10 +114,16 @@ object DeezerDownloadManager {
                 } else {
                     if (outputFile.exists()) outputFile.delete()
                     _downloadState.value = DownloadState.Error(trackId, "Fallo al descargar o desencriptar el archivo")
+                    withContext(Dispatchers.Main) {
+                        android.widget.Toast.makeText(context, "Error: Descarga o desencriptación falló", android.widget.Toast.LENGTH_LONG).show()
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Excepción en descarga de trackId=$trackId: $e")
                 _downloadState.value = DownloadState.Error(trackId, e.message ?: "Error desconocido")
+                withContext(Dispatchers.Main) {
+                    android.widget.Toast.makeText(context, "Error: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
+                }
             } finally {
                 activeJobs.remove(trackId)
             }
