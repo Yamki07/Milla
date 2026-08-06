@@ -23,7 +23,8 @@ object TidalApiClient {
     
     // Refresh Token obtenido via OAuth Device Flow
     private const val REFRESH_TOKEN = "eyJraWQiOiJoUzFKYTdVMCIsImFsZyI6IkVTNTEyIn0.eyJ0eXBlIjoibzJfcmVmcmVzaCIsInVpZCI6MjA0MTg4NTU1LCJzY29wZSI6InJfdXNyIHdfdXNyIHdfc3ViIiwiY2lkIjoxMzMxOSwic1ZlciI6MSwiZ1ZlciI6MCwiaXNzIjoiaHR0cHM6Ly9hdXRoLnRpZGFsLmNvbS92MSJ9.AaUolbWQnLm7_AogbUR5gjnhkHRI1jOzOHFE-ix6D-sBFtMkoEBgMuem2APXp7eQNwFmaqXRSYXYdjbTIciULeKYAXviGhpgwUtmaPcwg1RgSaab0NeDJJxL_e2oBxT47qhS7eZQawC1Ug1FYnmRIDO0NOy219mHVlrWcKDYRZNsRuEf"
-    private const val CLIENT_ID = "8SEZWa4J1NVC5U5Y" // TV client ID
+    private const val CLIENT_ID = "fX2JxdmntZWK0ixT"
+    private const val CLIENT_SECRET = "1Nn9AfDAjxrgJFJbKNWLeAyKGVGmINuXPPLHVXAvxAg="
     
     private var accessToken: String = ""
     private var sessionInitialized = false
@@ -38,15 +39,22 @@ object TidalApiClient {
         if (sessionInitialized && accessToken.isNotEmpty()) return
         withContext(Dispatchers.IO) {
             try {
-                // TV Auth requires no client secret for refresh token
                 val formBody = FormBody.Builder()
                     .add("refresh_token", REFRESH_TOKEN)
                     .add("client_id", CLIENT_ID)
                     .add("grant_type", "refresh_token")
                     .build()
 
+                val authString = "$CLIENT_ID:$CLIENT_SECRET"
+                val encodedAuth = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    java.util.Base64.getEncoder().encodeToString(authString.toByteArray(StandardCharsets.UTF_8))
+                } else {
+                    android.util.Base64.encodeToString(authString.toByteArray(StandardCharsets.UTF_8), android.util.Base64.NO_WRAP)
+                }
+
                 val request = Request.Builder()
                     .url("https://auth.tidal.com/v1/oauth2/token")
+                    .header("Authorization", "Basic $encodedAuth")
                     .post(formBody)
                     .build()
 
