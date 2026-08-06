@@ -41,26 +41,11 @@ object DeezerApiClient {
     private var userId: Long = 0
     private var sessionInitialized = false
 
-    // OkHttp con cookie ARL persistente y timeouts generosos
+    // OkHttp sin CookieJar (usaremos header Cookie explícito)
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
-        .cookieJar(object : CookieJar {
-            override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {}
-            override fun loadForRequest(url: HttpUrl): List<Cookie> {
-                return listOf(
-                    Cookie.Builder()
-                        .domain("deezer.com")
-                        .path("/")
-                        .name("arl")
-                        .value(ARL_TOKEN)
-                        .httpOnly()
-                        .secure()
-                        .build()
-                )
-            }
-        })
         .build()
 
     // ─────────────────────────────────────────────
@@ -82,6 +67,7 @@ object DeezerApiClient {
                     .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
                     .addHeader("Accept-Language", "en-US,en;q=0.9")
                     .addHeader("Accept", "*/*")
+                    .addHeader("Cookie", "arl=$ARL_TOKEN")
                     .get()
                     .build()
                 client.newCall(request).execute().use { response ->
@@ -118,6 +104,7 @@ object DeezerApiClient {
                 .url(url)
                 .post(body)
                 .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
+                .addHeader("Cookie", "arl=$ARL_TOKEN")
                 .build()
             try {
                 client.newCall(request).execute().use { response ->
