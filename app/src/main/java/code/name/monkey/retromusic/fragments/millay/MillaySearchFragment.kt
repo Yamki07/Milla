@@ -27,6 +27,7 @@ import com.google.android.material.chip.ChipGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 /**
@@ -88,41 +89,90 @@ class MillaySearchFragment : Fragment(R.layout.fragment_millay_search) {
         emptyState.isVisible = false
         searchResultsRecycler.isVisible = false
 
-        DeezerApiClient.searchTracks(
-            query = query,
-            onResult = { songs ->
-                activity?.runOnUiThread {
-                    if (songs.isEmpty()) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val deezerDeferred = async { DeezerApiClient.search(query) }
+                val tidalDeferred = async { code.name.monkey.retromusic.automix.TidalApiClient.search(query) }
+
+                val deezerTracks = try { deezerDeferred.await() } catch(e: Exception) { emptyList() }
+                val tidalTracks = try { tidalDeferred.await() } catch(e: Exception) { emptyList() }
+
+                val mergedSongs = mutableListOf<Song>()
+                
+                val maxLen = maxOf(deezerTracks.size, tidalTracks.size)
+                for (i in 0 until maxLen) {
+                    if (i < deezerTracks.size) {
+                        val d = deezerTracks[i]
+                        mergedSongs.add(Song(
+                            id = d.id.toLongOrNull() ?: 0L,
+                            title = d.title,
+                            trackNumber = 1,
+                            year = 2026,
+                            duration = d.durationSec * 1000L,
+                            data = "deezer://track/${d.id}",
+                            dateModified = System.currentTimeMillis(),
+                            albumId = 0L,
+                            albumName = d.albumTitle,
+                            artistId = 0L,
+                            artistName = d.artistName,
+                            composer = "deezer",
+                            albumArtist = d.artistName
+                        ))
+                    }
+                    if (i < tidalTracks.size) {
+                        val t = tidalTracks[i]
+                        mergedSongs.add(Song(
+                            id = t.id.toLongOrNull() ?: 0L,
+                            title = t.title,
+                            trackNumber = 1,
+                            year = 2026,
+                            duration = t.durationSec * 1000L,
+                            data = "tidal://track/${t.id}::${t.albumCoverId}",
+                            dateModified = System.currentTimeMillis(),
+                            albumId = 0L,
+                            albumName = t.albumTitle,
+                            artistId = 0L,
+                            artistName = t.artistName,
+                            composer = "tidal",
+                            albumArtist = t.artistName
+                        ))
+                    }
+                }
+
+                withContext(Dispatchers.Main) {
+                    if (mergedSongs.isEmpty()) {
                         emptyState.isVisible = true
                     } else {
                         searchResultsRecycler.isVisible = true
                         searchResultsRecycler.adapter = MillaySongRowAdapter(
-                            songs = songs,
+                            songs = mergedSongs,
                             onDownloadClick = { song ->
-                                DeezerDownloadManager.downloadTrack(requireContext(), song, selectedQuality)
+                                if (song.composer == "tidal") {
+                                    val split = song.data.removePrefix("tidal://track/").split("::")
+                                    val tidalId = split[0]
+                                    val coverUrl = if (split.size > 1 && split[1].isNotEmpty()) "https://resources.tidal.com/images/${split[1].replace("-", "/")}/1280x1280.jpg" else ""
+                                    code.name.monkey.retromusic.automix.TidalDownloadManager.downloadTrack(requireContext(), song, tidalId, coverUrl)
+                                } else {
+                                    DeezerDownloadManager.downloadTrack(requireContext(), song, selectedQuality)
+                                }
                                 Toast.makeText(
                                     requireContext(),
-                                    "⬇️ Descargando: ${song.title}",
+                                    "⬇️ Descargando: ${song.title} (${song.composer})",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
                         ) { song ->
-                            onSongClicked(song, songs)
+                            onSongClicked(song, mergedSongs)
                         }
                     }
                 }
-            },
-            onError = { e ->
-                activity?.runOnUiThread {
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
                     emptyState.isVisible = true
-                    Toast.makeText(
-                        requireContext(),
-                        "Error: ${e.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
-        )
+        }
     }
 
     private fun onSongClicked(song: Song, dataSet: List<Song>) {

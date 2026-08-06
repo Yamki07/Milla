@@ -305,6 +305,25 @@ object DeezerApiClient {
     }
 
     // ─────────────────────────────────────────────
+    //  Letras
+    // ─────────────────────────────────────────────
+
+    /**
+     * Obtiene las letras de una pista usando el método song.getLyrics.
+     */
+    suspend fun getLyrics(trackId: String): String? {
+        val results = callGwApi("song.getLyrics", JSONObject().apply { put("sng_id", trackId) })
+            ?: return null
+        return try {
+            results.optString("LYRICS_TEXT", "").takeIf { it.isNotEmpty() } 
+                ?: results.optString("LYRICS_SYNC_JSON", "").takeIf { it.isNotEmpty() }
+        } catch (e: Exception) {
+            Log.e(TAG, "getLyrics error: $e")
+            null
+        }
+    }
+
+    // ─────────────────────────────────────────────
     //  URL de Stream/Descarga — Método media.deezer.com
     // ─────────────────────────────────────────────
 
@@ -519,27 +538,25 @@ object DeezerApiClient {
     }
 
     fun fetchStreamUrl(trackId: String, quality: Int = 3, onResult: (String?) -> Unit) {
-        Thread {
+        GlobalScope.launch(Dispatchers.IO) {
             try {
-                kotlinx.coroutines.runBlocking {
-                    val track = fetchPrivateTrackData(trackId)
-                    if (track == null) {
-                        onResult(null)
-                        return@runBlocking
-                    }
-                    val format = when (quality) {
-                        9 -> "FLAC"
-                        3 -> "MP3_320"
-                        else -> "MP3_128"
-                    }
-                    val url = getStreamUrl(track, format)
-                    onResult(url)
+                val track = fetchPrivateTrackData(trackId)
+                if (track == null) {
+                    onResult(null)
+                    return@launch
                 }
+                val format = when (quality) {
+                    9 -> "FLAC"
+                    3 -> "MP3_320"
+                    else -> "MP3_128"
+                }
+                val url = getStreamUrl(track, format)
+                onResult(url)
             } catch (e: Exception) {
                 Log.e(TAG, "fetchStreamUrl error: $e")
                 onResult(null)
             }
-        }.start()
+        }
     }
 
     // ─────────────────────────────────────────────

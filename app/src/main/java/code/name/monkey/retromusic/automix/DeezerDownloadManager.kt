@@ -234,9 +234,18 @@ object DeezerDownloadManager {
                 }
                 tag.setField(FieldKey.GENRE, "Milla Automix")
 
-                if (song.albumId > 0) {
-                    val coverUrl = "https://api.deezer.com/album/${song.albumId}/image"
-                    try {
+                // Obtener datos privados de Deezer para la carátula y letras
+                try {
+                    val lyrics = DeezerApiClient.getLyrics(song.id.toString())
+                    if (!lyrics.isNullOrEmpty()) {
+                        tag.setField(FieldKey.LYRICS, lyrics)
+                        Log.d(TAG, "Letras guardadas en archivo para: ${song.title}")
+                    }
+
+                    val privateTrack = DeezerApiClient.fetchPrivateTrackData(song.id.toString())
+                    val coverMd5 = privateTrack?.albumCoverId
+                    if (!coverMd5.isNullOrEmpty()) {
+                        val coverUrl = "https://e-cdns-images.dzcdn.net/images/cover/$coverMd5/1000x1000-000000-80-0-0.jpg"
                         val coverRequest = Request.Builder().url(coverUrl).get().build()
                         val coverResponse = httpClient.newCall(coverRequest).execute()
                         if (coverResponse.isSuccessful) {
@@ -253,9 +262,9 @@ object DeezerDownloadManager {
                             }
                         }
                         coverResponse.close()
-                    } catch (e: Exception) {
-                        Log.w(TAG, "No se pudo etiquetar carátula ID3: ${e.message}")
                     }
+                } catch (e: Exception) {
+                    Log.w(TAG, "No se pudo etiquetar carátula o letras: ${e.message}")
                 }
                 audioFile.commit()
                 Log.i(TAG, "Etiquetado físico ID3 completo para: ${outputFile.name}")

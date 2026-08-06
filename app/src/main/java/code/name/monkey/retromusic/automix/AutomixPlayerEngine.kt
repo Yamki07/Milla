@@ -132,6 +132,22 @@ class AutomixPlayerEngine(private val context: Context) {
                 .createMediaSource(mediaItem)
             player.setMediaSource(mediaSource)
             true
+        } else if (path.startsWith("tidal://track/", true)) {
+            val split = path.removePrefix("tidal://track/").split("::")
+            val trackId = split[0]
+            val upstreamFactory = androidx.media3.datasource.DefaultDataSource.Factory(context)
+            val resolver = androidx.media3.datasource.ResolvingDataSource.Resolver { dataSpec ->
+                val streamUrl = kotlinx.coroutines.runBlocking {
+                    TidalApiClient.getStreamUrl(trackId)
+                }
+                if (streamUrl != null) dataSpec.withUri(Uri.parse(streamUrl)) else dataSpec
+            }
+            val tidalFactory = androidx.media3.datasource.ResolvingDataSource.Factory(upstreamFactory, resolver)
+            val mediaItem = MediaItem.fromUri(Uri.parse(path))
+            val mediaSource = androidx.media3.exoplayer.source.ProgressiveMediaSource.Factory(tidalFactory)
+                .createMediaSource(mediaItem)
+            player.setMediaSource(mediaSource)
+            true
         } else {
             val mediaItem = buildMediaItem(song)
             if (mediaItem != null) {
@@ -148,7 +164,7 @@ class AutomixPlayerEngine(private val context: Context) {
      */
     private fun buildMediaItem(song: SongEntity): MediaItem? {
         val path = song.data.trim()
-        return if (path.startsWith("http://", true) || path.startsWith("https://", true) || path.startsWith("deezer://", true)) {
+        return if (path.startsWith("http://", true) || path.startsWith("https://", true) || path.startsWith("deezer://", true) || path.startsWith("tidal://", true)) {
             MediaItem.fromUri(Uri.parse(path))
         } else {
             val file = File(path)

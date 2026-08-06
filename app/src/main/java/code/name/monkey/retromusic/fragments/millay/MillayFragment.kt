@@ -4,6 +4,7 @@
  */
 package code.name.monkey.retromusic.fragments.millay
 
+import android.app.AlertDialog
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.text.Editable
@@ -25,29 +26,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.automix.DeezerApiClient
+import code.name.monkey.retromusic.automix.DeezerDecryptor
 import code.name.monkey.retromusic.automix.DeezerDownloadManager
 import code.name.monkey.retromusic.automix.DeezerTrack
 import code.name.monkey.retromusic.automix.MillayTrackAdapter
+import code.name.monkey.retromusic.automix.MillayAlbumAdapter
+import code.name.monkey.retromusic.automix.MillayGenreAdapter
 import code.name.monkey.retromusic.fragments.base.AbsMainActivityFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import code.name.monkey.retromusic.automix.MillayAlbumAdapter
-import code.name.monkey.retromusic.automix.MillayGenreAdapter
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.io.File
+import java.io.FileOutputStream
 
 /**
  * Millay Fragment — Native Android UI
  *
  * Provides:
- *  1. Search bar → queries Deezer's private GW-light API (ported from ReFreezer)
- *  2. Track list with glassmorphism cards (quality badges, play & download buttons)
- *  3. Streaming via MediaPlayer with a floating mini-player bar
- *  4. Background downloading via DeezerDownloadManager
- *
- * Design: Monochrome dark palette (#080A12) + Apple Music glassmorphism effects
+ *  1. Search → Deezer public API
+ *  2. Streaming via download-decrypt-play pipeline
+ *  3. Download with quality selection dialog
+ *  4. Home screen with charts
  */
 class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
 
@@ -59,7 +65,7 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
     private lateinit var resultsHeader: LinearLayout
     private lateinit var resultsCount: TextView
     private lateinit var tracksList: RecyclerView
-    
+
     // Home Views
     private lateinit var homeContent: LinearLayout
     private lateinit var topAlbumsList: RecyclerView
@@ -78,11 +84,12 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
     private lateinit var topTracksAdapter: MillayTrackAdapter
     private lateinit var topAlbumsAdapter: MillayAlbumAdapter
     private lateinit var genresAdapter: MillayGenreAdapter
-    
+
     private var searchJob: Job? = null
     private var mediaPlayer: MediaPlayer? = null
     private var currentTrack: DeezerTrack? = null
     private var isPlaying = false
+    private val httpClient = OkHttpClient()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -102,7 +109,7 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
         resultsHeader = view.findViewById(R.id.millayResultsHeader)
         resultsCount = view.findViewById(R.id.millayResultsCount)
         tracksList = view.findViewById(R.id.millayTracksList)
-        
+
         homeContent = view.findViewById(R.id.millayHomeContent)
         topAlbumsList = view.findViewById(R.id.millayTopAlbumsList)
         topTracksList = view.findViewById(R.id.millayTopTracksList)
@@ -125,7 +132,7 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
     private fun setupRecyclerView() {
         trackAdapter = MillayTrackAdapter(
             onPlay = { track -> playTrack(track) },
-            onDownload = { track -> downloadTrack(track) }
+            onDownload = { track -> showQualityDialog(track) }
         )
         tracksList.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -133,16 +140,14 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
             setHasFixedSize(false)
         }
 
-        // Top Tracks (Home)
         topTracksAdapter = MillayTrackAdapter(
             onPlay = { track -> playTrack(track) },
-            onDownload = { track -> downloadTrack(track) }
+            onDownload = { track -> showQualityDialog(track) }
         )
         topTracksList.apply {
             adapter = topTracksAdapter
         }
 
-        // Top Albums (Home)
         topAlbumsAdapter = MillayAlbumAdapter(emptyList()) { album ->
             performSearch(album["title"] ?: "")
         }
@@ -150,7 +155,6 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
             adapter = topAlbumsAdapter
         }
 
-        // Genres (Home)
         val staticGenres = listOf(
             mapOf("name" to "Pop", "color" to "#148A08"),
             mapOf("name" to "Hip-Hop", "color" to "#E8115B"),
@@ -174,20 +178,20 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
             try {
                 val albums = DeezerApiClient.getTopAlbums()
                 val tracks = DeezerApiClient.getTopTracks()
-                
+
                 topAlbumsAdapter = MillayAlbumAdapter(albums) { album ->
                     performSearch(album["title"] ?: "")
                 }
                 topAlbumsList.adapter = topAlbumsAdapter
-                
+
                 topTracksAdapter.submitList(tracks)
             } catch (e: Exception) {
-                // Ignore home load errors silently
+                // Ignore silently
             }
         }
     }
 
-    // ─────────── Search with debounce ───────────
+    // ─────────── Search ───────────
     private fun setupSearch() {
         searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -199,7 +203,6 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
                     showState(State.HOME)
                     return
                 }
-                // Debounce: wait 600ms after last keystroke before firing request
                 searchJob = lifecycleScope.launch {
                     delay(600)
                     performSearch(query)
@@ -208,7 +211,6 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
         })
     }
 
-    // ─────────── Search Execution ───────────
     private fun performSearch(query: String) {
         showState(State.LOADING)
         lifecycleScope.launch {
@@ -239,32 +241,40 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
         resultsHeader.visibility = if (state == State.RESULTS) View.VISIBLE else View.GONE
     }
 
-    // ─────────── Playback ───────────
+    // ─────────── Playback (descarga + descifrado + reproducción) ───────────
     private fun playTrack(track: DeezerTrack) {
         lifecycleScope.launch {
             try {
-                // Get the CDN stream URL from Deezer (uses MD5 + Blowfish decryption)
-                val streamUrl = DeezerApiClient.getStreamUrl(track)
+                Toast.makeText(requireContext(), "▶ Cargando: ${track.title}...", Toast.LENGTH_SHORT).show()
+
+                // 1. Obtener URL del CDN (encriptada con Blowfish)
+                val streamUrl = DeezerApiClient.getStreamUrl(track, "MP3_320")
                 if (streamUrl.isNullOrBlank()) {
-                    Toast.makeText(requireContext(), "No se pudo obtener el stream. Verifica tu ARL.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "❌ No se pudo obtener la URL del stream.", Toast.LENGTH_LONG).show()
                     return@launch
                 }
 
-                // Stop previous playback
+                // 2. Descargar y desencriptar a archivo temporal
+                val tempFile = withContext(Dispatchers.IO) {
+                    downloadAndDecryptToFile(track, streamUrl, "mp3")
+                }
+                if (tempFile == null || !tempFile.exists()) {
+                    Toast.makeText(requireContext(), "❌ Error al preparar el audio.", Toast.LENGTH_LONG).show()
+                    return@launch
+                }
+
+                // 3. Detener reproducción anterior
                 mediaPlayer?.stop()
                 mediaPlayer?.release()
                 mediaPlayer = null
 
                 currentTrack = track
                 isPlaying = true
-
-                // Show mini player
                 showMiniPlayer(track)
 
-                // Start MediaPlayer with Deezer's encrypted stream
-                // (DeezerDataSource handles real-time Blowfish decryption)
+                // 4. Reproducir el archivo desencriptado
                 mediaPlayer = MediaPlayer().apply {
-                    setDataSource(streamUrl)
+                    setDataSource(tempFile.absolutePath)
                     prepareAsync()
                     setOnPreparedListener { start() }
                     setOnCompletionListener {
@@ -279,6 +289,58 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    /**
+     * Descarga el stream encriptado del CDN y lo desencripta con Blowfish/CBC.
+     * Devuelve un File temporal listo para reproducirse.
+     */
+    private fun downloadAndDecryptToFile(track: DeezerTrack, url: String, extension: String): File? {
+        try {
+            val request = Request.Builder().url(url).get().build()
+            val response = httpClient.newCall(request).execute()
+            if (!response.isSuccessful) {
+                response.close()
+                return null
+            }
+
+            val body = response.body ?: run { response.close(); return null }
+            val trackKey = DeezerDecryptor.getKey(track.id)
+            val cacheDir = requireContext().cacheDir
+            val tempFile = File(cacheDir, "millay_stream_${track.id}.$extension")
+
+            val inputStream = body.byteStream()
+            FileOutputStream(tempFile).use { outputStream ->
+                val buffer = ByteArray(2048)
+                var chunkIndex = 0
+
+                while (true) {
+                    var bytesReadInChunk = 0
+                    while (bytesReadInChunk < 2048) {
+                        val read = inputStream.read(buffer, bytesReadInChunk, 2048 - bytesReadInChunk)
+                        if (read == -1) break
+                        bytesReadInChunk += read
+                    }
+                    if (bytesReadInChunk == 0) break
+
+                    val dataToWrite = if (bytesReadInChunk == 2048 && chunkIndex % 3 == 0) {
+                        DeezerDecryptor.decryptChunk(trackKey, buffer)
+                    } else {
+                        buffer
+                    }
+
+                    outputStream.write(dataToWrite, 0, bytesReadInChunk)
+                    chunkIndex++
+
+                    if (bytesReadInChunk < 2048) break
+                }
+                outputStream.flush()
+            }
+            response.close()
+            return tempFile
+        } catch (e: Exception) {
+            return null
         }
     }
 
@@ -310,16 +372,48 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
         }
 
         miniDownload.setOnClickListener {
-            currentTrack?.let { downloadTrack(it) }
+            currentTrack?.let { showQualityDialog(it) }
+        }
+    }
+
+    // ─────────── Quality Selection Dialog ───────────
+    private fun showQualityDialog(track: DeezerTrack) {
+        lifecycleScope.launch {
+            try {
+                Toast.makeText(requireContext(), "🔍 Verificando calidades disponibles...", Toast.LENGTH_SHORT).show()
+
+                val qualities = DeezerApiClient.getAvailableQualities(track.id)
+                if (qualities.isEmpty()) {
+                    Toast.makeText(requireContext(), "❌ No se pudieron obtener las calidades", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                val labels = qualities.map { "${it["label"]} (${it["size"]})" }.toTypedArray()
+
+                withContext(Dispatchers.Main) {
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("⬇️ Descargar: ${track.title}")
+                        .setItems(labels) { _, which ->
+                            val selected = qualities[which]
+                            val qualityInt = selected["quality"]?.toIntOrNull() ?: 3
+                            val format = selected["format"] ?: "MP3_320"
+                            startDownload(track, qualityInt, format)
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
+                }
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     // ─────────── Download ───────────
-    private fun downloadTrack(track: DeezerTrack) {
+    private fun startDownload(track: DeezerTrack, quality: Int, format: String) {
         lifecycleScope.launch {
             try {
-                Toast.makeText(requireContext(), "⬇️ Descargando: ${track.title}", Toast.LENGTH_SHORT).show()
-                // Convert DeezerTrack to Song for DeezerDownloadManager
+                Toast.makeText(requireContext(), "⬇️ Descargando en $format: ${track.title}", Toast.LENGTH_SHORT).show()
+
                 val song = code.name.monkey.retromusic.model.Song(
                     id = track.id.toLongOrNull() ?: 0L,
                     title = track.title,
@@ -335,7 +429,7 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
                     composer = "",
                     albumArtist = track.artistName
                 )
-                DeezerDownloadManager.downloadTrack(requireContext(), song, quality = 9)
+                DeezerDownloadManager.downloadTrack(requireContext(), song, quality)
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Error al descargar: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -345,13 +439,11 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
     // ─────────── Lifecycle ───────────
     override fun onPause() {
         super.onPause()
-        // Keep playing in background (music app behavior)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         searchJob?.cancel()
-        // Don't release MediaPlayer here — keep background playback alive
     }
 
     override fun onDestroy() {
