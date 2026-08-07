@@ -126,7 +126,23 @@ class AutomixPlayerEngine(private val context: Context) {
         return if (path.startsWith("deezer://track/", true)) {
             val trackId = path.substringAfter("deezer://track/")
             val upstreamFactory = androidx.media3.datasource.DefaultDataSource.Factory(context)
-            val deezerFactory = createDeezerDataSourceFactory(upstreamFactory, trackId)
+            
+            // Create a ResolvingDataSource to fetch the real stream URL
+            val resolver = androidx.media3.datasource.ResolvingDataSource.Resolver { dataSpec ->
+                val streamUrl = kotlinx.coroutines.runBlocking {
+                    // Fetch private track data to get trackToken, then get stream url
+                    val track = code.name.monkey.retromusic.automix.DeezerApiClient.fetchPrivateTrackData(trackId)
+                    if (track != null) {
+                        code.name.monkey.retromusic.automix.DeezerApiClient.getStreamUrl(track, "FLAC")
+                    } else null
+                }
+                if (streamUrl != null) dataSpec.withUri(Uri.parse(streamUrl)) else dataSpec
+            }
+            
+            val resolvingFactory = androidx.media3.datasource.ResolvingDataSource.Factory(upstreamFactory, resolver)
+            
+            // Wrap it in DeezerDataSourceFactory to decrypt the Blowfish stream on the fly
+            val deezerFactory = createDeezerDataSourceFactory(resolvingFactory, trackId)
             val mediaItem = MediaItem.fromUri(Uri.parse(path))
             val mediaSource = androidx.media3.exoplayer.source.ProgressiveMediaSource.Factory(deezerFactory)
                 .createMediaSource(mediaItem)

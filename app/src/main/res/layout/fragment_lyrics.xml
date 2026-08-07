@@ -53,17 +53,7 @@
             android:paddingBottom="200dp"
             android:scrollbars="none" />
 
-        <!-- LrcView heredado mantenido en gone por compatibilidad de binding -->
-        <code.name.monkey.retromusic.lyrics.LrcView
-            android:id="@+id/lyricsView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            app:lrcLabel="@string/no_lyrics_found"
-            app:lrcNormalTextSize="24sp"
-            app:lrcPadding="8dp"
-            app:lrcTextGravity="left"
-            app:lrcTextSize="28sp" />
+
 
         <TextView
             android:id="@+id/noLyricsFound"

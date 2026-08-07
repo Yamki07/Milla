@@ -241,106 +241,39 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
         resultsHeader.visibility = if (state == State.RESULTS) View.VISIBLE else View.GONE
     }
 
-    // ─────────── Playback (descarga + descifrado + reproducción) ───────────
+    // ─────────── Playback (Streaming Nativo) ───────────
     private fun playTrack(track: DeezerTrack) {
-        lifecycleScope.launch {
-            try {
-                Toast.makeText(requireContext(), "▶ Cargando: ${track.title}...", Toast.LENGTH_SHORT).show()
-
-                // 1. Obtener URL del CDN (encriptada con Blowfish)
-                val streamUrl = DeezerApiClient.getStreamUrl(track, "MP3_320")
-                if (streamUrl.isNullOrBlank()) {
-                    Toast.makeText(requireContext(), "❌ No se pudo obtener la URL del stream.", Toast.LENGTH_LONG).show()
-                    return@launch
-                }
-
-                // 2. Descargar y desencriptar a archivo temporal
-                val tempFile = withContext(Dispatchers.IO) {
-                    downloadAndDecryptToFile(track, streamUrl, "mp3")
-                }
-                if (tempFile == null || !tempFile.exists()) {
-                    Toast.makeText(requireContext(), "❌ Error al preparar el audio.", Toast.LENGTH_LONG).show()
-                    return@launch
-                }
-
-                // 3. Detener reproducción anterior
-                mediaPlayer?.stop()
-                mediaPlayer?.release()
-                mediaPlayer = null
-
-                currentTrack = track
-                isPlaying = true
-                showMiniPlayer(track)
-
-                // 4. Reproducir el archivo desencriptado
-                mediaPlayer = MediaPlayer().apply {
-                    setDataSource(tempFile.absolutePath)
-                    prepareAsync()
-                    setOnPreparedListener { start() }
-                    setOnCompletionListener {
-                        this@MillayFragment.isPlaying = false
-                        miniPlayPause.setImageResource(R.drawable.ic_play_arrow_white_32dp)
-                    }
-                    setOnErrorListener { _, what, extra ->
-                        Toast.makeText(requireContext(), "Error de reproducción ($what/$extra)", Toast.LENGTH_SHORT).show()
-                        false
-                    }
-                }
-            } catch (e: Exception) {
-                Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-
-    /**
-     * Descarga el stream encriptado del CDN y lo desencripta con Blowfish/CBC.
-     * Devuelve un File temporal listo para reproducirse.
-     */
-    private fun downloadAndDecryptToFile(track: DeezerTrack, url: String, extension: String): File? {
         try {
-            val request = Request.Builder().url(url).get().build()
-            val response = httpClient.newCall(request).execute()
-            if (!response.isSuccessful) {
-                response.close()
-                return null
-            }
+            Toast.makeText(requireContext(), "▶ Conectando stream: ${track.title}...", Toast.LENGTH_SHORT).show()
 
-            val body = response.body ?: run { response.close(); return null }
-            val trackKey = DeezerDecryptor.getKey(track.id)
-            val cacheDir = requireContext().cacheDir
-            val tempFile = File(cacheDir, "millay_stream_${track.id}.$extension")
+            val songEntity = code.name.monkey.retromusic.db.SongEntity(
+                playlistCreatorId = 0L,
+                id = track.id.toLongOrNull() ?: System.currentTimeMillis(),
+                title = track.title,
+                trackNumber = 1,
+                year = 2026,
+                duration = track.durationSec * 1000L,
+                data = "deezer://track/${track.id}",
+                dateModified = System.currentTimeMillis(),
+                albumId = 0L,
+                albumName = track.albumTitle,
+                artistId = 0L,
+                artistName = track.artistName,
+                composer = "",
+                albumArtist = track.artistName,
+                bpm = 120f
+            )
 
-            val inputStream = body.byteStream()
-            FileOutputStream(tempFile).use { outputStream ->
-                val buffer = ByteArray(2048)
-                var chunkIndex = 0
+            // Streaming directo y desencriptado al vuelo
+            code.name.monkey.retromusic.automix.AutomixPlayerEngine.getInstance(requireContext()).loadAndPlay(songEntity)
+            
+            currentTrack = track
+            isPlaying = true
+            showMiniPlayer(track)
+            miniPlayPause.setImageResource(R.drawable.ic_pause_white_48dp)
 
-                while (true) {
-                    var bytesReadInChunk = 0
-                    while (bytesReadInChunk < 2048) {
-                        val read = inputStream.read(buffer, bytesReadInChunk, 2048 - bytesReadInChunk)
-                        if (read == -1) break
-                        bytesReadInChunk += read
-                    }
-                    if (bytesReadInChunk == 0) break
-
-                    val dataToWrite = if (bytesReadInChunk == 2048 && chunkIndex % 3 == 0) {
-                        DeezerDecryptor.decryptChunk(trackKey, buffer)
-                    } else {
-                        buffer
-                    }
-
-                    outputStream.write(dataToWrite, 0, bytesReadInChunk)
-                    chunkIndex++
-
-                    if (bytesReadInChunk < 2048) break
-                }
-                outputStream.flush()
-            }
-            response.close()
-            return tempFile
         } catch (e: Exception) {
-            return null
+            Toast.makeText(requireContext(), "Error: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 

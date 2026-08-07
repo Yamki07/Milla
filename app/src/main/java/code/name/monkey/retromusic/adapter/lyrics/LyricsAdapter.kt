@@ -62,10 +62,24 @@ class LyricsAdapter : RecyclerView.Adapter<LyricsAdapter.LyricViewHolder>() {
         }
     }
 
+    private var attachedRecyclerView: RecyclerView? = null
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        attachedRecyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        attachedRecyclerView = null
+    }
+
     fun updateTime(timeMs: Long) {
         this.currentTimeMs = timeMs
         if (currentLineIndex != -1 && currentLineIndex < lyrics.size) {
             // Se actualiza el holder activo en lugar de notificar (para evitar re-binds constantes que rompen animaciones de escala)
+            val holder = attachedRecyclerView?.findViewHolderForAdapterPosition(currentLineIndex) as? LyricViewHolder
+            holder?.updateProgress(timeMs)
         }
     }
 

@@ -144,7 +144,7 @@ object DeezerDownloadManager {
      * Directorio físico donde se almacenarán las descargas de Milla / Deezer.
      */
     fun getDownloadsDirectory(context: Context): File {
-        val baseDir = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC) ?: context.filesDir
+        val baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
         return File(baseDir, "MillaDownloads")
     }
 

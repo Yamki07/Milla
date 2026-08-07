@@ -39,7 +39,6 @@ import code.name.monkey.retromusic.glide.RetroGlideExtension
 import code.name.monkey.retromusic.glide.RetroGlideExtension.simpleSongCoverOptions
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.helper.MusicProgressViewUpdateHelper
-import code.name.monkey.retromusic.lyrics.LrcView
 import code.name.monkey.retromusic.model.AudioTagInfo
 import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.util.*
@@ -120,7 +119,6 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         updateTitleSong()
 
         setupLyricsRecyclerView()
-        setupLyricsView()
         updateBlurBackground()
         loadLyrics()
 
@@ -170,21 +168,35 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         }
     }
 
-    private fun setupLyricsView() {
-        binding.lyricsView.apply {
-            setCurrentColor(accentColor())
-            setTimeTextColor(accentColor())
-            setTimelineColor(accentColor())
-            setTimelineTextColor(accentColor())
-            setDraggable(true, LrcView.OnPlayClickListener {
-                MusicPlayerRemote.seekTo(it.toInt())
-                return@OnPlayClickListener true
-            })
-        }
-    }
+
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
-        binding.lyricsView.updateTime(progress.toLong())
+        
+        if (::lyricsAdapter.isInitialized && currentLyricsList.isNotEmpty()) {
+            val progressMs = progress.toLong()
+            lyricsAdapter.updateTime(progressMs)
+            
+            // Buscar la línea activa actual
+            var activeIndex = -1
+            for (i in currentLyricsList.indices.reversed()) {
+                if (progressMs >= currentLyricsList[i].timeMs) {
+                    activeIndex = i
+                    break
+                }
+            }
+            
+            if (activeIndex != -1 && activeIndex != lyricsAdapter.currentLineIndex) {
+                lyricsAdapter.setCurrentLineIndex(activeIndex)
+                
+                // Desplazamiento suave al centro
+                if (::centerSmoothScroller.isInitialized) {
+                    centerSmoothScroller.targetPosition = activeIndex
+                    binding.recyclerView.layoutManager?.startSmoothScroll(centerSmoothScroller)
+                } else {
+                    binding.recyclerView.smoothScrollToPosition(activeIndex)
+                }
+            }
+        }
     }
 
     private fun setupViews() {
@@ -272,28 +284,37 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
             ) { _, input ->
                 val fieldKeyValueMap = EnumMap<FieldKey, String>(FieldKey::class.java)
                 fieldKeyValueMap[FieldKey.LYRICS] = input.toString()
-                GlobalScope.launch {
-                    if (VersionUtils.hasR()) {
-                        cacheFile = TagWriter.writeTagsToFilesR(
-                            requireContext(), AudioTagInfo(
-                                listOf(song.data), fieldKeyValueMap, null
-                            )
-                        )[0]
-                        val pendingIntent =
-                            MediaStore.createWriteRequest(
-                                requireContext().contentResolver,
-                                listOf(song.uri)
-                            )
+                
+                val isOnline = song.data.startsWith("http://", true) || song.data.startsWith("https://", true) || song.data.startsWith("deezer://", true) || song.data.startsWith("tidal://", true)
+                
+                if (isOnline) {
+                    // Solo guardar offline en caché
+                    LyricUtil.writeLrc(song, input.toString())
+                    requireActivity().runOnUiThread { loadNormalLyrics() }
+                } else {
+                    GlobalScope.launch {
+                        if (VersionUtils.hasR()) {
+                            cacheFile = TagWriter.writeTagsToFilesR(
+                                requireContext(), AudioTagInfo(
+                                    listOf(song.data), fieldKeyValueMap, null
+                                )
+                            )[0]
+                            val pendingIntent =
+                                MediaStore.createWriteRequest(
+                                    requireContext().contentResolver,
+                                    listOf(song.uri)
+                                )
 
-                        normalLyricsLauncher.launch(
-                            IntentSenderRequest.Builder(pendingIntent).build()
-                        )
-                    } else {
-                        TagWriter.writeTagsToFiles(
-                            requireContext(), AudioTagInfo(
-                                listOf(song.data), fieldKeyValueMap, null
+                            normalLyricsLauncher.launch(
+                                IntentSenderRequest.Builder(pendingIntent).build()
                             )
-                        )
+                        } else {
+                            TagWriter.writeTagsToFiles(
+                                requireContext(), AudioTagInfo(
+                                    listOf(song.data), fieldKeyValueMap, null
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -319,25 +340,33 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
             ) { _, input ->
                 val fieldKeyValueMap = EnumMap<FieldKey, String>(FieldKey::class.java)
                 fieldKeyValueMap[FieldKey.LYRICS] = input.toString()
-                GlobalScope.launch {
-                    if (VersionUtils.hasR()) {
-                        cacheFile = TagWriter.writeTagsToFilesR(
-                            requireContext(),
-                            AudioTagInfo(listOf(song.data), fieldKeyValueMap, null)
-                        )[0]
-                        val pendingIntent = MediaStore.createWriteRequest(
-                            requireContext().contentResolver,
-                            listOf(song.uri)
-                        )
+                
+                val isOnline = song.data.startsWith("http://", true) || song.data.startsWith("https://", true) || song.data.startsWith("deezer://", true) || song.data.startsWith("tidal://", true)
 
-                        normalLyricsLauncher.launch(
-                            IntentSenderRequest.Builder(pendingIntent).build()
-                        )
-                    } else {
-                        TagWriter.writeTagsToFiles(
-                            requireContext(),
-                            AudioTagInfo(listOf(song.data), fieldKeyValueMap, null)
-                        )
+                if (isOnline) {
+                    LyricUtil.writeLrc(song, input.toString())
+                    requireActivity().runOnUiThread { loadLRCLyrics() }
+                } else {
+                    GlobalScope.launch {
+                        if (VersionUtils.hasR()) {
+                            cacheFile = TagWriter.writeTagsToFilesR(
+                                requireContext(),
+                                AudioTagInfo(listOf(song.data), fieldKeyValueMap, null)
+                            )[0]
+                            val pendingIntent = MediaStore.createWriteRequest(
+                                requireContext().contentResolver,
+                                listOf(song.uri)
+                            )
+
+                            normalLyricsLauncher.launch(
+                                IntentSenderRequest.Builder(pendingIntent).build()
+                            )
+                        } else {
+                            TagWriter.writeTagsToFiles(
+                                requireContext(),
+                                AudioTagInfo(listOf(song.data), fieldKeyValueMap, null)
+                            )
+                        }
                     }
                 }
             }
@@ -360,7 +389,6 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         binding.noLyricsFound.isVisible = lyrics.isNullOrEmpty()
         binding.normalLyrics.text = lyrics
         binding.recyclerView.isVisible = false
-        binding.lyricsView.isVisible = false
     }
 
     /**
@@ -370,15 +398,12 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         val lrcFile = LyricUtil.getSyncedLyricsFile(song)
         if (lrcFile != null && lrcFile.exists()) {
             currentLyricsList = LrcParser.parse(lrcFile)
-            binding.lyricsView.loadLrc(lrcFile)
         } else {
             val embeddedLyrics = LyricUtil.getEmbeddedSyncedLyrics(song.data)
             if (embeddedLyrics != null) {
                 currentLyricsList = LrcParser.parse(embeddedLyrics)
-                binding.lyricsView.loadLrc(embeddedLyrics)
             } else {
                 currentLyricsList = emptyList()
-                binding.lyricsView.setLabel(getString(R.string.empty))
                 return false
             }
         }
@@ -388,7 +413,6 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
             binding.recyclerView.isVisible = true
             binding.normalLyrics.isVisible = false
             binding.noLyricsFound.isVisible = false
-            binding.lyricsView.isVisible = false
             true
         } else {
             binding.recyclerView.isVisible = false
@@ -429,7 +453,6 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                         binding.recyclerView.isVisible = true
                         binding.normalLyrics.isVisible = false
                         binding.noLyricsFound.isVisible = false
-                        binding.lyricsView.isVisible = false
                         lyricsType = LyricsType.SYNCED_LYRICS
                         startLyricsTicker()
                         // Intentar guardar en disco silenciosamente
