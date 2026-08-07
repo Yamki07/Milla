@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<UserControl
+    x:Class="BetterLyrics.WinUI3.Controls.LyricsWindowSwitchControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="using:BetterLyrics.WinUI3.Controls"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    mc:Ignorable="d">
+
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid x:Name="ShadowCastGrid" />
+        <Border
+            x:Name="ShadowRect"
+            Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
+            CornerRadius="12"
+            Loaded="ShadowRect_Loaded"
+            Translation="0,0,64">
+            <Border.Shadow>
+                <ThemeShadow x:Name="Shadow" />
+            </Border.Shadow>
+        </Border>
+        <Grid
+            Padding="24"
+            Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+            CornerRadius="12"
+            RowSpacing="12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <TextBlock x:Uid="SystemTraySwitch" />
+                <Button
+                    HorizontalAlignment="Right"
+                    Click="Button_Click"
+                    Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                          Glyph=&#xE73C;}"
+                    Style="{ThemeResource GhostButtonStyle}">
+                    <Button.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Escape" />
+                    </Button.KeyboardAccelerators>
+                </Button>
+            </Grid>
+
+            <ListView
+                Grid.Row="1"
+                Margin="36,0"
+                ItemContainerStyle="{ThemeResource ListViewCardStyle}"
+                ItemsSource="{x:Bind ViewModel.AppSettings.WindowBoundsRecords, Mode=OneWay}"
+                SelectionMode="None">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <controls:WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid
+                            Padding="6"
+                            RowSpacing="6"
+                            Tapped="Grid_Tapped">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding Name, Mode=OneWay}" TextAlignment="Center" />
+                            <uc:DemoWindowGrid Grid.Row="1" LyricsWindowStatus="{Binding}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Grid Grid.Row="2">
+                <uc:ExternalLinkButton Click="SettingsHypelinkButton_Click">
+                    <uc:ExternalLinkButton.Content>
+                        <TextBlock x:Uid="LyricsWindowSwitchWindowHelp" />
+                    </uc:ExternalLinkButton.Content>
+                </uc:ExternalLinkButton>
+            </Grid>
+
+        </Grid>
+    </Grid>
+
+</UserControl>

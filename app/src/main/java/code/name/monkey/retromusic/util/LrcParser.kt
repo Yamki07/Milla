@@ -15,7 +15,8 @@ import kotlinx.coroutines.withContext
  */
 data class LyricLine(
     val timeMs: Long,
-    val text: String
+    val text: String,
+    val syllables: List<Syllable> = emptyList()
 )
 
 /**
@@ -24,9 +25,10 @@ data class LyricLine(
  */
 object LrcParser {
 
-    // RegEx para detectar etiquetas de tiempo [mm:ss.xx] o [mm:ss.xxx] o [mm:ss]
-    // Ejemplo: [01:23.45] Hello world
+    // RegEx para detectar etiquetas de tiempo de la línea completa [mm:ss.xx]
     private val LRC_TIME_PATTERN = Pattern.compile("\\[(\\d{2,}):(\\d{2})(?:\\.(\\d{1,3}))?\\]")
+    // RegEx para detectar etiquetas de tiempo por sílaba <mm:ss.xx>
+    private val SYLLABLE_TIME_PATTERN = Pattern.compile("<(\\d{2,}):(\\d{2})(?:\\.(\\d{1,3}))?>([^<]*)")
 
     /**
      * Parsea un archivo .lrc de forma síncrona/offline.
@@ -62,6 +64,18 @@ object LrcParser {
         parse(content)
     }
 
+    private fun parseTimeToMs(minStr: String?, secStr: String?, millisRaw: String?): Long {
+        val minutes = minStr?.toLongOrNull() ?: 0L
+        val seconds = secStr?.toLongOrNull() ?: 0L
+        val millis = when (millisRaw?.length) {
+            1 -> (millisRaw.toLongOrNull() ?: 0L) * 100L
+            2 -> (millisRaw.toLongOrNull() ?: 0L) * 10L
+            3 -> millisRaw.toLongOrNull() ?: 0L
+            else -> 0L
+        }
+        return minutes * 60_000L + seconds * 1_000L + millis
+    }
+
     /**
      * Parsea una cadena de texto LRC y retorna la lista cronológicamente ordenada de LyricLine.
      */
@@ -79,37 +93,62 @@ object LrcParser {
 
             var lastEnd = 0
             while (matcher.find()) {
-                val minStr = matcher.group(1) ?: "0"
-                val secStr = matcher.group(2) ?: "0"
-                val millisRaw = matcher.group(3) ?: "0"
-
-                val minutes = minStr.toLongOrNull() ?: 0L
-                val seconds = secStr.toLongOrNull() ?: 0L
-
-                val millis = when (millisRaw.length) {
-                    1 -> (millisRaw.toLongOrNull() ?: 0L) * 100L
-                    2 -> (millisRaw.toLongOrNull() ?: 0L) * 10L
-                    3 -> millisRaw.toLongOrNull() ?: 0L
-                    else -> 0L
-                }
-
-                val timeMs = minutes * 60_000L + seconds * 1_000L + millis
+                val timeMs = parseTimeToMs(matcher.group(1), matcher.group(2), matcher.group(3))
                 timestamps.add(timeMs)
                 lastEnd = matcher.end()
             }
 
             if (timestamps.isNotEmpty()) {
-                val text = if (lastEnd < line.length) {
-                    line.substring(lastEnd).trim()
-                } else {
-                    ""
+                val text = if (lastEnd < line.length) line.substring(lastEnd).trim() else ""
+                
+                // Extraer sílabas si existen <00:00.00>word
+                val syllables = mutableListOf<Syllable>()
+                val syllableMatcher = SYLLABLE_TIME_PATTERN.matcher(text)
+                
+                var cleanText = ""
+                while (syllableMatcher.find()) {
+                    val sylTime = parseTimeToMs(syllableMatcher.group(1), syllableMatcher.group(2), syllableMatcher.group(3))
+                    val sylText = syllableMatcher.group(4) ?: ""
+                    cleanText += sylText
+                    syllables.add(Syllable(sylText, sylTime, 0L))
                 }
+
+                // Calcular la duración de cada sílaba en base a la siguiente
+                if (syllables.isNotEmpty()) {
+                    for (i in 0 until syllables.size - 1) {
+                        val duration = syllables[i + 1].startMs - syllables[i].startMs
+                        syllables[i] = syllables[i].copy(durationMs = if (duration > 0) duration else 100L)
+                    }
+                    // Última sílaba: asumimos una duración corta estándar o prolongada si es el final de la línea
+                    if (syllables.isNotEmpty()) {
+                        syllables[syllables.size - 1] = syllables.last().copy(durationMs = 800L)
+                    }
+                } else {
+                    cleanText = text // No hay sílabas
+                }
+
                 for (time in timestamps) {
-                    result.add(LyricLine(time, text))
+                    result.add(LyricLine(time, cleanText.trim(), syllables.toList()))
                 }
             }
         }
 
-        return result.sortedBy { it.timeMs }
+        // Post-procesamiento: ajustar duraciones de la última sílaba con respecto a la siguiente línea
+        val sortedResult = result.sortedBy { it.timeMs }.toMutableList()
+        for (i in 0 until sortedResult.size - 1) {
+            val currentLine = sortedResult[i]
+            val nextLine = sortedResult[i + 1]
+            if (currentLine.syllables.isNotEmpty()) {
+                val lastSyl = currentLine.syllables.last()
+                var newDuration = nextLine.timeMs - lastSyl.startMs
+                if (newDuration > 5000L) newDuration = 5000L // Cap at 5s
+                if (newDuration < 100L) newDuration = 500L
+                val modifiedSyllables = currentLine.syllables.toMutableList()
+                modifiedSyllables[modifiedSyllables.size - 1] = lastSyl.copy(durationMs = newDuration)
+                sortedResult[i] = currentLine.copy(syllables = modifiedSyllables)
+            }
+        }
+
+        return sortedResult
     }
 }

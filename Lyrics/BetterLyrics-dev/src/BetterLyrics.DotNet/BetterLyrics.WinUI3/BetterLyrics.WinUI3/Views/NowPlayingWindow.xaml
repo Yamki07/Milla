@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Window
+    x:Class="BetterLyrics.WinUI3.Views.NowPlayingWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:BetterLyrics.WinUI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="using:BetterLyrics.WinUI3.Controls"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    Closed="Window_Closed"
+    mc:Ignorable="d">
+
+    <Grid
+        x:Name="RootGrid"
+        Loaded="RootGrid_Loaded"
+        SizeChanged="RootGrid_SizeChanged">
+
+        <local:NowPlayingPage x:Name="NowPlayingPage" />
+
+        <!--  Top command  -->
+        <Grid
+            x:Name="TopCommandGrid"
+            VerticalAlignment="Top"
+            Background="Transparent"
+            Opacity="0"
+            PointerEntered="TopCommandGrid_PointerEntered"
+            PointerExited="TopCommandGrid_PointerExited">
+            <Grid.OpacityTransition>
+                <ScalarTransition />
+            </Grid.OpacityTransition>
+
+            <Grid
+                x:Name="TopLeftCommandGrid"
+                Padding="3"
+                HorizontalAlignment="Left">
+                <StackPanel
+                    HorizontalAlignment="Left"
+                    Orientation="Horizontal"
+                    Spacing="3">
+                    <StackPanel.OpacityTransition>
+                        <ScalarTransition />
+                    </StackPanel.OpacityTransition>
+
+                    <Button Click="MusicGalleryButton_Click" Style="{ThemeResource TitleBarButtonStyle}">
+                        <FontIcon
+                            FontFamily="{StaticResource SegoeFluentIcons}"
+                            FontSize="12"
+                            Glyph="&#xE8F1;" />
+                        <ToolTipService.ToolTip>
+                            <ToolTip x:Uid="HostWindowMusicGalleryButtonToolTip" />
+                        </ToolTipService.ToolTip>
+                    </Button>
+
+                    <Button
+                        x:Name="SettingsWindowButton"
+                        Click="SettingsWindowButton_Click"
+                        Style="{ThemeResource TitleBarButtonStyle}">
+                        <FontIcon
+                            FontFamily="{StaticResource SegoeFluentIcons}"
+                            FontSize="12"
+                            Glyph="&#xE713;" />
+                        <ToolTipService.ToolTip>
+                            <ToolTip x:Uid="HostWindowSettingsButtonToolTip" />
+                        </ToolTipService.ToolTip>
+                    </Button>
+
+                    <Button Click="LyricsWindowSwitchButton_Click" Style="{ThemeResource TitleBarButtonStyle}">
+                        <FontIcon
+                            FontFamily="{StaticResource SegoeFluentIcons}"
+                            FontSize="12"
+                            Glyph="&#xE8AB;" />
+                        <ToolTipService.ToolTip>
+                            <ToolTip x:Uid="LyricsWindowSwitchButtonToolTip" />
+                        </ToolTipService.ToolTip>
+                    </Button>
+
+                </StackPanel>
+            </Grid>
+
+            <Grid
+                x:Name="TopRightCommandGrid"
+                Padding="3"
+                HorizontalAlignment="Right">
+                <StackPanel
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal"
+                    Spacing="3">
+                    <StackPanel.OpacityTransition>
+                        <ScalarTransition />
+                    </StackPanel.OpacityTransition>
+
+                    <Button
+                        x:Name="LockButton"
+                        Click="LockButton_Click"
+                        Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                              FontSize=12,
+                                              Glyph=&#xE72E;}"
+                        Style="{ThemeResource TitleBarButtonStyle}">
+                        <Button.OpacityTransition>
+                            <ScalarTransition />
+                        </Button.OpacityTransition>
+                    </Button>
+
+                    <Button
+                        x:Name="AOTButton"
+                        Click="AOTButton_Click"
+                        Style="{ThemeResource TitleBarButtonStyle}">
+                        <Grid>
+                            <FontIcon
+                                FontFamily="{StaticResource SegoeFluentIcons}"
+                                FontSize="12"
+                                Glyph="&#xE840;" />
+                            <FontIcon
+                                x:Name="PinFillFontIcon"
+                                FontFamily="{StaticResource SegoeFluentIcons}"
+                                FontSize="12"
+                                Glyph="&#xE841;">
+                                <FontIcon.OpacityTransition>
+                                    <ScalarTransition />
+                                </FontIcon.OpacityTransition>
+                            </FontIcon>
+                        </Grid>
+                    </Button>
+
+                    <Button
+                        x:Name="FullscreenButton"
+                        Click="FullscreenButton_Click"
+                        Style="{ThemeResource TitleBarButtonStyle}">
+                        <Grid>
+                            <FontIcon
+                                x:Name="EnterFullscreenFontIcon"
+                                FontFamily="{StaticResource SegoeFluentIcons}"
+                                FontSize="12"
+                                Glyph="&#xE740;">
+                                <FontIcon.OpacityTransition>
+                                    <ScalarTransition />
+                                </FontIcon.OpacityTransition>
+                            </FontIcon>
+                            <FontIcon
+                                x:Name="ExitFullscreenFontIcon"
+                                FontFamily="{StaticResource SegoeFluentIcons}"
+                                FontSize="12"
+                                Glyph="&#xE73F;"
+                                Opacity="0">
+                                <FontIcon.OpacityTransition>
+                                    <ScalarTransition />
+                                </FontIcon.OpacityTransition>
+                            </FontIcon>
+                        </Grid>
+                    </Button>
+
+                    <Button
+                        x:Name="MinimizeButton"
+                        Click="MinimizeButton_Click"
+                        Style="{ThemeResource TitleBarButtonStyle}">
+                        <FontIcon
+                            FontFamily="{StaticResource SegoeFluentIcons}"
+                            FontSize="12"
+                            Glyph="&#xE738;" />
+                    </Button>
+
+                    <Button
+                        x:Name="MaximizeButton"
+                        Click="MaximizeButton_Click"
+                        Style="{ThemeResource TitleBarButtonStyle}">
+                        <Grid>
+                            <FontIcon
+                                x:Name="EnterMaximizeFontIcon"
+                                FontFamily="{StaticResource SegoeFluentIcons}"
+                                FontSize="12"
+                                Glyph="&#xE71A;">
+                                <FontIcon.OpacityTransition>
+                                    <ScalarTransition />
+                                </FontIcon.OpacityTransition>
+                            </FontIcon>
+                            <FontIcon
+                                x:Name="ExitMaximizeFontIcon"
+                                FontFamily="{StaticResource SegoeFluentIcons}"
+                                FontSize="12"
+                                Glyph="&#xE744;"
+                                Opacity="0">
+                                <FontIcon.OpacityTransition>
+                                    <ScalarTransition />
+                                </FontIcon.OpacityTransition>
+                            </FontIcon>
+                        </Grid>
+                    </Button>
+
+                    <Button
+                        x:Name="CloseButton"
+                        Click="CloseButton_Click"
+                        Style="{ThemeResource TitleBarButtonStyle}">
+                        <FontIcon
+                            FontFamily="{StaticResource SegoeFluentIcons}"
+                            FontSize="12"
+                            Glyph="&#xE711;" />
+                    </Button>
+
+                </StackPanel>
+            </Grid>
+
+            <Grid
+                x:Name="TopCenterCommandGrid"
+                Padding="3"
+                HorizontalAlignment="Stretch">
+                <Button
+                    HorizontalAlignment="Stretch"
+                    Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                          FontSize=12,
+                                          Glyph=&#xE712;}"
+                    Style="{ThemeResource TitleBarButtonStyle}">
+                    <Button.OpacityTransition>
+                        <ScalarTransition />
+                    </Button.OpacityTransition>
+
+                    <Button.Flyout>
+                        <Flyout FlyoutPresenterStyle="{StaticResource FlyoutGhostStyle}" ShouldConstrainToRootBounds="False">
+                            <Grid
+                                x:Name="TopCommandFlyoutContainer"
+                                Width="450"
+                                Height="38" />
+                        </Flyout>
+                    </Button.Flyout>
+
+                </Button>
+            </Grid>
+
+        </Grid>
+
+        <!--  Bottom command  -->
+        <Grid VerticalAlignment="Bottom">
+            <uc:NowPlayingBar
+                x:Name="NowPlayingBar"
+                Padding="16"
+                IsAutoHideEnabled="True"
+                ShowTime="True" />
+        </Grid>
+
+        <Grid
+            x:Name="LockToggleButtonContainer"
+            Padding="3"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <Button
+                x:Name="UnlockButton"
+                Click="UnlockButton_Click"
+                Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                      FontSize=12,
+                                      Glyph=&#xE785;}"
+                IsHitTestVisible="True"
+                Opacity="0"
+                PointerEntered="UnlockButton_PointerEntered"
+                PointerExited="UnlockButton_PointerExited"
+                Style="{ThemeResource AccentButtonStyle}">
+                <Button.OpacityTransition>
+                    <ScalarTransition />
+                </Button.OpacityTransition>
+            </Button>
+
+        </Grid>
+
+    </Grid>
+</Window>

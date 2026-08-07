@@ -56,6 +56,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.util.*
 import kotlin.collections.set
+import kotlinx.coroutines.Dispatchers
 
 class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     MusicProgressViewUpdateHelper.Callback {
@@ -410,12 +411,43 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     private fun loadLyrics() {
         lyricsType = if (!loadLRCLyrics()) {
             loadNormalLyrics()
+            // Si tampoco encontró letras normales, buscamos en internet
+            if (binding.noLyricsFound.isVisible) {
+                fetchLyricsFromInternet()
+            }
             LyricsType.NORMAL_LYRICS
         } else {
             binding.normalLyrics.isVisible = false
             binding.noLyricsFound.isVisible = false
             binding.recyclerView.isVisible = true
             LyricsType.SYNCED_LYRICS
+        }
+    }
+
+    private fun fetchLyricsFromInternet() {
+        binding.noLyricsFound.text = "Buscando letras en línea..."
+        lifecycleScope.launch(Dispatchers.Main) {
+            val result = LRCLibFetcher.fetchLyrics(song)
+            if (result != null) {
+                // Letra encontrada! Guardamos la letra para la próxima vez
+                // Detectar si es sincronizada
+                val isSynced = result.contains("[00:") || result.contains("[01:") || result.contains("[02:")
+                
+                if (isSynced) {
+                    LyricUtil.writeLrc(song, result)
+                    loadLRCLyrics() // Recargar localmente y cambiar UI
+                    lyricsType = LyricsType.SYNCED_LYRICS
+                    startLyricsTicker()
+                } else {
+                    binding.noLyricsFound.isVisible = false
+                    binding.normalLyrics.isVisible = true
+                    binding.normalLyrics.text = result
+                    lyricsType = LyricsType.NORMAL_LYRICS
+                    // Opcionalmente guardar como tag ID3 de letra plana
+                }
+            } else {
+                binding.noLyricsFound.text = getString(R.string.no_lyrics_found)
+            }
         }
     }
 
@@ -431,9 +463,6 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         stopLyricsTicker()
     }
 
-    /**
-     * Ticker de sincronización en tiempo real con corrutinas y AudioPlayerHandler.
-     */
     private fun startLyricsTicker() {
         stopLyricsTicker()
         tickerJob = lifecycleScope.launch {
@@ -442,7 +471,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                     val currentPos = AudioPlayerHandler.playbackState.position
                     updateSyncLine(currentPos)
                 }
-                delay(100L)
+                delay(16L) // ~60 FPS
             }
         }
     }
@@ -470,6 +499,11 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                 centerSmoothScroller.targetPosition = activeIndex
                 layoutManager.startSmoothScroll(centerSmoothScroller)
             }
+        }
+
+        if (activeIndex != -1) {
+            val holder = binding.recyclerView.findViewHolderForAdapterPosition(activeIndex) as? LyricsAdapter.LyricViewHolder
+            holder?.updateProgress(currentPositionMs)
         }
     }
 

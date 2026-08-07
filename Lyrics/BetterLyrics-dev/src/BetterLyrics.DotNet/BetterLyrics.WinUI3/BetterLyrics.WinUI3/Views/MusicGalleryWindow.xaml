@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Window
+    x:Class="BetterLyrics.WinUI3.Views.MusicGalleryWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:BetterLyrics.WinUI3.Views"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uc="using:BetterLyrics.WinUI3.Controls"
+    Closed="Window_Closed"
+    mc:Ignorable="d">
+
+    <Grid
+        x:Name="RootGrid"
+        Loaded="RootGrid_Loaded"
+        Unloaded="RootGrid_Unloaded">
+
+        <local:MusicGalleryPage x:Name="MusicGalleryPage" />
+
+        <local:NowPlayingPage
+            x:Name="NowPlayingPage"
+            LyricsWindowStatus="{x:Bind ViewModel.AppSettings.MusicGallerySettings.LyricsWindowStatus, Mode=OneWay}"
+            Opacity="0"
+            Visibility="Collapsed">
+            <local:NowPlayingPage.OpacityTransition>
+                <ScalarTransition Duration="0:0:0.35" />
+            </local:NowPlayingPage.OpacityTransition>
+        </local:NowPlayingPage>
+
+        <uc:NowPlayingBar
+            x:Name="NowPlayingBar"
+            Padding="16"
+            VerticalAlignment="Bottom"
+            IsAutoHideEnabled="False"
+            PlayQueueButtonClick="NowPlayingBar_PlayingQueueClick"
+            ShowPlaybackOrderButton="True"
+            ShowPlayingQueueButton="True"
+            ShowSongInfo="True"
+            ShowStopButton="True"
+            SongInfoTapped="NowPlayingBar_SongInfoTapped"
+            TimeTapped="NowPlayingBar_TimeTapped">
+            <uc:NowPlayingBar.ContextFlyout>
+                <Flyout x:Name="PlayQueueFlyout" ShouldConstrainToRootBounds="False">
+                    <Flyout.FlyoutPresenterStyle>
+                        <Style BasedOn="{StaticResource FlyoutGhostStyle}" TargetType="FlyoutPresenter">
+                            <Setter Property="MaxHeight" Value="600" />
+                        </Style>
+                    </Flyout.FlyoutPresenterStyle>
+                    <uc:PlayQueue
+                        x:Name="PlayQueue"
+                        Width="300"
+                        MaxHeight="600" />
+                </Flyout>
+            </uc:NowPlayingBar.ContextFlyout>
+        </uc:NowPlayingBar>
+
+    </Grid>
+
+</Window>

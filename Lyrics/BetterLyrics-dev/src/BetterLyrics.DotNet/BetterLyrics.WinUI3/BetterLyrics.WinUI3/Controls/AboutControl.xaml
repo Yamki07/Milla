@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<UserControl
+    x:Class="BetterLyrics.WinUI3.Controls.AboutControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:constants="using:BetterLyrics.Core.Constants"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:BetterLyrics.Core.Helpers"
+    xmlns:local="using:BetterLyrics.WinUI3.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:media="using:CommunityToolkit.WinUI.Media"
+    xmlns:models1="using:BetterLyrics.Core.Models"
+    xmlns:uc="using:BetterLyrics.WinUI3.Controls"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    mc:Ignorable="d">
+
+    <Grid>
+
+        <!--  Banner as background  -->
+        <controls:OpacityMaskView>
+            <controls:OpacityMaskView.OpacityMask>
+                <Rectangle>
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="White" />
+                            <GradientStop Offset="1" Color="Transparent" />
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+            </controls:OpacityMaskView.OpacityMask>
+            <Grid>
+                <Image Source="ms-appx:///Assets/Banner.png" Stretch="UniformToFill" />
+                <Border>
+                    <Border.Background>
+                        <media:AcrylicBrush
+                            BlurAmount="5"
+                            TintColor="{ThemeResource SolidBackgroundFillColorBaseAlt}"
+                            TintOpacity=".7" />
+                    </Border.Background>
+                </Border>
+            </Grid>
+        </controls:OpacityMaskView>
+
+        <ScrollViewer>
+            <Grid Style="{StaticResource SettingsGridStyle}">
+                <StackPanel Margin="36,0" Spacing="{StaticResource SettingsCardSpacing}">
+
+                    <StackPanel Margin="0,48" Spacing="12">
+                        <!--  App logo and name  -->
+                        <StackPanel
+                            HorizontalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="16">
+                            <Image
+                                Width="32"
+                                Height="32"
+                                Source="ms-appx:///Assets/Logo.png" />
+                            <TextBlock
+                                FontFamily="{StaticResource SloganENFont}"
+                                FontSize="36"
+                                Style="{ThemeResource DisplayTextBlockStyle}"
+                                Text="{x:Bind constants:App.AppName}" />
+                        </StackPanel>
+                        <!--  App slogan  -->
+                        <StackPanel Background="Transparent" Spacing="4">
+
+                            <TextBlock
+                                x:Name="SloganCN"
+                                HorizontalAlignment="Center"
+                                FontFamily="{StaticResource SloganCNFont}"
+                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                Style="{ThemeResource SubtitleTextBlockStyle}"
+                                Text="曲拨心弦，词落云笺" />
+
+                            <TextBlock
+                                x:Name="SloganEN"
+                                HorizontalAlignment="Center"
+                                FontFamily="{StaticResource SloganENFont}"
+                                FontWeight="Bold"
+                                Foreground="{ThemeResource TextFillColorTertiaryBrush}"
+                                Style="{StaticResource CaptionTextBlockStyle}"
+                                Text="Strums the Heartstrings, Graces the Wordscapes" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <controls:SettingsExpander
+                        Description="© Zhe Fang 2025-2026. Licensed under GPL-3.0."
+                        Header="{x:Bind constants:App.AppName}"
+                        HeaderIcon="{ui:BitmapIcon Source=ms-appx:///Assets/Logo.png}">
+                        <TextBlock Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind helpers:MetadataHelper.AppVersion}" />
+                        <controls:SettingsExpander.Items>
+                            <controls:SettingsCard Description="{x:Bind ViewModel.AppSettings.GeneralSettings.LastAppUpateCheckDateTime.ToString(), Mode=OneWay}">
+                                <controls:SettingsCard.Header>
+                                    <TextBlock x:Uid="AboutControlLastCheckTime" />
+                                </controls:SettingsCard.Header>
+                                <Button
+                                    x:Name="CheckUpdateButton"
+                                    x:Uid="AboutControlCheckUpdate"
+                                    Command="{x:Bind ViewModel.CheckAppUpdateCommand}" />
+                            </controls:SettingsCard>
+                        </controls:SettingsExpander.Items>
+                        <controls:SettingsExpander.ItemsHeader>
+                            <Grid>
+                                <InfoBar
+                                    x:Uid="AboutControlUpToDate"
+                                    IsClosable="False"
+                                    IsOpen="True"
+                                    Severity="Success"
+                                    Visibility="{x:Bind ViewModel.AppUpdateService.AppUpdateStatus, Mode=OneWay, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" />
+                                <InfoBar
+                                    x:Uid="AboutControlUpdateAvailable"
+                                    IsClosable="False"
+                                    IsOpen="True"
+                                    Severity="Warning"
+                                    Visibility="{x:Bind ViewModel.AppUpdateService.AppUpdateStatus, Mode=OneWay, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=1}">
+                                    <uc:ExternalLinkButton
+                                        x:Uid="AboutControlOpenAppStorePage"
+                                        Margin="-12,0,0,12"
+                                        Command="{x:Bind ViewModel.OpenAppStorePageCommand}" />
+                                </InfoBar>
+                                <InfoBar
+                                    x:Uid="AboutControlCheckUpdateError"
+                                    IsClosable="False"
+                                    IsOpen="True"
+                                    Severity="Error"
+                                    Visibility="{x:Bind ViewModel.AppUpdateService.AppUpdateStatus, Mode=OneWay, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=2}" />
+                                <ProgressBar
+                                    Margin="0,2,0,0"
+                                    VerticalAlignment="Top"
+                                    IsIndeterminate="True"
+                                    Visibility="{Binding IsEnabled, ElementName=CheckUpdateButton, Mode=OneWay, Converter={StaticResource BoolNegationToVisibilityConverter}}" />
+                            </Grid>
+                        </controls:SettingsExpander.ItemsHeader>
+                    </controls:SettingsExpander>
+
+                    <Grid Margin="0,-4,0,0" Style="{StaticResource CardGridStyle}">
+                        <Grid.Resources>
+                            <Style TargetType="controls:WrapPanel">
+                                <Setter Property="Margin" Value="-12,0,0,0" />
+                            </Style>
+                        </Grid.Resources>
+                        <StackPanel Margin="58,6" Spacing="6">
+
+                            <controls:WrapPanel Orientation="Horizontal">
+                                <uc:ExternalLinkButton Command="{x:Bind ViewModel.OpenAppStorePageCommand}" Content="Microsoft Store" />
+                                <uc:ExternalLinkButton Content="GitHub" NavigateUri="{x:Bind constants:Link.BetterLyricsGitHub}" />
+                                <uc:ExternalLinkButton x:Uid="UserGuide" NavigateUri="{x:Bind constants:Link.UserGuide}" />
+                                <uc:ExternalLinkButton x:Uid="PrivacyPolicy" NavigateUri="{x:Bind constants:Link.PrivacyPolicy}" />
+                                <uc:ExternalLinkButton x:Uid="TermsOfService" NavigateUri="{x:Bind constants:Link.TermsOfService}" />
+                            </controls:WrapPanel>
+
+                            <TextBlock x:Uid="SetingsPageFeedback" />
+                            <controls:WrapPanel Orientation="Horizontal">
+                                <HyperlinkButton x:Name="QQGroupButton" Click="QQGroupButton_Click">
+                                    <TextBlock Text="QQ 群" />
+                                    <HyperlinkButton.ContextFlyout>
+                                        <Flyout x:Name="QQGroupFlyout" FlyoutPresenterStyle="{StaticResource FlyoutGhostStyle}">
+                                            <StackPanel>
+                                                <uc:ExternalLinkButton Content="1 群（1054700388）" NavigateUri="{x:Bind constants:Link.QQGroup1}" />
+                                                <uc:ExternalLinkButton Content="2 群（1076554669）" NavigateUri="{x:Bind constants:Link.QQGroup2}" />
+                                            </StackPanel>
+                                        </Flyout>
+                                    </HyperlinkButton.ContextFlyout>
+                                </HyperlinkButton>
+                                <uc:ExternalLinkButton NavigateUri="{x:Bind constants:Link.Discord}">
+                                    <TextBlock Text="Discord" />
+                                </uc:ExternalLinkButton>
+                                <uc:ExternalLinkButton NavigateUri="{x:Bind constants:Link.Telegram}">
+                                    <TextBlock Text="Telegram" />
+                                </uc:ExternalLinkButton>
+                            </controls:WrapPanel>
+
+                            <TextBlock x:Uid="SetingsPageDonation" />
+                            <controls:WrapPanel Orientation="Horizontal">
+                                <uc:ExternalLinkButton NavigateUri="{x:Bind constants:Link.BuyMeACoffee}">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="Buy me a coffee" />
+                                    </StackPanel>
+                                </uc:ExternalLinkButton>
+                                <uc:ExternalLinkButton NavigateUri="{x:Bind constants:Link.PayPal}">
+                                    <TextBlock Text="PayPal" />
+                                </uc:ExternalLinkButton>
+                                <HyperlinkButton x:Name="AlipayWeChatPayButton" Click="AlipayWeChatPayButton_Click">
+                                    <StackPanel Orientation="Horizontal" Spacing="6">
+                                        <TextBlock Text="支付宝" />
+                                        <Border Width="10" />
+                                        <TextBlock Text="微信支付" />
+                                    </StackPanel>
+                                    <HyperlinkButton.ContextFlyout>
+                                        <Flyout x:Name="AlipayWeChatPayFlyout" FlyoutPresenterStyle="{StaticResource FlyoutGhostStyle}">
+                                            <Image Height="280" Source="/Assets/AlipayWeChatPay.png" />
+                                        </Flyout>
+                                    </HyperlinkButton.ContextFlyout>
+                                </HyperlinkButton>
+                                <uc:ExternalLinkButton NavigateUri="{x:Bind constants:Link.Afdian}">
+                                    <TextBlock Text="爱发电" />
+                                </uc:ExternalLinkButton>
+                            </controls:WrapPanel>
+                            <Grid ColumnSpacing="6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Text="*" />
+                                <TextBlock
+                                    x:Uid="SetingsPageThanks"
+                                    Grid.Column="1"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Style="{StaticResource CaptionTextBlockStyle}"
+                                    TextWrapping="Wrap" />
+                            </Grid>
+
+                        </StackPanel>
+                    </Grid>
+
+                    <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <Expander.Header>
+                            <TextBlock x:Uid="SetingsPageContributors" />
+                        </Expander.Header>
+
+                        <ItemsControl ItemsSource="{x:Bind ViewModel.Contributors, Mode=OneWay}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <controls:WrapPanel HorizontalSpacing="1" VerticalSpacing="1" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models1:Contributor">
+                                    <local:ContributorCard
+                                        AvatarSource="{x:Bind AvatarSource}"
+                                        Badges="{x:Bind Badges}"
+                                        Description="{x:Bind Description}"
+                                        Header="{x:Bind Header}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Expander>
+
+                    <Expander HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <Expander.Header>
+                            <TextBlock x:Uid="SettingsPagePatrons" />
+                        </Expander.Header>
+
+                        <ItemsControl ItemsSource="{x:Bind ViewModel.Donors, Mode=OneWay}">
+
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <controls:WrapPanel HorizontalSpacing="1" VerticalSpacing="1" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="models1:Donor">
+                                    <uc:PatronControl Date="{x:Bind Date}" PatronName="{x:Bind PatronName}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+
+                        </ItemsControl>
+                    </Expander>
+
+                    <controls:SettingsExpander x:Uid="SettingsPageCache" IsExpanded="True">
+                        <Button x:Uid="SettingsPageOpenFolderButton" Command="{x:Bind ViewModel.OpenCacheFolderCommand}" />
+                        <controls:SettingsExpander.Items>
+                            <controls:SettingsCard>
+                                <Button x:Uid="SettingsPageClearCache" Command="{x:Bind ViewModel.ClearCacheFilesCommand}" />
+                            </controls:SettingsCard>
+                        </controls:SettingsExpander.Items>
+                    </controls:SettingsExpander>
+
+                    <controls:SettingsCard x:Uid="SettingsPageSettings">
+                        <Button x:Uid="SettingsPageOpenFolderButton" Command="{x:Bind ViewModel.OpenSettingsFolderCommand}" />
+                    </controls:SettingsCard>
+
+                    <controls:SettingsExpander x:Uid="SettingsPageSettingsManager" IsExpanded="True">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Button x:Uid="SettingsPageImportSettingsButton" Command="{x:Bind ViewModel.ImportSettingsCommand}" />
+                            <Button x:Uid="SettingsPageExportSettingsButton" Command="{x:Bind ViewModel.ExportSettingsCommand}" />
+                        </StackPanel>
+                        <controls:SettingsExpander.ItemsHeader>
+                            <InfoBar
+                                x:Uid="SettingsPageImportSettingsInfo"
+                                BorderThickness="0"
+                                CornerRadius="0"
+                                IsClosable="False"
+                                IsOpen="True" />
+                        </controls:SettingsExpander.ItemsHeader>
+                    </controls:SettingsExpander>
+
+                    <TextBlock
+                        x:Uid="SettingsPageDisclaimer"
+                        Margin="12"
+                        Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                        Style="{StaticResource CaptionTextBlockStyle}" />
+
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+    </Grid>
+</UserControl>

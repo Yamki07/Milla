@@ -1,0 +1,617 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<UserControl
+    x:Class="BetterLyrics.WinUI3.Controls.NowPlayingBar"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:helpers="using:BetterLyrics.WinUI3.Helpers"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:local="using:BetterLyrics.WinUI3.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    mc:Ignorable="d">
+
+    <Grid x:Name="RootGrid">
+
+        <Grid
+            x:Name="BottomCommandGrid"
+            Background="Transparent"
+            Opacity="1"
+            PointerEntered="BottomCommandGrid_PointerEntered"
+            PointerExited="BottomCommandGrid_PointerExited">
+            <Grid.OpacityTransition>
+                <ScalarTransition />
+            </Grid.OpacityTransition>
+
+            <Grid x:Name="BottomCommandContent">
+
+                <Grid
+                    x:Name="TimelineSliderLyricsLineInfo"
+                    Margin="0,4,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top"
+                    Opacity="0">
+                    <Grid.OpacityTransition>
+                        <ScalarTransition />
+                    </Grid.OpacityTransition>
+                    <Grid.TranslationTransition>
+                        <Vector3Transition />
+                    </Grid.TranslationTransition>
+                    <Grid
+                        Margin="4,0,0,0"
+                        Padding="8,4"
+                        Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+                        ColumnSpacing="6"
+                        CornerRadius="6">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock
+                            Grid.Column="0"
+                            Margin="0,0,0,2"
+                            Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                            Text="{x:Bind ViewModel.TimelineSliderThumbLyricsLine.StartMs, Converter={StaticResource MillisecondsToFormattedTimeConverter}, Mode=OneWay}" />
+                        <Grid Grid.Column="1">
+                            <RichTextBlock
+                                MaxLines="2"
+                                TextTrimming="CharacterEllipsis"
+                                TextWrapping="Wrap">
+                                <Paragraph>
+                                    <Run Text="{x:Bind ViewModel.TimelineSliderThumbLyricsLine.PrimaryText, Mode=OneWay}" />
+                                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{x:Bind ViewModel.TimelineSliderThumbLyricsLine.SecondaryText, Mode=OneWay}" />
+                                </Paragraph>
+                            </RichTextBlock>
+                        </Grid>
+                    </Grid>
+                </Grid>
+
+                <Grid HorizontalAlignment="Left">
+                    <StackPanel x:Name="BottomLeftCommandStackPanel" Padding="{x:Bind Padding, Mode=OneWay}">
+
+                        <StackPanel
+                            x:Name="SongInfoStackPanel"
+                            VerticalAlignment="Center"
+                            Opacity="{x:Bind ShowSongInfo, Mode=OneWay, Converter={StaticResource BoolToOpacityConverter}}"
+                            Orientation="Horizontal"
+                            Spacing="12"
+                            Visibility="{x:Bind ShowSongInfo, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel.OpacityTransition>
+                                <ScalarTransition />
+                            </StackPanel.OpacityTransition>
+                            <Grid
+                                Width="36"
+                                Height="36"
+                                VerticalAlignment="Center">
+                                <Grid CornerRadius="4">
+                                    <local:ImageSwitcher Source="{x:Bind GSMTCService.AlbumArtBytes, Converter={StaticResource ByteArrayToImageConverter}, Mode=OneWay}" />
+                                </Grid>
+                                <Grid
+                                    x:Name="LyricsOpenHintGrid"
+                                    Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}"
+                                    CornerRadius="2"
+                                    Opacity="0"
+                                    Tapped="SongInfoStackPanel_Tapped">
+                                    <Grid.OpacityTransition>
+                                        <ScalarTransition />
+                                    </Grid.OpacityTransition>
+                                    <FontIcon
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontFamily="{StaticResource SegoeFluentIcons}"
+                                        FontSize="16"
+                                        Glyph="&#xE70E;" />
+                                </Grid>
+                            </Grid>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock IsTextSelectionEnabled="True" Text="{x:Bind GSMTCService.CurrentSongInfo.Title, Mode=OneWay}" />
+                                <TextBlock
+                                    FontSize="12"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    IsTextSelectionEnabled="True"
+                                    Text="{x:Bind GSMTCService.CurrentSongInfo.Artist, Mode=OneWay}" />
+                            </StackPanel>
+                        </StackPanel>
+
+                        <StackPanel
+                            x:Name="TimeStackPanel"
+                            Height="36"
+                            VerticalAlignment="Center"
+                            Opacity="{x:Bind ShowTime, Mode=OneWay, Converter={StaticResource BoolToOpacityConverter}}"
+                            Orientation="Horizontal"
+                            Spacing="6"
+                            Tapped="TimeStackPanel_Tapped"
+                            Visibility="{x:Bind ShowTime, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel.OpacityTransition>
+                                <ScalarTransition />
+                            </StackPanel.OpacityTransition>
+                            <RichTextBlock Margin="0,8,0,0" IsTextSelectionEnabled="False">
+                                <Paragraph>
+                                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="{Binding ElementName=TimelineSlider, Path=Value, Converter={StaticResource SecondsToFormattedTimeConverter}}" />
+                                    <Run Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="/" />
+                                    <Run Text="{Binding ElementName=TimelineSlider, Path=Maximum, Converter={StaticResource SecondsToFormattedTimeConverter}}" />
+                                </Paragraph>
+                            </RichTextBlock>
+                            <FontIcon
+                                VerticalAlignment="Center"
+                                FontFamily="{StaticResource SegoeFluentIcons}"
+                                FontSize="12"
+                                Glyph="&#xE70D;"
+                                Visibility="{x:Bind ShowPlayingQueueButton, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                        </StackPanel>
+
+                    </StackPanel>
+                </Grid>
+
+                <Grid HorizontalAlignment="Center">
+                    <StackPanel
+                        x:Name="BottomCenterCommandStackPanel"
+                        Padding="{x:Bind Padding, Mode=OneWay}"
+                        Orientation="Horizontal"
+                        Spacing="12">
+                        <!--  Playback order  -->
+                        <Button
+                            Click="PlaybackOrderButton_Click"
+                            Style="{ThemeResource GhostButtonStyle}"
+                            Visibility="{x:Bind ShowPlaybackOrderButton, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <ToolTipService.ToolTip>
+                                <ToolTip>
+                                    <Grid>
+                                        <TextBlock x:Uid="MusicGalleryPageQueueLoop" Visibility="{x:Bind ViewModel.AppSettings.MusicGallerySettings.PlaybackOrder, Mode=OneWay, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" />
+                                        <TextBlock x:Uid="MusicGalleryPageSingleLoop" Visibility="{x:Bind ViewModel.AppSettings.MusicGallerySettings.PlaybackOrder, Mode=OneWay, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=1}" />
+                                        <TextBlock x:Uid="MusicGalleryPageQueueRandom" Visibility="{x:Bind ViewModel.AppSettings.MusicGallerySettings.PlaybackOrder, Mode=OneWay, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=2}" />
+                                    </Grid>
+                                </ToolTip>
+                            </ToolTipService.ToolTip>
+                            <Button.Content>
+                                <Grid>
+                                    <FontIcon
+                                        FontFamily="{StaticResource SegoeFluentIcons}"
+                                        FontSize="16"
+                                        Glyph="&#xE8EE;"
+                                        Opacity="{x:Bind ViewModel.AppSettings.MusicGallerySettings.PlaybackOrder, Mode=OneWay, Converter={StaticResource EnumToOpacityConverter}, ConverterParameter=0}">
+                                        <FontIcon.OpacityTransition>
+                                            <ScalarTransition />
+                                        </FontIcon.OpacityTransition>
+                                    </FontIcon>
+                                    <FontIcon
+                                        FontFamily="{StaticResource SegoeFluentIcons}"
+                                        FontSize="16"
+                                        Glyph="&#xE8ED;"
+                                        Opacity="{x:Bind ViewModel.AppSettings.MusicGallerySettings.PlaybackOrder, Mode=OneWay, Converter={StaticResource EnumToOpacityConverter}, ConverterParameter=1}">
+                                        <FontIcon.OpacityTransition>
+                                            <ScalarTransition />
+                                        </FontIcon.OpacityTransition>
+                                    </FontIcon>
+                                    <FontIcon
+                                        FontFamily="{StaticResource SegoeFluentIcons}"
+                                        FontSize="16"
+                                        Glyph="&#xE8B1;"
+                                        Opacity="{x:Bind ViewModel.AppSettings.MusicGallerySettings.PlaybackOrder, Mode=OneWay, Converter={StaticResource EnumToOpacityConverter}, ConverterParameter=2}">
+                                        <FontIcon.OpacityTransition>
+                                            <ScalarTransition />
+                                        </FontIcon.OpacityTransition>
+                                    </FontIcon>
+                                </Grid>
+                            </Button.Content>
+                        </Button>
+                        <!--  上一曲目  -->
+                        <Button
+                            Command="{x:Bind ViewModel.PreviousSongCommand}"
+                            Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                  Glyph=&#xE622;}"
+                            Style="{ThemeResource GhostButtonStyle}" />
+                        <Button
+                            Command="{x:Bind ViewModel.PauseSongCommand}"
+                            Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                  Glyph=&#xF8AE;}"
+                            Style="{ThemeResource GhostButtonStyle}">
+                            <interactivity:Interaction.Behaviors>
+                                <interactivity:DataTriggerBehavior
+                                    Binding="{x:Bind GSMTCService.CurrentIsPlaying, Mode=OneWay}"
+                                    ComparisonCondition="Equal"
+                                    Value="True">
+                                    <interactivity:ChangePropertyAction PropertyName="Visibility" Value="Visible" />
+                                </interactivity:DataTriggerBehavior>
+                                <interactivity:DataTriggerBehavior
+                                    Binding="{x:Bind GSMTCService.CurrentIsPlaying, Mode=OneWay}"
+                                    ComparisonCondition="Equal"
+                                    Value="False">
+                                    <interactivity:ChangePropertyAction PropertyName="Visibility" Value="Collapsed" />
+                                </interactivity:DataTriggerBehavior>
+                            </interactivity:Interaction.Behaviors>
+                        </Button>
+                        <Button
+                            Command="{x:Bind ViewModel.PlaySongCommand}"
+                            Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                  Glyph=&#xF5B0;}"
+                            Style="{ThemeResource GhostButtonStyle}">
+                            <interactivity:Interaction.Behaviors>
+                                <interactivity:DataTriggerBehavior
+                                    Binding="{x:Bind GSMTCService.CurrentIsPlaying, Mode=OneWay}"
+                                    ComparisonCondition="Equal"
+                                    Value="True">
+                                    <interactivity:ChangePropertyAction PropertyName="Visibility" Value="Collapsed" />
+                                </interactivity:DataTriggerBehavior>
+                                <interactivity:DataTriggerBehavior
+                                    Binding="{x:Bind GSMTCService.CurrentIsPlaying, Mode=OneWay}"
+                                    ComparisonCondition="Equal"
+                                    Value="False">
+                                    <interactivity:ChangePropertyAction PropertyName="Visibility" Value="Visible" />
+                                </interactivity:DataTriggerBehavior>
+                            </interactivity:Interaction.Behaviors>
+                        </Button>
+                        <!--  Next track  -->
+                        <Button
+                            Command="{x:Bind ViewModel.NextSongCommand}"
+                            Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                  Glyph=&#xE623;}"
+                            Style="{ThemeResource GhostButtonStyle}" />
+                        <!--  播放队列按钮  -->
+                        <Button
+                            Click="PlayingQueueButton_Click"
+                            Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                  Glyph=&#xE8FD;}"
+                            Style="{ThemeResource GhostButtonStyle}"
+                            Visibility="{x:Bind ShowPlayingQueueButton, Converter={StaticResource BoolToVisibilityConverter}, Mode=OneWay}">
+                            <ToolTipService.ToolTip>
+                                <TextBlock x:Uid="MusicGalleryPagePlayingQueue" />
+                            </ToolTipService.ToolTip>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+
+                <Grid HorizontalAlignment="Right">
+                    <StackPanel
+                        x:Name="BottomRightCommandStackPanel"
+                        Padding="{x:Bind Padding, Mode=OneWay}"
+                        Orientation="Horizontal"
+                        Spacing="3">
+
+                        <!--  Volume  -->
+                        <Border Visibility="{x:Bind ViewModel.Volume, Mode=OneWay, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter=-1}">
+                            <Button
+                                x:Name="VolumeButton"
+                                Click="VolumeButton_Click"
+                                Style="{ThemeResource GhostButtonStyle}"
+                                Visibility="{x:Bind ShowVolumeButton, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                <Grid>
+
+                                    <!--  Volumn: 0  -->
+                                    <FontIcon FontFamily="{StaticResource SegoeFluentIcons}" Glyph="&#xE74F;">
+                                        <FontIcon.OpacityTransition>
+                                            <ScalarTransition />
+                                        </FontIcon.OpacityTransition>
+                                        <interactivity:Interaction.Behaviors>
+                                            <interactivity:DataTriggerBehavior
+                                                Binding="{x:Bind ViewModel.Volume, Mode=OneWay}"
+                                                ComparisonCondition="Equal"
+                                                Value="0">
+                                                <interactivity:ChangePropertyAction PropertyName="Opacity" Value="1" />
+                                            </interactivity:DataTriggerBehavior>
+                                            <interactivity:DataTriggerBehavior
+                                                Binding="{x:Bind ViewModel.Volume, Mode=OneWay}"
+                                                ComparisonCondition="NotEqual"
+                                                Value="0">
+                                                <interactivity:ChangePropertyAction PropertyName="Opacity" Value="0" />
+                                            </interactivity:DataTriggerBehavior>
+                                        </interactivity:Interaction.Behaviors>
+                                    </FontIcon>
+
+                                    <!--  Volumn: 1-32  -->
+                                    <FontIcon
+                                        x:Name="VolumeLevel1"
+                                        FontFamily="{StaticResource SegoeFluentIcons}"
+                                        Glyph="&#xE993;">
+                                        <FontIcon.OpacityTransition>
+                                            <ScalarTransition />
+                                        </FontIcon.OpacityTransition>
+                                        <interactivity:Interaction.Behaviors>
+                                            <interactivity:DataTriggerBehavior
+                                                Binding="{x:Bind ViewModel.Volume, Mode=OneWay}"
+                                                ComparisonCondition="GreaterThanOrEqual"
+                                                Value="1">
+                                                <interactivity:ChangePropertyAction PropertyName="Opacity" Value="1" />
+                                            </interactivity:DataTriggerBehavior>
+                                            <interactivity:DataTriggerBehavior
+                                                Binding="{x:Bind ViewModel.Volume, Mode=OneWay}"
+                                                ComparisonCondition="LessThan"
+                                                Value="1">
+                                                <interactivity:ChangePropertyAction PropertyName="Opacity" Value="0" />
+                                            </interactivity:DataTriggerBehavior>
+                                        </interactivity:Interaction.Behaviors>
+                                    </FontIcon>
+
+                                    <!--  Volumn: 33-65  -->
+                                    <FontIcon
+                                        x:Name="VolumeLevel2"
+                                        FontFamily="{StaticResource SegoeFluentIcons}"
+                                        Glyph="&#xE994;">
+                                        <FontIcon.OpacityTransition>
+                                            <ScalarTransition />
+                                        </FontIcon.OpacityTransition>
+                                        <interactivity:Interaction.Behaviors>
+                                            <interactivity:DataTriggerBehavior
+                                                Binding="{x:Bind ViewModel.Volume, Mode=OneWay}"
+                                                ComparisonCondition="GreaterThanOrEqual"
+                                                Value="33">
+                                                <interactivity:ChangePropertyAction PropertyName="Opacity" Value="1" />
+                                            </interactivity:DataTriggerBehavior>
+                                            <interactivity:DataTriggerBehavior
+                                                Binding="{x:Bind ViewModel.Volume, Mode=OneWay}"
+                                                ComparisonCondition="LessThan"
+                                                Value="33">
+                                                <interactivity:ChangePropertyAction PropertyName="Opacity" Value="0" />
+                                            </interactivity:DataTriggerBehavior>
+                                        </interactivity:Interaction.Behaviors>
+                                    </FontIcon>
+
+                                    <!--  Volumn: 66-100  -->
+                                    <FontIcon
+                                        x:Name="VolumeLevel3"
+                                        FontFamily="{StaticResource SegoeFluentIcons}"
+                                        Glyph="&#xE995;">
+                                        <FontIcon.OpacityTransition>
+                                            <ScalarTransition />
+                                        </FontIcon.OpacityTransition>
+                                        <interactivity:Interaction.Behaviors>
+                                            <interactivity:DataTriggerBehavior
+                                                Binding="{x:Bind ViewModel.Volume, Mode=OneWay}"
+                                                ComparisonCondition="GreaterThanOrEqual"
+                                                Value="66">
+                                                <interactivity:ChangePropertyAction PropertyName="Opacity" Value="1" />
+                                            </interactivity:DataTriggerBehavior>
+                                            <interactivity:DataTriggerBehavior
+                                                Binding="{x:Bind ViewModel.Volume, Mode=OneWay}"
+                                                ComparisonCondition="LessThan"
+                                                Value="66">
+                                                <interactivity:ChangePropertyAction PropertyName="Opacity" Value="0" />
+                                            </interactivity:DataTriggerBehavior>
+                                        </interactivity:Interaction.Behaviors>
+                                    </FontIcon>
+                                </Grid>
+
+                                <Button.ContextFlyout>
+                                    <Flyout x:Name="VolumeFlyout" ShouldConstrainToRootBounds="False">
+                                        <local:ExtendedSlider
+                                            Frequency="1"
+                                            Maximum="100"
+                                            Minimum="0"
+                                            ResetButtonVisibility="Collapsed"
+                                            Unit="%"
+                                            ValueChangedByUser="ExtendedSlider_ValueChangedByUser"
+                                            Value="{x:Bind ViewModel.Volume, Mode=TwoWay}" />
+                                    </Flyout>
+                                </Button.ContextFlyout>
+                            </Button>
+                        </Border>
+
+                        <!--  Stop media session  -->
+                        <Button
+                            Command="{x:Bind ViewModel.StopTrackCommand}"
+                            Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                  FontSize=16,
+                                                  FontWeight=Bold,
+                                                  Glyph=&#xE7E8;}"
+                            Style="{ThemeResource GhostButtonStyle}"
+                            Visibility="{x:Bind ShowStopButton, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <ToolTipService.ToolTip>
+                                <TextBlock x:Uid="MusicGalleryPageStopTrack" />
+                            </ToolTipService.ToolTip>
+                        </Button>
+
+                        <!--  More  -->
+                        <Button
+                            Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                  Glyph=&#xE712;}"
+                            Style="{ThemeResource GhostButtonStyle}"
+                            Visibility="{x:Bind ShowMoreButton, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Button.Flyout>
+                                <MenuFlyout>
+                                    <!--  Lyrics search window  -->
+                                    <MenuFlyoutItem
+                                        x:Uid="LyricsPageLyricsSearch"
+                                        Command="{x:Bind ViewModel.NavigationService.OpenLyricsSearchWindowCommand}"
+                                        Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                           Glyph=&#xE721;}" />
+                                    <!--  Config current lyrics window shortcut settings  -->
+                                    <MenuFlyoutItem
+                                        x:Uid="NowPlayingBarConfigCurrentLyricsWindow"
+                                        Click="LyricsSettingsShortcutMenuFlyoutItem_Click"
+                                        Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                           Glyph=&#xE61F;}">
+                                        <MenuFlyoutItem.ContextFlyout>
+                                            <Flyout
+                                                x:Name="LyricsSettingsFlyout"
+                                                Closed="LyricsSettingsFlyout_Closed"
+                                                FlyoutPresenterStyle="{StaticResource FlyoutPageStyle}"
+                                                Opened="LyricsSettingsFlyout_Opened"
+                                                Placement="Right"
+                                                ShouldConstrainToRootBounds="False" />
+                                        </MenuFlyoutItem.ContextFlyout>
+                                    </MenuFlyoutItem>
+                                    <!--  Config current playback source shortcut settings  -->
+                                    <MenuFlyoutItem
+                                        x:Uid="NowPlayingBarConfigCurrentPlaybackSource"
+                                        Click="PlaybackSettingsShortcutMenuFlyoutItem_Click"
+                                        Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                           Glyph=&#xEA69;}">
+                                        <MenuFlyoutItem.ContextFlyout>
+                                            <Flyout
+                                                x:Name="PlaybackSettingsFlyout"
+                                                Closed="PlaybackSettingsFlyout_Closed"
+                                                FlyoutPresenterStyle="{StaticResource FlyoutPageStyle}"
+                                                Opened="PlaybackSettingsFlyout_Opened"
+                                                Placement="Right"
+                                                ShouldConstrainToRootBounds="False" />
+                                        </MenuFlyoutItem.ContextFlyout>
+                                    </MenuFlyoutItem>
+                                    <!--  Stats  -->
+                                    <MenuFlyoutItem
+                                        x:Uid="SystemTrayStats"
+                                        Command="{x:Bind ViewModel.NavigationService.OpenStatsDashboardWindowCommand}"
+                                        Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                           Glyph=&#xE9D2;}" />
+                                    <!--  Lyrics Card  -->
+                                    <MenuFlyoutItem
+                                        x:Uid="LyricsPageLyricsCard"
+                                        Command="{x:Bind ViewModel.NavigationService.OpenLyricsShareWindowCommand}"
+                                        Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                           Glyph=&#xE70B;}" />
+                                    <!--  Settings  -->
+                                    <MenuFlyoutItem
+                                        x:Uid="LyricsPageSettings"
+                                        Command="{x:Bind ViewModel.NavigationService.OpenSettingsWindowCommand}"
+                                        Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                                           Glyph=&#xE713;}" />
+                                </MenuFlyout>
+                            </Button.Flyout>
+                        </Button>
+
+                    </StackPanel>
+                </Grid>
+
+                <Slider
+                    x:Name="TimelineSlider"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Top"
+                    Maximum="{x:Bind GSMTCService.CurrentSongInfo.DurationMs, Mode=OneWay, Converter={StaticResource MillisecondsToSecondsConverter}}"
+                    Minimum="0"
+                    Style="{StaticResource GhostSliderStyle}"
+                    ThumbToolTipValueConverter="{StaticResource SecondsToFormattedTimeConverter}"
+                    Value="{x:Bind GSMTCService.CurrentPosition.TotalSeconds, Mode=OneWay}" />
+
+                <Grid
+                    Height="12"
+                    VerticalAlignment="Top"
+                    Background="Transparent"
+                    PointerEntered="TimelineSliderOverlay_PointerEntered"
+                    PointerExited="TimelineSliderOverlay_PointerExited"
+                    PointerMoved="TimelineSliderOverlay_PointerMoved"
+                    PointerPressed="TimelineSliderOverlay_PointerPressed" />
+
+            </Grid>
+
+        </Grid>
+
+        <!--  Bottom command flyout trigger  -->
+        <Grid
+            x:Name="BottomCommandFlyoutTrigger"
+            Height="12"
+            VerticalAlignment="Bottom"
+            Background="Transparent"
+            Opacity="0"
+            PointerEntered="BottomCommandFlyoutTrigger_PointerEntered"
+            PointerExited="BottomCommandFlyoutTrigger_PointerExited"
+            Tapped="BottomCommandFlyoutTrigger_Tapped">
+            <Grid.OpacityTransition>
+                <ScalarTransition />
+            </Grid.OpacityTransition>
+            <Grid
+                x:Name="BottomCommandFlyoutTriggerHint"
+                MaxWidth="400"
+                Background="{ThemeResource ControlAAFillColorDefaultBrush}"
+                CornerRadius="4,4,0,0"
+                Translation="0,0,0">
+                <Grid.TranslationTransition>
+                    <Vector3Transition />
+                </Grid.TranslationTransition>
+            </Grid>
+            <Grid.ContextFlyout>
+                <Flyout x:Name="BottomCommandFlyout" ShouldConstrainToRootBounds="False">
+                    <Flyout.FlyoutPresenterStyle>
+                        <Style TargetType="FlyoutPresenter">
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="MinWidth" Value="400" />
+                            <Setter Property="MinHeight" Value="100" />
+                            <Setter Property="CornerRadius" Value="12" />
+                        </Style>
+                    </Flyout.FlyoutPresenterStyle>
+                    <Grid Width="400">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid
+                                Grid.Column="0"
+                                Width="48"
+                                Height="48"
+                                Margin="16"
+                                CornerRadius="4">
+                                <Image Source="{x:Bind GSMTCService.AlbumArtBytes, Converter={StaticResource ByteArrayToImageConverter}, Mode=OneWay}" />
+                            </Grid>
+                            <Grid
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                ColumnSpacing="16">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Text="{x:Bind GSMTCService.CurrentSongInfo.Title, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis" />
+                                <TextBlock
+                                    Grid.Row="1"
+                                    Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                                    Text="{x:Bind GSMTCService.CurrentSongInfo.Artist, Mode=OneWay}"
+                                    TextTrimming="CharacterEllipsis" />
+                            </Grid>
+                            <Grid
+                                Grid.Column="2"
+                                Margin="16,0,0,0"
+                                ColumnSpacing="16">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+                                <Button
+                                    Grid.Row="0"
+                                    Margin="0,0,8,0"
+                                    HorizontalAlignment="Right"
+                                    Click="OpenPlaybackSourceButton_Click"
+                                    Content="{ui:FontIcon FontSize=16,
+                                                          FontFamily={StaticResource SegoeFluentIcons},
+                                                          Glyph=&#xE8A7;}"
+                                    Style="{ThemeResource GhostButtonStyle}" />
+                                <Grid
+                                    Grid.Row="1"
+                                    Margin="0,0,16,16"
+                                    VerticalAlignment="Bottom"
+                                    ColumnSpacing="6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <Image
+                                        Grid.Column="0"
+                                        Width="16"
+                                        Height="16"
+                                        helpers:AppExtensions.Aumid="{x:Bind GSMTCService.CurrentMediaSourceProviderInfo.Provider, Mode=OneWay}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        helpers:AppExtensions.Aumid="{x:Bind GSMTCService.CurrentMediaSourceProviderInfo.Provider, Mode=OneWay}"
+                                        Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                        <Grid
+                            x:Name="BottomCommandFlyoutContainer"
+                            Grid.Row="1"
+                            VerticalAlignment="Bottom" />
+                    </Grid>
+                </Flyout>
+            </Grid.ContextFlyout>
+        </Grid>
+
+    </Grid>
+
+</UserControl>

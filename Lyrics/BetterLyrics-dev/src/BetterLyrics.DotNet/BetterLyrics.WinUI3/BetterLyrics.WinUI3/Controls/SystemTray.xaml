@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<UserControl
+    x:Class="BetterLyrics.WinUI3.Controls.SystemTray"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:constants="using:BetterLyrics.Core.Constants"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tb="using:H.NotifyIcon"
+    xmlns:ui="using:CommunityToolkit.WinUI"
+    mc:Ignorable="d">
+
+    <tb:TaskbarIcon
+        x:Name="TrayIcon"
+        x:FieldModifier="public"
+        ContextMenuMode="SecondWindow"
+        DoubleClickCommand="{x:Bind ViewModel.TrayIconDoubleClickedCommand}"
+        IconSource="ms-appx:///Assets/LogoWhite.ico"
+        LeftClickCommand="{x:Bind ViewModel.TrayIconClickedCommand}"
+        Loaded="TrayIcon_Loaded"
+        MiddleClickCommand="{x:Bind ViewModel.TrayIconMiddleClickedCommand}"
+        ToolTipText="{x:Bind constants:App.AppName}">
+        <tb:TaskbarIcon.ContextFlyout>
+            <MenuFlyout
+                AreOpenCloseAnimationsEnabled="True"
+                LightDismissOverlayMode="On"
+                ShowMode="TransientWithDismissOnPointerMoveAway">
+                <MenuFlyout.MenuFlyoutPresenterStyle>
+                    <Style BasedOn="{StaticResource DefaultMenuFlyoutPresenterStyle}" TargetType="MenuFlyoutPresenter">
+                        <Setter Property="MinWidth" Value="600" />
+                    </Style>
+                </MenuFlyout.MenuFlyoutPresenterStyle>
+
+                <MenuFlyoutItem
+                    x:Uid="SystemTraySwitch"
+                    Command="{x:Bind ViewModel.NavigationService.OpenLyricsWindowSwitchWindowCommand}"
+                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                       Glyph=&#xE8AB;}" />
+                <MenuFlyoutItem
+                    x:Uid="SystemTraySearch"
+                    Command="{x:Bind ViewModel.NavigationService.OpenLyricsSearchWindowCommand}"
+                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                       Glyph=&#xE721;}" />
+                <MenuFlyoutItem
+                    x:Uid="SystemTrayMusicGallery"
+                    Command="{x:Bind ViewModel.NavigationService.OpenMusicGalleryWindowCommand}"
+                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                       Glyph=&#xE8F1;}" />
+                <MenuFlyoutItem
+                    x:Uid="SystemTrayStats"
+                    Command="{x:Bind ViewModel.NavigationService.OpenStatsDashboardWindowCommand}"
+                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                       Glyph=&#xE9D2;}" />
+                <MenuFlyoutItem
+                    x:Uid="LyricsPageLyricsCard"
+                    Command="{x:Bind ViewModel.NavigationService.OpenLyricsShareWindowCommand}"
+                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                       Glyph=&#xE70B;}" />
+                <MenuFlyoutItem
+                    x:Uid="SystemTraySettings"
+                    Command="{x:Bind ViewModel.NavigationService.OpenSettingsWindowCommand}"
+                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                       Glyph=&#xE713;}" />
+
+                <MenuFlyoutSeparator />
+
+                <MenuFlyoutItem
+                    x:Uid="SystemTrayRestart"
+                    Command="{x:Bind ViewModel.AppLifecycleService.RestartAppCommand}"
+                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                       Glyph=&#xE777;}" />
+                <MenuFlyoutItem
+                    x:Uid="SystemTrayExit"
+                    Command="{x:Bind ViewModel.AppLifecycleService.ExitAppCommand}"
+                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
+                                       Glyph=&#xE7E8;}" />
+
+            </MenuFlyout>
+        </tb:TaskbarIcon.ContextFlyout>
+    </tb:TaskbarIcon>
+</UserControl>

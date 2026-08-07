@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Page
+    x:Class="BetterLyrics.WinUI3.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:enums1="using:BetterLyrics.Core.Enums"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:models1="using:BetterLyrics.Core.Models"
+    xmlns:uc="using:BetterLyrics.WinUI3.Controls"
+    mc:Ignorable="d">
+
+    <Grid x:Name="RootGrid">
+
+        <NavigationView
+            x:Name="NavView"
+            IsBackButtonVisible="Collapsed"
+            IsSettingsVisible="False"
+            MenuItemsSource="{x:Bind ViewModel.MenuItems}"
+            SelectedItem="{x:Bind ViewModel.SelectedMenuItem, Mode=TwoWay}">
+            <NavigationView.MenuItemTemplate>
+                <DataTemplate x:DataType="models1:NavMenuItem">
+                    <NavigationViewItem Content="{x:Bind Label}">
+                        <NavigationViewItem.Icon>
+                            <FontIcon FontFamily="{StaticResource SegoeFluentIcons}" Glyph="{x:Bind Glyph}" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </DataTemplate>
+            </NavigationView.MenuItemTemplate>
+
+            <controls:SwitchPresenter Value="{x:Bind ViewModel.SelectedMenuItem.Section, Mode=OneWay}">
+                <controls:SwitchPresenter.ContentTransitions>
+                    <TransitionCollection>
+                        <PopupThemeTransition />
+                    </TransitionCollection>
+                </controls:SwitchPresenter.ContentTransitions>
+
+                <!--  App appearance and behavior  -->
+                <controls:Case Value="{x:Bind enums1:SettingsSection.App}">
+                    <uc:AppSettingsControl />
+                </controls:Case>
+
+                <!--  Lyrics window manager  -->
+                <controls:Case Value="{x:Bind enums1:SettingsSection.LyricsWindowMgr}">
+                    <uc:LyricsWindowSettingsControl />
+                </controls:Case>
+
+                <!--  Playback sources  -->
+                <controls:Case Value="{x:Bind enums1:SettingsSection.PlaybackLib}">
+                    <uc:PlaybackSettingsControl />
+                </controls:Case>
+
+                <!--  Media lib  -->
+                <controls:Case Value="{x:Bind enums1:SettingsSection.MediaLib}">
+                    <uc:MediaSettingsControl />
+                </controls:Case>
+
+                <!--  Plugins  -->
+                <controls:Case Value="{x:Bind enums1:SettingsSection.Plugins}">
+                    <uc:PluginManagerControl />
+                </controls:Case>
+
+                <!--  About  -->
+                <controls:Case Value="{x:Bind enums1:SettingsSection.About}">
+                    <uc:AboutControl />
+                </controls:Case>
+
+            </controls:SwitchPresenter>
+        </NavigationView>
+
+    </Grid>
+</Page>
