@@ -248,15 +248,7 @@ object DeezerDownloadManager {
                     }
                     if (!lyrics.isNullOrEmpty()) {
                         tag.setField(FieldKey.LYRICS, lyrics)
-                        Log.d(TAG, "Letras guardadas en archivo para: ${song.title}")
-                        
-                        // Write LRC file alongside FLAC
-                        try {
-                            val lrcFile = File(outputFile.parentFile, "${outputFile.nameWithoutExtension}.lrc")
-                            lrcFile.writeText(lyrics)
-                        } catch (e: Exception) {
-                            Log.w(TAG, "No se pudo escribir archivo .lrc externo: ${e.message}")
-                        }
+                        Log.d(TAG, "Letras guardadas en archivo ID3 para: ${song.title}")
                     }
 
                     val privateTrack = DeezerApiClient.fetchPrivateTrackData(song.id.toString())
@@ -279,14 +271,6 @@ object DeezerDownloadManager {
                                     tag.setField(artwork)
                                 } catch(e: Exception) {
                                     Log.e(TAG, "Error incrustando caratula en ID3: ${e.message}")
-                                }
-                                
-                                // Save a copy alongside the FLAC
-                                try {
-                                    val coverExternalFile = File(outputFile.parentFile, "${outputFile.nameWithoutExtension}.jpg")
-                                    tempCoverFile.copyTo(coverExternalFile, overwrite = true)
-                                } catch (e: Exception) {
-                                    Log.e(TAG, "Error guardando caratula externa: ${e.message}")
                                 }
                                 
                                 tempCoverFile.delete()
