@@ -1,0 +1,1 @@
+const { SyncLyrics } = require("@stef-0012/synclyrics"); const LyricsManager = new SyncLyrics({ sources: ["musixmatch", "netease", "lrclib"] }); LyricsManager.getLyrics({ track: "Shape of You", artist: "Ed Sheeran" }).then(data => { console.log(JSON.stringify(data.lyrics.wordSynced, null, 2)?.substring(0, 500) || "No wordSynced"); }).catch(e => console.error(e));

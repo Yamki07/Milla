@@ -92,51 +92,28 @@ class MillaySearchFragment : Fragment(R.layout.fragment_millay_search) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val deezerDeferred = async { DeezerApiClient.search(query) }
-                val tidalDeferred = async { code.name.monkey.retromusic.automix.TidalApiClient.search(query) }
+
 
                 val deezerTracks = try { deezerDeferred.await() } catch(e: Exception) { emptyList() }
-                val tidalTracks = try { tidalDeferred.await() } catch(e: Exception) { emptyList() }
-
                 val mergedSongs = mutableListOf<Song>()
                 
-                val maxLen = maxOf(deezerTracks.size, tidalTracks.size)
-                for (i in 0 until maxLen) {
-                    if (i < deezerTracks.size) {
-                        val d = deezerTracks[i]
-                        mergedSongs.add(Song(
-                            id = d.id.toLongOrNull() ?: 0L,
-                            title = d.title,
-                            trackNumber = 1,
-                            year = 2026,
-                            duration = d.durationSec * 1000L,
-                            data = "deezer://track/${d.id}",
-                            dateModified = System.currentTimeMillis(),
-                            albumId = 0L,
-                            albumName = d.albumTitle,
-                            artistId = 0L,
-                            artistName = d.artistName,
-                            composer = "deezer",
-                            albumArtist = d.artistName
-                        ))
-                    }
-                    if (i < tidalTracks.size) {
-                        val t = tidalTracks[i]
-                        mergedSongs.add(Song(
-                            id = t.id.toLongOrNull() ?: 0L,
-                            title = t.title,
-                            trackNumber = 1,
-                            year = 2026,
-                            duration = t.durationSec * 1000L,
-                            data = "tidal://track/${t.id}::${t.albumCoverId}",
-                            dateModified = System.currentTimeMillis(),
-                            albumId = 0L,
-                            albumName = t.albumTitle,
-                            artistId = 0L,
-                            artistName = t.artistName,
-                            composer = "tidal",
-                            albumArtist = t.artistName
-                        ))
-                    }
+                for (i in deezerTracks.indices) {
+                    val d = deezerTracks[i]
+                    mergedSongs.add(Song(
+                        id = d.id.toLongOrNull() ?: 0L,
+                        title = d.title,
+                        trackNumber = 1,
+                        year = 2026,
+                        duration = d.durationSec * 1000L,
+                        data = "deezer://track/${d.id}",
+                        dateModified = System.currentTimeMillis(),
+                        albumId = 0L,
+                        albumName = d.albumTitle,
+                        artistId = 0L,
+                        artistName = d.artistName,
+                        composer = "deezer",
+                        albumArtist = d.artistName
+                    ))
                 }
 
                 withContext(Dispatchers.Main) {

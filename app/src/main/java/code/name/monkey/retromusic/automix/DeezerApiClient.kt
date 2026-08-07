@@ -100,20 +100,43 @@ object DeezerApiClient {
     private suspend fun callGwApi(method: String, params: JSONObject = JSONObject()): JSONObject? =
         withContext(Dispatchers.IO) {
             ensureSession()
-            val url = "https://www.deezer.com/ajax/gw-light.php?method=$method&api_version=1.0&api_token=$apiToken&input=3"
+            var url = "https://www.deezer.com/ajax/gw-light.php?method=$method&api_version=1.0&api_token=$apiToken&input=3"
             val body = params.toString().toRequestBody("text/plain;charset=UTF-8".toMediaType())
-            val request = Request.Builder()
+            var request = Request.Builder()
                 .url(url)
                 .post(body)
                 .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
                 .addHeader("Cookie", "arl=$ARL_TOKEN")
                 .build()
             try {
+                var responseJson: JSONObject? = null
                 client.newCall(request).execute().use { response ->
-                    val resBody = response.body?.string() ?: return@withContext null
+                    val resBody = response.body?.string() ?: return@use
                     val json = JSONObject(resBody)
-                    json.optJSONObject("results")
+                    
+                    // Si el token es inválido (error code 3 o un mensaje similar), limpiamos y re-intentamos
+                    val error = json.optJSONArray("error")
+                    if (error != null && error.length() > 0) {
+                        Log.d(TAG, "Error en callGwApi ($method): $error. Intentando refrescar sesión...")
+                        sessionInitialized = false
+                    } else {
+                        responseJson = json.optJSONObject("results")
+                    }
                 }
+                
+                if (!sessionInitialized) {
+                    ensureSession()
+                    url = "https://www.deezer.com/ajax/gw-light.php?method=$method&api_version=1.0&api_token=$apiToken&input=3"
+                    request = Request.Builder().url(url).post(body)
+                        .addHeader("User-Agent", "Mozilla/5.0").addHeader("Cookie", "arl=$ARL_TOKEN").build()
+                    client.newCall(request).execute().use { response ->
+                        val resBody = response.body?.string() ?: return@use
+                        val json = JSONObject(resBody)
+                        responseJson = json.optJSONObject("results")
+                    }
+                }
+                
+                responseJson
             } catch (e: Exception) {
                 Log.e(TAG, "callGwApi($method) error: $e")
                 null
@@ -357,54 +380,72 @@ object DeezerApiClient {
     /**
      * Método moderno vía media.deezer.com/v1/get_url
      */
-    private fun getStreamUrlViaMediaApi(track: DeezerTrack, format: String): String? {
-        try {
-            val payload = JSONObject().apply {
-                put("license_token", licenseToken)
-                put("media", JSONArray().put(JSONObject().apply {
-                    put("type", "FULL")
-                    put("formats", JSONArray().put(JSONObject().apply {
-                        put("cipher", "BF_CBC_STRIPE")
-                        put("format", format)
+    private suspend fun getStreamUrlViaMediaApi(track: DeezerTrack, format: String): String? {
+        var retries = 1
+        while (retries >= 0) {
+            try {
+                val payload = JSONObject().apply {
+                    put("license_token", licenseToken)
+                    put("media", JSONArray().put(JSONObject().apply {
+                        put("type", "FULL")
+                        put("formats", JSONArray().put(JSONObject().apply {
+                            put("cipher", "BF_CBC_STRIPE")
+                            put("format", format)
+                        }))
                     }))
-                }))
-                put("track_tokens", JSONArray().put(track.trackToken))
-            }
-
-            val body = payload.toString().toRequestBody("application/json".toMediaType())
-            val request = Request.Builder()
-                .url("https://media.deezer.com/v1/get_url")
-                .post(body)
-                .addHeader("User-Agent", "Mozilla/5.0")
-                .build()
-
-            client.newCall(request).execute().use { response ->
-                val resBody = response.body?.string() ?: return null
-                Log.d(TAG, "media.deezer.com response: ${resBody.take(500)}")
-                val json = JSONObject(resBody)
-                val dataArr = json.optJSONArray("data") ?: return null
-                if (dataArr.length() == 0) return null
-
-                val firstItem = dataArr.getJSONObject(0)
-
-                // Check for errors
-                val errors = firstItem.optJSONArray("errors")
-                if (errors != null && errors.length() > 0) {
-                    val errCode = errors.getJSONObject(0).optInt("code", 0)
-                    Log.e(TAG, "media.deezer.com error code=$errCode")
-                    return null
+                    put("track_tokens", JSONArray().put(track.trackToken))
                 }
 
-                val mediaArr = firstItem.optJSONArray("media") ?: return null
-                if (mediaArr.length() == 0) return null
-                val sources = mediaArr.getJSONObject(0).optJSONArray("sources") ?: return null
-                if (sources.length() == 0) return null
-                return sources.getJSONObject(0).optString("url")
+                val body = payload.toString().toRequestBody("application/json".toMediaType())
+                val request = Request.Builder()
+                    .url("https://media.deezer.com/v1/get_url")
+                    .post(body)
+                    .addHeader("User-Agent", "Mozilla/5.0")
+                    .build()
+
+                var urlResult: String? = null
+                var shouldRetry = false
+                client.newCall(request).execute().use { response ->
+                    val resBody = response.body?.string() ?: return@use
+                    Log.d(TAG, "media.deezer.com response: ${resBody.take(500)}")
+                    val json = JSONObject(resBody)
+                    val dataArr = json.optJSONArray("data") ?: return@use
+                    if (dataArr.length() == 0) return@use
+
+                    val firstItem = dataArr.getJSONObject(0)
+
+                    val errors = firstItem.optJSONArray("errors")
+                    if (errors != null && errors.length() > 0) {
+                        val errCode = errors.getJSONObject(0).optInt("code", 0)
+                        Log.e(TAG, "media.deezer.com error code=$errCode")
+                        if (errCode == 300 || errCode == 200 || errCode != 0) {
+                            shouldRetry = true
+                        }
+                    } else {
+                        val mediaArr = firstItem.optJSONArray("media") ?: return@use
+                        if (mediaArr.length() > 0) {
+                            val sources = mediaArr.getJSONObject(0).optJSONArray("sources") ?: return@use
+                            if (sources.length() > 0) {
+                                urlResult = sources.getJSONObject(0).optString("url")
+                            }
+                        }
+                    }
+                }
+                
+                if (shouldRetry && retries > 0) {
+                    Log.d(TAG, "Refrescando sesión para getStreamUrlViaMediaApi...")
+                    sessionInitialized = false
+                    ensureSession()
+                    retries--
+                    continue
+                }
+                return urlResult
+            } catch (e: Exception) {
+                Log.e(TAG, "getStreamUrlViaMediaApi error: $e")
+                return null
             }
-        } catch (e: Exception) {
-            Log.e(TAG, "getStreamUrlViaMediaApi error: $e")
-            return null
         }
+        return null
     }
 
     /**

@@ -236,7 +236,10 @@ object DeezerDownloadManager {
 
                 // Obtener datos privados de Deezer para la carátula y letras
                 try {
-                    var lyrics = code.name.monkey.retromusic.util.LRCLibFetcher.fetchLyrics(song)
+                    var lyrics = code.name.monkey.retromusic.util.MusixmatchFetcher.getEnhancedLrc(song.title, song.artistName)
+                    if (lyrics == null || lyrics.isEmpty()) {
+                        lyrics = code.name.monkey.retromusic.util.LRCLibFetcher.fetchLyrics(song)
+                    }
                     if (lyrics == null || lyrics.isEmpty()) {
                         lyrics = DeezerApiClient.getLyrics(song.id.toString())
                     }
