@@ -236,7 +236,10 @@ object DeezerDownloadManager {
 
                 // Obtener datos privados de Deezer para la carátula y letras
                 try {
-                    var lyrics = code.name.monkey.retromusic.util.MusixmatchFetcher.getEnhancedLrc(song.title, song.artistName)
+                    var lyrics = code.name.monkey.retromusic.util.AmllLyricsFetcher.fetchLyrics(song.title, song.artistName)
+                    if (lyrics == null || lyrics.isEmpty()) {
+                        lyrics = code.name.monkey.retromusic.util.MusixmatchFetcher.getEnhancedLrc(song.title, song.artistName)
+                    }
                     if (lyrics == null || lyrics.isEmpty()) {
                         lyrics = code.name.monkey.retromusic.util.LRCLibFetcher.fetchLyrics(song)
                     }
@@ -246,6 +249,14 @@ object DeezerDownloadManager {
                     if (!lyrics.isNullOrEmpty()) {
                         tag.setField(FieldKey.LYRICS, lyrics)
                         Log.d(TAG, "Letras guardadas en archivo para: ${song.title}")
+                        
+                        // Write LRC file alongside FLAC
+                        try {
+                            val lrcFile = File(outputFile.parentFile, "${outputFile.nameWithoutExtension}.lrc")
+                            lrcFile.writeText(lyrics)
+                        } catch (e: Exception) {
+                            Log.w(TAG, "No se pudo escribir archivo .lrc externo: ${e.message}")
+                        }
                     }
 
                     val privateTrack = DeezerApiClient.fetchPrivateTrackData(song.id.toString())
@@ -261,9 +272,23 @@ object DeezerDownloadManager {
                                 FileOutputStream(tempCoverFile).use { out ->
                                     out.write(coverBody.bytes())
                                 }
-                                val artwork = AndroidArtwork.createArtworkFromFile(tempCoverFile)
-                                tag.deleteArtworkField()
-                                tag.setField(artwork)
+                                
+                                try {
+                                    val artwork = AndroidArtwork.createArtworkFromFile(tempCoverFile)
+                                    tag.deleteArtworkField()
+                                    tag.setField(artwork)
+                                } catch(e: Exception) {
+                                    Log.e(TAG, "Error incrustando caratula en ID3: ${e.message}")
+                                }
+                                
+                                // Save a copy alongside the FLAC
+                                try {
+                                    val coverExternalFile = File(outputFile.parentFile, "${outputFile.nameWithoutExtension}.jpg")
+                                    tempCoverFile.copyTo(coverExternalFile, overwrite = true)
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Error guardando caratula externa: ${e.message}")
+                                }
+                                
                                 tempCoverFile.delete()
                             }
                         }

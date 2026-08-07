@@ -101,7 +101,7 @@ object DeezerApiClient {
         withContext(Dispatchers.IO) {
             ensureSession()
             var url = "https://www.deezer.com/ajax/gw-light.php?method=$method&api_version=1.0&api_token=$apiToken&input=3"
-            val body = params.toString().toRequestBody("text/plain;charset=UTF-8".toMediaType())
+            val body = params.toString().toRequestBody("application/json;charset=UTF-8".toMediaType())
             var request = Request.Builder()
                 .url(url)
                 .post(body)
@@ -401,6 +401,7 @@ object DeezerApiClient {
                     .url("https://media.deezer.com/v1/get_url")
                     .post(body)
                     .addHeader("User-Agent", "Mozilla/5.0")
+                    .addHeader("Cookie", "arl=$ARL_TOKEN")
                     .build()
 
                 var urlResult: String? = null
