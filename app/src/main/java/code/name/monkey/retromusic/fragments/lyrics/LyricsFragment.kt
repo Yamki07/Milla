@@ -211,6 +211,34 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                 }
             }
         }
+        
+        // Sync Buttons
+        binding.btnSyncMinus.setOnClickListener {
+            lyricsAdapter.currentTimeOffsetMs -= 500L
+        }
+        
+        binding.btnSyncPlus.setOnClickListener {
+            lyricsAdapter.currentTimeOffsetMs += 500L
+        }
+        
+        // Translate Button
+        binding.btnTranslate.accentColor()
+        binding.btnTranslate.setOnClickListener {
+            if (currentLyricsList.isNotEmpty()) {
+                lifecycleScope.launch {
+                    binding.btnTranslate.isEnabled = false
+                    try {
+                        val translated = TranslationHelper.translateLyrics(currentLyricsList)
+                        currentLyricsList = translated
+                        lyricsAdapter.submitList(translated)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        binding.btnTranslate.isEnabled = true
+                    }
+                }
+            }
+        }
     }
 
     override fun onPlayingMetaChanged() {
@@ -385,9 +413,22 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
             e.printStackTrace()
             ""
         }
-        binding.normalLyrics.isVisible = !lyrics.isNullOrEmpty()
-        binding.noLyricsFound.isVisible = lyrics.isNullOrEmpty()
-        binding.normalLyrics.text = lyrics
+        
+        if (!lyrics.isNullOrEmpty()) {
+            val lines = lyrics.split("\n").map { LyricLine(0, it.trim()) }
+            currentLyricsList = LrcParser.generateEstimatedTimestamps(lines, song.duration)
+            
+            if (currentLyricsList.isNotEmpty()) {
+                lyricsAdapter.submitList(currentLyricsList)
+                binding.recyclerView.isVisible = true
+                binding.normalLyrics.isVisible = false
+                binding.noLyricsFound.isVisible = false
+                return
+            }
+        }
+        
+        binding.normalLyrics.isVisible = false
+        binding.noLyricsFound.isVisible = true
         binding.recyclerView.isVisible = false
     }
 
@@ -465,8 +506,20 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                     }
                 } else {
                     binding.noLyricsFound.isVisible = false
-                    binding.normalLyrics.isVisible = true
-                    binding.normalLyrics.text = result
+                    
+                    // Render static lyrics with estimated timestamps for wave effect!
+                    val lines = result.split("\n").map { LyricLine(0, it.trim()) }
+                    currentLyricsList = LrcParser.generateEstimatedTimestamps(lines, song.duration)
+                    if (currentLyricsList.isNotEmpty()) {
+                        lyricsAdapter.submitList(currentLyricsList)
+                        binding.recyclerView.isVisible = true
+                        binding.normalLyrics.isVisible = false
+                        startLyricsTicker()
+                    } else {
+                        binding.normalLyrics.isVisible = true
+                        binding.normalLyrics.text = result
+                    }
+                    
                     lyricsType = LyricsType.NORMAL_LYRICS
                     // Opcionalmente guardar como tag ID3 de letra plana
                 }

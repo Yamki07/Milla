@@ -48,6 +48,7 @@ class MainActivity : AbsCastActivity() {
         super.onCreate(savedInstanceState)
         setTaskDescriptionColorAuto()
         hideStatusBar()
+        setupDownloadProgress()
         updateTabs()
         AppRater.appLaunched(this)
 
@@ -213,5 +214,95 @@ class MainActivity : AbsCastActivity() {
             }
         }
         return id
+    }
+
+    private var downloadCardView: androidx.cardview.widget.CardView? = null
+    private var downloadProgressBar: android.widget.ProgressBar? = null
+    private var downloadTextView: android.widget.TextView? = null
+
+    private fun setupDownloadProgress() {
+        val root = findViewById<android.view.ViewGroup>(android.R.id.content)
+        val context = this
+        
+        // Crear CardView flotante programáticamente
+        downloadCardView = androidx.cardview.widget.CardView(context).apply {
+            radius = 24f
+            setCardBackgroundColor(android.graphics.Color.parseColor("#333333"))
+            cardElevation = 16f
+            visibility = android.view.View.GONE
+            
+            val layoutParams = android.widget.FrameLayout.LayoutParams(
+                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            ).apply {
+                gravity = android.view.Gravity.TOP or android.view.Gravity.CENTER_HORIZONTAL
+                topMargin = 150 // Debajo del toolbar
+                leftMargin = 40
+                rightMargin = 40
+            }
+            this.layoutParams = layoutParams
+            
+            val linearLayout = android.widget.LinearLayout(context).apply {
+                orientation = android.widget.LinearLayout.VERTICAL
+                setPadding(32, 24, 32, 24)
+            }
+            
+            downloadTextView = android.widget.TextView(context).apply {
+                text = "Descargando..."
+                setTextColor(android.graphics.Color.WHITE)
+                textSize = 14f
+                setTypeface(null, android.graphics.Typeface.BOLD)
+                setPadding(0, 0, 0, 16)
+            }
+            
+            downloadProgressBar = android.widget.ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
+                max = 100
+                progress = 0
+                isIndeterminate = false
+                progressTintList = android.content.res.ColorStateList.valueOf(android.graphics.Color.parseColor("#FF4081")) // Accent
+            }
+            
+            linearLayout.addView(downloadTextView)
+            linearLayout.addView(downloadProgressBar)
+            addView(linearLayout)
+        }
+        
+        root.addView(downloadCardView)
+        
+        // Observar estado
+        lifecycleScope.launch {
+            code.name.monkey.retromusic.automix.DeezerDownloadManager.downloadState.collect { state ->
+                when (state) {
+                    is code.name.monkey.retromusic.automix.DeezerDownloadManager.DownloadState.Downloading -> {
+                        downloadCardView?.visibility = android.view.View.VISIBLE
+                        downloadProgressBar?.isIndeterminate = false
+                        downloadProgressBar?.progress = state.progress
+                        downloadTextView?.text = "Descargando (${state.progress}%)"
+                    }
+                    is code.name.monkey.retromusic.automix.DeezerDownloadManager.DownloadState.PostProcessing -> {
+                        downloadCardView?.visibility = android.view.View.VISIBLE
+                        downloadProgressBar?.isIndeterminate = true
+                        downloadTextView?.text = "Procesando archivo..."
+                    }
+                    is code.name.monkey.retromusic.automix.DeezerDownloadManager.DownloadState.Completed -> {
+                        downloadProgressBar?.isIndeterminate = false
+                        downloadProgressBar?.progress = 100
+                        downloadTextView?.text = "¡Listo! Descarga completada"
+                        // Ocultar después de 2.5s
+                        kotlinx.coroutines.delay(2500)
+                        downloadCardView?.visibility = android.view.View.GONE
+                    }
+                    is code.name.monkey.retromusic.automix.DeezerDownloadManager.DownloadState.Error -> {
+                        downloadProgressBar?.isIndeterminate = false
+                        downloadTextView?.text = "Error: ${state.message}"
+                        kotlinx.coroutines.delay(3000)
+                        downloadCardView?.visibility = android.view.View.GONE
+                    }
+                    is code.name.monkey.retromusic.automix.DeezerDownloadManager.DownloadState.Idle -> {
+                        downloadCardView?.visibility = android.view.View.GONE
+                    }
+                }
+            }
+        }
     }
 }

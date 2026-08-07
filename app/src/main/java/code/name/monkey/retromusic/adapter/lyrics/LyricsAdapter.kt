@@ -35,6 +35,8 @@ class LyricsAdapter : RecyclerView.Adapter<LyricsAdapter.LyricViewHolder>() {
     var currentTimeMs: Long = 0L
         private set
 
+    var currentTimeOffsetMs: Long = 0L
+
     var primaryColor: Int = Color.parseColor("#FF4081")
         private set
 
@@ -75,11 +77,11 @@ class LyricsAdapter : RecyclerView.Adapter<LyricsAdapter.LyricViewHolder>() {
     }
 
     fun updateTime(timeMs: Long) {
-        this.currentTimeMs = timeMs
+        this.currentTimeMs = timeMs + currentTimeOffsetMs
         if (currentLineIndex != -1 && currentLineIndex < lyrics.size) {
             // Se actualiza el holder activo en lugar de notificar (para evitar re-binds constantes que rompen animaciones de escala)
             val holder = attachedRecyclerView?.findViewHolderForAdapterPosition(currentLineIndex) as? LyricViewHolder
-            holder?.updateProgress(timeMs)
+            holder?.updateProgress(this.currentTimeMs)
         }
     }
 

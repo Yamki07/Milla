@@ -60,6 +60,55 @@ object LrcParser {
         parse(file)
     }
 
+    /**
+     * Genera marcas de tiempo simuladas para letras estáticas basadas en la duración de la canción.
+     */
+    fun generateEstimatedTimestamps(lines: List<LyricLine>, durationMs: Long): List<LyricLine> {
+        if (lines.isEmpty() || durationMs <= 0) return lines
+        
+        val validLines = lines.filter { it.text.isNotBlank() }
+        if (validLines.isEmpty()) return lines
+
+        // Empezamos a iluminar después de un 5% de la canción y terminamos en el 95%
+        val startOffset = (durationMs * 0.05).toLong()
+        val endOffset = (durationMs * 0.95).toLong()
+        val totalLyricDuration = endOffset - startOffset
+        
+        val timePerLine = totalLyricDuration / validLines.size
+        
+        val result = mutableListOf<LyricLine>()
+        var index = 0
+        for (line in lines) {
+            if (line.text.isNotBlank()) {
+                val simulatedTime = startOffset + (index * timePerLine)
+                
+                // Generar pseudosílabas para la letra estática para que funcione el efecto ola
+                val pseudoSyllables = generatePseudoSyllables(line.text, simulatedTime, timePerLine)
+                
+                result.add(line.copy(timeMs = simulatedTime, syllables = pseudoSyllables))
+                index++
+            } else {
+                result.add(line)
+            }
+        }
+        return result
+    }
+
+    private fun generatePseudoSyllables(text: String, startMs: Long, durationMs: Long): List<Syllable> {
+        val syllables = mutableListOf<Syllable>()
+        // Dividir por espacios para pseudo sílabas
+        val words = text.split(Regex("(?<=\\s)|(?=\\s)"))
+        if (words.isEmpty()) return syllables
+        
+        val timePerWord = durationMs / words.size
+        var currentMs = startMs
+        for (word in words) {
+            syllables.add(Syllable(word, currentMs, timePerWord))
+            currentMs += timePerWord
+        }
+        return syllables
+    }
+
     suspend fun parseSuspending(content: String): List<LyricLine> = withContext(Dispatchers.IO) {
         parse(content)
     }

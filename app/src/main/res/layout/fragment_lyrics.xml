@@ -97,6 +97,59 @@
             app:titleTextAppearance="@style/ToolbarTextAppearanceNormal" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Controles Flotantes para Sincronización Manual (+ y -) -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_sync_controls"
+        android:padding="8dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_sync_minus"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:text="-"
+            android:textSize="24sp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="24dp"
+            android:contentDescription="Retrasar letra" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_sync_plus"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:text="+"
+            android:textSize="24sp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="24dp"
+            android:contentDescription="Adelantar letra" />
+    </LinearLayout>
+
+    <!-- Botón de Traducción (Mundo) -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btn_translate"
+        style="@style/Widget.Material3.FloatingActionButton.Primary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:fabSize="mini"
+        app:srcCompat="@drawable/ic_language"
+        android:contentDescription="Traducir Letra" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/edit_button"
         style="@style/Widget.Material3.FloatingActionButton.Primary"

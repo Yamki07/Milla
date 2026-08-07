@@ -26,10 +26,11 @@ object AmllLyricsFetcher {
             val searchBody = searchResponse.body?.string() ?: return@withContext null
             
             val searchJson = JSONObject(searchBody)
-            val dataArr = searchJson.optJSONArray("data")
-            if (dataArr == null || dataArr.length() == 0) return@withContext null
+            val dataObj = searchJson.optJSONObject("data")
+            val itemsArr = dataObj?.optJSONArray("items")
+            if (itemsArr == null || itemsArr.length() == 0) return@withContext null
             
-            val songId = dataArr.getJSONObject(0).optString("id")
+            val songId = itemsArr.getJSONObject(0).optString("id")
             if (songId.isEmpty()) return@withContext null
             
             val getUrl = "https://api.amll.dev/v1/lyrics/get?id=$songId"

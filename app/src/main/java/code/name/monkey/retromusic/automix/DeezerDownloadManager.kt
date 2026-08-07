@@ -198,20 +198,29 @@ object DeezerDownloadManager {
                         val dataToWrite = if (bytesReadInChunk == 2048 && chunkIndex % 3 == 0) {
                             DeezerDecryptor.decryptChunk(trackKey, buffer)
                         } else {
-                            buffer
+                            if (bytesReadInChunk < 2048) {
+                                buffer.copyOfRange(0, bytesReadInChunk)
+                            } else {
+                                buffer
+                            }
                         }
-
                         outputStream.write(dataToWrite, 0, bytesReadInChunk)
-                        bytesDownloaded += bytesReadInChunk
                         chunkIndex++
-
+                        bytesDownloaded += bytesReadInChunk
+                        
                         if (contentLength > 0) {
-                            val progress = ((bytesDownloaded * 100) / contentLength).toInt().coerceIn(0, 99)
-                            _downloadState.value = DownloadState.Downloading(song.id.toString(), progress)
+                            val percent = ((bytesDownloaded * 100) / contentLength).toInt()
+                            // Solo emitir cada cierto % para no saturar el StateFlow
+                            if (percent % 5 == 0) {
+                                _downloadState.value = DownloadState.Downloading(song.id.toString(), percent)
+                            }
                         }
 
                         if (bytesReadInChunk < 2048) break
                     }
+                    
+                    // Final progress
+                    _downloadState.value = DownloadState.Downloading(song.id.toString(), 100)
                     outputStream.flush()
                 }
                 response.close()

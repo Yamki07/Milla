@@ -6,8 +6,10 @@
 package code.name.monkey.retromusic.views
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.LinearGradient
+import android.graphics.Region
 import android.graphics.Shader
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
@@ -45,26 +47,31 @@ class SyllableLyricView @JvmOverloads constructor(
     fun updateTime(timeMs: Long) {
         if (this.currentTimeMs != timeMs) {
             this.currentTimeMs = timeMs
-            updateGradient()
+            invalidate()
         }
     }
 
-    private fun updateGradient() {
-        val line = lyricLine ?: return
-        val currentLayout = layout ?: return
-
-        if (line.syllables.isEmpty()) {
+    override fun onDraw(canvas: Canvas) {
+        val line = lyricLine
+        if (line == null || line.syllables.isEmpty()) {
             // Classic mode: no syllables
-            paint.shader = null
-            setTextColor(if (currentTimeMs >= line.timeMs) activeColor else inactiveColor)
-            invalidate()
+            val isActive = line != null && currentTimeMs >= line.timeMs
+            setTextColor(if (isActive) activeColor else inactiveColor)
+            super.onDraw(canvas)
             return
         }
 
-        // Syllable mode: find the active syllable
-        var progressX = 0f
+        val currentLayout = layout ?: return
+
+        // 1. Draw inactive text completely
+        setTextColor(inactiveColor)
+        super.onDraw(canvas)
+
+        // 2. Determine active text bounds
         var isBeforeFirst = true
         var isAfterLast = true
+        var activeSyllableStartIndex = 0
+        var activeSyllableFraction = 0f
 
         var startIndex = 0
         for (syllable in line.syllables) {
@@ -73,60 +80,85 @@ class SyllableLyricView @JvmOverloads constructor(
             val length = syllable.text.length
 
             if (currentTimeMs < startMs) {
-                // Not yet reached this syllable
                 isAfterLast = false
                 break
             } else if (currentTimeMs > endMs) {
-                // Passed this syllable
                 isBeforeFirst = false
                 startIndex += length
-                // Default progressX to end of this syllable in case it's the last one we passed
-                val endOffset = startIndex
-                if (endOffset <= text.length) {
-                    progressX = currentLayout.getPrimaryHorizontal(endOffset)
-                }
             } else {
-                // Inside this syllable!
                 isBeforeFirst = false
                 isAfterLast = false
-                
-                val startX = currentLayout.getPrimaryHorizontal(startIndex)
-                val endOffset = startIndex + length
-                val endX = if (endOffset <= text.length) {
-                    currentLayout.getPrimaryHorizontal(endOffset)
-                } else {
-                    startX // Fallback
-                }
+                activeSyllableStartIndex = startIndex
                 
                 val fraction = (currentTimeMs - startMs).toFloat() / syllable.durationMs.toFloat()
-                progressX = startX + (endX - startX) * fraction
+                activeSyllableFraction = fraction.coerceIn(0f, 1f)
                 break
             }
         }
 
-        if (isBeforeFirst) {
-            paint.shader = null
-            setTextColor(inactiveColor)
-        } else if (isAfterLast) {
-            paint.shader = null
-            setTextColor(activeColor)
-        } else {
-            // Add padding offset since getPrimaryHorizontal is relative to the text layout
-            val xOffset = paddingLeft.toFloat()
-            val totalProgressX = progressX + xOffset
+        if (isBeforeFirst) return
 
-            // Create a sharp linear gradient at totalProgressX
-            val shader = LinearGradient(
-                0f, 0f, width.toFloat(), 0f,
-                intArrayOf(activeColor, activeColor, inactiveColor, inactiveColor),
-                floatArrayOf(0f, totalProgressX / width.toFloat(), (totalProgressX + 0.001f) / width.toFloat(), 1f),
-                Shader.TileMode.CLAMP
-            )
-            paint.shader = shader
-            // Need to call setTextColor to apply shader correctly in some devices, though the color is ignored
-            setTextColor(Color.WHITE) 
+        if (isAfterLast) {
+            setTextColor(activeColor)
+            super.onDraw(canvas)
+            return
         }
 
-        invalidate()
+        // 3. Draw active text clipped perfectly to syllables (even across line breaks)
+        canvas.save()
+        
+        // Clip previously completed syllables completely
+        if (activeSyllableStartIndex > 0) {
+            val completedPath = android.graphics.Path()
+            currentLayout.getSelectionPath(0, activeSyllableStartIndex, completedPath)
+            completedPath.offset(paddingLeft.toFloat(), paddingTop.toFloat())
+            // Android 28+ deprecates Region.Op, we can just use clipPath which defaults to INTERSECT/UNION depending on usage
+            // To add to the clipping region, we can actually build one big path.
+            // Wait, clipPath is intersect by default! We need to UNION.
+            // Better yet, create one unified Path!
+        }
+        
+        val totalActivePath = android.graphics.Path()
+        if (activeSyllableStartIndex > 0) {
+            currentLayout.getSelectionPath(0, activeSyllableStartIndex, totalActivePath)
+        }
+        
+        // Add current syllable partial path
+        if (activeSyllableFraction > 0f) {
+            val syllableLength = line.syllables.find { it.startMs <= currentTimeMs && it.startMs + it.durationMs >= currentTimeMs }?.text?.length ?: 0
+            if (syllableLength > 0) {
+                val startOffset = activeSyllableStartIndex
+                val endOffset = startOffset + syllableLength
+                
+                val startLine = currentLayout.getLineForOffset(startOffset)
+                val endLine = currentLayout.getLineForOffset(endOffset)
+                
+                if (startLine == endLine) {
+                    val startX = currentLayout.getPrimaryHorizontal(startOffset)
+                    val endX = currentLayout.getPrimaryHorizontal(endOffset)
+                    val currentX = startX + (endX - startX) * activeSyllableFraction
+                    
+                    totalActivePath.addRect(
+                        startX,
+                        currentLayout.getLineTop(startLine).toFloat(),
+                        currentX,
+                        currentLayout.getLineBottom(startLine).toFloat(),
+                        android.graphics.Path.Direction.CW
+                    )
+                } else {
+                    val fractionIndex = startOffset + (syllableLength * activeSyllableFraction).toInt()
+                    val activePath = android.graphics.Path()
+                    currentLayout.getSelectionPath(startOffset, fractionIndex, activePath)
+                    totalActivePath.addPath(activePath)
+                }
+            }
+        }
+        
+        totalActivePath.offset(paddingLeft.toFloat(), paddingTop.toFloat())
+        canvas.clipPath(totalActivePath)
+
+        setTextColor(activeColor)
+        super.onDraw(canvas)
+        canvas.restore()
     }
 }
