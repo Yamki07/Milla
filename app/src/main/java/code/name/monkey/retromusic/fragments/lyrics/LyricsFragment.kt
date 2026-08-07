@@ -141,20 +141,6 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         }
     }
 
-    private fun updateTitleSong() {
-        val currentSong = MusicPlayerRemote.currentSong
-        
-        // Update header texts
-        binding.headerTitle.text = currentSong.title
-        binding.headerArtist.text = currentSong.artistName
-        
-        // Load header cover
-        Glide.with(this)
-            .load(RetroGlideExtension.getSongModel(currentSong))
-            .apply(RetroGlideExtension.simpleSongCoverOptions(currentSong))
-            .into(binding.headerCover)
-    }
-
     private fun updateBlurBackground() {
         val currentSong = MusicPlayerRemote.currentSong
         val currentArtwork = RetroGlideExtension.getSongModel(currentSong)
@@ -162,8 +148,12 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         // Use strong blur for background
         Glide.with(this)
             .load(currentArtwork)
-            .apply(RetroGlideExtension.simpleSongCoverOptions(currentSong))
-            .transform(jp.wasabeef.glide.transformations.BlurTransformation(25, 4))
+            .simpleSongCoverOptions(currentSong)
+            .transform(
+                BlurTransformation.Builder(requireContext())
+                    .blurRadius(25f)
+                    .build()
+            )
             .into(binding.blurBackground)
     }
 
@@ -259,6 +249,16 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         if (::lyricsAdapter.isInitialized) {
             lyricsAdapter.setWaveColor(accentColor())
         }
+        
+        // Update header texts
+        binding.headerTitle.text = song.title
+        binding.headerArtist.text = song.artistName
+        
+        // Load header cover
+        Glide.with(this)
+            .load(RetroGlideExtension.getSongModel(song))
+            .simpleSongCoverOptions(song)
+            .into(binding.headerCover)
     }
 
     private fun setupToolbar() {
