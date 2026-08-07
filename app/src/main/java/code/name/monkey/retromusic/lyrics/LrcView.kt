@@ -33,24 +33,11 @@ import kotlinx.coroutines.*
 import java.io.File
 import kotlin.math.abs
 
-class LyricViewLine(
-    val lyricLine: LyricLine,
-    val staticLayout: StaticLayout,
-    var offset: Float = Float.MIN_VALUE
-) : Comparable<LyricViewLine> {
-    val height: Int get() = staticLayout.height
-    val time: Long get() = lyricLine.timeMs
-
-    override fun compareTo(other: LyricViewLine): Int {
-        return (time - other.time).toInt()
-    }
-}
-
 /**
  * 歌词 (Karaoke Syllable-by-Syllable Support)
  */
 @SuppressLint("StaticFieldLeak")
-class CoverLrcView @JvmOverloads constructor(
+class LrcView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -149,12 +136,40 @@ class CoverLrcView @JvmOverloads constructor(
                     animateCurrentTextSize()
                     return true
                 }
+            } else if (hasLrc() && mOnPlayClickListener != null) {
+                val y = e.y - mOffset
+                val tappedLine = getTappedLine(y)
+                if (tappedLine in mLrcEntryList.indices) {
+                    val tappedLineTime = mLrcEntryList[tappedLine].time
+                    if (mOnPlayClickListener!!.onPlayClick(tappedLineTime)) {
+                        isShowTimeline = false
+                        removeCallbacks(hideTimelineRunnable)
+                        mCurrentLine = tappedLine
+                        smoothScrollTo(mCurrentLine)
+                        invalidate()
+                        return true
+                    }
+                }
             } else {
                 callOnClick()
                 return true
             }
             return super.onSingleTapConfirmed(e)
         }
+    }
+
+    private fun getTappedLine(y: Float): Int {
+        var cumulativeHeight = 0f
+        for (i in mLrcEntryList.indices) {
+            val entry = mLrcEntryList[i]
+            val lineHeight = entry.height.toFloat()
+            val lineCenter = cumulativeHeight + (lineHeight / 2)
+            if (abs(y - lineCenter) < lineHeight / 2) {
+                return i
+            }
+            cumulativeHeight += lineHeight + mDividerHeight
+        }
+        return -1
     }
 
     init {
@@ -290,6 +305,11 @@ class CoverLrcView @JvmOverloads constructor(
                 invalidate()
             }
         }
+    }
+    
+    @Deprecated("Use updateTime instead")
+    fun onDrag(time: Long) {
+        updateTime(time)
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {

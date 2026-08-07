@@ -135,6 +135,8 @@ object MusixmatchFetcher {
      */
     private fun convertToEnhancedLrc(mxmArray: JSONArray): String {
         val sb = StringBuilder()
+        var currentLineTime = -1.0
+        var isFirstWord = true
         for (i in 0 until mxmArray.length()) {
             val lineObj = mxmArray.getJSONObject(i)
             val text = lineObj.optString("text")
@@ -145,9 +147,20 @@ object MusixmatchFetcher {
             val sec = (totalSecs % 60).toInt()
             val ms = ((totalSecs * 1000) % 1000).toInt() / 10 // hundredths
             
-            val timeStr = String.format("[%02d:%02d.%02d]", min, sec, ms)
-            
-            sb.append(timeStr).append(" ").append(text).append("\n")
+            val timeTag = String.format("<%02d:%02d.%02d>", min, sec, ms)
+            val lineTag = String.format("[%02d:%02d.%02d]", min, sec, ms)
+
+            if (text == "\n") {
+                sb.append("\n")
+                isFirstWord = true
+            } else {
+                if (isFirstWord) {
+                    sb.append(lineTag).append(timeTag).append(text)
+                    isFirstWord = false
+                } else {
+                    sb.append(timeTag).append(text)
+                }
+            }
         }
         return sb.toString()
     }
