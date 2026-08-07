@@ -41,8 +41,23 @@ object DeezerApiClient {
     private var userId: Long = 0
     private var sessionInitialized = false
 
-    // OkHttp sin CookieJar (usaremos header Cookie explícito)
+    private val cookieJar = object : CookieJar {
+        private val cookies = java.util.concurrent.ConcurrentHashMap<String, MutableList<Cookie>>()
+        override fun saveFromResponse(url: HttpUrl, newCookies: List<Cookie>) {
+            val host = url.host
+            val current = cookies.getOrPut(host) { mutableListOf() }
+            for (nc in newCookies) {
+                current.removeAll { it.name == nc.name }
+                current.add(nc)
+            }
+        }
+        override fun loadForRequest(url: HttpUrl): List<Cookie> {
+            return cookies[url.host] ?: emptyList()
+        }
+    }
+
     private val client = OkHttpClient.Builder()
+        .cookieJar(cookieJar)
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
@@ -115,9 +130,10 @@ object DeezerApiClient {
                     val json = JSONObject(resBody)
                     
                     // Si el token es inválido (error code 3 o un mensaje similar), limpiamos y re-intentamos
-                    val error = json.optJSONArray("error")
-                    if (error != null && error.length() > 0) {
-                        Log.d(TAG, "Error en callGwApi ($method): $error. Intentando refrescar sesión...")
+                    val errorObj = json.optJSONObject("error")
+                    val errorArr = json.optJSONArray("error")
+                    if ((errorArr != null && errorArr.length() > 0) || (errorObj != null && errorObj.length() > 0)) {
+                        Log.d(TAG, "Error en callGwApi ($method): $errorObj / $errorArr. Intentando refrescar sesión...")
                         sessionInitialized = false
                     } else {
                         responseJson = json.optJSONObject("results")

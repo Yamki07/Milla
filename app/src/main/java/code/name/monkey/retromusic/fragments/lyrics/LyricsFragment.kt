@@ -317,40 +317,28 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                 prefill = content,
                 inputType = InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_CLASS_TEXT
             ) { _, input ->
-                if (VersionUtils.hasR()) {
-                    syncedLyrics = input.toString()
-                    val lrcFile = LyricUtil.getSyncedLyricsFile(song)
-                    if (lrcFile?.exists() == true) {
-                        syncedFileUri =
-                            UriUtil.getUriFromPath(requireContext(), lrcFile.absolutePath)
-                        val pendingIntent =
-                            MediaStore.createWriteRequest(
-                                requireContext().contentResolver,
-                                listOf(syncedFileUri)
-                            )
-                        editSyncedLyricsLauncher.launch(
+                val fieldKeyValueMap = EnumMap<FieldKey, String>(FieldKey::class.java)
+                fieldKeyValueMap[FieldKey.LYRICS] = input.toString()
+                GlobalScope.launch {
+                    if (VersionUtils.hasR()) {
+                        cacheFile = TagWriter.writeTagsToFilesR(
+                            requireContext(),
+                            AudioTagInfo(listOf(song.data), fieldKeyValueMap, null)
+                        )[0]
+                        val pendingIntent = MediaStore.createWriteRequest(
+                            requireContext().contentResolver,
+                            listOf(song.uri)
+                        )
+
+                        normalLyricsLauncher.launch(
                             IntentSenderRequest.Builder(pendingIntent).build()
                         )
                     } else {
-                        val fieldKeyValueMap = EnumMap<FieldKey, String>(FieldKey::class.java)
-                        fieldKeyValueMap[FieldKey.LYRICS] = input.toString()
-                        GlobalScope.launch {
-                            cacheFile = TagWriter.writeTagsToFilesR(
-                                requireContext(),
-                                AudioTagInfo(listOf(song.data), fieldKeyValueMap, null)
-                            )[0]
-                            val pendingIntent = MediaStore.createWriteRequest(
-                                requireContext().contentResolver,
-                                listOf(song.uri)
-                            )
-
-                            normalLyricsLauncher.launch(
-                                IntentSenderRequest.Builder(pendingIntent).build()
-                            )
-                        }
+                        TagWriter.writeTagsToFiles(
+                            requireContext(),
+                            AudioTagInfo(listOf(song.data), fieldKeyValueMap, null)
+                        )
                     }
-                } else {
-                    LyricUtil.writeLrc(song, input.toString())
                 }
             }
             positiveButton(res = R.string.save) {

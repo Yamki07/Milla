@@ -1,0 +1,45 @@
+{
+	"name": "@applemusic-like-lyrics/docs",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"build:full": "run-s build:full:projects build:full:copy-playground",
+		"build:full:projects": "cross-env PLAYGROUND_BASE_URL=/playground/ nx run-many --target=build --projects=docs,playground-core",
+		"build:full:copy-playground": "node ./scripts/copy-playground.js",
+		"preview": "astro preview"
+	},
+	"imports": {
+		"#core/*": "./src/core/*",
+		"#components/*": "./src/components/*"
+	},
+	"dependencies": {
+		"@applemusic-like-lyrics/core": "workspace:^",
+		"@applemusic-like-lyrics/react": "workspace:^",
+		"@astrojs/react": "^6.0.2",
+		"@astrojs/starlight": "^0.41.5",
+		"@monaco-editor/react": "^4.7.0",
+		"@nanostores/react": "^1.1.0",
+		"@types/react": "catalog:",
+		"@types/react-dom": "catalog:",
+		"astro": "^7.1.6",
+		"i18next": "^26.3.6",
+		"lucide-react": "^1.28.0",
+		"monaco-editor": "^0.56.0",
+		"nanostores": "^1.4.2",
+		"react": "catalog:",
+		"react-dom": "catalog:",
+		"react-i18next": "^17.0.11",
+		"react-toastify": "^11.1.0",
+		"sharp": "catalog:",
+		"starlight-sidebar-topics": "^0.8.0"
+	},
+	"devDependencies": {
+		"cross-env": "^10.1.0",
+		"typedoc": "catalog:",
+		"typedoc-plugin-mark-react-functional-components": "^0.2.2",
+		"typedoc-plugin-markdown": "catalog:",
+		"typedoc-plugin-vue": "^1.5.1"
+	}
+}

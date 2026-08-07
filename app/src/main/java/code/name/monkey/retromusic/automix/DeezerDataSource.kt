@@ -31,9 +31,14 @@ class DeezerDataSource(
     private var dropBytes: Int = 0
     private var bytesRemaining: Long = 0L
 
-    // Búfer interno para acumular exactamente 2048 bytes por bloque
+    // Búfer interno para acumular exactamente 2048 bytes por bloque (encriptados)
     private val chunkBuffer = ByteArray(2048)
     private var chunkBufferPosition: Int = 0
+
+    // Búfer para almacenar el bloque procesado (desencriptado o plano) del que se lee poco a poco
+    private var processedBuffer: ByteArray = ByteArray(0)
+    private var processedBufferOffset: Int = 0
+    private var processedBufferLength: Int = 0
 
     override fun addTransferListener(transferListener: TransferListener) {
         upstream.addTransferListener(transferListener)
@@ -43,9 +48,11 @@ class DeezerDataSource(
         // Calcular los offsets alineados a bloques de 2048 bytes para Deezer
         val startBytes = dataSpec.position
         val deezerStart = startBytes - (startBytes % 2048)
-        dropBytes = (startBytes % 2048).toInt()
+        val initialDropBytes = (startBytes % 2048).toInt()
 
         chunkCounter = (deezerStart / 2048).toInt()
+        chunkBufferPosition = 0
+        processedBufferLength = 0
 
         // Ajustamos la petición al servidor upstream para que comience en un límite de bloque 2048
         val adjustedDataSpec = dataSpec.buildUpon()
@@ -55,56 +62,57 @@ class DeezerDataSource(
         bytesRemaining = upstream.open(adjustedDataSpec)
 
         if (bytesRemaining != C.LENGTH_UNSET.toLong()) {
-            bytesRemaining -= dropBytes
+            bytesRemaining -= initialDropBytes
         }
+
+        // Si hay que saltar bytes iniciales, los marcamos en el offset procesado
+        if (initialDropBytes > 0) {
+            // Forzamos la lectura y desencriptación del primer bloque, y ajustamos el offset
+            readNextChunk()
+            processedBufferOffset = initialDropBytes
+            processedBufferLength -= initialDropBytes
+        }
+
         return bytesRemaining
+    }
+
+    private fun readNextChunk(): Boolean {
+        chunkBufferPosition = 0
+        while (chunkBufferPosition < 2048) {
+            val read = upstream.read(chunkBuffer, chunkBufferPosition, 2048 - chunkBufferPosition)
+            if (read == C.RESULT_END_OF_INPUT) {
+                if (chunkBufferPosition == 0) return false
+                break // Fin de archivo, tenemos un bloque parcial
+            }
+            chunkBufferPosition += read
+        }
+
+        if (chunkBufferPosition == 2048 && chunkCounter % 3 == 0) {
+            processedBuffer = DeezerDecryptor.decryptChunk(trackKey, chunkBuffer)
+        } else {
+            // Copiamos para no mutar el buffer interno mientras se lee el próximo
+            processedBuffer = chunkBuffer.copyOf(chunkBufferPosition)
+        }
+        processedBufferOffset = 0
+        processedBufferLength = chunkBufferPosition
+        chunkCounter++
+        return true
     }
 
     override fun read(buffer: ByteArray, offset: Int, length: Int): Int {
         if (length == 0) return 0
         if (bytesRemaining == 0L) return C.RESULT_END_OF_INPUT
 
-        // Llenar nuestro búfer de 2048 bytes
-        while (chunkBufferPosition < 2048) {
-            val read = upstream.read(chunkBuffer, chunkBufferPosition, 2048 - chunkBufferPosition)
-            if (read == C.RESULT_END_OF_INPUT) {
-                if (chunkBufferPosition == 0) return C.RESULT_END_OF_INPUT
-                break // Fin de archivo, tenemos un bloque parcial
-            }
-            chunkBufferPosition += read
+        if (processedBufferLength == 0) {
+            val hasMore = readNextChunk()
+            if (!hasMore) return C.RESULT_END_OF_INPUT
         }
 
-        // Si tenemos un bloque completo de 2048 bytes
-        var dataToCopy = chunkBuffer
-        var availableDataLen = chunkBufferPosition
+        val bytesToCopy = min(length, processedBufferLength)
+        System.arraycopy(processedBuffer, processedBufferOffset, buffer, offset, bytesToCopy)
 
-        if (chunkBufferPosition == 2048) {
-            // Desencriptar 1 de cada 3 bloques
-            if (chunkCounter % 3 == 0) {
-                dataToCopy = DeezerDecryptor.decryptChunk(trackKey, chunkBuffer)
-            }
-            chunkCounter++
-            chunkBufferPosition = 0 // Resetear para el próximo ciclo
-        }
-
-        // Soltar los bytes iniciales si hicimos un seek (adelantar canción en medio del bloque)
-        var dataOffset = 0
-        if (dropBytes > 0) {
-            dataOffset = dropBytes
-            availableDataLen -= dropBytes
-            dropBytes = 0
-        }
-
-        // Copiar los datos desencriptados al buffer de ExoPlayer
-        val bytesToCopy = min(length, availableDataLen)
-        System.arraycopy(dataToCopy, dataOffset, buffer, offset, bytesToCopy)
-
-        // Si no copiamos todo, mover el remanente al inicio del búfer (caso de lectura corta)
-        if (bytesToCopy < availableDataLen && chunkBufferPosition == 0) {
-            System.arraycopy(dataToCopy, dataOffset + bytesToCopy, chunkBuffer, 0, availableDataLen - bytesToCopy)
-            chunkBufferPosition = availableDataLen - bytesToCopy
-            chunkCounter-- // Revertir contador porque no hemos consumido este bloque totalmente
-        }
+        processedBufferOffset += bytesToCopy
+        processedBufferLength -= bytesToCopy
 
         if (bytesRemaining != C.LENGTH_UNSET.toLong()) {
             bytesRemaining -= bytesToCopy

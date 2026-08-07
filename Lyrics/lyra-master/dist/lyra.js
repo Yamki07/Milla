@@ -1,0 +1,2007 @@
+/* Lyra lyric renderer - built 2026-07-29T22:12:22Z */
+// Lyra parsers - TTML / lyrics-JSON / LRC in, one internal model out.
+// All times in MILLISECONDS (upstream JSON is seconds, converted here).
+//
+// model = { timing:'word'|'line'|'none', duration, songwriters:[],
+//   lines:[{ kind:'line', start, end, text, align:'start'|'end' (duet side),
+//     agent, songPart, key,
+//     words:[{start,end,text,syllables:[{start,end,text}]}],  // word timing only
+//     background:[{start,end,words:[...]}] }] }                // x-bg vocals
+//
+// Real TTML files can't agree on namespace prefixes (ttm:, itunes:, amll:, none),
+// so everything matches by localName. Never getAttribute a qualified name here.
+(function (global) {
+  "use strict";
+  var Lyra = global.Lyra = global.Lyra || {};
+
+  // clock values: "h:mm:ss.fff" / "m:ss.fff" / "ss.fff" / "12.5s" / "500ms" / bare seconds.
+  // real apple files MIX formats in one document, don't assume.
+  function parseClock(str) {
+    if (str == null) return null;
+    var s = String(str).trim();
+    if (!s) return null;
+    var m = s.match(/^(\d+(?:\.\d+)?)(h|m|s|ms)$/); // TTML offset-time with metric
+    if (m) {
+      var v = parseFloat(m[1]);
+      return m[2] === "h" ? v * 3600000 : m[2] === "m" ? v * 60000 : m[2] === "s" ? v * 1000 : v;
+    }
+    var parts = s.split(":");
+    if (parts.length > 3) return null;
+    var ms = 0;
+    for (var i = 0; i < parts.length; i++) {
+      var p = parseFloat(parts[i]);
+      if (isNaN(p)) return null;
+      ms = ms * 60 + p * 1000; // accumulate: each colon shifts previous into the next-larger unit
+    }
+    return ms;
+  }
+
+  // attr by localName, whatever the prefix
+  function attr(el, local) {
+    if (!el || !el.attributes) return null;
+    for (var i = 0; i < el.attributes.length; i++) {
+      var a = el.attributes[i];
+      if (a.localName === local || a.name === local) return a.value;
+    }
+    return null;
+  }
+  function localName(el) { return (el.localName || el.nodeName || "").toLowerCase().replace(/^.*:/, ""); }
+  function elementsByLocal(rootEl, local) {
+    var out = [], all = rootEl.getElementsByTagName("*");
+    for (var i = 0; i < all.length; i++) if (localName(all[i]) === local) out.push(all[i]);
+    return out;
+  }
+  function normText(s) { return (s || "").replace(/\s+/g, " ").trim(); }
+
+  // walk a <p> (or x-bg span) into syllables + trailing-space flags. whitespace
+  // TEXT NODES between spans = word boundaries; adjacent spans = one word.
+  // newline whitespace is usually just pretty-printer indent, NOT a boundary,
+  // unless the whole doc has no plain spaces at all (nlBoundary).
+  function collectSyllables(container, sink, nlBoundary) {
+    var kids = container.childNodes;
+    for (var i = 0; i < kids.length; i++) {
+      var n = kids[i];
+      if (n.nodeType === 3) { // text
+        if (/\S/.test(n.nodeValue)) {
+          // loose untimed text - keep it, times get inferred later
+          if (/^\s/.test(n.nodeValue) && sink.syls.length) sink.syls[sink.syls.length - 1].space = true;
+          sink.syls.push({ start: null, end: null, text: normText(n.nodeValue), space: /\s$/.test(n.nodeValue) });
+        } else if (/\s/.test(n.nodeValue) && sink.syls.length) {
+          if (nlBoundary || !/[\n\r]/.test(n.nodeValue)) sink.syls[sink.syls.length - 1].space = true;
+        }
+        continue;
+      }
+      if (n.nodeType !== 1) continue;
+      var ln = localName(n);
+      if (ln === "br") { if (sink.syls.length) sink.syls[sink.syls.length - 1].space = true; continue; }
+      if (ln !== "span") continue;
+      var role = attr(n, "role") || "";
+      if (/x-bg/.test(role)) { sink.bg.push(n); continue; }                    // background vocal group, handled by caller
+      if (/x-translation|x-transliteration|x-roman/.test(role)) continue;      // not rendered (v1)
+      var b = parseClock(attr(n, "begin")), e = parseClock(attr(n, "end"));
+      if (b == null && elementsByLocal(n, "span").length) { collectSyllables(n, sink, nlBoundary); continue; } // formatting wrapper (prefix-agnostic)
+      var txt = n.textContent || "";
+      if (!normText(txt) && b == null) continue;
+      sink.syls.push({ start: b, end: e, text: txt.replace(/\s+/g, " ").replace(/^ | $/g, ""), space: /\s$/.test(txt) });
+      if (/^\s/.test(txt) && sink.syls.length > 1) sink.syls[sink.syls.length - 2].space = true;
+    }
+  }
+
+  // syllables -> words; missing times inherit from neighbours
+  function toWords(syls) {
+    // repair untimed syllables: inherit from previous/next timed neighbour
+    var last = 0;
+    for (var i = 0; i < syls.length; i++) {
+      var s = syls[i];
+      if (s.start == null) s.start = last;
+      if (s.end == null) {
+        var nxt = null;
+        for (var j = i + 1; j < syls.length; j++) if (syls[j].start != null) { nxt = syls[j].start; break; }
+        s.end = nxt != null ? nxt : s.start;
+      }
+      if (s.end < s.start) s.end = s.start;
+      last = s.end;
+    }
+    var words = [], cur = null;
+    for (var k = 0; k < syls.length; k++) {
+      var sy = syls[k];
+      if (!sy.text) { if (cur && sy.space) { words.push(cur); cur = null; } continue; }
+      if (!cur) cur = { start: sy.start, end: sy.end, text: "", syllables: [] };
+      cur.syllables.push({ start: sy.start, end: sy.end, text: sy.text });
+      cur.text += sy.text;
+      cur.end = Math.max(cur.end, sy.end);
+      if (sy.space) { words.push(cur); cur = null; }
+    }
+    if (cur) words.push(cur);
+    return words;
+  }
+  function wordsSpan(words) {
+    if (!words.length) return null;
+    var s = Infinity, e = 0;
+    for (var i = 0; i < words.length; i++) { s = Math.min(s, words[i].start); e = Math.max(e, words[i].end); }
+    return { start: s, end: e };
+  }
+  function wordsText(words) { return words.map(function (w) { return w.text; }).join(" "); }
+
+  // ---------------------------------------------------------------------------
+  Lyra.parseTTML = function (source) {
+    var xml = String(source || "").replace(/^﻿/, "");
+    var doc = new DOMParser().parseFromString(xml, "text/xml");
+    if (doc.getElementsByTagName("parsererror").length) {
+      // repair passes: stray &, then TTML that arrived inside a JSON string
+      // (escaped quotes), then give up
+      doc = new DOMParser().parseFromString(xml.replace(/&(?!#?\w+;)/g, "&amp;"), "text/xml");
+      if (doc.getElementsByTagName("parsererror").length && xml.indexOf('\\"') !== -1) {
+        doc = new DOMParser().parseFromString(xml.replace(/\\"/g, '"').replace(/&(?!#?\w+;)/g, "&amp;"), "text/xml");
+      }
+      if (doc.getElementsByTagName("parsererror").length) return null;
+    }
+    var tt = doc.documentElement;
+    if (!tt || localName(tt) !== "tt") return null;
+
+    var timingAttr = (attr(tt, "timing") || "").toLowerCase();
+    var body = elementsByLocal(tt, "body")[0];
+    if (!body) return null;
+
+    // duets: any agent that isn't the first declared one goes right-aligned,
+    // except group/choir agents (type=group, conventionally v1000) which center
+    var agents = [], agentType = {};
+    var head = elementsByLocal(tt, "head")[0];
+    if (head) {
+      var ags = elementsByLocal(head, "agent");
+      for (var a = 0; a < ags.length; a++) {
+        var id = attr(ags[a], "id");
+        if (!id) continue;
+        agents.push(id);
+        agentType[id] = (attr(ags[a], "type") || "").toLowerCase();
+      }
+    }
+    var primaryAgent = agents.length ? agents[0] : null;
+    function alignFor(agent) {
+      if (!agent) return "start";
+      if (agentType[agent] === "group" || agent === "v1000") return "center";
+      return primaryAgent && agent !== primaryAgent ? "end" : "start";
+    }
+
+    var songwriters = [];
+    if (head) {
+      var sws = elementsByLocal(head, "songwriter");
+      for (var w = 0; w < sws.length; w++) { var t = normText(sws[w].textContent); if (t) songwriters.push(t); }
+    }
+
+    var lines = [];
+    var ps = elementsByLocal(body, "p");
+    // newline rule is decided once per document
+    var spaceNodes = 0, nlNodes = 0;
+    for (var sc = 0; sc < ps.length; sc++) {
+      var tw = ps[sc].childNodes;
+      for (var tn = 0; tn < tw.length; tn++) {
+        var nd = tw[tn];
+        if (nd.nodeType !== 3 || /\S/.test(nd.nodeValue)) continue;
+        if (/[\n\r]/.test(nd.nodeValue)) nlNodes++; else spaceNodes++;
+      }
+      // edge-spaces inside span text count as separator evidence too, or a
+      // pretty-printed internal-space file shatters every multi-syllable word
+      var sps = elementsByLocal(ps[sc], "span");
+      for (var se = 0; se < sps.length; se++) {
+        if (/^\s|\s$/.test(sps[se].textContent || "")) spaceNodes++;
+      }
+    }
+    var nlBoundary = spaceNodes === 0 && nlNodes > 0;
+    var sawSyllables = false;
+    for (var i = 0; i < ps.length; i++) {
+      var p = ps[i];
+      var pBegin = parseClock(attr(p, "begin")), pEnd = parseClock(attr(p, "end"));
+      var agent = attr(p, "agent");
+      var songPart = attr(p, "songPart");
+      if (!songPart && p.parentNode && p.parentNode.nodeType === 1) songPart = attr(p.parentNode, "songPart");
+
+      var sink = { syls: [], bg: [] };
+      collectSyllables(p, sink, nlBoundary);
+      var words = toWords(sink.syls);
+      var timed = words.length && words.some(function (wd) { return wd.syllables.some(function (s2) { return s2.end > s2.start; }); });
+
+      var line = {
+        kind: "line",
+        start: pBegin != null ? pBegin : 0,
+        end: pEnd != null ? pEnd : 0,
+        text: "",
+        align: alignFor(agent),
+        agent: agent || null,
+        songPart: songPart || null,
+        key: attr(p, "key"),
+        words: [],
+        background: [],
+      };
+
+      if (timed && timingAttr !== "line") {
+        sawSyllables = true;
+        line.words = words;
+        line.text = wordsText(words);
+        var span = wordsSpan(words);
+        if (pBegin == null) line.start = span.start;
+        if (pEnd == null || pEnd < span.end) line.end = Math.max(pEnd || 0, span.end);
+      } else {
+        // NOT p.textContent - that re-includes x-bg/x-translation text
+        line.text = wordsText(words);
+        if (pEnd == null && pBegin != null) line.end = pBegin; // repaired below from the next line
+      }
+
+      // background vocal groups (x-bg spans found while walking)
+      for (var g = 0; g < sink.bg.length; g++) {
+        var bsink = { syls: [], bg: [] };
+        collectSyllables(sink.bg[g], bsink, nlBoundary);
+        // the x-bg wrapper can carry the timing itself - seed the edges from it
+        // or untimed bg vocals collapse to 0/0
+        var bb = parseClock(attr(sink.bg[g], "begin")), be = parseClock(attr(sink.bg[g], "end"));
+        if (bsink.syls.length) {
+          var bs0 = bsink.syls[0], bsN = bsink.syls[bsink.syls.length - 1];
+          if (bs0.start == null) bs0.start = bb != null ? bb : (pBegin || 0);
+          if (bsN.end == null) bsN.end = be != null ? be : pEnd;
+        }
+        var bwords = toWords(bsink.syls);
+        if (!bwords.length) continue;
+        var bspan = wordsSpan(bwords);
+        line.background.push({ start: bspan.start, end: bspan.end, words: bwords });
+        line.end = Math.max(line.end, bspan.end);
+      }
+
+      lines.push(line);
+    }
+
+    // missing line ends run to the next line's start (+5s for the last)
+    for (var r = 0; r < lines.length; r++) {
+      if (lines[r].end <= lines[r].start) {
+        lines[r].end = r + 1 < lines.length ? Math.max(lines[r].start, lines[r + 1].start) : lines[r].start + 5000;
+      }
+    }
+
+    var duration = parseClock(attr(body, "dur")) || (lines.length ? lines[lines.length - 1].end : 0);
+    var timing = sawSyllables ? "word" : (lines.some(function (l) { return l.start || l.end; }) ? "line" : "none");
+    if (timingAttr === "none") timing = "none";
+    return { timing: timing, duration: duration, songwriters: songwriters, lines: lines };
+  };
+
+  // Adapter for the Qobuzify API / v1 internal format (times in SECONDS):
+  //   { Type:"Syllable"|"Line", Content:[ {Lead:{StartTime,EndTime,Syllables:[{Text,StartTime,EndTime,IsPartOfWord}]},
+  //     Background?:[{Syllables:[...]}], OppositeAligned?:bool} | {Text,StartTime,EndTime} ] }
+  // Also accepts the full /v2/track envelope: {ok, lyrics:{data}, songwriters:{names}}.
+  Lyra.fromLyricsJSON = function (ly, songwriters) {
+    if (ly && ly.lyrics && ly.lyrics.data) {
+      return Lyra.fromLyricsJSON(ly.lyrics.data,
+        (ly.songwriters && ly.songwriters.names) || songwriters);
+    }
+    if (ly && ly.data && ly.data.Content) return Lyra.fromLyricsJSON(ly.data, songwriters);
+    if (!ly || !ly.Content || !ly.Content.length) return null;
+    var syllable = ly.Type === "Syllable";
+    function grpSyls(syls, fallbackEnd) { // IsPartOfWord=true joins the NEXT syllable (v1 semantics)
+      var out = [];
+      for (var i = 0; i < (syls || []).length; i++) {
+        var s = syls[i];
+        var end = s.EndTime;
+        if (end == null) { // some responses omit it - run to the next syllable
+          var nxt = syls[i + 1];
+          end = nxt && nxt.StartTime != null ? nxt.StartTime : (fallbackEnd != null ? fallbackEnd : s.StartTime);
+        }
+        out.push({
+          start: (s.StartTime || 0) * 1000, end: (end || 0) * 1000,
+          text: (s.Text || "").replace(/\s+/g, " ").replace(/^ | $/g, ""),
+          space: !s.IsPartOfWord,
+        });
+      }
+      return toWords(out);
+    }
+    var lines = [];
+    for (var i = 0; i < ly.Content.length; i++) {
+      var it = ly.Content[i];
+      if (!it) continue; // tolerate glitched/partial responses
+      var L = it.Lead;
+      var line = {
+        kind: "line", start: 0, end: 0, text: "",
+        align: it.OppositeAligned ? "end" : "start",
+        agent: null, songPart: null, key: null, words: [], background: [],
+      };
+      if (syllable && L && L.Syllables) {
+        line.words = grpSyls(L.Syllables, L.EndTime);
+        line.text = wordsText(line.words);
+        line.start = (L.StartTime || 0) * 1000;
+        line.end = (L.EndTime || 0) * 1000;
+        var sp = wordsSpan(line.words);
+        if (sp) { if (!line.start) line.start = sp.start; line.end = Math.max(line.end, sp.end); }
+        for (var b = 0; b < (it.Background || []).length; b++) {
+          var bgw = grpSyls(it.Background[b] && it.Background[b].Syllables, it.Background[b] && it.Background[b].EndTime);
+          if (!bgw.length) continue;
+          var bsp = wordsSpan(bgw);
+          line.background.push({ start: bsp.start, end: bsp.end, words: bgw });
+          line.end = Math.max(line.end, bsp.end);
+        }
+      } else {
+        line.text = normText(it.Text || (L && L.Text) || "");
+        line.start = ((it.StartTime != null ? it.StartTime : L && L.StartTime) || 0) * 1000;
+        line.end = ((it.EndTime != null ? it.EndTime : L && L.EndTime) || 0) * 1000;
+      }
+      lines.push(line);
+    }
+    // Line-type docs from LRC upstreams often have no EndTime; without this
+    // repair every gap looks huge and interlude dots spawn everywhere
+    for (var r2 = 0; r2 < lines.length; r2++) {
+      if (lines[r2].end <= lines[r2].start) {
+        lines[r2].end = r2 + 1 < lines.length ? Math.max(lines[r2].start, lines[r2 + 1].start) : lines[r2].start + 5000;
+      }
+    }
+    return {
+      timing: syllable ? "word" : "line",
+      duration: lines.length ? lines[lines.length - 1].end : 0,
+      songwriters: songwriters || [], lines: lines,
+    };
+  };
+
+  // LRC + enhanced LRC (<mm:ss.xx> word stamps)
+  Lyra.fromLRC = function (text) {
+    var rows = String(text || "").split(/\r?\n/), lines = [], anyWords = false;
+    // [offset:+300] ID tag: MILLISECONDS, positive shifts lyrics earlier
+    var offsetMs = 0;
+    for (var o = 0; o < rows.length; o++) {
+      var om = rows[o].match(/^\s*\[offset:\s*([+-]?\d+)\s*\]/i);
+      if (om) { offsetMs = parseInt(om[1], 10) || 0; break; }
+    }
+    for (var i = 0; i < rows.length; i++) {
+      var m = rows[i].match(/^\s*((?:\[\d+:\d+(?:\.\d+)?\])+)(.*)$/);
+      if (!m) continue;
+      var stamps = m[1].match(/\[(\d+):(\d+(?:\.\d+)?)\]/g).map(function (st) {
+        var p = st.match(/\[(\d+):(\d+(?:\.\d+)?)\]/);
+        return Math.max(0, (parseInt(p[1], 10) * 60 + parseFloat(p[2])) * 1000 - offsetMs);
+      });
+      var bodyTxt = m[2];
+      var words = [];
+      var lead = normText(bodyTxt.split(/<\d+:\d+(?:\.\d+)?>/)[0]);
+      var wm, wre = /<(\d+):(\d+(?:\.\d+)?)>([^<]*)/g;
+      while ((wm = wre.exec(bodyTxt))) {
+        var ws = Math.max(0, (parseInt(wm[1], 10) * 60 + parseFloat(wm[2])) * 1000 - offsetMs);
+        var wt = normText(wm[3]);
+        if (!wt) continue;
+        words.push({ start: ws, end: 0, text: wt, syllables: [{ start: ws, end: 0, text: wt }] });
+      }
+      for (var s = 0; s < stamps.length; s++) {
+        var off = stamps[s] - stamps[0]; // repeat stamps shift word times too
+        var lw = words.map(function (wd) { return { start: wd.start + off, end: 0, text: wd.text, syllables: [{ start: wd.start + off, end: 0, text: wd.text }] }; });
+        if (lead && lw.length) lw.unshift({ start: stamps[s], end: 0, text: lead, syllables: [{ start: stamps[s], end: 0, text: lead }] });
+        lines.push({
+          kind: "line", start: stamps[s], end: 0, text: normText(bodyTxt.replace(/<\d+:\d+(?:\.\d+)?>/g, " ")),
+          align: "start", agent: null, songPart: null, key: null, words: lw, background: [],
+        });
+        if (lw.length) anyWords = true;
+      }
+    }
+    lines.sort(function (a, b) { return a.start - b.start; });
+    for (var r = 0; r < lines.length; r++) {
+      var nx = r + 1 < lines.length ? lines[r + 1].start : lines[r].start + 5000;
+      lines[r].end = Math.max(lines[r].start, nx);
+      var lws = lines[r].words;
+      for (var w = 0; w < lws.length; w++) {
+        var we = w + 1 < lws.length ? lws[w + 1].start : lines[r].end;
+        lws[w].end = lws[w].syllables[0].end = Math.max(lws[w].start, we);
+      }
+    }
+    if (!lines.length) return null;
+    return { timing: anyWords ? "word" : "line", duration: lines[lines.length - 1].end, songwriters: [], lines: lines };
+  };
+
+  // sniff the format
+  Lyra.parse = function (input) {
+    if (input == null) return null;
+    if (typeof input === "object") return Lyra.fromLyricsJSON(input);
+    var s = String(input).replace(/^﻿/, "").trim();
+    if (s[0] === "<") return Lyra.parseTTML(s);
+    if (s[0] === "{") { try { return Lyra.fromLyricsJSON(JSON.parse(s)); } catch (e) { return null; } }
+    var lrc = Lyra.fromLRC(s);
+    if (lrc) return lrc;
+    // plain unsynced text: render as a static sheet
+    var rows = s.split(/\r?\n/).map(normText).filter(Boolean);
+    if (!rows.length) return null;
+    return {
+      timing: "none", duration: 0, songwriters: [],
+      lines: rows.map(function (t2) {
+        return { kind: "line", start: 0, end: 0, text: t2, align: "start",
+                 agent: null, songPart: null, key: null, words: [], background: [] };
+      }),
+    };
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+// Lyra engine - the actual renderer.
+//
+// The whole point of this thing is that it can't stutter, so before touching the
+// hot path know the rules: DOM is built once per track and never torn down (no
+// virtual list, that's how the old vendor flashed). One rAF loop, zero layout
+// reads in it - geometry gets measured in a single batched pass on build/resize/
+// font-ready. Only translate/scale/opacity animate; blur STEPS instead of
+// transitioning (blur transitions are main-thread). The gradient sweep is
+// per-SYLLABLE, not per-word - chromium bug 41385122 kills background-clip:text
+// when an element has transformed/positioned descendants, and words have both.
+// Scroll is a spring on the container translate, never scrollTop; the cascade is
+// lines replaying the container's motion history with a delay (one sim total).
+// Seeks and alt-tab returns snap with transitions disabled for 2 frames, so
+// there's no catch-up storm.
+//
+//   var r = Lyra.create({ mount, getPos, isPlaying, onSeek, onClose, settings });
+//   r.load(ttmlOrJsonOrLrc); r.setCover(url); r.start();
+//   also: stop/destroy/frame(pos)/status(msg)/remeasure/stats
+(function (global) {
+  "use strict";
+  var Lyra = global.Lyra = global.Lyra || {};
+
+  var DEFAULTS = {
+    depthBlur: true,        // progressive (stepped) blur by distance from the active line
+    glow: true,             // bloom overlay on the currently-sung word
+    cascade: true,          // staggered line follow
+    cascadeStep: 45,        // ms of lag per line below the active one
+    cascadeMax: 340,        // cap on that lag
+    centerBias: 0.40,       // active line rests this fraction down the viewport
+    followK: 100,           // follow-spring stiffness baseline (adaptive, see tempo tracking)
+    followZeta: 0.65,       // follow-spring damping ratio: ~7% overshoot, a real settle
+                            // (0.8+ is mathematically <2% = invisible = "flat")
+    adaptiveSpring: true,   // weightier spring on slow songs, snappier on fast ones
+    entrance: true,         // staggered ripple-in on load and after seeks
+    userK: 430,             // user-scroll spring stiffness (critically damped)
+    userIdleMs: 15000,      // resume auto-follow after this much scroll idle (3s was
+                            // shorter than actually reading the verse you scrolled to)
+    timingOffsetMs: 110,    // perceptual lead: highlights land slightly before nominal
+                            // time (real audio stacks have output latency; the eye
+                            // wants to arrive before the sound)
+    scrollLeadMs: 450,      // scroll runs on a clock this far AHEAD of the highlight:
+                            // the view arrives, THEN the line lights up
+    graceMs: 350,           // hold a line active this long past its end
+    interludeMinMs: 2600,   // min silent gap that earns interlude dots
+    interludeLeadMs: 4000,  // dots before the first line if it starts later than this
+    lineRipple: false,      // line-timed tracks: synthesize a word stagger (typing
+                            // ripple). OFF: tried it, reads choppy - line mode looks
+                            // best as one clean whole-line brighten
+    letterWave: true,       // held words split into letters and a swell travels
+                            // across them (the big-note treatment)
+    fontFamily: null,
+    background: true,       // drive Lyra.Background if present
+    closeButton: true,      // rendered when onClose is provided; set false to suppress
+    credits: true,          // songwriters line after the lyrics
+  };
+
+  var CSS = "" +
+// registered => per-frame writes cost microseconds instead of a recalc storm
+"@property --fill{syntax:'<percentage>';inherits:false;initial-value:0%;}" +
+// theming: --lyra-text is the master knob; everything derives from it with
+// today's values as fallbacks (relative color syntax, chromium 119+)
+".lyra-root{--lyra-text:#fff;--lyra-sung:var(--lyra-text);" +
+"--lyra-unsung:rgb(from var(--lyra-text) r g b / .34);" +
+"--lyra-dim:rgb(from var(--lyra-text) r g b / .92);" +
+"position:absolute;inset:0;overflow:hidden;color:var(--lyra-text);-webkit-font-smoothing:antialiased;contain:layout style;touch-action:none;}" +
+".lyra-viewport{position:absolute;inset:0;overflow:hidden;}" +
+".lyra-canvas{position:absolute;left:0;right:0;top:0;will-change:translate;}" +
+".lyra-content{padding:0 clamp(24px,5.5vw,88px);box-sizing:border-box;max-width:min(1160px,94%);margin:0 auto;}" +
+// base line state is dim, brightness only ever gets ADDED - a fresh node can't
+// flash. filter stays out of the transition list on purpose.
+".lyra-line{position:relative;margin:0 0 clamp(.55em,1.6vh,.9em);font-weight:700;" +
+"font-size:clamp(26px,3.3vw,52px);line-height:1.16;letter-spacing:-.01em;text-align:start;" +
+"overflow-wrap:break-word;cursor:pointer;opacity:.34;transform-origin:left center;scale:.93;" +
+// brighten fast, dim slow; scale curve has a bit of settle in it
+"transition:opacity .6s cubic-bezier(.33,0,.2,1),scale .6s cubic-bezier(.34,1.3,.4,1);}" +
+"@keyframes lyra-in{from{opacity:0;translate:0 16px;}}" + // to-frame omitted: animates to each line's own styles
+".lyra-enter{animation:lyra-in .55s cubic-bezier(.2,.55,.25,1) backwards;}" +
+".lyra-line.lyra-opp{text-align:end;transform-origin:right center;}" +
+".lyra-line.lyra-center{text-align:center;transform-origin:center center;}" + // group/choir agents (v1000)
+".lyra-line:dir(rtl){transform-origin:right center;}" +
+".lyra-near,.lyra-lag{will-change:translate;}" +
+".lyra-line.lyra-active{opacity:1;scale:1.03;transition-duration:.28s,.5s;}" +
+".lyra-line:hover{opacity:.72;filter:none!important;}" +
+".lyra-line.lyra-active:hover{opacity:1;}" +
+// depth-of-field tiers. asymmetric on purpose: sung history above recedes hard,
+// upcoming lines below stay readable for read-ahead
+".lyra-d1{opacity:.5;}.lyra-d2{opacity:.42;}.lyra-d3{opacity:.36;}.lyra-d4{opacity:.30;}" +
+".lyra-b1{opacity:.62;}.lyra-b2{opacity:.54;}.lyra-b3{opacity:.46;}.lyra-b4{opacity:.40;}" +
+".lyra-blur .lyra-line{filter:blur(3.5px);}.lyra-blur .lyra-line.lyra-active{filter:none;}" +
+".lyra-blur .lyra-d1{filter:blur(1px);}.lyra-blur .lyra-d2{filter:blur(1.8px);}" +
+".lyra-blur .lyra-d3{filter:blur(2.6px);}.lyra-blur .lyra-d4{filter:blur(3.5px);}" +
+".lyra-blur .lyra-b1{filter:none;}.lyra-blur .lyra-b2{filter:blur(1px);}" +
+".lyra-blur .lyra-b3{filter:blur(1.6px);}.lyra-blur .lyra-b4{filter:blur(2.2px);}" +
+// words are plain containers, the paint tricks live on syllables. NO transitions on
+// word lift - it's a per-frame envelope from the engine. transition pops looked like
+// a pogo stick on gapless tracks (Alone Pt. II, ~4 words/s contiguous).
+// idle words rest slightly SMALL (.96) and grow to 1.0 as they're sung - the
+// grow-arc is most of what makes a sung word feel alive
+".lyra-w{position:relative;display:inline-block;transform-origin:center 80%;scale:.96;}" +
+// syllables: dim future / bright sung / gradient on the current one. do NOT put
+// scale back on these - the old 1.09 hold swell grew long words ~10px sideways
+// and glued them to their neighbors ("thatsomeone"). swell lives in the envelope now.
+".lyra-s,.lyra-gs{display:inline-block;}" +
+// wave exit: when a letter-wave word ends, per-frame writes stop and this class
+// lets the letters ease home + the glow fade out in its bell shape (instead of
+// the whole word flashing to full bloom then cutting - the old exit bug)
+".lyra-w-waveout .lyra-s,.lyra-w-waveout .lyra-gs{transition:scale .3s ease,translate .3s ease,opacity .35s ease;}" +
+".lyra-line .lyra-s{color:var(--lyra-dim,rgba(255,255,255,.92));}" +
+".lyra-line.lyra-active .lyra-s{color:var(--lyra-unsung,rgba(255,255,255,.34));}" +
+".lyra-line.lyra-active .lyra-w-sung .lyra-s,.lyra-line.lyra-active .lyra-s.lyra-s-sung{color:var(--lyra-sung,#fff);}" +
+".lyra-line.lyra-active .lyra-s.lyra-s-cur{" +
+"background-image:linear-gradient(90deg,var(--lyra-sung,#fff) calc(var(--fill) - 18%),var(--lyra-unsung,rgba(255,255,255,.34)) var(--fill));" +
+"-webkit-background-clip:text;background-clip:text;color:transparent;}" +
+// RTL sweeps travel right-to-left (pairs with dir=auto on lines)
+".lyra-line:dir(rtl) .lyra-s.lyra-s-cur{" +
+"background-image:linear-gradient(270deg,var(--lyra-sung,#fff) calc(var(--fill) - 18%),var(--lyra-unsung,rgba(255,255,255,.34)) var(--fill));}" +
+// line-timed DEFAULT: the whole active line brightens as one unit (the line
+// opacity/scale transitions carry the motion). No per-word anything.
+".lyra-linemode .lyra-line.lyra-active .lyra-s{color:var(--lyra-sung,#fff);}" +
+".lyra-linemode .lyra-line.lyra-active .lyra-s.lyra-s-cur{background-image:none;color:var(--lyra-sung,#fff);}" +
+// opt-in line ripple (lineRipple:true): words pop in staggered, still no sweep
+".lyra-ripple .lyra-line.lyra-active .lyra-s.lyra-s-cur{background-image:none;color:var(--lyra-sung,#fff);}" +
+".lyra-ripple .lyra-line .lyra-gs.lyra-s-cur{background-image:none;color:var(--lyra-sung,#fff);}" +
+// static sheets (unsynced lyrics): a plain readable list, no states
+".lyra-static .lyra-line{opacity:.85;scale:1;filter:none!important;cursor:default;}" +
+// glow overlay = duplicate glyphs clipped to the sung part, static drop-shadow,
+// only opacity moves
+".lyra-wg{position:absolute;inset:0;pointer-events:none;opacity:0;" + // opacity driven by the lift envelope
+"filter:drop-shadow(0 0 6px rgba(255,255,255,.5)) drop-shadow(0 0 22px rgba(255,255,255,.28));}" +
+// held notes get a hotter, wider bloom (class-swapped static filter)
+".lyra-w-hold .lyra-wg{filter:drop-shadow(0 0 7px rgba(255,255,255,.68)) drop-shadow(0 0 32px rgba(255,255,255,.42));}" +
+// overlay glyph colours are NOT gated on the active/cur classes - visibility is
+// the envelope-driven opacity alone. gating them meant the glow vanished the
+// instant a word's classes flipped, mid-fade (boidu caught this from a video)
+".lyra-gs{color:transparent;}" +
+".lyra-w-sung .lyra-gs,.lyra-gs.lyra-s-sung{color:var(--lyra-sung,#fff);}" +
+".lyra-gs.lyra-s-cur{" +
+"background-image:linear-gradient(90deg,var(--lyra-sung,#fff) calc(var(--fill) - 18%),transparent var(--fill));" +
+"-webkit-background-clip:text;background-clip:text;}" +
+".lyra-line:dir(rtl) .lyra-gs.lyra-s-cur{" +
+"background-image:linear-gradient(270deg,var(--lyra-sung,#fff) calc(var(--fill) - 18%),transparent var(--fill));}" +
+// background vocals: smaller echo line under the lead
+".lyra-bgv{display:block;font-size:.58em;font-weight:600;opacity:.8;margin-top:.15em;}" +
+// interlude dots
+".lyra-int{position:relative;height:1.4em;margin:0 0 clamp(.55em,1.6vh,.9em);display:flex;align-items:center;" +
+"opacity:0;scale:.6;transform-origin:left center;transition:opacity .4s ease,scale .5s cubic-bezier(.3,.7,.25,1.15);}" +
+".lyra-int.lyra-active{opacity:1;scale:1;}" +
+".lyra-int.lyra-int-exit{opacity:0;scale:1.18;}" +
+".lyra-int-dots{display:inline-flex;gap:.3em;animation:lyra-breathe var(--lyra-breathe,2.2s) ease-in-out infinite alternate;animation-play-state:paused;}" +
+".lyra-int.lyra-active .lyra-int-dots{animation-play-state:running;}" +
+".lyra-dot{width:.32em;height:.32em;border-radius:50%;background:#fff;font-size:clamp(26px,3.3vw,52px);}" +
+".lyra-dot:nth-child(1){opacity:clamp(.22,calc(var(--ifill,0)*3 + .22),1);}" +
+".lyra-dot:nth-child(2){opacity:clamp(.22,calc(var(--ifill,0)*3 - .78),1);}" +
+".lyra-dot:nth-child(3){opacity:clamp(.22,calc(var(--ifill,0)*3 - 1.78),1);}" +
+"@keyframes lyra-breathe{from{scale:1;}to{scale:1.09;}}" +
+// spacers, credits, status, close
+".lyra-sp-top{height:44vh;}.lyra-sp-bot{height:52vh;}" +
+".lyra-credits{opacity:.42;font-size:clamp(13px,1vw,16px);font-weight:500;margin-top:2.2em;letter-spacing:.01em;}" +
+".lyra-status{position:absolute;top:50%;left:50%;translate:-50% -50%;color:rgba(255,255,255,.72);" +
+"font-size:clamp(16px,1.7vw,24px);font-weight:600;text-align:center;letter-spacing:.01em;max-width:80%;z-index:2;}" +
+".lyra-close{position:absolute;top:16px;left:50%;translate:-50%;z-index:6;width:38px;height:38px;border:0;border-radius:50%;" +
+"background:rgba(255,255,255,.09);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;" +
+"backdrop-filter:blur(8px);transition:background .15s,scale .12s;}" +
+".lyra-close:hover{background:rgba(255,255,255,.2);scale:1.08;}" +
+".lyra-close svg{width:17px;height:17px;stroke:currentColor;stroke-width:2.4;fill:none;stroke-linecap:round;}" +
+// resume-autoscroll pill, shown while the user is browsing away from the song
+".lyra-resume{position:absolute;bottom:22px;left:50%;translate:-50% 0;z-index:6;border:0;border-radius:999px;" +
+"padding:9px 18px;font-size:14px;font-weight:600;font-family:inherit;color:var(--lyra-text,#fff);cursor:pointer;" +
+"background:rgba(255,255,255,.1);backdrop-filter:blur(10px);opacity:0;pointer-events:none;" +
+"transition:opacity .2s ease,translate .25s cubic-bezier(.3,.7,.25,1.1);}" +
+".lyra-resume.lyra-resume-on{opacity:1;pointer-events:auto;}" +
+".lyra-resume:not(.lyra-resume-on){translate:-50% 12px;}" +
+".lyra-resume:hover{background:rgba(255,255,255,.2);}" +
+// "wrong lyrics" pill (only exists when the host passes onRefetch)
+".lyra-refetch{position:absolute;right:20px;bottom:22px;z-index:6;border:0;border-radius:999px;" +
+"padding:9px 15px;font-size:13px;font-weight:600;font-family:inherit;color:var(--lyra-text,#fff);cursor:pointer;" +
+"background:rgba(255,255,255,.09);backdrop-filter:blur(10px);opacity:.4;transition:opacity .15s ease,background .15s ease;display:none;}" +
+".lyra-refetch.lyra-refetch-on{display:block;}" +
+".lyra-refetch:hover{opacity:1;background:rgba(255,255,255,.18);}" +
+".lyra-refetch.lyra-refetch-busy{opacity:.9;cursor:default;animation:lyra-refetch-pulse 1s ease-in-out infinite alternate;}" +
+"@keyframes lyra-refetch-pulse{from{opacity:.35;}to{opacity:.9;}}" +
+// toast: one small transient message, opacity/translate only
+".lyra-toast{position:absolute;left:50%;bottom:70px;translate:-50% 8px;z-index:8;padding:9px 16px;border-radius:10px;" +
+"background:rgba(18,18,24,.88);backdrop-filter:blur(8px);color:var(--lyra-text,#fff);font-size:13px;font-weight:600;" +
+"opacity:0;pointer-events:none;transition:opacity .2s ease,translate .25s ease;}" +
+".lyra-toast.lyra-toast-on{opacity:1;translate:-50% 0;}" +
+// snap mode: kills every transition for the resync frame(s)
+".lyra-cut .lyra-line,.lyra-cut .lyra-w,.lyra-cut .lyra-wg,.lyra-cut .lyra-s,.lyra-cut .lyra-gs,.lyra-cut .lyra-int{transition:none!important;}" +
+"@media (prefers-reduced-motion:reduce){" +
+".lyra-line,.lyra-w,.lyra-s,.lyra-gs{transition-duration:.01s!important;}" +
+".lyra-w{scale:1!important;}" + // no grow-arc under reduced motion, so no small idle either
+".lyra-int-dots,.lyra-enter{animation:none!important;}}";
+
+  function injectCSS() {
+    if (document.getElementById("lyra-css")) return;
+    var s = document.createElement("style");
+    s.id = "lyra-css";
+    s.textContent = CSS;
+    document.head.appendChild(s);
+  }
+
+  function el(tag, cls) { var e = document.createElement(tag); if (cls) e.className = cls; return e; }
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+
+  Lyra.create = function (opts) {
+    var mount = opts.mount;
+    var getPos = opts.getPos || function () { return 0; };
+    var isPlaying = opts.isPlaying || function () { return true; };
+    var onSeek = opts.onSeek || function () {};
+    var onClose = opts.onClose || null;
+    // host hook for "these lyrics are wrong": Lyra renders the button + busy state
+    // + toast, the host does the actual re-fetching (and calls load() with the
+    // replacement). Return a Promise resolving to a short message string to toast
+    // (or null/undefined for silence).
+    var onRefetch = opts.onRefetch || null;
+    var S = {};
+    for (var dk in DEFAULTS) S[dk] = DEFAULTS[dk];
+    for (var ok in (opts.settings || {})) S[ok] = opts.settings[ok];
+    var reduced = false;
+    try { reduced = matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
+    if (reduced) { S.cascade = false; S.glow = false; S.depthBlur = false; }
+
+    // state
+    var root = null, viewport = null, canvas = null, content = null, statusEl = null, bg = null;
+    var items = [];              // lines + interludes, doc order
+    var model = null;
+    var destroyed = false, running = false;
+    var raf = null;
+    var anchor = -1;             // active item index
+    var scrollAnchor = -1;       // like anchor, but on the LEADING clock (pos + scrollLeadMs)
+    var staticMode = false;      // unsynced lyrics: plain sheet, no states/follow
+    var resumeEl = null, resumeShown = false;
+    var refetchEl = null, refetchBusy = false, toastEl = null, toastTimer = null;
+    var waveSylMin = 650;        // per-track: held means exceptional FOR THIS SONG
+    var analysisOn = false;      // audio-analysis fed in: bg pulses with the song
+    var marked = [];             // items currently carrying distance/near classes
+    var vh = 0, maxScroll = 0, measured = false, measureQueued = false;
+    var ro = null;
+
+    // scroll spring + motion history for the cascade
+    var spr = { y: 0, v: 0, target: 0, settled: true };
+    var adaptedK = S.followK;   // tempo-adapted stiffness
+    var lastAnchorT = 0, cadence = [];   // recent inter-line intervals (ms)
+    var lastFramePos = 0;
+    var hist = [];               // [{t, y}] recent container positions
+    var lagged = [];             // items currently replaying delayed history
+    var userUntil = 0;           // auto-follow paused until this timestamp
+    var lastCanvasY = 1e9;
+
+    // clock smoothing + jump detection
+    var est = 0, lastRaw = -1, lastT = 0;
+    var pendingCover = null;   // setCover() before the first scaffold
+
+    // stats for perf verification
+    var stat = { frames: 0, styleWrites: 0, lastMs: 0, worstMs: 0 };
+
+    // hosts that patch requestAnimationFrame can hand us the real one here
+    var nativeRAF = global.__LYRA_RAF__ ||
+      (window.requestAnimationFrame ? window.requestAnimationFrame.bind(window) : function (f) { return setTimeout(function () { f(performance.now()); }, 16); });
+
+    // scaffold
+    function scaffold() {
+      if (destroyed) return;
+      injectCSS();
+      root = el("div", "lyra-root");
+      if (S.depthBlur) root.classList.add("lyra-blur");
+      if (S.fontFamily) root.style.fontFamily = S.fontFamily;
+      viewport = el("div", "lyra-viewport");
+      canvas = el("div", "lyra-canvas");
+      content = el("div", "lyra-content");
+      canvas.appendChild(content);
+      viewport.appendChild(canvas);
+      root.appendChild(viewport);
+      if (onClose && S.closeButton) {
+        var btn = el("button", "lyra-close");
+        btn.type = "button"; btn.title = "Close lyrics";
+        btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+        btn.addEventListener("click", function (e) { e.stopPropagation(); try { onClose(); } catch (x) {} });
+        root.appendChild(btn);
+      }
+      resumeEl = el("button", "lyra-resume");
+      resumeEl.type = "button";
+      resumeEl.textContent = "Resume";
+      resumeEl.addEventListener("click", function () {
+        userUntil = 0;
+        retarget(false);
+      });
+      root.appendChild(resumeEl);
+      if (onRefetch) {
+        refetchEl = el("button", "lyra-refetch");
+        refetchEl.type = "button";
+        refetchEl.textContent = "Wrong lyrics?";
+        refetchEl.title = "Fetch a different version of these lyrics";
+        refetchEl.addEventListener("click", function () {
+          if (refetchBusy) return;
+          refetchBusy = true;
+          refetchEl.classList.add("lyra-refetch-busy");
+          refetchEl.textContent = "Fetching…";
+          var settle = function (msg) {
+            refetchBusy = false;
+            if (!refetchEl) return; // destroyed mid-flight
+            refetchEl.classList.remove("lyra-refetch-busy");
+            refetchEl.textContent = "Wrong lyrics?";
+            if (msg && typeof msg === "string") toast(msg);
+          };
+          Promise.resolve().then(onRefetch).then(settle, function () { settle("Something went wrong"); });
+        });
+        root.appendChild(refetchEl);
+      }
+      mount.appendChild(root);
+      if (S.background && Lyra.Background) { try { bg = Lyra.Background.attach(root); } catch (e) { bg = null; } }
+      if (bg && pendingCover) { try { bg.setCover(pendingCover[0], pendingCover[1]); } catch (e) {} pendingCover = null; }
+
+      root.addEventListener("wheel", onWheel, { passive: true });
+      root.addEventListener("pointerdown", onPointerDown);
+      content.addEventListener("click", onLineClick);
+      document.addEventListener("visibilitychange", onVisibility);
+      if (window.ResizeObserver) { ro = new ResizeObserver(queueMeasure); ro.observe(viewport); }
+      else window.addEventListener("resize", queueMeasure);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(queueMeasure);
+    }
+
+    function toast(msg) {
+      if (destroyed || !root) return;
+      if (!toastEl) { toastEl = el("div", "lyra-toast"); root.appendChild(toastEl); }
+      toastEl.textContent = msg;
+      toastEl.classList.add("lyra-toast-on");
+      if (toastTimer) clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { if (toastEl) toastEl.classList.remove("lyra-toast-on"); }, 2600);
+    }
+
+    function status(msg) {
+      if (destroyed) return;
+      if (!root) scaffold();
+      if (!msg) { if (statusEl) { statusEl.remove(); statusEl = null; } return; }
+      if (!statusEl) { statusEl = el("div", "lyra-status"); root.appendChild(statusEl); }
+      statusEl.textContent = msg;
+    }
+
+    // build
+    var RTL_CHARS = /[֑-ࣿיִ-﷿ﹰ-﻿]/; // joining scripts: never letter-split
+    function buildWord(word, withGlow) {
+      var w = el("span", "lyra-w");
+      // lift amplitude from word duration: <=~180ms -> 0.25 (barely moves), >=600ms -> 1
+      var pop = reduced ? 0 : Math.max(0.25, Math.min(1, ((word.end - word.start) - 120) / 480));
+      // the wave is for held NOTES, not long words: a real melisma lives in one
+      // long syllable. a multi-syllable word that merely adds up past the bar
+      // ("constellation" at a normal pace) must NOT ripple. so: total >= 1s AND
+      // the longest single syllable >= 650ms. letters then subdivide each
+      // syllable's real time (keeps the sung rhythm, not a flat even split).
+      var pieces = word.syllables, wave = false;
+      var longestSyl = 0;
+      for (var g9 = 0; g9 < word.syllables.length; g9++) longestSyl = Math.max(longestSyl, word.syllables[g9].end - word.syllables[g9].start);
+      if (S.letterWave && !reduced && (word.end - word.start) >= 1000 && longestSyl >= waveSylMin && !RTL_CHARS.test(word.text)) {
+        var glyphs = 0;
+        for (var g0 = 0; g0 < word.syllables.length; g0++) glyphs += Array.from(word.syllables[g0].text).length;
+        if (glyphs >= 3 && glyphs <= 12) {
+          pieces = [];
+          for (var g1 = 0; g1 < word.syllables.length; g1++) {
+            var sy0 = word.syllables[g1], chars = Array.from(sy0.text);
+            var lstep = (sy0.end - sy0.start) / Math.max(1, chars.length);
+            for (var g2 = 0; g2 < chars.length; g2++) {
+              pieces.push({
+                start: sy0.start + g2 * lstep,
+                end: g2 === chars.length - 1 ? sy0.end : sy0.start + (g2 + 1) * lstep,
+                text: chars[g2],
+              });
+            }
+          }
+          wave = true;
+        }
+      }
+      var meta = { el: w, glow: null, start: word.start, end: word.end, pop: pop, wave: wave,
+                   syls: [], _ws: -1, _lift: 0, _grow: 0, _glo: 0 };
+      for (var i = 0; i < pieces.length; i++) {
+        var sy = pieces[i];
+        var se = el("span", "lyra-s");
+        se.textContent = sy.text;
+        w.appendChild(se);
+        meta.syls.push({ el: se, gel: null, start: sy.start, end: sy.end, _ss: -1, _f: -1, _wv: -1, _wg: -1 });
+      }
+      if (withGlow) {
+        var g = el("span", "lyra-wg");
+        g.setAttribute("aria-hidden", "true");
+        for (var j = 0; j < pieces.length; j++) {
+          var gs = el("span", "lyra-gs");
+          gs.textContent = pieces[j].text;
+          g.appendChild(gs);
+          meta.syls[j].gel = gs;
+        }
+        w.appendChild(g);
+        meta.glow = g;
+      }
+      return meta;
+    }
+
+    function buildWordRow(container, words, withGlow) {
+      var metas = [];
+      for (var i = 0; i < words.length; i++) {
+        var m = buildWord(words[i], withGlow);
+        container.appendChild(m.el);
+        if (i < words.length - 1) container.appendChild(document.createTextNode(" "));
+        metas.push(m);
+      }
+      return metas;
+    }
+
+    function buildInterlude(start, end, opp) {
+      var e = el("div", "lyra-int");
+      if (opp) e.classList.add("lyra-opp");
+      var dots = el("span", "lyra-int-dots");
+      dots.appendChild(el("span", "lyra-dot"));
+      dots.appendChild(el("span", "lyra-dot"));
+      dots.appendChild(el("span", "lyra-dot"));
+      e.appendChild(dots);
+      return { kind: "interlude", el: e, start: start, end: end, words: [], bgGroups: [],
+               natY: 0, natH: 0, _state: -1, _dist: null, _if: -1, _exit: false, lagDelay: 0, lagY: null };
+    }
+
+    function build() {
+      if (!root) scaffold();
+      content.textContent = "";
+      items = []; marked = []; lagged = []; cooling = [];
+      anchor = -1; measured = false;
+      content.appendChild(el("div", "lyra-sp-top"));
+
+      var lines = (model && model.lines) || [];
+      var wordMode = model && model.timing === "word";
+      // wave gate is track-relative: a 900ms note is a held note in a fast rap,
+      // background noise in a ballad where every syllable runs long
+      if (wordMode) {
+        var sylDurs = [];
+        for (var sd = 0; sd < lines.length; sd++) {
+          var lw = lines[sd].words || [];
+          for (var sw2 = 0; sw2 < lw.length; sw2++)
+            for (var ss2 = 0; ss2 < lw[sw2].syllables.length; ss2++)
+              sylDurs.push(lw[sw2].syllables[ss2].end - lw[sw2].syllables[ss2].start);
+        }
+        sylDurs.sort(function (a, b) { return a - b; });
+        var medSyl = sylDurs.length ? sylDurs[sylDurs.length >> 1] : 0;
+        waveSylMin = Math.max(650, medSyl * 1.6);
+      }
+      staticMode = !!(model && model.timing === "none");
+      root.classList.toggle("lyra-static", staticMode);
+      root.classList.toggle("lyra-ripple", !wordMode && !staticMode && !!S.lineRipple);
+      root.classList.toggle("lyra-linemode", !wordMode && !staticMode && !S.lineRipple);
+      var prevEnd = 0;
+
+      for (var i = 0; i < lines.length; i++) {
+        var ln = lines[i];
+        var isEmpty = !ln.text && !(ln.words && ln.words.length) && !(ln.background && ln.background.length);
+
+        var gapStart = prevEnd, gapEnd = ln.start;
+        var minGap = items.length === 0 ? S.interludeLeadMs : S.interludeMinMs;
+        if (gapEnd - gapStart >= minGap) {
+          var it = buildInterlude(gapStart + (items.length ? 200 : 0), gapEnd - 150, false);
+          content.appendChild(it.el);
+          items.push(it);
+        }
+        if (isEmpty) { prevEnd = Math.max(prevEnd, ln.end || ln.start); continue; }
+
+        var le = el("div", "lyra-line");
+        le.dir = "auto";
+        if (ln.align === "end") le.classList.add("lyra-opp");
+        var meta = { kind: "line", el: le, start: ln.start, end: ln.end, text: ln.text,
+                     words: [], bgGroups: [], natY: 0, natH: 0, _state: -1, _dist: null,
+                     lagDelay: 0, lagY: null };
+        if (ln.align === "center") le.classList.add("lyra-center");
+        if (wordMode && ln.words && ln.words.length) {
+          meta.words = buildWordRow(le, ln.words, S.glow);
+        } else if (!staticMode && S.lineRipple && ln.text) {
+          // line-timed: synthesize a small per-word stagger so the line types in
+          // word by word through the normal envelope instead of flipping at once
+          var toks = ln.text.split(" ");
+          var step = Math.min(60, (ln.end - ln.start) * 0.5 / Math.max(1, toks.length));
+          var synth = toks.map(function (t2, ti) {
+            var st2 = ln.start + ti * step;
+            return { start: st2, end: st2 + 170, text: t2, syllables: [{ start: st2, end: st2 + 170, text: t2 }] };
+          });
+          meta.words = buildWordRow(le, synth, S.glow);
+        } else {
+          var w = el("span", "lyra-w");
+          var ws = el("span", "lyra-s");
+          ws.textContent = ln.text;
+          w.appendChild(ws);
+          le.appendChild(w);
+          meta.words = [{ el: w, glow: null, start: ln.start, end: ln.end, pop: 0, _ws: -1, _lift: 0,
+                          syls: [{ el: ws, gel: null, start: ln.start, end: ln.end, _ss: -1, _f: -1 }] }];
+        }
+        for (var b = 0; b < (ln.background || []).length; b++) {
+          var bgLine = ln.background[b];
+          var bgEl = el("div", "lyra-bgv");
+          var bgWords = buildWordRow(bgEl, bgLine.words, S.glow);
+          le.appendChild(bgEl);
+          meta.bgGroups.push({ words: bgWords });
+        }
+        le._lyra = meta;
+        content.appendChild(le);
+        items.push(meta);
+        prevEnd = Math.max(prevEnd, meta.end);
+      }
+
+      // outro: dots through a long instrumental tail when the duration says there is one
+      if (!staticMode && model && model.duration - prevEnd >= S.interludeMinMs + 1500) {
+        var outro = buildInterlude(prevEnd + 300, model.duration - 400, false);
+        content.appendChild(outro.el);
+        items.push(outro);
+      }
+
+      if (S.entrance && !reduced) {
+        for (var e2 = 0; e2 < items.length; e2++) {
+          items[e2].el.classList.add("lyra-enter");
+          items[e2].el.style.animationDelay = Math.min(e2 * 22, 480) + "ms";
+        }
+      }
+
+      if (S.credits && model && model.songwriters && model.songwriters.length) {
+        var cr = el("div", "lyra-credits");
+        cr.textContent = "Songwriters: " + model.songwriters.join(", ");
+        content.appendChild(cr);
+      }
+      content.appendChild(el("div", "lyra-sp-bot"));
+      queueMeasure();
+    }
+
+    // geometry - the ONLY place allowed to read layout
+    function queueMeasure() {
+      if (measureQueued || destroyed) return;
+      measureQueued = true;
+      nativeRAF(function () {
+        measureQueued = false;
+        if (!destroyed) measure();
+      });
+    }
+    function measure() {
+      if (!root || !items.length) { measured = false; return; }
+      vh = viewport.clientHeight;
+      var contentH = content.offsetHeight;
+      maxScroll = Math.max(0, contentH - vh);
+      for (var i = 0; i < items.length; i++) {
+        var m = items[i];
+        m.natY = m.el.offsetTop;
+        m.natH = m.el.offsetHeight;
+        // word layout widths, for the absolute cap on scale growth (reads only,
+        // same batched layout pass; scale doesn't affect offsetWidth)
+        for (var w = 0; w < m.words.length; w++) m.words[w].px = m.words[w].el.offsetWidth;
+        for (var g = 0; g < m.bgGroups.length; g++)
+          for (var bw = 0; bw < m.bgGroups[g].words.length; bw++)
+            m.bgGroups[g].words[bw].px = m.bgGroups[g].words[bw].el.offsetWidth;
+      }
+      measured = true;
+      if (anchor >= 0) {
+        if (drag || performance.now() < userUntil) {
+          // mid-read resize/font-load: keep the user's place, just re-clamp
+          spr.target = clamp(spr.target, 0, maxScroll);
+          spr.y = clamp(spr.y, 0, maxScroll);
+          writeCanvas(true);
+        } else {
+          // keep the anchor where it belongs, without animating the correction
+          retarget(true); snapScroll();
+        }
+      }
+    }
+
+    // scroll
+    function targetFor(i) {
+      var m = items[i];
+      if (!m) return spr.target;
+      return clamp(m.natY + m.natH / 2 - vh * S.centerBias, 0, maxScroll);
+    }
+    function retarget(instant) {
+      if (scrollAnchor < 0 || !measured) return;
+      if (!instant && performance.now() < userUntil) return; // the user is browsing: don't yank the view
+      var t = targetFor(scrollAnchor);
+      // keep still-active earlier lines (duet partners) on screen, unless they're
+      // about to expire anyway
+      for (var d2 = Math.max(0, anchor - 3); d2 >= 0 && d2 < anchor; d2++) {
+        var pm = items[d2];
+        if (pm && pm._state === 1 && pm.end - lastFramePos > 500) t = Math.min(t, pm.natY);
+      }
+      t = clamp(t, 0, maxScroll);
+      if (t === spr.target && !instant) return;
+      spr.target = t;
+      spr.settled = false;
+      if (instant) return;
+      // weighty settle on ballads, snappy on uptempo
+      if (S.adaptiveSpring) {
+        var nowT = performance.now();
+        if (lastAnchorT) {
+          cadence.push(Math.min(8000, nowT - lastAnchorT));
+          if (cadence.length > 4) cadence.shift();
+          var avg = 0;
+          for (var c2 = 0; c2 < cadence.length; c2++) avg += cadence[c2];
+          avg /= cadence.length;
+          var f = clamp((avg - 1200) / 3800, 0, 1); // 1.2s lines -> fast, 5s lines -> slow
+          adaptedK = 150 - f * 76;                  // 150 (snappy) .. 74 (weighty)
+        }
+        lastAnchorT = nowT;
+      }
+      // arm the cascade: lines below the anchor replay the container's motion
+      // with a per-line delay (bounded to what's on screen)
+      for (var j = lagged.length - 1; j >= 0; j--) clearLag(lagged[j]);
+      lagged.length = 0;
+      if (S.cascade && !document.hidden) {
+        for (var i = scrollAnchor + 1; i < items.length; i++) {
+          var m = items[i];
+          if (m.natY > spr.target + vh * 1.3) break;
+          m.lagDelay = Math.min((i - scrollAnchor) * S.cascadeStep, S.cascadeMax);
+          if (m.lagDelay > 0) { lagged.push(m); m.el.classList.add("lyra-lag"); } // promoted for exactly the cascade window
+        }
+      }
+    }
+    function snapScroll() {
+      spr.y = spr.target; spr.v = 0; spr.settled = true;
+      hist.length = 0;
+      for (var i = 0; i < lagged.length; i++) clearLag(lagged[i]);
+      lagged.length = 0;
+      writeCanvas(true);
+    }
+    function clearLag(m) {
+      m.lagDelay = 0;
+      m.el.classList.remove("lyra-lag");
+      if (m.lagY !== null) { m.lagY = null; m.el.style.translate = ""; stat.styleWrites++; }
+    }
+    function writeCanvas(force) {
+      var y = -spr.y;
+      if (!force && Math.abs(y - lastCanvasY) < 0.18) return;
+      lastCanvasY = y;
+      canvas.style.translate = "0 " + y.toFixed(2) + "px";
+      stat.styleWrites++;
+    }
+    function sampleHist(t) {
+      if (!hist.length) return spr.y;
+      for (var i = hist.length - 1; i >= 0; i--) {
+        if (hist[i].t <= t) {
+          if (i === hist.length - 1) return hist[i].y;
+          var a = hist[i], b2 = hist[i + 1];
+          var f = (t - a.t) / Math.max(1, b2.t - a.t);
+          return a.y + (b2.y - a.y) * f;
+        }
+      }
+      return hist[0].y;
+    }
+    function stepScroll(now, dtMs) {
+      var userMode = now < userUntil;
+      if (resumeEl && userMode !== resumeShown && !staticMode) {
+        resumeShown = userMode;
+        resumeEl.classList.toggle("lyra-resume-on", userMode);
+      }
+      var k = userMode ? S.userK : adaptedK;
+      var zeta = userMode ? 1 : S.followZeta;
+      if (!spr.settled) {
+        var dt = Math.min(dtMs, 90) / 1000;
+        var n = dt > 0.021 ? Math.min(6, Math.ceil(dt / 0.016)) : 1;
+        var h = dt / n, c = 2 * zeta * Math.sqrt(k);
+        for (var s = 0; s < n; s++) {
+          spr.v += (-k * (spr.y - spr.target) - c * spr.v) * h;
+          spr.y += spr.v * h;
+        }
+        if (Math.abs(spr.y - spr.target) < 0.12 && Math.abs(spr.v) < 1.5) {
+          spr.y = spr.target; spr.v = 0; spr.settled = true;
+        }
+        writeCanvas(false);
+      }
+      // motion history for the cascade
+      if (!spr.settled || lagged.length) {
+        hist.push({ t: now, y: spr.y });
+        if (hist.length > 100) hist.splice(0, hist.length - 100);
+      }
+      // delayed followers
+      for (var i2 = lagged.length - 1; i2 >= 0; i2--) {
+        var m = lagged[i2];
+        var yi = sampleHist(now - m.lagDelay);
+        var off = yi - spr.y; // >0 while the line is still behind the container
+        if (spr.settled && Math.abs(off) < 0.25) {
+          clearLag(m);
+          lagged.splice(i2, 1);
+          continue;
+        }
+        // amplify a touch with distance so the ripple reads as a wave
+        off *= 1 + Math.min(0.15, m.lagDelay / 2200);
+        if (m.lagY === null || Math.abs(off - m.lagY) > 0.22) {
+          m.lagY = off;
+          m.el.style.translate = "0 " + off.toFixed(2) + "px";
+          stat.styleWrites++;
+        }
+      }
+    }
+
+    // input
+    function onWheel(e) {
+      if (!measured) return;
+      userUntil = performance.now() + S.userIdleMs;
+      spr.target = clamp(spr.target + e.deltaY, 0, maxScroll);
+      spr.settled = false;
+      // in-flight cascade lines are NOT snapped here (visible pop); they keep
+      // replaying the now-user-driven motion and converge via the settle path
+    }
+    var drag = null;
+    function onPointerDown(e) {
+      if (e.pointerType === "mouse" || !measured) return;
+      drag = { y: e.clientY, t0: spr.target };
+      userUntil = performance.now() + S.userIdleMs;
+      root.setPointerCapture && root.setPointerCapture(e.pointerId);
+      root.addEventListener("pointermove", onPointerMove);
+      root.addEventListener("pointerup", onPointerUp);
+      root.addEventListener("pointercancel", onPointerUp);
+    }
+    function onPointerMove(e) {
+      if (!drag) return;
+      userUntil = performance.now() + S.userIdleMs;
+      spr.target = clamp(drag.t0 + (drag.y - e.clientY), 0, maxScroll);
+      spr.settled = false;
+    }
+    function onPointerUp() {
+      drag = null;
+      root.removeEventListener("pointermove", onPointerMove);
+      root.removeEventListener("pointerup", onPointerUp);
+      root.removeEventListener("pointercancel", onPointerUp);
+    }
+    function onLineClick(e) {
+      if (staticMode) return; // unsynced sheet: clicks can't seek anywhere meaningful
+      var t = e.target;
+      while (t && t !== content && !t._lyra) t = t.parentNode;
+      if (t && t._lyra) {
+        userUntil = 0; // clicking a line hands control back to auto-follow
+        try { onSeek(t._lyra.start); } catch (x) {}
+      }
+    }
+    function onVisibility() {
+      if (!document.hidden && !destroyed) resync();
+    }
+
+    // line states
+    function setDist(m, cls) {
+      if (m._dist === cls) return;
+      if (m._dist) m.el.classList.remove(m._dist);
+      if (cls) m.el.classList.add(cls);
+      m._dist = cls;
+    }
+    function applyDistances() {
+      if (anchor < 0) { // pre-song: no distance grading, just clear stale marks
+        for (var c0 = 0; c0 < marked.length; c0++) { setDist(marked[c0], null); marked[c0].el.classList.remove("lyra-near"); }
+        marked = [];
+        return;
+      }
+      var next = [];
+      for (var i = Math.max(0, anchor - 5); i <= Math.min(items.length - 1, anchor + 7); i++) {
+        if (i === anchor) { setDist(items[i], null); }
+        else {
+          var d = Math.min(4, Math.abs(i - anchor));
+          // above = sung history, recedes hard; below = read-ahead, stays legible
+          setDist(items[i], (i < anchor ? "lyra-d" : "lyra-b") + d);
+        }
+        var near = i >= anchor - 2 && i <= anchor + 4;
+        items[i].el.classList.toggle("lyra-near", near);
+        next.push(items[i]);
+      }
+      for (var j = 0; j < marked.length; j++) {
+        var m = marked[j];
+        if (next.indexOf(m) === -1) { setDist(m, null); m.el.classList.remove("lyra-near"); }
+      }
+      marked = next;
+    }
+    function setState(i, st) {
+      var m = items[i];
+      if (m._state === st) return;
+      m._state = st;
+      var cl = m.el.classList;
+      cl.toggle("lyra-active", st === 1);
+      if (m.kind === "interlude") {
+        if (st !== 1 && m._exit) { m._exit = false; cl.remove("lyra-int-exit"); }
+        if (st !== 1 && m._if !== -1) { m._if = -1; m.el.style.setProperty("--ifill", "0"); }
+      } else if (st !== 1) {
+        resetWords(m);
+      }
+    }
+    function resetWords(m) {
+      for (var w = 0; w < m.words.length; w++) releaseWord(m.words[w]);
+      for (var g = 0; g < m.bgGroups.length; g++)
+        for (var bw = 0; bw < m.bgGroups[g].words.length; bw++) releaseWord(m.bgGroups[g].words[bw]);
+    }
+    // on a normal advance a still-lifted word keeps falling while the line recedes;
+    // only resync/seek passes (hardPass) zero instantly.
+    function releaseWord(wm) {
+      if (!hardPass && wm._lift > 0) coolWord(wm, frameNow, true);
+      else resetWord(wm);
+    }
+    function resetWord(wm) {
+      if (wm._ws !== -1) { wm._ws = -1; wm.el.classList.remove("lyra-w-cur", "lyra-w-sung"); }
+      wm.el.classList.remove("lyra-w-hold", "lyra-w-waveout");
+      wm._wx = null; wm._wt = null;
+      uncool(wm);
+      applyLift(wm, 0, 0, 0);
+      for (var s = 0; s < wm.syls.length; s++) resetSyl(wm.syls[s]);
+    }
+    function resetSyl(sy) {
+      if (sy._ss !== -1) {
+        sy._ss = -1;
+        sy.el.classList.remove("lyra-s-cur", "lyra-s-sung");
+        if (sy.gel) sy.gel.classList.remove("lyra-s-cur", "lyra-s-sung");
+      }
+      if (sy._f !== -1) {
+        sy._f = -1;
+        sy.el.style.removeProperty("--fill");
+        if (sy.gel) sy.gel.style.removeProperty("--fill");
+        stat.styleWrites++;
+      }
+      if (sy._wv !== -1) {
+        sy._wv = -1;
+        sy.el.style.scale = "";
+        sy.el.style.translate = "";
+      }
+      if (sy._wg !== -1 && sy.gel) { sy._wg = -1; sy.gel.style.opacity = ""; }
+    }
+    function setSylState(sy, st) {
+      if (sy._ss === st) return;
+      sy._ss = st;
+      sy.el.classList.toggle("lyra-s-cur", st === 1);
+      sy.el.classList.toggle("lyra-s-sung", st === 2);
+      if (sy.gel) {
+        sy.gel.classList.toggle("lyra-s-cur", st === 1);
+        sy.gel.classList.toggle("lyra-s-sung", st === 2);
+      }
+      if (st !== 1 && sy._f !== -1) {
+        sy._f = -1;
+        sy.el.style.removeProperty("--fill");
+        if (sy.gel) sy.gel.style.removeProperty("--fill");
+      }
+      if (st !== 1 && sy._wv !== -1) { // letter-wave residue
+        sy._wv = -1;
+        sy.el.style.scale = "";
+        sy.el.style.translate = "";
+      }
+      if (st !== 1 && sy._wg !== -1 && sy.gel) { sy._wg = -1; sy.gel.style.opacity = ""; }
+    }
+    // word lift envelope
+    // lift(t): attack -> sustain -> release-after-end (the cooling set). pure
+    // function of song time, so dense handoffs stay continuous and seeks land
+    // exactly right.
+    var cooling = [];
+    var hardPass = false;      // resync/seek state passes zero lifts instantly; normal
+                               // line advances let the release play out (no slam)
+    var frameNow = 0;          // timestamp of the current frame, for state-pass cooling
+    var LIFT_EM = 0.022, LIFT_SCALE = 0.032, RELEASE_MS = 380;
+    var HOLD_MS = 800;         // a current word at least this long gets the held-note treatment
+    var SCALE_CAP_PX = 4; // max ABSOLUTE horizontal growth: % scale on a long word
+                          // otherwise eats the inter-word space and words clip together
+    function smooth(x) { return x <= 0 ? 0 : x >= 1 ? 1 : x * x * (3 - 2 * x); }
+    // q = arc energy (overshoot), grow = 0.96->1.0 sung growth, glowV = bloom opacity.
+    // a fully-sung word rests at scale 1 (grow 1, q 0); idle words sit at the CSS .96.
+    function applyLift(wm, q, grow, glowV) {
+      var qq = Math.round(q * 50) / 50;
+      var gr = Math.round(grow * 50) / 50;
+      var gl = Math.round((glowV || 0) * 50) / 50;
+      if (wm._lift === qq && wm._grow === gr && wm._glo === gl) return;
+      wm._lift = qq; wm._grow = gr; wm._glo = gl;
+      if (qq <= 0 && gr <= 0 && gl <= 0) {
+        wm.el.style.translate = "";
+        wm.el.style.scale = "";
+        if (wm.glow) wm.glow.style.opacity = "";
+      } else {
+        var sc = LIFT_SCALE;
+        if (wm.px && LIFT_SCALE * wm.px > SCALE_CAP_PX) sc = SCALE_CAP_PX / wm.px;
+        wm.el.style.scale = (0.96 + 0.04 * gr + sc * qq).toFixed(4);
+        var ty = 0.008 * (1 - gr) - LIFT_EM * qq; // starts a hair low, rises with the arc
+        wm.el.style.translate = Math.abs(ty) < 0.001 ? "" : "0 " + ty.toFixed(4) + "em";
+        if (wm.glow) {
+          // wave words carry glow on the per-letter twins instead
+          wm.glow.style.opacity = wm.wave ? (gl > 0 ? "1" : "") : (gl <= 0 ? "" : Math.min(1, gl).toFixed(3));
+        }
+      }
+      stat.styleWrites++;
+    }
+    function uncool(wm) {
+      for (var i = 0; i < cooling.length; i++) if (cooling[i].wm === wm) { cooling.splice(i, 1); return; }
+    }
+    function coolWord(wm, now, deferReset) {
+      if (wm._lift <= 0 && wm._glo <= 0) return;
+      for (var i = 0; i < cooling.length; i++) {
+        if (cooling[i].wm === wm) { // already mid-drop: keep its timing, never restart
+          if (deferReset) cooling[i].deferReset = true;
+          return;
+        }
+      }
+      cooling.push({ wm: wm, from: wm._lift, glowFrom: wm._glo, t0: now, deferReset: !!deferReset });
+    }
+    function stepCooling(now) {
+      for (var i = cooling.length - 1; i >= 0; i--) {
+        var c = cooling[i], k = (now - c.t0) / RELEASE_MS;
+        if (k >= 1) {
+          applyLift(c.wm, 0, 1, 0); // lands fully sung: rests at scale 1
+          var wm = c.wm, defer = c.deferReset;
+          cooling.splice(i, 1);
+          wm.el.classList.remove("lyra-w-hold", "lyra-w-waveout");
+          if (defer) resetWord(wm); // class/fill cleanup we postponed so the drop could play
+          continue;
+        }
+        var s = smooth(1 - k);
+        applyLift(c.wm, c.from * s, 1, c.glowFrom * s);
+      }
+    }
+
+    function setSylFill(sy, pct) {
+      var q = Math.round(pct); // whole percent: a syllable is narrow
+      if (sy._f === q) return;
+      sy._f = q;
+      var v = q + "%";
+      sy.el.style.setProperty("--fill", v);
+      if (sy.gel) sy.gel.style.setProperty("--fill", v);
+      stat.styleWrites++;
+    }
+
+    // strict single playhead per word group: at most ONE word mid-sweep, and
+    // within it at most ONE syllable carries the gradient.
+    function sweepGroup(words, pos, now) {
+      var playhead = false;
+      for (var w = 0; w < words.length; w++) {
+        var wm = words[w];
+        var st = wm.start, en = Math.max(st + 1, wm.end);
+        var wstate;
+        if (playhead) wstate = 0;                       // not reached yet
+        else if (pos >= en) wstate = 2;                 // sung
+        else { wstate = pos < st ? 0 : 1; playhead = true; }
+        if (wm._ws !== wstate) {
+          var was = wm._ws;
+          wm._ws = wstate;
+          wm.el.classList.toggle("lyra-w-cur", wstate === 1);
+          wm.el.classList.toggle("lyra-w-sung", wstate === 2);
+          if (wstate === 1) {
+            uncool(wm);
+            wm.el.classList.remove("lyra-w-waveout"); // back mid-drop: per-frame writes resume
+            if (en - st >= HOLD_MS) wm.el.classList.add("lyra-w-hold");
+          } else if (wstate === 0) { // back to idle (seek/jump-back): instant, no drop
+            uncool(wm);
+            wm.el.classList.remove("lyra-w-waveout");
+            applyLift(wm, 0, 0, 0);
+            for (var r0 = 0; r0 < wm.syls.length; r0++) resetSyl(wm.syls[r0]);
+          } else { // sung
+            if (was === 1) {
+              coolWord(wm, now); // finished naturally: let it fall on its own
+              if (wm.wave) { // wave exit: ease the letters home, fade the bell out
+                wm._wx = null; wm._wt = null;
+                wm.el.classList.add("lyra-w-waveout");
+                for (var r1 = 0; r1 < wm.syls.length; r1++) {
+                  var Ws = wm.syls[r1];
+                  if (Ws._ss !== -1) {
+                    Ws._ss = -1;
+                    Ws.el.classList.remove("lyra-s-cur", "lyra-s-sung");
+                    if (Ws.gel) Ws.gel.classList.remove("lyra-s-cur", "lyra-s-sung");
+                  }
+                  if (Ws._f !== -1) { Ws._f = -1; Ws.el.style.removeProperty("--fill"); if (Ws.gel) Ws.gel.style.removeProperty("--fill"); }
+                  if (Ws._wv !== -1) { Ws._wv = -1; Ws.el.style.scale = ""; Ws.el.style.translate = ""; }
+                  if (Ws.gel) { Ws._wg = 0; Ws.gel.style.opacity = "0"; } // explicit 0 so the transition has a target
+                }
+                continue;
+              }
+            } else { uncool(wm); applyLift(wm, 0, 1, 0); } // jumped straight to sung: rest at full size
+            for (var r = 0; r < wm.syls.length; r++) resetSyl(wm.syls[r]);
+          }
+        }
+        if (wstate !== 1) continue;
+        if (wm.pop > 0) {
+          var wdur = en - st;
+          var p = clamp((pos - st) / wdur, 0, 1);
+          var atk = smooth((pos - st) / Math.max(1, Math.min(120, wdur * 0.35)));
+          // the arc: rise to a peak ~65% through the word, settle to ~55% energy by
+          // its end (the drop then releases the rest). words travel a little
+          // parabola instead of holding a plateau - that's the "alive" feel.
+          var e = atk * (p < 0.65 ? smooth(p / 0.65) : 1 - 0.45 * smooth((p - 0.65) / 0.35));
+          var glowV;
+          if (wdur >= HOLD_MS) { // held notes: swell + shimmer, glow sustained
+            var hp = smooth(p);
+            e *= 1 + hp * (0.5 + 0.06 * Math.sin((pos - st) / 175));
+            glowV = Math.min(1, 0.85 * wm.pop * atk * (1 + 0.4 * hp));
+          } else { // normal words: a glow spark - in fast, gone by the word's end
+            glowV = 0.85 * wm.pop * smooth(p / 0.15) * (1 - smooth((p - 0.6) / 0.4));
+          }
+          applyLift(wm, wm.pop * e, smooth(p), glowV);
+        }
+        // syllable walk inside the current word
+        var sPlay = false;
+        for (var s = 0; s < wm.syls.length; s++) {
+          var sy = wm.syls[s];
+          var ss;
+          if (sPlay) ss = 0;
+          else if (pos >= sy.end) ss = 2;
+          else { ss = pos < sy.start ? 0 : 1; sPlay = true; }
+          setSylState(sy, ss);
+          // 118 not 100: the soft edge (18% wide) fully clears the glyph right as
+          // the state flips to sung, so the edge exits instead of popping away
+          if (ss === 1) setSylFill(sy, ((pos - sy.start) / Math.max(1, sy.end - sy.start)) * 118);
+        }
+        // letter wave (hold words split into letters): a swell GLIDES across the
+        // word. the bell centre is a continuous position (fraction inside the
+        // current letter) chased by a smoother - a discrete letter index made the
+        // bump hop at ~7Hz, which read as vibration, not a wave.
+        if (wm.wave) {
+          var n = wm.syls.length, x;
+          if (pos <= wm.syls[0].start) x = -0.6;
+          else if (pos >= wm.syls[n - 1].end) x = n - 0.4;
+          else {
+            x = n - 0.4;
+            for (var l0 = 0; l0 < n; l0++) {
+              var L0 = wm.syls[l0];
+              if (pos < L0.end) { x = l0 + clamp((pos - L0.start) / Math.max(1, L0.end - L0.start), 0, 1); break; }
+            }
+          }
+          var wdt = wm._wt == null ? 16.7 : Math.min(64, now - wm._wt);
+          wm._wt = now;
+          if (wm._wx == null) wm._wx = x;
+          wm._wx += (x - wm._wx) * Math.min(1, wdt * 0.011); // ~90ms chase
+          var wq = Math.min(1, wm._lift);
+          for (var l1 = 0; l1 < n; l1++) {
+            var Ls = wm.syls[l1], d = Math.abs(l1 - wm._wx);
+            var f = 1 / (1 + Math.pow(d, 2.2));   // wide bell: neighbours join in
+            var gf = 1 / (1 + 0.75 * d);
+            var lsc = Math.round((1 + 0.22 * f * wm.pop) * 200) / 200;
+            var lty = Math.round(-0.05 * f * wm.pop * 1000) / 1000;
+            var lkey = lsc * 10 + lty;
+            if (Ls._wv !== lkey) {
+              Ls._wv = lkey;
+              Ls.el.style.scale = lsc === 1 ? "" : String(lsc);
+              Ls.el.style.translate = lty === 0 ? "" : "0 " + lty + "em";
+              stat.styleWrites++;
+            }
+            if (Ls.gel) {
+              var lop = Math.round(Math.min(1, (0.15 + 0.85 * gf) * wq) * 50) / 50;
+              if (Ls._wg !== lop) {
+                Ls._wg = lop;
+                Ls.gel.style.opacity = lop <= 0 ? "" : String(lop);
+                stat.styleWrites++;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // the frame
+    function findIdx(pos, seed) {
+      var a = seed < 0 ? -1 : seed;
+      if (a >= items.length) a = items.length - 1;
+      while (a + 1 < items.length && items[a + 1].start <= pos) a++;
+      while (a >= 0 && items[a].start > pos) a--;
+      return a;
+    }
+    function findAnchor(pos) { return findIdx(pos, anchor); }
+
+    function frame(pos, now, dtMs) {
+      now = now == null ? performance.now() : now;
+      frameNow = now;
+      var t0 = performance.now();
+      if (!items.length || !root) return;
+      pos += S.timingOffsetMs; // perceptual lead (see DEFAULTS)
+      lastFramePos = pos;
+
+      if (staticMode) { // unsynced sheet: user scrolling only
+        if (measured) stepScroll(now, dtMs == null ? 16.7 : dtMs);
+        stat.frames++;
+        return;
+      }
+
+      var a = findAnchor(pos);
+      if (a !== anchor) {
+        var prev = anchor;
+        anchor = a;
+        for (var i = 0; i < items.length; i++) {
+          // the active-hold window matches the sweep/expiry windows (a-3..a); a
+          // wider hold would freeze lines mid-sweep with no one updating them
+          var st = i === a ? 1
+            : i < a ? (i >= a - 3 && pos < items[i].end + S.graceMs ? 1 : 0)   // finishing duet partner stays lit
+            : 2;
+          setState(i, st);
+        }
+        applyDistances();
+        if (prev === -2) scrollAnchor = -2; // resync pass: rescan the scroll clock too
+      } else if (a >= 0) {
+        // keep overlapping earlier lines fresh (duet partner expiring mid-anchor)
+        for (var k2 = Math.max(0, a - 3); k2 < a; k2++) {
+          if (items[k2]._state === 1 && pos >= items[k2].end + S.graceMs) setState(k2, 0);
+        }
+      }
+
+      // word sweeps on everything currently lit
+      if (a >= 0) {
+        for (var j = Math.max(0, a - 3); j <= a; j++) {
+          var m = items[j];
+          if (m._state !== 1) continue;
+          if (m.kind === "interlude") {
+            var span = Math.max(1, m.end - m.start);
+            var f = clamp((pos - m.start) / span, 0, 1);
+            var qf = Math.round(f * 100) / 100;
+            if (m._if !== qf) { m._if = qf; m.el.style.setProperty("--ifill", qf); stat.styleWrites++; }
+            var exiting = m.end - pos < 450;
+            if (m._exit !== exiting) { m._exit = exiting; m.el.classList.toggle("lyra-int-exit", exiting); }
+          } else {
+            sweepGroup(m.words, pos, now);
+            for (var g = 0; g < m.bgGroups.length; g++) sweepGroup(m.bgGroups[g].words, pos, now);
+          }
+        }
+      }
+      stepCooling(now);
+
+      // scroll decisions run on a LEADING clock: the view starts moving before
+      // the next line lights up, so the eye waits for the vocal instead of
+      // chasing it
+      var sa = findIdx(pos + S.scrollLeadMs, scrollAnchor);
+      if (sa !== scrollAnchor) {
+        scrollAnchor = sa;
+        if (sa >= 0) retarget(false);
+      }
+
+      // scroll-idle expired: glide back even if no line change comes for a while
+      if (userUntil && now >= userUntil) { userUntil = 0; retarget(false); }
+
+      if (measured) stepScroll(now, dtMs == null ? 16.7 : dtMs);
+      if (analysisOn && bg && bg.pulse) bg.pulse(pos);
+
+      stat.frames++;
+      stat.lastMs = performance.now() - t0;
+      if (stat.lastMs > stat.worstMs) stat.worstMs = stat.lastMs;
+    }
+
+    // one-shot cascade replay after seeks. never on visibility returns.
+    function replayEntrance() {
+      if (!S.entrance || reduced || document.hidden || anchor < 0 || !items.length) return;
+      var from = Math.max(0, anchor - 2), to = Math.min(items.length - 1, anchor + 9);
+      var targets = [];
+      for (var i = from; i <= to; i++) {
+        items[i].el.classList.remove("lyra-enter");
+        targets.push(items[i]);
+      }
+      nativeRAF(function () {
+        for (var j = 0; j < targets.length; j++) {
+          targets[j].el.classList.add("lyra-enter");
+          targets[j].el.style.animationDelay = (j * 36) + "ms";
+        }
+      });
+    }
+
+    // full resync with transitions disabled: used after seeks and alt-tab returns
+    function resync() {
+      if (!root) return;
+      root.classList.add("lyra-cut");
+      try { est = getPos(); } catch (e) { est = lastRaw >= 0 ? lastRaw : 0; }
+      if (!isFinite(est)) est = lastRaw >= 0 && isFinite(lastRaw) ? lastRaw : 0;
+      lastRaw = est; lastT = performance.now();
+      anchor = -2; // force full state pass
+      hardPass = true;
+      try { frame(est, lastT, 16.7); } finally { hardPass = false; }
+      retarget(true);
+      snapScroll();
+      nativeRAF(function () { nativeRAF(function () { if (root) root.classList.remove("lyra-cut"); }); });
+    }
+
+    // loop
+    function tick(nowIn) {
+      if (!running || destroyed) return;
+      raf = nativeRAF(tick);
+      var now = typeof nowIn === "number" ? nowIn : performance.now();
+      var dt = lastT ? now - lastT : 16.7;
+      lastT = now;
+      if (dt > 250) dt = 250;
+
+      // a throwing/NaN getPos must degrade, not storm the console or poison est
+      var raw;
+      try { raw = getPos(); } catch (e) { raw = lastRaw; }
+      if (!isFinite(raw)) raw = isFinite(lastRaw) ? lastRaw : 0;
+      if (!isFinite(est)) est = raw;
+      var playing = true;
+      try { playing = !!isPlaying(); } catch (e) {}
+
+      // paused + settled + nothing moving = do nothing
+      if (!playing && raw === lastRaw && spr.settled && !lagged.length && !cooling.length) { est = raw; return; }
+
+      // clock smoothing + jump detection (handles coarse position sources)
+      if (!playing) {
+        // 80ms, not 2ms: the paused clock can carry a host-supplied offset (Qobuzify's autoOffsetMs)
+        // whose periodic re-samples step by a few ms, and every step over the threshold runs a full
+        // hardPass state pass. Sub-perceptual jitter must not repaint the whole view; a real paused
+        // scrub still clears 80ms by orders of magnitude. And no entrance replay while paused: lyrics
+        // re-rippling with no music playing reads as a glitch, not a transition.
+        if (Math.abs(raw - est) > 80) {
+          est = raw; resyncSoft(raw);
+        }
+      } else {
+        est += dt;
+        var err = raw - est;
+        if (Math.abs(err) > 900) { est = raw; lastRaw = raw; resync(); replayEntrance(); return; }
+        est += err * 0.12;
+      }
+      lastRaw = raw;
+      frame(est, now, dt);
+    }
+    function resyncSoft(pos) {
+      anchor = -2;
+      hardPass = true;
+      try { frame(pos, performance.now(), 16.7); } finally { hardPass = false; }
+    }
+
+    function start() {
+      if (running || destroyed) return;
+      running = true;
+      lastT = 0;
+      raf = nativeRAF(tick);
+    }
+    function stop() {
+      running = false;
+      if (raf) { try { cancelAnimationFrame(raf); } catch (e) {} raf = null; }
+    }
+
+    // api
+    function load(input) {
+      if (destroyed) return false;
+      var m = input && input.lines ? input : Lyra.parse(input && (input.ttml || input.lrc || input.json) || input);
+      model = m;
+      if (!root) scaffold();
+      status(null);
+      if (!m || !m.lines || !m.lines.length) {
+        content && (content.textContent = "");
+        items = [];
+        status("No lyrics for this track");
+        if (refetchEl) refetchEl.classList.remove("lyra-refetch-on");
+        return false;
+      }
+      build();
+      resync();
+      if (refetchEl) refetchEl.classList.add("lyra-refetch-on");
+      return true;
+    }
+
+    function destroy() {
+      destroyed = true;
+      stop();
+      if (ro) { try { ro.disconnect(); } catch (e) {} ro = null; }
+      else window.removeEventListener("resize", queueMeasure);
+      document.removeEventListener("visibilitychange", onVisibility);
+      if (bg && bg.destroy) { try { bg.destroy(); } catch (e) {} }
+      if (toastTimer) { clearTimeout(toastTimer); toastTimer = null; }
+      if (root && root.parentNode) root.parentNode.removeChild(root);
+      root = viewport = canvas = content = resumeEl = refetchEl = toastEl = null;
+      items = []; lagged = []; marked = []; cooling = [];
+    }
+
+    return {
+      load: load,
+      start: start,
+      stop: stop,
+      destroy: destroy,
+      frame: function (pos) { frame(pos, performance.now(), 16.7); },
+      resync: resync,
+      status: status,
+      remeasure: queueMeasure,
+      setCover: function (url, accent) { if (bg && bg.setCover) bg.setCover(url, accent); else pendingCover = [url, accent]; },
+      setAnalysis: function (a) {
+        if (a && a.analysis) a = a.analysis; // accept the whole /v2/analysis response too
+        var ok = !!(a && a.available !== false && ((a.segments && a.segments.length) || (a.energy && a.energy.values && a.energy.values.length)));
+        analysisOn = ok;
+        if (bg && bg.setAnalysis) bg.setAnalysis(ok ? a : null);
+        // interlude dots breathe at the song's tempo (4 beats per cycle)
+        if (root) {
+          var bpm = ok && a.summary && a.summary.tempo;
+          if (bpm) root.style.setProperty("--lyra-breathe", clamp(4 * 60000 / bpm, 1200, 3200) + "ms");
+          else root.style.removeProperty("--lyra-breathe");
+        }
+      },
+      setOffset: function (ms) { S.timingOffsetMs = ms | 0; },
+      toast: toast,
+      stats: function () { return { frames: stat.frames, styleWrites: stat.styleWrites, lastMs: stat.lastMs, worstMs: stat.worstMs, items: items.length, anchor: anchor }; },
+      get settings() { return S; },
+      get lineCount() { return items.length; },
+    };
+  };
+})(typeof window !== "undefined" ? window : globalThis);
+// Lyra background - ambient drifting album art.
+// Cover gets crushed to a tiny canvas once (the downsample basically is the
+// blur), then two big layers drift on pure CSS transform animations. Nothing
+// repaints per frame. Cover changes crossfade two stacked groups. Always dark.
+(function (global) {
+  "use strict";
+  var Lyra = global.Lyra = global.Lyra || {};
+
+  var CSS = "" +
+".lyra-bg{position:absolute;inset:0;overflow:hidden;z-index:0;background:#0b0b0f;}" +
+".lyra-bg~.lyra-viewport{z-index:1;}" +
+".lyra-bg-grp{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease;}" +
+".lyra-bg-grp.lyra-bg-in{opacity:1;}" +
+".lyra-bg-layer{position:absolute;left:50%;top:50%;margin:-80vmax 0 0 -80vmax;width:160vmax;height:160vmax;" +
+"border-radius:38%;filter:blur(56px) saturate(1.6);will-change:transform;}" +
+".lyra-bg-a{animation:lyra-bg-a 80s linear infinite;opacity:.85;}" +
+".lyra-bg-b{animation:lyra-bg-b 100s linear infinite;opacity:.6;}" +
+// with analysis, layer motion is JS-integrated (velocity rides the music) and
+// the keyframe drift gets out of the way
+".lyra-bg-live .lyra-bg-layer{animation:none;}" +
+// palette flow blobs: big soft colour fields from the cover's dominant colours,
+// orbiting independently - this is what makes the field ORGANIC instead of two
+// copies of the same texture spinning
+".lyra-bg-blob{position:absolute;left:50%;top:50%;width:95vmax;height:95vmax;margin:-47.5vmax 0 0 -47.5vmax;" +
+"border-radius:50%;pointer-events:none;will-change:transform;}" +
+"@keyframes lyra-bg-a{from{transform:rotate(0deg) translate(6vmax,0) scale(1);}50%{transform:rotate(180deg) translate(6vmax,0) scale(1.18);}to{transform:rotate(360deg) translate(6vmax,0) scale(1);}}" +
+"@keyframes lyra-bg-b{from{transform:rotate(360deg) translate(-8vmax,2vmax) scale(1.25);}50%{transform:rotate(180deg) translate(-8vmax,2vmax) scale(1.05);}to{transform:rotate(0deg) translate(-8vmax,2vmax) scale(1.25);}}" +
+".lyra-bg-scrim{position:absolute;inset:0;" +
+"background:radial-gradient(ellipse at 50% 40%,rgba(0,0,0,.28) 0%,rgba(0,0,0,.66) 100%),rgba(8,8,12,.38);}" +
+// audio-reactive wash: brightens with the track's energy curve (opacity-only,
+// written per-frame by pulse() - deliberately NO transition on it)
+".lyra-bg-energy{position:absolute;inset:0;pointer-events:none;" +
+"background:radial-gradient(ellipse at 50% 42%,rgba(255,255,255,.27) 0%,transparent 68%);opacity:0;}" +
+"@media (prefers-reduced-motion:reduce){.lyra-bg-layer{animation:none!important;}}";
+
+  function injectCSS() {
+    if (document.getElementById("lyra-bg-css")) return;
+    var s = document.createElement("style");
+    s.id = "lyra-bg-css";
+    s.textContent = CSS;
+    document.head.appendChild(s);
+  }
+
+  // crush the art to a tiny canvas; also grabs an average colour + a small
+  // palette of saturated/bright pixels for the flow blobs
+  function crush(img, size) {
+    var c = document.createElement("canvas");
+    c.width = c.height = size;
+    var x = c.getContext("2d");
+    x.drawImage(img, 0, 0, size, size);
+    var avg = [40, 40, 60], pal = [];
+    try {
+      var d = x.getImageData(0, 0, size, size).data, r = 0, g = 0, b = 0, n = d.length / 4;
+      var scored = [];
+      for (var i = 0; i < d.length; i += 4) {
+        r += d[i]; g += d[i + 1]; b += d[i + 2];
+        var mx = Math.max(d[i], d[i + 1], d[i + 2]), mn = Math.min(d[i], d[i + 1], d[i + 2]);
+        scored.push([mx - mn + mx * 0.4, d[i], d[i + 1], d[i + 2]]); // favour saturated + bright
+      }
+      avg = [Math.round(r / n), Math.round(g / n), Math.round(b / n)];
+      scored.sort(function (p, q) { return q[0] - p[0]; });
+      // greedy pick with a minimum colour distance so the blobs actually differ
+      for (var s2 = 0; s2 < scored.length && pal.length < 4; s2++) {
+        var cand = scored[s2], ok = true;
+        for (var p2 = 0; p2 < pal.length; p2++) {
+          var dd = Math.abs(cand[1] - pal[p2][0]) + Math.abs(cand[2] - pal[p2][1]) + Math.abs(cand[3] - pal[p2][2]);
+          if (dd < 110) { ok = false; break; }
+        }
+        if (ok) pal.push([cand[1], cand[2], cand[3]]);
+      }
+    } catch (e) {} // tainted canvas - fine, layers still render
+    return { canvas: c, avg: avg, palette: pal };
+  }
+
+  function fallbackArt(accent) {
+    var c = document.createElement("canvas");
+    c.width = c.height = 48;
+    var x = c.getContext("2d");
+    var g = x.createLinearGradient(0, 0, 48, 48);
+    g.addColorStop(0, accent || "#2a2440");
+    g.addColorStop(0.55, "#16324a");
+    g.addColorStop(1, "#101018");
+    x.fillStyle = g;
+    x.fillRect(0, 0, 48, 48);
+    return { canvas: c, avg: [30, 36, 56] };
+  }
+
+  function makeLayer(srcCanvas, cls) {
+    var c = document.createElement("canvas");
+    c.width = c.height = 96;
+    c.className = "lyra-bg-layer " + cls;
+    var x = c.getContext("2d");
+    x.imageSmoothingEnabled = true;
+    x.drawImage(srcCanvas, 0, 0, 96, 96);
+    return c;
+  }
+
+  Lyra.Background = {
+    attach: function (rootEl) {
+      injectCSS();
+      var holder = document.createElement("div");
+      holder.className = "lyra-bg";
+      rootEl.insertBefore(holder, rootEl.firstChild);
+      var energyEl = document.createElement("div");
+      energyEl.className = "lyra-bg-energy";
+      var scrim = document.createElement("div");
+      scrim.className = "lyra-bg-scrim";
+      var curGroup = null, curLayers = null, token = 0, destroyed = false;
+
+      // audio-reactive state. the driver is the SEGMENT loudness envelope - the
+      // real per-hit levels (start -> max at the actual attack offset -> next
+      // segment). synthetic beat-timestamp flashes strobed; levels pump.
+      var anSegs = null, anBeats = null, beatIdx = 0, anEnergy = null, anStep = 250;
+      var segIdx = 0, lastPos = -1, disp = 0, punch = 0, breathe = 0, dbLow = -30, dbHigh = -8;
+      var riseGate = 4, riseFull = 15; // per-track (p35/p90 of attack rises)
+      // track character (server /v2/analysis "character" block, characterVer 1):
+      // beatW: 0 = breathe with the envelope (All Too Well), 1 = knock on the grid
+      // (goosebumps). atkScale: how hard hits should land (SICKO MODE 13.5dB -> 1.5x)
+      var beatW = 0.75, atkScale = 1;
+      var wScale = -1, wWash = -1, wLay = -1;
+
+      function levelAt(pos) {
+        // piecewise loudness in dB from columnar segments
+        // [startMs, durMs, conf, loudStart, loudMax, attackOffsetMs]
+        if (pos < lastPos - 400) segIdx = 0; // seek back: rescan
+        while (segIdx + 1 < anSegs.length && anSegs[segIdx + 1][0] <= pos) segIdx++;
+        var s = anSegs[segIdx];
+        if (!s || pos < s[0]) return dbLow;
+        var t = pos - s[0], atk = Math.max(1, s[5] || 1), db;
+        if (t <= atk) db = s[3] + (s[4] - s[3]) * (t / atk);
+        else {
+          var nl = segIdx + 1 < anSegs.length ? anSegs[segIdx + 1][3] : s[3];
+          var rel = Math.max(1, s[1] - atk);
+          db = s[4] + (nl - s[4]) * Math.min(1, (t - atk) / rel);
+        }
+        return db;
+      }
+
+      function show(art) {
+        if (destroyed) return;
+        var grp = document.createElement("div");
+        grp.className = "lyra-bg-grp";
+        var la = makeLayer(art.canvas, "lyra-bg-a");
+        var lb = makeLayer(art.canvas, "lyra-bg-b");
+        grp.appendChild(la);
+        grp.appendChild(lb);
+        holder.appendChild(grp);
+        holder.appendChild(energyEl); // stays above whichever groups exist
+        holder.appendChild(scrim);
+        var old = curGroup;
+        curGroup = grp;
+        // per-layer orbit params for the live (JS-driven) motion: counter-rotating,
+        // different radii/scales so the composition genuinely evolves
+        curLayers = [
+          { el: la, base: 0.85, ang: 0, dir: 1, vel: 13, orb: 6, sc: 1.12, _t: "" },
+          { el: lb, base: 0.6, ang: 140, dir: -1, vel: 18, orb: 8, sc: 1.28, _t: "" },
+        ];
+        // palette blobs ride between the layers and the wash
+        var pal = art.palette || [];
+        for (var bi = 0; bi < pal.length; bi++) {
+          var col = pal[bi];
+          var blob = document.createElement("div");
+          blob.className = "lyra-bg-blob";
+          blob.style.background = "radial-gradient(circle at 50% 50%, rgba(" + col[0] + "," + col[1] + "," + col[2] + ",.5) 0%, rgba(" + col[0] + "," + col[1] + "," + col[2] + ",0) 62%)";
+          grp.appendChild(blob);
+          curLayers.push({
+            el: blob, base: 0, blob: true,
+            ang: 90 * bi + 30, dir: bi % 2 ? -1 : 1,
+            vel: 20 + 9 * bi, orb: 10 + 5 * (bi % 3), sc: 0.9 + 0.25 * (bi % 2), _t: "",
+          });
+        }
+        wLay = -1; wScale = -1;
+        // double rAF or the transition never starts and the cover hard-cuts
+        requestAnimationFrame(function () { requestAnimationFrame(function () { grp.classList.add("lyra-bg-in"); }); });
+        if (old) setTimeout(function () { old.remove(); }, 1300);
+      }
+
+      function energyAt(pos) {
+        if (!anEnergy || !anEnergy.length) return 0.5;
+        var x = pos / anStep;
+        var i = Math.floor(x);
+        if (i < 0) return anEnergy[0] / 100;
+        if (i >= anEnergy.length - 1) return anEnergy[anEnergy.length - 1] / 100;
+        var f = x - i;
+        return (anEnergy[i] * (1 - f) + anEnergy[i + 1] * f) / 100;
+      }
+
+      function pulse(pos) {
+        if (destroyed || (!anSegs && !anEnergy)) return; // degrade: energy-only data still animates
+        var dtL = lastPos < 0 ? 0 : Math.max(0, Math.min(100, pos - lastPos));
+        var sc = 1;
+        if (anSegs) {
+          // level meter (slow body of the sound)
+          var L = (levelAt(pos) - dbLow) / Math.max(1, dbHigh - dbLow);
+          L = L < 0 ? 0 : L > 1 ? 1 : L;
+          disp += (L - disp) * Math.min(1, (dtL || 16) / (L > disp ? 28 : 220));
+          // onset strength from the current segment's attack rise (bonus channel)
+          var s = anSegs[segIdx], onset = 0;
+          if (s && pos >= s[0]) {
+            var rise = s[4] - s[3];
+            if (rise > riseGate && pos <= s[0] + Math.max(60, (s[5] || 0) + 90)) {
+              onset = Math.min(1, (rise - riseGate) / Math.max(2, riseFull - riseGate));
+            }
+          }
+          // the thump is BEAT-GRID locked (the stable thing you feel), sized by
+          // the level meter, boosted when a real onset coincides. attack-rise
+          // alone missed trap: 808s glide, they don't spike broadband loudness.
+          var target = 0;
+          if (anBeats) {
+            if (pos < lastPos - 400) beatIdx = 0;
+            while (beatIdx + 1 < anBeats.length && anBeats[beatIdx + 1][0] <= pos) beatIdx++;
+            var b = anBeats[beatIdx];
+            if (b && pos >= b[0]) {
+              var bp = (pos - b[0]) / Math.max(1, b[1]);
+              if (bp < 1) {
+                var br = 1 - bp;
+                target = br * Math.sqrt(br) * (0.22 + 0.78 * disp) * (1 + 0.6 * onset);
+                // loudness caps the thump so quiet can't slam - but a strong grid
+                // (beatW) buys headroom: woozy-but-locked tracks still knock
+                var cap = Math.min(1, 0.3 + 0.7 * disp + 0.25 * beatW);
+                if (target > cap) target = cap;
+              }
+            }
+          } else target = onset * (0.35 + 0.65 * L); // no grid: fall back to onsets
+          // punch stays STRONG wherever a grid exists - a linear fade made mid
+          // tracks (90210) half-hearted, which read as "mid". concave curve:
+          // full-ish knock above the gate, zero below it.
+          var punchW = beatW <= 0.08 ? 0 : 0.45 + 0.55 * beatW;
+          punch += (target * punchW - punch) * Math.min(1, (dtL || 16) / (target * punchW > punch ? 18 : 150));
+          // slow breathing channel for envelope-led tracks (~700ms follow of the meter)
+          breathe += (disp - breathe) * Math.min(1, (dtL || 16) / 700);
+          // the pump crossfades on track character: grid tracks knock (punch,
+          // scaled by how hard this track's hits land), envelope tracks swell
+          sc = Math.round((1 + 0.22 * atkScale * Math.pow(punch, 1.3) + (0.05 + 0.1 * (1 - beatW)) * breathe * breathe) * 500) / 500;
+        }
+        lastPos = pos;
+        if (sc !== wScale && curGroup) { wScale = sc; curGroup.style.scale = sc === 1 ? "" : String(sc); }
+        // live flow: layer orbits integrate a velocity that rides the music.
+        // energy sets cruising speed, hits kick it. calibrated against the
+        // reference video: the field should visibly reorganize every ~10-15s
+        // in loud sections, and freeze when the music stops.
+        if (curLayers && dtL > 0) {
+          holder.classList.add("lyra-bg-live");
+          var e2 = energyAt(pos);
+          var flow = 0.25 + 0.95 * e2 + 2.2 * Math.pow(punch, 1.3) + (0.8 + 0.9 * (1 - beatW)) * disp * disp; // idle .. ~3.5x on hits; envelope tracks flow harder instead of knocking
+          for (var li = 0; li < curLayers.length; li++) {
+            var Ly = curLayers[li];
+            Ly.ang += Ly.vel * Ly.dir * flow * (dtL / 1000);
+            var aq = Math.round(Ly.ang * 10) / 10;
+            // blobs also thump in SIZE on punches - the per-hit body the pump alone lacked
+            var scEff = Ly.blob ? Math.round(Ly.sc * (1 + 0.14 * punch) * 200) / 200 : Ly.sc;
+            var t = "rotate(" + aq + "deg) translate(" + Ly.orb + "vmax,0) scale(" + scEff + ")";
+            if (t !== Ly._t) { Ly._t = t; Ly.el.style.transform = t; }
+          }
+        }
+        // luminance strictly follows the SLOW energy curve (no per-hit light)
+        var e = energyAt(pos);
+        var wash = Math.round(Math.min(0.5, e * (0.12 + 0.35 * e)) * 50) / 50;
+        if (wash !== wWash) { wWash = wash; energyEl.style.opacity = wash <= 0 ? "" : String(wash); }
+        var lm = Math.round(Math.min(1, 0.58 + 0.42 * e) * 50) / 50;
+        if (lm !== wLay && curLayers) {
+          wLay = lm;
+          for (var i = 0; i < curLayers.length; i++) {
+            var CL = curLayers[i];
+            CL.el.style.opacity = CL.blob ? String(lm) : (CL.base * lm).toFixed(3);
+          }
+        }
+      }
+
+      return {
+        setAnalysis: function (a) {
+          anSegs = (a && a.segments && a.segments.length && a.segments) || null;
+          anBeats = (a && a.beats && a.beats.length && a.beats) || null;
+          anEnergy = (a && a.energy && a.energy.values) || null;
+          anStep = (a && a.energy && a.energy.stepMs) || 250;
+          segIdx = 0; beatIdx = 0; lastPos = -1; disp = 0; punch = 0; wScale = -1; wWash = -1; wLay = -1;
+          if (anSegs) {
+            // normalize per-track: p15..p92 of the segment peaks define the meter range
+            var peaks = anSegs.map(function (s) { return s[4]; }).sort(function (x, y) { return x - y; });
+            dbLow = peaks[Math.floor(peaks.length * 0.15)];
+            dbHigh = Math.max(dbLow + 6, peaks[Math.floor(peaks.length * 0.92)]);
+            // and the punch gate: p35..p90 of attack rises, so only THIS track's
+            // proper hits thump (trap is wall-to-wall onsets, ballads are sparse)
+            var rises = anSegs.map(function (s) { return s[4] - s[3]; }).sort(function (x, y) { return x - y; });
+            riseGate = Math.max(3, rises[Math.floor(rises.length * 0.35)]);
+            riseFull = Math.max(riseGate + 4, rises[Math.floor(rises.length * 0.9)]);
+          }
+          var ch = a && a.character;
+          if (ch && (typeof ch.beatSalienceDb === "number" || typeof ch.beatSalience === "number")) {
+            // dB axis (characterVer 2) separates better than the ratio: 0.4dB
+            // (All Too Well) .. 4.2dB (goosebumps). fall back to the ratio map
+            // for ver-1 cached payloads.
+            beatW = typeof ch.beatSalienceDb === "number"
+              ? Math.max(0, Math.min(1, (ch.beatSalienceDb - 0.3) / 1.8))
+              : Math.max(0, Math.min(1, (ch.beatSalience - 1.05) / 0.37));
+            atkScale = Math.max(0.6, Math.min(1.5, (ch.attackDepth || 9) / 9));
+          } else { beatW = 0.75; atkScale = 1; }
+          breathe = 0;
+          if (!anSegs && !anEnergy && curGroup) { curGroup.style.scale = ""; energyEl.style.opacity = ""; }
+        },
+        pulse: pulse,
+        setCover: function (url, accent) {
+          var my = ++token;
+          if (!url) { show(fallbackArt(accent)); return; }
+          var img = new Image();
+          img.crossOrigin = "anonymous";
+          img.onload = function () { if (my === token) show(crush(img, 24)); };
+          img.onerror = function () {
+            if (my !== token) return;
+            // retry without CORS - tainted is fine, only avg sampling suffers
+            var img2 = new Image();
+            img2.onload = function () { if (my === token) show(crush(img2, 24)); };
+            img2.onerror = function () { if (my === token) show(fallbackArt(accent)); };
+            img2.src = url;
+          };
+          img.src = url;
+        },
+        destroy: function () { destroyed = true; holder.remove(); },
+      };
+    },
+  };
+})(typeof window !== "undefined" ? window : globalThis);
