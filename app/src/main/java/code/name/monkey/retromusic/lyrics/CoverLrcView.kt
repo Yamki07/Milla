@@ -36,7 +36,8 @@ import kotlin.math.abs
 class LyricViewLine(
     val lyricLine: LyricLine,
     val staticLayout: StaticLayout,
-    var offset: Float = Float.MIN_VALUE
+    var offset: Float = Float.MIN_VALUE,
+    var syllableWidths: FloatArray? = null
 ) : Comparable<LyricViewLine> {
     val height: Int get() = staticLayout.height
     val time: Long get() = lyricLine.timeMs
@@ -343,8 +344,7 @@ class CoverLrcView @JvmOverloads constructor(
             if (i == mCurrentLine) {
                 mLrcPaint.textSize = mCurrentTextSize
                 
-                // Syllable Karaoke Effect
-                val progress = getHighlightProgress(viewLine.lyricLine, mCurrentTime, mLrcPaint)
+                val progress = getHighlightProgress(viewLine, mCurrentTime)
                 if (progress > 0f && progress < 1f) {
                     val lineLeft = viewLine.staticLayout.getLineLeft(0)
                     val lineWidth = viewLine.staticLayout.getLineWidth(0)
@@ -374,8 +374,10 @@ class CoverLrcView @JvmOverloads constructor(
         }
     }
     
-    private fun getHighlightProgress(line: LyricLine, time: Long, paint: TextPaint): Float {
-        if (line.syllables.isEmpty()) {
+    private fun getHighlightProgress(viewLine: LyricViewLine, time: Long): Float {
+        val line = viewLine.lyricLine
+        val widths = viewLine.syllableWidths
+        if (line.syllables.isEmpty() || widths == null || widths.size != line.syllables.size) {
             return if (time >= line.timeMs) 1.0f else 0.0f
         }
         if (time < line.syllables.first().startMs) return 0f
@@ -384,8 +386,9 @@ class CoverLrcView @JvmOverloads constructor(
 
         var playedWidth = 0f
         var totalWidth = 0f
-        for (syl in line.syllables) {
-            val w = paint.measureText(syl.text)
+        for (i in line.syllables.indices) {
+            val syl = line.syllables[i]
+            val w = widths[i]
             totalWidth += w
             if (time >= syl.startMs + syl.durationMs) {
                 playedWidth += w
@@ -457,9 +460,14 @@ class CoverLrcView @JvmOverloads constructor(
                 2 -> Layout.Alignment.ALIGN_OPPOSITE
                 else -> Layout.Alignment.ALIGN_CENTER
             }
+            val width = lrcWidth.toInt().coerceAtLeast(0)
             for (line in lines) {
-                val layout = StaticLayout(line.text, mLrcPaint, lrcWidth.toInt(), align, 1f, 0f, false)
-                mLrcEntryList.add(LyricViewLine(line, layout))
+                val layout = StaticLayout(line.text, mLrcPaint, width, align, 1f, 0f, false)
+                val widths = FloatArray(line.syllables.size)
+                for (i in line.syllables.indices) {
+                    widths[i] = mLrcPaint.measureText(line.syllables[i].text)
+                }
+                mLrcEntryList.add(LyricViewLine(line, layout, Float.MIN_VALUE, widths))
             }
         }
         mLrcEntryList.sort()
@@ -481,10 +489,11 @@ class CoverLrcView @JvmOverloads constructor(
             2 -> Layout.Alignment.ALIGN_OPPOSITE
             else -> Layout.Alignment.ALIGN_CENTER
         }
+        val width = lrcWidth.toInt().coerceAtLeast(0)
         for (i in mLrcEntryList.indices) {
             val viewLine = mLrcEntryList[i]
-            val layout = StaticLayout(viewLine.lyricLine.text, mLrcPaint, lrcWidth.toInt(), align, 1f, 0f, false)
-            mLrcEntryList[i] = LyricViewLine(viewLine.lyricLine, layout)
+            val layout = StaticLayout(viewLine.lyricLine.text, mLrcPaint, width, align, 1f, 0f, false)
+            mLrcEntryList[i] = LyricViewLine(viewLine.lyricLine, layout, Float.MIN_VALUE, viewLine.syllableWidths)
         }
         mOffset = (height / 2).toFloat()
     }
