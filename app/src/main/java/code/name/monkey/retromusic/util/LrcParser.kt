@@ -134,6 +134,7 @@ object LrcParser {
         }
 
         // Post-procesamiento: ajustar duraciones de la última sílaba con respecto a la siguiente línea
+        // Y generar sílabas simuladas para letras que no tienen sincronización por palabra
         val sortedResult = result.sortedBy { it.timeMs }.toMutableList()
         for (i in 0 until sortedResult.size - 1) {
             val currentLine = sortedResult[i]
@@ -146,6 +147,41 @@ object LrcParser {
                 val modifiedSyllables = currentLine.syllables.toMutableList()
                 modifiedSyllables[modifiedSyllables.size - 1] = lastSyl.copy(durationMs = newDuration)
                 sortedResult[i] = currentLine.copy(syllables = modifiedSyllables)
+            } else if (currentLine.text.isNotBlank()) {
+                // Generar sílabas simuladas (palabra por palabra)
+                var lineDuration = nextLine.timeMs - currentLine.timeMs
+                if (lineDuration <= 0L) lineDuration = 2000L
+                if (lineDuration > 10000L) lineDuration = 10000L // Cap maximum line duration to 10s
+                
+                val words = currentLine.text.split(" ")
+                val durationPerWord = lineDuration / words.size
+                
+                val newSyllables = mutableListOf<Syllable>()
+                var currentMs = currentLine.timeMs
+                for (j in words.indices) {
+                    val wordText = words[j] + if (j < words.size - 1) " " else ""
+                    newSyllables.add(Syllable(wordText, currentMs, durationPerWord))
+                    currentMs += durationPerWord
+                }
+                sortedResult[i] = currentLine.copy(syllables = newSyllables)
+            }
+        }
+        
+        // Manejar la última línea si no tiene sílabas
+        if (sortedResult.isNotEmpty()) {
+            val lastLineIndex = sortedResult.size - 1
+            val lastLine = sortedResult[lastLineIndex]
+            if (lastLine.syllables.isEmpty() && lastLine.text.isNotBlank()) {
+                val words = lastLine.text.split(" ")
+                val durationPerWord = 3000L / words.size // Asumimos 3 segundos en total
+                val newSyllables = mutableListOf<Syllable>()
+                var currentMs = lastLine.timeMs
+                for (j in words.indices) {
+                    val wordText = words[j] + if (j < words.size - 1) " " else ""
+                    newSyllables.add(Syllable(wordText, currentMs, durationPerWord))
+                    currentMs += durationPerWord
+                }
+                sortedResult[lastLineIndex] = lastLine.copy(syllables = newSyllables)
             }
         }
 

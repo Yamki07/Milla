@@ -107,10 +107,12 @@ object DeezerDownloadManager {
                 if (success) {
                     _downloadState.value = DownloadState.PostProcessing(trackId)
                     tagAndEnrichDownloadedFile(context, outputFile, song)
+                    val mimeType = if (quality == 9) "audio/flac" else "audio/mpeg"
+                    android.media.MediaScannerConnection.scanFile(context, arrayOf(outputFile.absolutePath), arrayOf(mimeType)) { path, uri ->
+                        Log.i(TAG, "MediaScanner completado para: $path, uri=$uri")
+                    }
                     _downloadState.value = DownloadState.Completed(trackId, outputFile.absolutePath, song)
                     Log.i(TAG, "Descarga completada: ${outputFile.absolutePath}")
-
-
                 } else {
                     if (outputFile.exists()) outputFile.delete()
                     _downloadState.value = DownloadState.Error(trackId, "Fallo al descargar o desencriptar el archivo")
@@ -145,7 +147,7 @@ object DeezerDownloadManager {
      */
     fun getDownloadsDirectory(context: Context): File {
         val baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
-        return File(baseDir, "MillaDownloads")
+        return File(baseDir, "RetroMusic")
     }
 
     private suspend fun fetchUrlSuspending(trackId: String, quality: Int): String? =
