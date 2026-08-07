@@ -16,20 +16,104 @@
         android:scaleType="centerCrop"
         android:contentDescription="@null" />
 
-    <!-- Capa de oscurecimiento para maximizar el contraste y legibilidad -->
+    <!-- Capa de oscurecimiento para maximizar el contraste (80% negro) -->
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#73000000" />
+        android:background="#CC000000" />
+
+    <!-- Cabecera Superior (Carátula, Título, Artista y Controles de Sync) -->
+    <LinearLayout
+        android:id="@+id/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical"
+        android:elevation="4dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_sync_controls"
+            android:padding="4dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_sync_minus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="-"
+                android:textSize="20sp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                app:cornerRadius="20dp"
+                android:contentDescription="Retrasar" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_sync_plus"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:text="+"
+                android:textSize="20sp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                app:cornerRadius="20dp"
+                android:contentDescription="Adelantar" />
+        </LinearLayout>
+
+        <!-- Carátula pequeña -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/header_cover"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="16dp"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
+            android:scaleType="centerCrop" />
+
+        <!-- Título y Artista -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
+            
+            <TextView
+                android:id="@+id/header_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:ellipsize="marquee" />
+                
+            <TextView
+                android:id="@+id/header_artist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#B3FFFFFF"
+                android:textSize="14sp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+        </LinearLayout>
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="150dp">
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="?attr/actionBarSize"
             android:scrollbars="vertical">
 
             <TextView
@@ -43,17 +127,17 @@
                 tools:text="@tools:sample/lorem[100]" />
         </ScrollView>
 
-        <!-- RecyclerView nativo para Letras Sincrónicas con Efecto Ola y centrado am-lyrics -->
+        <!-- RecyclerView nativo para Letras Sincrónicas con Efecto Ola -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="200dp"
-            android:paddingBottom="200dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="80dp"
+            android:paddingBottom="120dp"
             android:scrollbars="none" />
-
-
 
         <TextView
             android:id="@+id/noLyricsFound"
@@ -90,50 +174,11 @@
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="@string/lyrics"
-            app:titleTextColor="@android:color/white"
+            app:title=""
+            app:titleTextColor="@android:color/transparent"
             app:titleMargin="0dp"
-            app:titleMarginStart="0dp"
-            app:titleTextAppearance="@style/ToolbarTextAppearanceNormal" />
+            app:titleMarginStart="0dp" />
     </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Controles Flotantes para Sincronización Manual (+ y -) -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="16dp"
-        android:orientation="horizontal"
-        android:background="@drawable/bg_sync_controls"
-        android:padding="8dp">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_sync_minus"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:text="-"
-            android:textSize="24sp"
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
-            app:cornerRadius="24dp"
-            android:contentDescription="Retrasar letra" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_sync_plus"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="8dp"
-            android:text="+"
-            android:textSize="24sp"
-            android:insetLeft="0dp"
-            android:insetTop="0dp"
-            android:insetRight="0dp"
-            android:insetBottom="0dp"
-            app:cornerRadius="24dp"
-            android:contentDescription="Adelantar letra" />
-    </LinearLayout>
 
     <!-- Botón de Traducción (Mundo) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton

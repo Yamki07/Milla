@@ -235,7 +235,27 @@ object DeezerDownloadManager {
         withContext(Dispatchers.IO) {
             // 1. Etiquetado físico inicial de ID3 con JAudioTagger
             try {
-                val audioFile = AudioFileIO.read(outputFile)
+                var audioFile: org.jaudiotagger.audio.AudioFile? = null
+                try {
+                    audioFile = AudioFileIO.read(outputFile)
+                } catch (e: Exception) {
+                    Log.w(TAG, "AudioFileIO.read falló, intentando forzar lectura MP3/FLAC: ${e.message}")
+                    try {
+                        if (outputFile.name.endsWith(".mp3", ignoreCase = true)) {
+                            audioFile = org.jaudiotagger.audio.mp3.MP3File(outputFile)
+                        } else if (outputFile.name.endsWith(".flac", ignoreCase = true)) {
+                            audioFile = org.jaudiotagger.audio.flac.FlacFileReader().read(outputFile)
+                        }
+                    } catch (e2: Exception) {
+                        Log.e(TAG, "Fallo el fallback de lectura de audio: ${e2.message}")
+                    }
+                }
+
+                if (audioFile == null) {
+                    Log.e(TAG, "No se pudo inicializar AudioFile para ${outputFile.name}")
+                    return@withContext
+                }
+
                 val tag = audioFile.tagOrCreateAndSetDefault
                 tag.setField(FieldKey.TITLE, song.title)
                 tag.setField(FieldKey.ARTIST, song.artistName)

@@ -26,7 +26,8 @@ object TranslationHelper {
                 
                 try {
                     val encodedText = URLEncoder.encode(sb.toString(), "UTF-8")
-                    val url = URL("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=$targetLang&dt=t&q=$encodedText")
+                    // Uso de endpoint más confiable (mismo que extensiones de Chrome)
+                    val url = URL("https://clients5.google.com/translate_a/t?client=dict-chrome-ex&sl=auto&tl=$targetLang&q=$encodedText")
                     val connection = url.openConnection() as HttpURLConnection
                     connection.requestMethod = "GET"
                     connection.connectTimeout = 5000
@@ -34,16 +35,13 @@ object TranslationHelper {
                     
                     val response = connection.inputStream.bufferedReader().use { it.readText() }
                     
-                    // JSON format: [[[ "translated text", "original text", ...], ...], ...]
+                    // El formato devuelto por dict-chrome-ex es un array plano JSON: ["línea 1", "línea 2", ...]
+                    // o a veces un array simple: ["texto completo traducido"]
                     val jsonArray = JSONArray(response)
-                    val sentencesArray = jsonArray.getJSONArray(0)
-                    
                     val translatedTextSb = StringBuilder()
-                    for (j in 0 until sentencesArray.length()) {
-                        val sentenceObj = sentencesArray.optJSONArray(j)
-                        if (sentenceObj != null && sentenceObj.length() > 0) {
-                            translatedTextSb.append(sentenceObj.optString(0, ""))
-                        }
+                    
+                    for (j in 0 until jsonArray.length()) {
+                        translatedTextSb.append(jsonArray.optString(j, ""))
                     }
                     
                     val translatedParts = translatedTextSb.toString().split("\n")

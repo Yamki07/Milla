@@ -105,27 +105,24 @@ class SyllableLyricView @JvmOverloads constructor(
         }
 
         // 3. Draw active text clipped perfectly to syllables (even across line breaks)
-        canvas.save()
         
-        // Clip previously completed syllables completely
+        // A) Draw previously completed syllables completely
         if (activeSyllableStartIndex > 0) {
+            canvas.save()
             val completedPath = android.graphics.Path()
             currentLayout.getSelectionPath(0, activeSyllableStartIndex, completedPath)
             completedPath.offset(paddingLeft.toFloat(), paddingTop.toFloat())
-            // Android 28+ deprecates Region.Op, we can just use clipPath which defaults to INTERSECT/UNION depending on usage
-            // To add to the clipping region, we can actually build one big path.
-            // Wait, clipPath is intersect by default! We need to UNION.
-            // Better yet, create one unified Path!
+            canvas.clipPath(completedPath)
+            setTextColor(activeColor)
+            super.onDraw(canvas)
+            canvas.restore()
         }
         
-        val totalActivePath = android.graphics.Path()
-        if (activeSyllableStartIndex > 0) {
-            currentLayout.getSelectionPath(0, activeSyllableStartIndex, totalActivePath)
-        }
-        
-        // Add current syllable partial path
+        // B) Draw current active syllable with scale effect (Wave / Pop)
         if (activeSyllableFraction > 0f) {
+            val activePath = android.graphics.Path()
             val syllableLength = line.syllables.find { it.startMs <= currentTimeMs && it.startMs + it.durationMs >= currentTimeMs }?.text?.length ?: 0
+            
             if (syllableLength > 0) {
                 val startOffset = activeSyllableStartIndex
                 val endOffset = startOffset + syllableLength
@@ -138,7 +135,7 @@ class SyllableLyricView @JvmOverloads constructor(
                     val endX = currentLayout.getPrimaryHorizontal(endOffset)
                     val currentX = startX + (endX - startX) * activeSyllableFraction
                     
-                    totalActivePath.addRect(
+                    activePath.addRect(
                         startX,
                         currentLayout.getLineTop(startLine).toFloat(),
                         currentX,
@@ -147,18 +144,28 @@ class SyllableLyricView @JvmOverloads constructor(
                     )
                 } else {
                     val fractionIndex = startOffset + (syllableLength * activeSyllableFraction).toInt()
-                    val activePath = android.graphics.Path()
                     currentLayout.getSelectionPath(startOffset, fractionIndex, activePath)
-                    totalActivePath.addPath(activePath)
                 }
+                
+                activePath.offset(paddingLeft.toFloat(), paddingTop.toFloat())
+                
+                canvas.save()
+                
+                // Calculate bounding box for pivot
+                val bounds = android.graphics.RectF()
+                activePath.computeBounds(bounds, true)
+                
+                // Efecto Ola: Escala basada en la fracción (hace una onda sinoidal que sube y baja ligeramente)
+                // Se eleva hasta un 8% más grande en el medio de la sílaba
+                val scale = 1f + 0.08f * Math.sin(activeSyllableFraction * Math.PI).toFloat()
+                canvas.scale(scale, scale, bounds.centerX(), bounds.centerY())
+                
+                canvas.clipPath(activePath)
+                setTextColor(activeColor)
+                super.onDraw(canvas)
+                
+                canvas.restore()
             }
         }
-        
-        totalActivePath.offset(paddingLeft.toFloat(), paddingTop.toFloat())
-        canvas.clipPath(totalActivePath)
-
-        setTextColor(activeColor)
-        super.onDraw(canvas)
-        canvas.restore()
     }
 }

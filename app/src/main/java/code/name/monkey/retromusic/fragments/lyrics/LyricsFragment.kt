@@ -141,34 +141,31 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         }
     }
 
-    private fun updateBlurBackground() {
+    private fun updateTitleSong() {
         val currentSong = MusicPlayerRemote.currentSong
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            binding.blurBackground.setRenderEffect(
-                android.graphics.RenderEffect.createBlurEffect(
-                    50f,
-                    50f,
-                    android.graphics.Shader.TileMode.MIRROR
-                )
-            )
-            Glide.with(this)
-                .load(RetroGlideExtension.getSongModel(currentSong))
-                .simpleSongCoverOptions(currentSong)
-                .into(binding.blurBackground)
-        } else {
-            Glide.with(this)
-                .load(RetroGlideExtension.getSongModel(currentSong))
-                .simpleSongCoverOptions(currentSong)
-                .transform(
-                    BlurTransformation.Builder(requireContext())
-                        .blurRadius(25f)
-                        .build()
-                )
-                .into(binding.blurBackground)
-        }
+        
+        // Update header texts
+        binding.headerTitle.text = currentSong.title
+        binding.headerArtist.text = currentSong.artistName
+        
+        // Load header cover
+        Glide.with(this)
+            .load(RetroGlideExtension.getSongModel(currentSong))
+            .apply(RetroGlideExtension.simpleSongCoverOptions(currentSong))
+            .into(binding.headerCover)
     }
 
-
+    private fun updateBlurBackground() {
+        val currentSong = MusicPlayerRemote.currentSong
+        val currentArtwork = RetroGlideExtension.getSongModel(currentSong)
+        
+        // Use strong blur for background
+        Glide.with(this)
+            .load(currentArtwork)
+            .apply(RetroGlideExtension.simpleSongCoverOptions(currentSong))
+            .transform(jp.wasabeef.glide.transformations.BlurTransformation(25, 4))
+            .into(binding.blurBackground)
+    }
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
         
@@ -215,10 +212,12 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         // Sync Buttons
         binding.btnSyncMinus.setOnClickListener {
             lyricsAdapter.currentTimeOffsetMs -= 500L
+            onUpdateProgressViews(code.name.monkey.retromusic.helper.MusicPlayerRemote.songProgressMillis, code.name.monkey.retromusic.helper.MusicPlayerRemote.songDurationMillis)
         }
         
         binding.btnSyncPlus.setOnClickListener {
             lyricsAdapter.currentTimeOffsetMs += 500L
+            onUpdateProgressViews(code.name.monkey.retromusic.helper.MusicPlayerRemote.songProgressMillis, code.name.monkey.retromusic.helper.MusicPlayerRemote.songDurationMillis)
         }
         
         // Translate Button
