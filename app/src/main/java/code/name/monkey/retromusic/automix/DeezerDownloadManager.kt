@@ -236,7 +236,10 @@ object DeezerDownloadManager {
 
                 // Obtener datos privados de Deezer para la carátula y letras
                 try {
-                    val lyrics = DeezerApiClient.getLyrics(song.id.toString())
+                    var lyrics = code.name.monkey.retromusic.util.LRCLibFetcher.fetchLyrics(song)
+                    if (lyrics == null || lyrics.isEmpty()) {
+                        lyrics = DeezerApiClient.getLyrics(song.id.toString())
+                    }
                     if (!lyrics.isNullOrEmpty()) {
                         tag.setField(FieldKey.LYRICS, lyrics)
                         Log.d(TAG, "Letras guardadas en archivo para: ${song.title}")

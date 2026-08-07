@@ -434,10 +434,24 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                 val isSynced = result.contains("[00:") || result.contains("[01:") || result.contains("[02:")
                 
                 if (isSynced) {
-                    LyricUtil.writeLrc(song, result)
-                    loadLRCLyrics() // Recargar localmente y cambiar UI
-                    lyricsType = LyricsType.SYNCED_LYRICS
-                    startLyricsTicker()
+                    // Cargar en memoria inmediatamente para que el usuario no espere
+                    currentLyricsList = LrcParser.parse(result)
+                    if (currentLyricsList.isNotEmpty()) {
+                        lyricsAdapter.submitList(currentLyricsList)
+                        binding.recyclerView.isVisible = true
+                        binding.normalLyrics.isVisible = false
+                        binding.noLyricsFound.isVisible = false
+                        binding.lyricsView.isVisible = false
+                        lyricsType = LyricsType.SYNCED_LYRICS
+                        startLyricsTicker()
+                        // Intentar guardar en disco silenciosamente
+                        LyricUtil.writeLrc(song, result)
+                    } else {
+                        binding.noLyricsFound.isVisible = false
+                        binding.normalLyrics.isVisible = true
+                        binding.normalLyrics.text = result
+                        lyricsType = LyricsType.NORMAL_LYRICS
+                    }
                 } else {
                     binding.noLyricsFound.isVisible = false
                     binding.normalLyrics.isVisible = true

@@ -27,13 +27,9 @@ object LRCLibFetcher {
      */
     suspend fun fetchLyrics(song: Song): String? = withContext(Dispatchers.IO) {
         try {
-            val trackName = URLEncoder.encode(song.title, "UTF-8")
-            val artistName = URLEncoder.encode(song.artistName, "UTF-8")
-            val albumName = URLEncoder.encode(song.albumName, "UTF-8")
-            val duration = song.duration / 1000 // Segundos
-
-            // Construir URL: https://lrclib.net/api/get?track_name=xxx&artist_name=yyy&album_name=zzz&duration=120
-            val urlString = "https://lrclib.net/api/get?track_name=$trackName&artist_name=$artistName&album_name=$albumName&duration=$duration"
+            // Usar API de búsqueda para mayor compatibilidad
+            val query = URLEncoder.encode("${song.title} ${song.artistName}", "UTF-8")
+            val urlString = "https://lrclib.net/api/search?q=$query"
             val url = URL(urlString)
             val connection = url.openConnection() as HttpURLConnection
             connection.requestMethod = "GET"
@@ -50,18 +46,22 @@ object LRCLibFetcher {
                 }
                 reader.close()
 
-                val json = JSONObject(response.toString())
-                
-                // Priorizar syncedLyrics
-                if (json.has("syncedLyrics") && !json.isNull("syncedLyrics")) {
-                    val synced = json.getString("syncedLyrics")
-                    if (synced.isNotBlank()) return@withContext synced
-                }
-                
-                // Fallback a letras normales
-                if (json.has("plainLyrics") && !json.isNull("plainLyrics")) {
-                    val plain = json.getString("plainLyrics")
-                    if (plain.isNotBlank()) return@withContext plain
+                val jsonArray = org.json.JSONArray(response.toString())
+                if (jsonArray.length() > 0) {
+                    // Iterar para encontrar el mejor resultado con syncedLyrics
+                    var plainFallback: String? = null
+                    for (i in 0 until jsonArray.length()) {
+                        val obj = jsonArray.getJSONObject(i)
+                        if (obj.has("syncedLyrics") && !obj.isNull("syncedLyrics")) {
+                            val synced = obj.getString("syncedLyrics")
+                            if (synced.isNotBlank()) return@withContext synced
+                        }
+                        if (plainFallback == null && obj.has("plainLyrics") && !obj.isNull("plainLyrics")) {
+                            val plain = obj.getString("plainLyrics")
+                            if (plain.isNotBlank()) plainFallback = plain
+                        }
+                    }
+                    if (plainFallback != null) return@withContext plainFallback
                 }
             }
         } catch (e: Exception) {

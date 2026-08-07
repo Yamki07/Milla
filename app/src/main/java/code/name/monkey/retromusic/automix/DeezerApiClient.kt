@@ -62,13 +62,15 @@ object DeezerApiClient {
         if (sessionInitialized && apiToken.isNotEmpty() && licenseToken.isNotEmpty()) return
         withContext(Dispatchers.IO) {
             try {
+                val bodyData = "{}"
+                val bodyReq = bodyData.toRequestBody("application/json;charset=UTF-8".toMediaType())
                 val request = Request.Builder()
-                    .url("https://www.deezer.com/ajax/gw-light.php?method=deezer.getUserData&api_version=1.0&api_token=null")
+                    .url("https://www.deezer.com/ajax/gw-light.php?method=deezer.getUserData&api_version=1.0&api_token=")
                     .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
                     .addHeader("Accept-Language", "en-US,en;q=0.9")
                     .addHeader("Accept", "*/*")
                     .addHeader("Cookie", "arl=$ARL_TOKEN")
-                    .get()
+                    .post(bodyReq)
                     .build()
                 client.newCall(request).execute().use { response ->
                     val body = response.body?.string() ?: return@withContext
@@ -501,9 +503,12 @@ object DeezerApiClient {
     fun initSession(onSuccess: () -> Unit, onError: (Exception) -> Unit) {
         Thread {
             try {
+                val bodyData = "{}"
+                val bodyReq = bodyData.toRequestBody("application/json;charset=UTF-8".toMediaType())
                 val request = Request.Builder()
-                    .url("https://www.deezer.com/ajax/gw-light.php?method=deezer.getUserData&api_version=1.0&api_token=null")
-                    .get()
+                    .url("https://www.deezer.com/ajax/gw-light.php?method=deezer.getUserData&api_version=1.0&api_token=")
+                    .addHeader("Cookie", "arl=$ARL_TOKEN")
+                    .post(bodyReq)
                     .build()
                 client.newCall(request).execute().use { response ->
                     val body = response.body?.string() ?: ""
