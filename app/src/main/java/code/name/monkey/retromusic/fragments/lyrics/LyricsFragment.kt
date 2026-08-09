@@ -414,21 +414,15 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         }
         
         if (!lyrics.isNullOrEmpty()) {
-            val lines = lyrics.split("\n").map { LyricLine(0, it.trim()) }
-            currentLyricsList = LrcParser.generateEstimatedTimestamps(lines, song.duration)
-            
-            if (currentLyricsList.isNotEmpty()) {
-                lyricsAdapter.submitList(currentLyricsList)
-                binding.recyclerView.isVisible = true
-                binding.normalLyrics.isVisible = false
-                binding.noLyricsFound.isVisible = false
-                return
-            }
+            binding.normalLyrics.text = lyrics
+            binding.normalLyrics.isVisible = true
+            binding.recyclerView.isVisible = false
+            binding.noLyricsFound.isVisible = false
+        } else {
+            binding.normalLyrics.isVisible = false
+            binding.noLyricsFound.isVisible = true
+            binding.recyclerView.isVisible = false
         }
-        
-        binding.normalLyrics.isVisible = false
-        binding.noLyricsFound.isVisible = true
-        binding.recyclerView.isVisible = false
     }
 
     /**
@@ -505,20 +499,9 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                     }
                 } else {
                     binding.noLyricsFound.isVisible = false
-                    
-                    // Render static lyrics with estimated timestamps for wave effect!
-                    val lines = result.split("\n").map { LyricLine(0, it.trim()) }
-                    currentLyricsList = LrcParser.generateEstimatedTimestamps(lines, song.duration)
-                    if (currentLyricsList.isNotEmpty()) {
-                        lyricsAdapter.submitList(currentLyricsList)
-                        binding.recyclerView.isVisible = true
-                        binding.normalLyrics.isVisible = false
-                        startLyricsTicker()
-                    } else {
-                        binding.normalLyrics.isVisible = true
-                        binding.normalLyrics.text = result
-                    }
-                    
+                    binding.recyclerView.isVisible = false
+                    binding.normalLyrics.isVisible = true
+                    binding.normalLyrics.text = result
                     lyricsType = LyricsType.NORMAL_LYRICS
                     // Opcionalmente guardar como tag ID3 de letra plana
                 }

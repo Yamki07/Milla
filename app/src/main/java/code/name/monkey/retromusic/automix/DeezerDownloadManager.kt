@@ -235,6 +235,9 @@ object DeezerDownloadManager {
         withContext(Dispatchers.IO) {
             // 1. Etiquetado físico inicial de ID3 con JAudioTagger
             try {
+                org.jaudiotagger.tag.TagOptionSingleton.getInstance().isAndroid = true
+                org.jaudiotagger.tag.TagOptionSingleton.getInstance().isId3v23 = true
+                
                 var audioFile: org.jaudiotagger.audio.AudioFile? = null
                 try {
                     audioFile = AudioFileIO.read(outputFile)
@@ -297,7 +300,7 @@ object DeezerDownloadManager {
                                 }
                                 
                                 try {
-                                    val artwork = AndroidArtwork.createArtworkFromFile(tempCoverFile)
+                                    val artwork = org.jaudiotagger.tag.images.ArtworkFactory.createArtworkFromFile(tempCoverFile)
                                     tag.deleteArtworkField()
                                     tag.setField(artwork)
                                 } catch(e: Exception) {

@@ -156,8 +156,8 @@ class SyllableLyricView @JvmOverloads constructor(
                 activePath.computeBounds(bounds, true)
                 
                 // Efecto Ola: Escala basada en la fracción (hace una onda sinoidal que sube y baja ligeramente)
-                // Se eleva hasta un 8% más grande en el medio de la sílaba
-                val scale = 1f + 0.08f * Math.sin(activeSyllableFraction * Math.PI).toFloat()
+                // Se eleva hasta un 11% más grande en el medio de la sílaba
+                val scale = 1f + 0.11f * Math.sin(activeSyllableFraction * Math.PI).toFloat()
                 canvas.scale(scale, scale, bounds.centerX(), bounds.centerY())
                 
                 canvas.clipPath(activePath)

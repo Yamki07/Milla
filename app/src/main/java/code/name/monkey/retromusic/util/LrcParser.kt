@@ -100,7 +100,7 @@ object LrcParser {
         val words = text.split(Regex("(?<=\\s)|(?=\\s)"))
         if (words.isEmpty()) return syllables
         
-        val timePerWord = durationMs / words.size
+        val timePerWord = kotlin.math.min(durationMs / words.size, 400L)
         var currentMs = startMs
         for (word in words) {
             syllables.add(Syllable(word, currentMs, timePerWord))
