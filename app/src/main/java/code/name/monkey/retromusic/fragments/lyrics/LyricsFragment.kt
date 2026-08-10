@@ -202,12 +202,10 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         // Sync Buttons
         binding.btnSyncMinus.setOnClickListener {
             lyricsAdapter.currentTimeOffsetMs -= 500L
-            onUpdateProgressViews(code.name.monkey.retromusic.helper.MusicPlayerRemote.songProgressMillis, code.name.monkey.retromusic.helper.MusicPlayerRemote.songDurationMillis)
         }
         
         binding.btnSyncPlus.setOnClickListener {
             lyricsAdapter.currentTimeOffsetMs += 500L
-            onUpdateProgressViews(code.name.monkey.retromusic.helper.MusicPlayerRemote.songProgressMillis, code.name.monkey.retromusic.helper.MusicPlayerRemote.songDurationMillis)
         }
         
         // Translate Button
@@ -528,7 +526,8 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         tickerJob = lifecycleScope.launch {
             while (isActive) {
                 if (lyricsType == LyricsType.SYNCED_LYRICS && currentLyricsList.isNotEmpty()) {
-                    val currentPos = AudioPlayerHandler.playbackState.position
+                    val offset = if (::lyricsAdapter.isInitialized) lyricsAdapter.currentTimeOffsetMs else 0L
+                    val currentPos = AudioPlayerHandler.playbackState.position + offset
                     updateSyncLine(currentPos)
                 }
                 delay(16L) // ~60 FPS

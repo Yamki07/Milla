@@ -236,7 +236,6 @@ object DeezerDownloadManager {
             // 1. Etiquetado físico inicial de ID3 con JAudioTagger
             try {
                 org.jaudiotagger.tag.TagOptionSingleton.getInstance().isAndroid = true
-                org.jaudiotagger.tag.TagOptionSingleton.getInstance().isId3v23 = true
                 
                 var audioFile: org.jaudiotagger.audio.AudioFile? = null
                 try {
@@ -259,7 +258,16 @@ object DeezerDownloadManager {
                     return@withContext
                 }
 
-                val tag = audioFile.tagOrCreateAndSetDefault
+                var tag = audioFile.tag
+                if (tag == null || (audioFile is org.jaudiotagger.audio.mp3.MP3File && tag is org.jaudiotagger.tag.id3.ID3v24Tag)) {
+                    if (audioFile is org.jaudiotagger.audio.mp3.MP3File) {
+                        tag = org.jaudiotagger.tag.id3.ID3v23Tag()
+                        audioFile.tag = tag
+                    } else {
+                        tag = audioFile.createDefaultTag()
+                        audioFile.tag = tag
+                    }
+                }
                 tag.setField(FieldKey.TITLE, song.title)
                 tag.setField(FieldKey.ARTIST, song.artistName)
                 tag.setField(FieldKey.ALBUM, song.albumName)
