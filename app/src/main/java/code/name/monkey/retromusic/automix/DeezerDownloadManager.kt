@@ -233,15 +233,39 @@ object DeezerDownloadManager {
 
     private suspend fun tagAndEnrichDownloadedFile(context: Context, outputFile: File, song: Song) =
         withContext(Dispatchers.IO) {
-            // 1. Etiquetado físico inicial de ID3 con JAudioTagger
+            // 1. Obtener datos privados completos de Deezer (ISRC, composer, año, genre, etc.)
+            val privateTrack = try {
+                DeezerApiClient.fetchPrivateTrackData(song.id.toString())
+            } catch (e: Exception) { null }
+
+            // 2. Obtener letras: primero sincronizadas (LRC) luego planas como fallback
+            val (syncedLrc, plainLyrics) = try {
+                val pair = DeezerApiClient.getLyricsFullPair(song.id.toString())
+                // Si Deezer no tiene letras, cascadear a otras fuentes
+                if (pair.first.isEmpty() && pair.second.isEmpty()) {
+                    val lrcFromAmll = code.name.monkey.retromusic.util.AmllLyricsFetcher.fetchLyrics(song.title, song.artistName) ?: ""
+                    val lrcFromMusixmatch = if (lrcFromAmll.isEmpty()) {
+                        code.name.monkey.retromusic.util.MusixmatchFetcher.getEnhancedLrc(song.title, song.artistName) ?: ""
+                    } else ""
+                    val lrcFromLib = if (lrcFromAmll.isEmpty() && lrcFromMusixmatch.isEmpty()) {
+                        code.name.monkey.retromusic.util.LRCLibFetcher.fetchLyrics(song) ?: ""
+                    } else ""
+                    val best = lrcFromAmll.ifEmpty { lrcFromMusixmatch.ifEmpty { lrcFromLib } }
+                    Pair(best, "")
+                } else pair
+            } catch (e: Exception) {
+                Log.w(TAG, "Error obteniendo letras: ${e.message}")
+                Pair("", "")
+            }
+
+            // 3. Etiquetado físico ID3 completo con JAudioTagger
             try {
                 org.jaudiotagger.tag.TagOptionSingleton.getInstance().isAndroid = true
-                
+
                 var audioFile: org.jaudiotagger.audio.AudioFile? = null
                 try {
                     audioFile = AudioFileIO.read(outputFile)
                 } catch (e: Exception) {
-                    Log.w(TAG, "AudioFileIO.read falló, intentando forzar lectura MP3/FLAC: ${e.message}")
                     try {
                         if (outputFile.name.endsWith(".mp3", ignoreCase = true)) {
                             audioFile = org.jaudiotagger.audio.mp3.MP3File(outputFile)
@@ -249,7 +273,7 @@ object DeezerDownloadManager {
                             audioFile = org.jaudiotagger.audio.flac.FlacFileReader().read(outputFile)
                         }
                     } catch (e2: Exception) {
-                        Log.e(TAG, "Fallo el fallback de lectura de audio: ${e2.message}")
+                        Log.e(TAG, "Fallo fallback de lectura: ${e2.message}")
                     }
                 }
 
@@ -258,6 +282,7 @@ object DeezerDownloadManager {
                     return@withContext
                 }
 
+                // Usar ID3v2.3 para MP3 (máxima compatibilidad) o default para FLAC
                 var tag = audioFile.tag
                 if (tag == null || (audioFile is org.jaudiotagger.audio.mp3.MP3File && tag is org.jaudiotagger.tag.id3.ID3v24Tag)) {
                     if (audioFile is org.jaudiotagger.audio.mp3.MP3File) {
@@ -268,68 +293,92 @@ object DeezerDownloadManager {
                         audioFile.tag = tag
                     }
                 }
+
+                // ── Tags básicos obligatorios ──
                 tag.setField(FieldKey.TITLE, song.title)
                 tag.setField(FieldKey.ARTIST, song.artistName)
                 tag.setField(FieldKey.ALBUM, song.albumName)
-                if (song.year > 0) {
-                    tag.setField(FieldKey.YEAR, song.year.toString())
+
+                // ── Tags enriquecidos de Deezer ──
+                val effectiveAlbumArtist = privateTrack?.albumArtist?.takeIf { it.isNotEmpty() } ?: song.albumArtist ?: song.artistName
+                val effectiveComposer = privateTrack?.composer?.takeIf { it.isNotEmpty() } ?: song.composer ?: ""
+                val effectiveYear = if (privateTrack?.year != null && privateTrack.year > 0) privateTrack.year else song.year
+                val effectiveTrackNum = if (privateTrack?.trackNumber != null && privateTrack.trackNumber > 0) privateTrack.trackNumber else song.trackNumber
+                val effectiveDisc = privateTrack?.discNumber ?: 1
+                val effectiveGenre = privateTrack?.genre?.takeIf { it.isNotEmpty() } ?: ""
+                val effectiveIsrc = privateTrack?.isrc?.takeIf { it.isNotEmpty() } ?: ""
+
+                if (effectiveAlbumArtist.isNotEmpty()) {
+                    try { tag.setField(FieldKey.ALBUM_ARTIST, effectiveAlbumArtist) } catch (e: Exception) {}
                 }
-                tag.setField(FieldKey.GENRE, "Milla Automix")
+                if (effectiveComposer.isNotEmpty()) {
+                    try { tag.setField(FieldKey.COMPOSER, effectiveComposer) } catch (e: Exception) {}
+                }
+                if (effectiveYear > 0) {
+                    try { tag.setField(FieldKey.YEAR, effectiveYear.toString()) } catch (e: Exception) {}
+                }
+                if (effectiveTrackNum > 0) {
+                    try { tag.setField(FieldKey.TRACK, effectiveTrackNum.toString()) } catch (e: Exception) {}
+                }
+                if (effectiveDisc > 0) {
+                    try { tag.setField(FieldKey.DISC_NO, effectiveDisc.toString()) } catch (e: Exception) {}
+                }
+                if (effectiveGenre.isNotEmpty()) {
+                    try { tag.setField(FieldKey.GENRE, effectiveGenre) } catch (e: Exception) {}
+                }
+                if (effectiveIsrc.isNotEmpty()) {
+                    try { tag.setField(FieldKey.ISRC, effectiveIsrc) } catch (e: Exception) {}
+                }
 
-                // Obtener datos privados de Deezer para la carátula y letras
+                // ── Letras: LRC sincronizado o texto plano ──
+                val lyricsToSave = syncedLrc.ifEmpty { plainLyrics }
+                if (lyricsToSave.isNotEmpty()) {
+                    try {
+                        tag.setField(FieldKey.LYRICS, lyricsToSave)
+                        Log.d(TAG, "Letras guardadas en ID3 (${if (syncedLrc.isNotEmpty()) "LRC sincronizado" else "texto plano"}) para: ${song.title}")
+                    } catch (e: Exception) {
+                        Log.w(TAG, "No se pudo guardar letras en ID3: ${e.message}")
+                    }
+                }
+
+                // ── Portada HD 1000x1000 ──
                 try {
-                    var lyrics = code.name.monkey.retromusic.util.AmllLyricsFetcher.fetchLyrics(song.title, song.artistName)
-                    if (lyrics == null || lyrics.isEmpty()) {
-                        lyrics = code.name.monkey.retromusic.util.MusixmatchFetcher.getEnhancedLrc(song.title, song.artistName)
-                    }
-                    if (lyrics == null || lyrics.isEmpty()) {
-                        lyrics = code.name.monkey.retromusic.util.LRCLibFetcher.fetchLyrics(song)
-                    }
-                    if (lyrics == null || lyrics.isEmpty()) {
-                        lyrics = DeezerApiClient.getLyrics(song.id.toString())
-                    }
-                    if (!lyrics.isNullOrEmpty()) {
-                        tag.setField(FieldKey.LYRICS, lyrics)
-                        Log.d(TAG, "Letras guardadas en archivo ID3 para: ${song.title}")
-                    }
-
-                    val privateTrack = DeezerApiClient.fetchPrivateTrackData(song.id.toString())
-                    val coverMd5 = privateTrack?.albumCoverId
+                    val coverMd5 = privateTrack?.albumCoverId?.takeIf { it.isNotEmpty() }
                     if (!coverMd5.isNullOrEmpty()) {
                         val coverUrl = "https://e-cdns-images.dzcdn.net/images/cover/$coverMd5/1000x1000-000000-80-0-0.jpg"
-                        val coverRequest = Request.Builder().url(coverUrl).get().build()
-                        val coverResponse = httpClient.newCall(coverRequest).execute()
-                        if (coverResponse.isSuccessful) {
-                            val coverBody = coverResponse.body
-                            if (coverBody != null) {
-                                val tempCoverFile = File(outputFile.parentFile, ".cover_${song.id}.jpg")
-                                FileOutputStream(tempCoverFile).use { out ->
-                                    out.write(coverBody.bytes())
-                                }
-                                
+                        val coverReq = okhttp3.Request.Builder().url(coverUrl).get().build()
+                        val coverResp = httpClient.newCall(coverReq).execute()
+                        if (coverResp.isSuccessful) {
+                            val coverBytes = coverResp.body?.bytes()
+                            if (coverBytes != null && coverBytes.isNotEmpty()) {
+                                val tempCover = File(outputFile.parentFile, ".cover_${song.id}.jpg")
+                                FileOutputStream(tempCover).use { it.write(coverBytes) }
                                 try {
-                                    val artwork = org.jaudiotagger.tag.images.ArtworkFactory.createArtworkFromFile(tempCoverFile)
+                                    val artwork = org.jaudiotagger.tag.images.ArtworkFactory.createArtworkFromFile(tempCover)
                                     tag.deleteArtworkField()
                                     tag.setField(artwork)
-                                } catch(e: Exception) {
-                                    Log.e(TAG, "Error incrustando caratula en ID3: ${e.message}")
+                                    Log.d(TAG, "Portada HD 1000x1000 incrustada para: ${song.title}")
+                                } catch (e: Exception) {
+                                    Log.e(TAG, "Error incrustando portada HD: ${e.message}")
+                                } finally {
+                                    tempCover.delete()
                                 }
-                                
-                                tempCoverFile.delete()
                             }
                         }
-                        coverResponse.close()
+                        coverResp.close()
                     }
                 } catch (e: Exception) {
-                    Log.w(TAG, "No se pudo etiquetar carátula o letras: ${e.message}")
+                    Log.w(TAG, "No se pudo incrustar portada: ${e.message}")
                 }
+
                 audioFile.commit()
-                Log.i(TAG, "Etiquetado físico ID3 completo para: ${outputFile.name}")
+                Log.i(TAG, "Etiquetado ID3 completo: ISRC=$effectiveIsrc, Año=$effectiveYear, Género=$effectiveGenre, Letras=${lyricsToSave.isNotEmpty()}")
+
             } catch (e: Exception) {
                 Log.e(TAG, "Error etiquetando archivo ID3: $e")
             }
 
-            // 2. Enriquecimiento RMS / Camelot Key / BPM y guardado en Room DB
+            // 4. Enriquecimiento BPM / Camelot Key y persistencia en Room DB
             try {
                 val entity = SongEntity(
                     playlistCreatorId = 0L,
@@ -348,47 +397,37 @@ object DeezerDownloadManager {
                     albumArtist = song.albumArtist
                 )
 
-
                 val repository: RoomRepository? = try {
                     org.koin.java.KoinJavaComponent.get(RoomRepository::class.java)
-                } catch (e: Exception) {
-                    null
-                }
+                } catch (e: Exception) { null }
 
                 val scannedEntity = BpmScanner.scanSongEntity(entity, repository)
                 if (repository != null) {
+                    try { repository.insertSongs(listOf(scannedEntity)) } catch (e: Exception) {
+                        Log.w(TAG, "No se pudo insertar en Room DB: ${e.message}")
+                    }
+                }
+
+                // Re-inyectar BPM y Key calculados al archivo ID3
+                if (scannedEntity.bpm > 0f || scannedEntity.musicalKey.isNotEmpty()) {
                     try {
-                        repository.insertSongs(listOf(scannedEntity))
+                        val af = AudioFileIO.read(outputFile)
+                        val t = if (af is org.jaudiotagger.audio.mp3.MP3File) {
+                            var t2 = af.tag as? org.jaudiotagger.tag.id3.AbstractID3v2Tag
+                            if (t2 == null) { t2 = org.jaudiotagger.tag.id3.ID3v23Tag(); af.tag = t2 }
+                            t2
+                        } else af.tagOrCreateAndSetDefault
+                        if (scannedEntity.bpm > 0f) t.setField(FieldKey.BPM, scannedEntity.bpm.toInt().toString())
+                        if (scannedEntity.musicalKey.isNotEmpty()) t.setField(FieldKey.KEY, scannedEntity.musicalKey)
+                        try { t.setField(FieldKey.COMMENT, "REPLAYGAIN_TRACK_GAIN=${scannedEntity.replayGain} dB") } catch (ignore: Exception) {}
+                        af.commit()
                     } catch (e: Exception) {
-                        Log.w(TAG, "No se pudo insertar canción en Room DB: ${e.message}")
+                        Log.w(TAG, "No se pudo inyectar BPM/Key en ID3: ${e.message}")
                     }
                 }
-                Log.i(
-                    TAG,
-                    "Enriquecimiento Automix y Persistencia en Room completados: BPM=${scannedEntity.bpm}, Key=${scannedEntity.musicalKey}, ReplayGain=${scannedEntity.replayGain}dB, CueOut=${scannedEntity.cueOutMs}ms"
-                )
-
-
-                // Re-inyectar BPM y Key calculados de vuelta al archivo ID3
-                try {
-                    val audioFile = AudioFileIO.read(outputFile)
-                    val tag = audioFile.tagOrCreateAndSetDefault
-                    if (scannedEntity.bpm > 0f) {
-                        tag.setField(FieldKey.BPM, scannedEntity.bpm.toInt().toString())
-                    }
-                    if (scannedEntity.musicalKey.isNotEmpty()) {
-                        tag.setField(FieldKey.KEY, scannedEntity.musicalKey)
-                    }
-                    try {
-                        tag.setField(FieldKey.COMMENT, "REPLAYGAIN_TRACK_GAIN=${scannedEntity.replayGain} dB")
-                    } catch (ignore: Exception) {}
-                    audioFile.commit()
-                } catch (e: Exception) {
-
-                    Log.w(TAG, "No se pudo inyectar BPM/Key en ID3: ${e.message}")
-                }
+                Log.i(TAG, "AutoMix enrichment done: BPM=${scannedEntity.bpm}, Key=${scannedEntity.musicalKey}, CueOut=${scannedEntity.cueOutMs}ms")
             } catch (e: Exception) {
-                Log.e(TAG, "Error en enriquecimiento RMS y Room DB: $e")
+                Log.e(TAG, "Error en enriquecimiento Room DB: $e")
             }
         }
 
@@ -396,4 +435,5 @@ object DeezerDownloadManager {
         return name.replace("[\\\\/:*?\"<>|]".toRegex(), "_").trim()
     }
 }
+
 

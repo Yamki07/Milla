@@ -16,15 +16,27 @@ data class DeezerTrack(
     val title: String,
     val artistName: String,
     val albumTitle: String,
-    val albumCoverId: String,   // e.g. "abc123" → used to build cover URL
+    val albumCoverId: String,   // e.g. "abc123" → usado para construir la URL de portada
     val durationSec: Int,
     val explicit: Boolean,
-    val md5Origin: String,      // Needed for stream URL construction
-    val mediaVersion: String,   // Needed for stream URL construction
-    val trackToken: String,     // Short-lived token for CDN auth
+    val md5Origin: String,      // Necesario para construir la URL de stream
+    val mediaVersion: String,   // Necesario para construir la URL de stream
+    val trackToken: String,     // Token de corta vida para autenticación CDN
     val fileSize320: Long = 0L,
     val fileSize128: Long = 0L,
     val fileFlac: Long = 0L,
+    // ── Metadatos enriquecidos para tagging ID3 perfecto ──
+    val isrc: String = "",
+    val albumArtist: String = "",
+    val composer: String = "",
+    val trackNumber: Int = 0,
+    val discNumber: Int = 1,
+    val year: Int = 0,
+    val genre: String = "",
+    val bpmFromApi: Float = 0f,     // BPM directo de Deezer API
+    val gainFromApi: Float = 0f,    // Gain (ReplayGain-like) de Deezer API
+    val syncedLrcJson: String = "", // JSON de letras sincronizadas de Deezer GW
+    val unsyncedLyrics: String = "",// Letras planas sin timestamp
 ) {
     /** Full cover art URL (1000x1000) */
     val coverUrlFull: String
@@ -89,6 +101,36 @@ data class DeezerTrack(
             val fs128 = json.optLong("FILESIZE_MP3_128", 0L)
             val fsFlac = json.optLong("FILESIZE_FLAC", 0L)
 
+            // Metadatos enriquecidos
+            val isrc = json.optString("ISRC", "")
+            val albumArtist = try {
+                json.optJSONObject("ALBUM")?.let { album ->
+                    album.optJSONArray("ARTISTS")?.let { arr ->
+                        if (arr.length() > 0) arr.getJSONObject(0).optString("ART_NAME", "")
+                        else null
+                    }
+                } ?: json.optString("ALB_ART_NAME", "")
+            } catch (e: Exception) { "" }
+            val composer = try {
+                json.optJSONArray("SNG_CONTRIBUTORS")?.let { arr ->
+                    (0 until arr.length())
+                        .map { i -> arr.getJSONObject(i).optString("name", "") }
+                        .filter { it.isNotEmpty() }
+                        .take(3)
+                        .joinToString(", ")
+                } ?: ""
+            } catch (e: Exception) { "" }
+            val trackNumber = json.optString("TRACK_NUMBER", "0").toIntOrNull() ?: 0
+            val discNumber = json.optString("DISK_NUMBER", "1").toIntOrNull() ?: 1
+            val year = json.optString("PHYSICAL_RELEASE_DATE", "").take(4).toIntOrNull() ?: 0
+            val genre = try {
+                json.optJSONObject("GENRES")?.optJSONArray("data")
+                    ?.let { arr -> if (arr.length() > 0) arr.getJSONObject(0).optString("name", "") else "" }
+                    ?: ""
+            } catch (e: Exception) { "" }
+            val bpmFromApi = json.optDouble("BPM", 0.0).toFloat()
+            val gainFromApi = json.optDouble("GAIN", 0.0).toFloat()
+
             return DeezerTrack(
                 id = sngId,
                 title = title,
@@ -103,6 +145,15 @@ data class DeezerTrack(
                 fileSize320 = fs320,
                 fileSize128 = fs128,
                 fileFlac = fsFlac,
+                isrc = isrc,
+                albumArtist = albumArtist,
+                composer = composer,
+                trackNumber = trackNumber,
+                discNumber = discNumber,
+                year = year,
+                genre = genre,
+                bpmFromApi = bpmFromApi,
+                gainFromApi = gainFromApi,
             )
         }
 

@@ -337,17 +337,70 @@ object DeezerApiClient {
     // ─────────────────────────────────────────────
 
     /**
-     * Obtiene las letras de una pista usando el método song.getLyrics.
+     * Obtiene las letras sincronizadas de una pista y las convierte al formato LRC estándar.
+     * Retorna un string LRC completo listo para embeber como tag LYRICS en el archivo de audio.
+     *
+     * Formato de salida:
+     * [00:04.21] Primera línea
+     * [00:08.55] Segunda línea
      */
     suspend fun getLyrics(trackId: String): String? {
         val results = callGwApi("song.getLyrics", JSONObject().apply { put("sng_id", trackId) })
             ?: return null
         return try {
-            results.optString("LYRICS_TEXT", "").takeIf { it.isNotEmpty() } 
-                ?: results.optString("LYRICS_SYNC_JSON", "").takeIf { it.isNotEmpty() }
+            // Intentar primero letras sincronizadas (LYRICS_SYNC_JSON) → convertir a LRC
+            val syncJson = results.optString("LYRICS_SYNC_JSON", "")
+            if (syncJson.isNotEmpty()) {
+                val lrc = parseDeezerSyncJsonToLrc(syncJson)
+                if (lrc.isNotEmpty()) return lrc
+            }
+            // Fallback: letras planas sin sincronizar
+            results.optString("LYRICS_TEXT", "").takeIf { it.isNotEmpty() }
         } catch (e: Exception) {
             Log.e(TAG, "getLyrics error: $e")
             null
+        }
+    }
+
+    /**
+     * Convierte el JSON de letras sincronizadas de Deezer al formato LRC estándar.
+     * Formato de entrada (LYRICS_SYNC_JSON):
+     * [{"lrc_timestamp":"[00:04.21]","line":"Primera línea"}, ...]
+     */
+    private fun parseDeezerSyncJsonToLrc(syncJson: String): String {
+        return try {
+            val arr = org.json.JSONArray(syncJson)
+            val sb = StringBuilder()
+            for (i in 0 until arr.length()) {
+                val item = arr.optJSONObject(i) ?: continue
+                val timestamp = item.optString("lrc_timestamp", "").trim()
+                val line = item.optString("line", "").trim()
+                if (timestamp.isNotEmpty()) {
+                    sb.appendLine("$timestamp$line")
+                }
+            }
+            sb.toString().trim()
+        } catch (e: Exception) {
+            Log.w(TAG, "parseDeezerSyncJsonToLrc error: ${e.message}")
+            ""
+        }
+    }
+
+    /**
+     * Devuelve ambas: letras sincronizadas en LRC y letras planas, en un par.
+     * Útil para guardar en el tag SYLT (sincronizado) y USLT (texto plano) simultáneamente.
+     */
+    suspend fun getLyricsFullPair(trackId: String): Pair<String, String> {
+        val results = callGwApi("song.getLyrics", JSONObject().apply { put("sng_id", trackId) })
+            ?: return Pair("", "")
+        return try {
+            val syncJson = results.optString("LYRICS_SYNC_JSON", "")
+            val lrc = if (syncJson.isNotEmpty()) parseDeezerSyncJsonToLrc(syncJson) else ""
+            val plain = results.optString("LYRICS_TEXT", "")
+            Pair(lrc, plain)
+        } catch (e: Exception) {
+            Log.e(TAG, "getLyricsFullPair error: $e")
+            Pair("", "")
         }
     }
 
