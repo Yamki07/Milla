@@ -763,11 +763,7 @@ class MusicService : MediaBrowserServiceCompat(),
             position = nextPosition
             prepareNextImpl()
             notifyChange(META_CHANGED)
-            // Auto Mix DJ: actualizar el cueOutMs para la nueva canción activa
-            if (isAutomixEnabled) {
-                (playbackManager.playback as? CrossFadePlayer)
-                    ?.updateAutomixCueOut(currentSong.id)
-            }
+            refreshAutomixCueFromRoom()
         }
     }
 
@@ -1241,8 +1237,23 @@ class MusicService : MediaBrowserServiceCompat(),
             false
         }
         playbackManager.setDataSource(currentSong, force) { success ->
+            if (success) {
+                // Offline-First: cargar cueOutMs / outro_silence antes de monitorear el crossfade
+                refreshAutomixCueFromRoom()
+            }
             completion(success)
         }
+    }
+
+    /**
+     * Consulta asíncrona a Room para cueOutMs y outro_silence_duration_ms de la pista actual.
+     * Solo aplica si Auto Mix está activo y el motor es CrossFadePlayer.
+     */
+    private fun refreshAutomixCueFromRoom() {
+        if (!isAutomixEnabled) return
+        val songId = currentSong.id
+        if (songId <= 0L) return
+        (playbackManager.playback as? CrossFadePlayer)?.updateAutomixCueOut(songId)
     }
 
     fun switchToLocalPlayback() {

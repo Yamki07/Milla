@@ -1,0 +1,17 @@
+# Excluir archivos de compilación pesados
+.gradle/
+build/
+app/build/
+*.apk
+*.aar
+
+# Excluir imágenes y audios pesados (ahorra miles de tokens)
+*.png
+*.jpg
+*.jpeg
+*.mp3
+*.flac
+
+# Excluir configuraciones de entorno locales
+.idea/
+*.iml

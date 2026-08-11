@@ -76,6 +76,35 @@ interface PlaylistDao {
     @Query("UPDATE SongEntity SET bpm = :bpm, musicalKey = :key, replayGain = :replayGain, cueOutMs = :cueOut WHERE id = :songId")
     suspend fun updateSongAutomixData(songId: Long, bpm: Float, key: String, replayGain: Float, cueOut: Long)
 
+    /**
+     * Persiste marcas de Time-Stamping de Precisión (ms) del motor Auto Mix.
+     */
+    @Query(
+        """
+        UPDATE SongEntity SET
+            track_start_ms = :trackStartMs,
+            track_end_ms = :trackEndMs,
+            intro_silence_duration_ms = :introSilenceDurationMs,
+            outro_silence_duration_ms = :outroSilenceDurationMs,
+            vocal_start_ms = :vocalStartMs,
+            vocal_end_ms = :vocalEndMs,
+            chorus_start_ms = :chorusStartMs,
+            cueOutMs = :cueOutMs
+        WHERE id = :songId
+        """
+    )
+    suspend fun updateSongPrecisionTimestamps(
+        songId: Long,
+        trackStartMs: Long,
+        trackEndMs: Long,
+        introSilenceDurationMs: Long,
+        outroSilenceDurationMs: Long,
+        vocalStartMs: Long,
+        vocalEndMs: Long,
+        chorusStartMs: Long,
+        cueOutMs: Long
+    )
+
     @Query("SELECT * FROM SongEntity WHERE bpm = 0 OR cueOutMs = 0")
     suspend fun getUnscannedSongs(): List<SongEntity>
 

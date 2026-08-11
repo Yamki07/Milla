@@ -23,10 +23,12 @@ import code.name.monkey.retromusic.util.logE
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /** @author Prathamesh M */
 
@@ -51,8 +53,21 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
     override var callbacks: PlaybackCallbacks? = null
     private var crossFadeDuration = PreferenceUtil.crossFadeDuration
     var isCrossFading = false
-    // Auto Mix DJ: cueOutMs leído desde Room DB para la canción actual
+
+    /** Posición absoluta (ms) donde debe iniciar el fade-out Automix. 0 = no definido. */
+    @Volatile
     private var automixCueOutMs: Long = 0L
+
+    /** Silencio de outro detectado (ms). Usado como fallback si cueOutMs == 0. */
+    @Volatile
+    private var automixOutroSilenceDurationMs: Long = 0L
+
+    /** Evita disparar la transición Automix más de una vez por pista. */
+    @Volatile
+    private var automixTransitionTriggered: Boolean = false
+
+    private val automixScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private var automixLoadJob: Job? = null
 
     init {
         player1.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK)
@@ -79,6 +94,9 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
     override fun release() {
         stop()
         cancelFade()
+        resetAutomixState()
+        automixLoadJob?.cancel()
+        automixScope.cancel()
         getCurrentPlayer()?.release()
         getNextPlayer()?.release()
         durationListener.cancel()
@@ -88,6 +106,7 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
         super.stop()
         getCurrentPlayer()?.reset()
         mIsInitialized = false
+        resetAutomixState()
     }
 
     override fun pause(): Boolean {
@@ -114,6 +133,11 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
         getNextPlayer()?.stop()
         return try {
             getCurrentPlayer()?.seekTo(whereto)
+            // Rearmar Automix si el usuario vuelve a un punto anterior al cue-out
+            val cueOut = automixCueOutMs
+            if (cueOut > 0L && whereto.toLong() < cueOut) {
+                automixTransitionTriggered = false
+            }
             whereto
         } catch (e: java.lang.IllegalStateException) {
             e.printStackTrace()
@@ -145,16 +169,23 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
     ) {
         if (force) hasDataSource = false
         mIsInitialized = false
+        resetAutomixState()
         /* We've already set DataSource if initialized is true in setNextDataSource */
         if (!hasDataSource) {
             getCurrentPlayer()?.let {
                 setDataSourceImpl(it, song.uri.toString()) { success ->
                     mIsInitialized = success
+                    if (success && PreferenceUtil.isAutomixEnabled) {
+                        updateAutomixCueOut(song.id)
+                    }
                     completion(success)
                 }
             }
             hasDataSource = true
         } else {
+            if (PreferenceUtil.isAutomixEnabled) {
+                updateAutomixCueOut(song.id)
+            }
             completion(true)
             mIsInitialized = true
         }
@@ -320,17 +351,23 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
     }
 
     fun onDurationUpdated(progress: Int, total: Int) {
-        // AUTO MIX DJ MODE: dispara la transición en el cueOutMs exacto detectado por BpmScanner
-        if (PreferenceUtil.isAutomixEnabled && automixCueOutMs > 0L) {
-            val remainingMs = (total - progress).toLong()
-            // Lanzar crossfade cuando queden entre 500ms y 8000ms del punto de salida
-            if (remainingMs in 500L..8000L && (total - progress) <= (total - automixCueOutMs.toInt() + 500)) {
+        if (progress < 0 || total <= 0) return
+
+        // AUTO MIX DJ: dispara exactamente en cueOutMs (posición absoluta en ms)
+        if (PreferenceUtil.isAutomixEnabled && !isCrossFading && !automixTransitionTriggered) {
+            val triggerMs = resolveAutomixTriggerMs(total)
+            if (triggerMs > 0L && progress.toLong() >= triggerMs) {
+                automixTransitionTriggered = true
                 triggerAutomixTransition()
                 return
             }
         }
+
         // MODO CROSSFADE CLÁSICO: fallback si Auto Mix está desactivado
-        if (!PreferenceUtil.isAutomixEnabled && total > 0 && (total - progress).div(1000) == crossFadeDuration) {
+        if (!PreferenceUtil.isAutomixEnabled &&
+            total > 0 &&
+            (total - progress).div(1000) == crossFadeDuration
+        ) {
             getNextPlayer()?.let { player ->
                 val nextSong = MusicPlayerRemote.nextSong
                 if (nextSong != null && nextSong != Song.emptySong) {
@@ -349,11 +386,29 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
     }
 
     /**
-     * Lanza la transición DJ usando el cueOutMs real de la canción actual.
-     * Llamado cuando Auto Mix está activo y el reproductor llega al punto de salida óptimo.
+     * Resuelve el milisegundo absoluto de disparo Automix.
+     * Preferencia: cueOutMs > 0; fallback: duration - outro_silence_duration_ms.
+     */
+    private fun resolveAutomixTriggerMs(totalDurationMs: Int): Long {
+        val cueOut = automixCueOutMs
+        if (cueOut > 0L) {
+            // Clamp al rango reproducible por si Room tiene un valor inconsistente
+            return cueOut.coerceIn(1L, totalDurationMs.toLong().coerceAtLeast(1L))
+        }
+        val outroSilence = automixOutroSilenceDurationMs
+        if (outroSilence > 0L && totalDurationMs > outroSilence) {
+            return (totalDurationMs.toLong() - outroSilence).coerceAtLeast(1L)
+        }
+        return 0L
+    }
+
+    /**
+     * Lanza la transición DJ en el milisegundo de cue-out de la pista actual.
      */
     private fun triggerAutomixTransition() {
-        if (isCrossFading) return // Evitar doble trigger
+        if (isCrossFading) return
+        // Velocidad estricta 1.0x durante Automix (sin pitch/tempo agresivo)
+        enforceAutomixPlaybackSpeed()
         getNextPlayer()?.let { player ->
             val nextSong = MusicPlayerRemote.nextSong
             if (nextSong != null && nextSong != Song.emptySong) {
@@ -366,25 +421,67 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
                     if (success) switchPlayer()
                     nextDataSource = null
                 }
+            } else {
+                // Sin siguiente pista: permitir que onCompletion maneje el fin natural
+                automixTransitionTriggered = false
             }
+        } ?: run {
+            automixTransitionTriggered = false
         }
     }
 
     /**
-     * Actualiza el cueOutMs cuando cambia la canción actual.
-     * Llamado desde MusicService cuando se carga una nueva pista.
+     * Consulta asíncronamente Room (Offline-First) para cueOutMs y outro_silence_duration_ms
+     * de la pista actual. Llamado desde MusicService / setDataSource al cambiar de canción.
      */
     fun updateAutomixCueOut(songId: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val repository: RoomRepository =
-                    org.koin.java.KoinJavaComponent.get(RoomRepository::class.java)
-                val entity: code.name.monkey.retromusic.db.SongEntity? =
-                    repository.getAutomixDataBySongId(songId)
-                automixCueOutMs = entity?.cueOutMs ?: 0L
-            } catch (e: Exception) {
-                automixCueOutMs = 0L
+        if (songId <= 0L) {
+            resetAutomixState()
+            return
+        }
+        automixLoadJob?.cancel()
+        automixTransitionTriggered = false
+        automixLoadJob = automixScope.launch {
+            val (cueOut, outroSilence) = withContext(Dispatchers.IO) {
+                try {
+                    val repository: RoomRepository =
+                        org.koin.java.KoinJavaComponent.get(RoomRepository::class.java)
+                    val entity = repository.getAutomixDataBySongId(songId)
+                    Pair(
+                        entity?.cueOutMs?.takeIf { it > 0L } ?: 0L,
+                        entity?.outroSilenceDurationMs?.takeIf { it > 0L } ?: 0L
+                    )
+                } catch (_: Exception) {
+                    Pair(0L, 0L)
+                }
             }
+            automixCueOutMs = cueOut
+            automixOutroSilenceDurationMs = outroSilence
+            if (PreferenceUtil.isAutomixEnabled) {
+                enforceAutomixPlaybackSpeed()
+            }
+        }
+    }
+
+    private fun resetAutomixState() {
+        automixLoadJob?.cancel()
+        automixLoadJob = null
+        automixCueOutMs = 0L
+        automixOutroSilenceDurationMs = 0L
+        automixTransitionTriggered = false
+    }
+
+    /** Mantiene pitch/tempo en 1.0x cuando Auto Mix está activo. */
+    private fun enforceAutomixPlaybackSpeed() {
+        try {
+            getCurrentPlayer()?.setPlaybackSpeedPitch(AUTOMIX_PLAYBACK_SPEED, AUTOMIX_PLAYBACK_PITCH)
+            getNextPlayer()?.let { next ->
+                if (next.isPlaying) {
+                    next.setPlaybackSpeedPitch(AUTOMIX_PLAYBACK_SPEED, AUTOMIX_PLAYBACK_PITCH)
+                }
+            }
+        } catch (_: IllegalStateException) {
+            // MediaPlayer aún no preparado
         }
     }
 
@@ -405,9 +502,12 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
     }
 
     override fun setPlaybackSpeedPitch(speed: Float, pitch: Float) {
-        getCurrentPlayer()?.setPlaybackSpeedPitch(speed, pitch)
+        // Auto Mix: velocidad estrictamente 1.0x (ignora ajustes agresivos de tempo)
+        val effectiveSpeed = if (PreferenceUtil.isAutomixEnabled) AUTOMIX_PLAYBACK_SPEED else speed
+        val effectivePitch = if (PreferenceUtil.isAutomixEnabled) AUTOMIX_PLAYBACK_PITCH else pitch
+        getCurrentPlayer()?.setPlaybackSpeedPitch(effectiveSpeed, effectivePitch)
         if (getNextPlayer()?.isPlaying == true) {
-            getNextPlayer()?.setPlaybackSpeedPitch(speed, pitch)
+            getNextPlayer()?.setPlaybackSpeedPitch(effectiveSpeed, effectivePitch)
         }
     }
 
@@ -429,8 +529,10 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .build()
             )
+            val speed = if (PreferenceUtil.isAutomixEnabled) AUTOMIX_PLAYBACK_SPEED else playbackSpeed
+            val pitch = if (PreferenceUtil.isAutomixEnabled) AUTOMIX_PLAYBACK_PITCH else playbackPitch
             player.playbackParams =
-                PlaybackParams().setSpeed(playbackSpeed).setPitch(playbackPitch)
+                PlaybackParams().setSpeed(speed).setPitch(pitch)
 
             player.setOnPreparedListener {
                 player.setOnPreparedListener(null)
@@ -447,6 +549,8 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
 
     companion object {
         val TAG: String = CrossFadePlayer::class.java.simpleName
+        private const val AUTOMIX_PLAYBACK_SPEED = 1.0f
+        private const val AUTOMIX_PLAYBACK_PITCH = 1.0f
     }
 }
 

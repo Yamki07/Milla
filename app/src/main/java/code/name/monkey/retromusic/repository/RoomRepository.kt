@@ -44,6 +44,17 @@ interface RoomRepository {
     fun checkPlaylistExists(playListId: Long): LiveData<Boolean>
     fun getPlaylist(playlistId: Long): LiveData<PlaylistWithSongs>
     suspend fun updateSongAutomixData(songId: Long, bpm: Float, key: String, replayGain: Float, cueOut: Long)
+    suspend fun updateSongPrecisionTimestamps(
+        songId: Long,
+        trackStartMs: Long,
+        trackEndMs: Long,
+        introSilenceDurationMs: Long,
+        outroSilenceDurationMs: Long,
+        vocalStartMs: Long,
+        vocalEndMs: Long,
+        chorusStartMs: Long,
+        cueOutMs: Long
+    )
     suspend fun getUnscannedSongs(): List<SongEntity>
     suspend fun getAutomixDataBySongId(songId: Long): SongEntity?
 }
@@ -195,6 +206,31 @@ class RealRoomRepository(
         cueOut: Long
     ) {
         playlistDao.updateSongAutomixData(songId, bpm, key, replayGain, cueOut)
+    }
+
+    @WorkerThread
+    override suspend fun updateSongPrecisionTimestamps(
+        songId: Long,
+        trackStartMs: Long,
+        trackEndMs: Long,
+        introSilenceDurationMs: Long,
+        outroSilenceDurationMs: Long,
+        vocalStartMs: Long,
+        vocalEndMs: Long,
+        chorusStartMs: Long,
+        cueOutMs: Long
+    ) {
+        playlistDao.updateSongPrecisionTimestamps(
+            songId = songId,
+            trackStartMs = trackStartMs,
+            trackEndMs = trackEndMs,
+            introSilenceDurationMs = introSilenceDurationMs,
+            outroSilenceDurationMs = outroSilenceDurationMs,
+            vocalStartMs = vocalStartMs,
+            vocalEndMs = vocalEndMs,
+            chorusStartMs = chorusStartMs,
+            cueOutMs = cueOutMs
+        )
     }
 
     @WorkerThread

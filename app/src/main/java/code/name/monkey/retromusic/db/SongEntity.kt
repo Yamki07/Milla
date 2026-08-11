@@ -52,5 +52,27 @@ class SongEntity(
     val bpm: Float = 0f,
     val replayGain: Float = 0f,
     val musicalKey: String = "",
+    /** Inicio efectivo de la pista (ms), excluyendo silencio de intro si aplica. */
+    @ColumnInfo(name = "track_start_ms", defaultValue = "0")
+    val trackStartMs: Long = 0L,
+    /** Fin efectivo de la pista (ms). */
+    @ColumnInfo(name = "track_end_ms", defaultValue = "0")
+    val trackEndMs: Long = 0L,
+    /** Duración del silencio de intro detectado (ms). */
+    @ColumnInfo(name = "intro_silence_duration_ms", defaultValue = "0")
+    val introSilenceDurationMs: Long = 0L,
+    /** Duración del silencio de outro detectado (ms). */
+    @ColumnInfo(name = "outro_silence_duration_ms", defaultValue = "0")
+    val outroSilenceDurationMs: Long = 0L,
+    /** Inicio de la sección vocal (ms). */
+    @ColumnInfo(name = "vocal_start_ms", defaultValue = "0")
+    val vocalStartMs: Long = 0L,
+    /** Fin de la sección vocal (ms). */
+    @ColumnInfo(name = "vocal_end_ms", defaultValue = "0")
+    val vocalEndMs: Long = 0L,
+    /** Inicio del estribillo / chorus (ms). */
+    @ColumnInfo(name = "chorus_start_ms", defaultValue = "0")
+    val chorusStartMs: Long = 0L,
+    /** Ventana de salida Automix (ms antes del fin efectivo). */
     val cueOutMs: Long = 0L
 ) : Parcelable

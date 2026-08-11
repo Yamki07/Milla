@@ -50,7 +50,14 @@ fun SongEntity.withAutomixMetadata(
     bpm: Float = this.bpm,
     replayGain: Float = this.replayGain,
     musicalKey: String = this.musicalKey,
-    cueOutMs: Long = this.cueOutMs
+    cueOutMs: Long = this.cueOutMs,
+    trackStartMs: Long = this.trackStartMs,
+    trackEndMs: Long = this.trackEndMs,
+    introSilenceDurationMs: Long = this.introSilenceDurationMs,
+    outroSilenceDurationMs: Long = this.outroSilenceDurationMs,
+    vocalStartMs: Long = this.vocalStartMs,
+    vocalEndMs: Long = this.vocalEndMs,
+    chorusStartMs: Long = this.chorusStartMs
 ): SongEntity {
     return SongEntity(
         songPrimaryKey = songPrimaryKey,
@@ -71,6 +78,13 @@ fun SongEntity.withAutomixMetadata(
         bpm = bpm,
         replayGain = replayGain,
         musicalKey = musicalKey,
+        trackStartMs = trackStartMs,
+        trackEndMs = trackEndMs,
+        introSilenceDurationMs = introSilenceDurationMs,
+        outroSilenceDurationMs = outroSilenceDurationMs,
+        vocalStartMs = vocalStartMs,
+        vocalEndMs = vocalEndMs,
+        chorusStartMs = chorusStartMs,
         cueOutMs = cueOutMs
     )
 }
