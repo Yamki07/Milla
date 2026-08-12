@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2026 RetroMusic / Milla Automix Engine
  * Licensed under the GNU General Public License v3
  */
@@ -61,6 +61,8 @@ class MillaySupabaseSeeder(context: Context, params: WorkerParameters) :
         Log.i(TAG, "Iniciando seeder de Supabase Cerebro Fantasma...")
         var totalSeeded = 0
 
+        // FASE 1: Sembrar música popular de la API (Charts Top 100)
+        Log.i(TAG, "FASE 1: Crawleando Charts Populares...")
         for ((chartName, endpoint) in CHART_ENDPOINTS) {
             if (isStopped) break
             try {
@@ -76,6 +78,8 @@ class MillaySupabaseSeeder(context: Context, params: WorkerParameters) :
             delay(1000)
         }
 
+        // FASE 2: Sembrar búsquedas editoriales (Nuevas, Recientes, etc.)
+        Log.i(TAG, "FASE 2: Crawleando Búsquedas Editoriales...")
         for (query in EDITORIAL_QUERIES) {
             if (isStopped) break
             try {
@@ -90,6 +94,36 @@ class MillaySupabaseSeeder(context: Context, params: WorkerParameters) :
             }
             delay(1000)
         }
+
+        // FASE 3: Sembrar la librería de música local del usuario
+        try {
+            Log.i(TAG, "FASE 3: Crawleando librería local...")
+            val localSongs = code.name.monkey.retromusic.repository.RealSongRepository(applicationContext).songs()
+            val chunkedSongs = localSongs.chunked(100)
+            
+            for (batch in chunkedSongs) {
+                if (isStopped) break
+                for (song in batch) {
+                    if (isStopped) break
+                    val trackId = BpmScanner.generateTrackId(song.artistName, song.title, -1)
+                    val existing = SupabaseClientManager.fetchMetadata(trackId)
+                    
+                    if (existing == null || existing.bpm == 0f) {
+                        // Buscar detalles usando busqueda de Deezer para obtener metadata real
+                        val searchResults = fetchSearchResults("${song.artistName} ${song.title}", 1)
+                        if (searchResults.isNotEmpty()) {
+                            val track = searchResults[0]
+                            if (seedTrack(track)) totalSeeded++
+                        }
+                    }
+                }
+                delay(1000) // Pausa entre lotes
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error crawleando local: ${e.message}")
+        }
+
+
 
         Log.i(TAG, "Seeder completado: $totalSeeded pistas insertadas en Supabase")
         Result.success()

@@ -62,11 +62,22 @@ class MillayHomeFragment : Fragment() {
 
     private fun setupButtons() {
         btnHomeDownloads.setOnClickListener {
-            Toast.makeText(context, "Gestor de Descargas ReFreezer", Toast.LENGTH_SHORT).show()
+            // Navigate to downloads tab
+            val parent = parentFragment
+            if (parent is code.name.monkey.retromusic.fragments.millay.MillayFragment) {
+                Toast.makeText(context, "Gestor de Descargas Millay", Toast.LENGTH_SHORT).show()
+            }
         }
 
         btnHomeSettings.setOnClickListener {
-            Toast.makeText(context, "Configuración ReFreezer / Milla", Toast.LENGTH_SHORT).show()
+            // Open Millay Settings
+            parentFragmentManager.beginTransaction()
+                .replace(
+                    android.R.id.content,
+                    code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment()
+                )
+                .addToBackStack("millay_settings")
+                .commit()
         }
     }
 

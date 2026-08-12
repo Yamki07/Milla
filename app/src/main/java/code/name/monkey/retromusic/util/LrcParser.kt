@@ -191,24 +191,30 @@ object LrcParser {
             if (currentLine.syllables.isNotEmpty()) {
                 val lastSyl = currentLine.syllables.last()
                 var newDuration = nextLine.timeMs - lastSyl.startMs
-                if (newDuration > 5000L) newDuration = 5000L // Cap at 5s
-                if (newDuration < 100L) newDuration = 500L
+                if (newDuration > 1000L) newDuration = 1000L // Cap at 1s instead of 5s to avoid frozen last words
+                if (newDuration < 100L) newDuration = 300L // Ensure at least a visible minimum
                 val modifiedSyllables = currentLine.syllables.toMutableList()
                 modifiedSyllables[modifiedSyllables.size - 1] = lastSyl.copy(durationMs = newDuration)
                 sortedResult[i] = currentLine.copy(syllables = modifiedSyllables)
             } else if (currentLine.text.isNotBlank()) {
                 // Generar sílabas simuladas (palabra por palabra)
                 var lineDuration = nextLine.timeMs - currentLine.timeMs
-                if (lineDuration <= 0L) lineDuration = 2000L
-                if (lineDuration > 10000L) lineDuration = 10000L // Cap maximum line duration to 10s
                 
-                val words = currentLine.text.split(" ")
-                val durationPerWord = lineDuration / words.size
+                // Milla AutoMix: Limit the fake duration to a realistic reading speed (approx 80ms per char max)
+                val maxRealisticDuration = currentLine.text.length * 80L
+                if (lineDuration > maxRealisticDuration) {
+                    lineDuration = maxRealisticDuration
+                }
+                
+                if (lineDuration <= 0L) lineDuration = 1500L
+                if (lineDuration > 5000L) lineDuration = 5000L
+                
+                val words = currentLine.text.split(Regex("(?<=\\s)|(?=\\s)"))
+                val durationPerWord = lineDuration / kotlin.math.max(1, words.size)
                 
                 val newSyllables = mutableListOf<Syllable>()
                 var currentMs = currentLine.timeMs
-                for (j in words.indices) {
-                    val wordText = words[j] + if (j < words.size - 1) " " else ""
+                for (wordText in words) {
                     newSyllables.add(Syllable(wordText, currentMs, durationPerWord))
                     currentMs += durationPerWord
                 }
@@ -221,12 +227,13 @@ object LrcParser {
             val lastLineIndex = sortedResult.size - 1
             val lastLine = sortedResult[lastLineIndex]
             if (lastLine.syllables.isEmpty() && lastLine.text.isNotBlank()) {
-                val words = lastLine.text.split(" ")
-                val durationPerWord = 3000L / words.size // Asumimos 3 segundos en total
+                val words = lastLine.text.split(Regex("(?<=\\s)|(?=\\s)"))
+                val maxDur = lastLine.text.length * 80L
+                val totalDuration = kotlin.math.min(3000L, maxDur)
+                val durationPerWord = totalDuration / kotlin.math.max(1, words.size)
                 val newSyllables = mutableListOf<Syllable>()
                 var currentMs = lastLine.timeMs
-                for (j in words.indices) {
-                    val wordText = words[j] + if (j < words.size - 1) " " else ""
+                for (wordText in words) {
                     newSyllables.add(Syllable(wordText, currentMs, durationPerWord))
                     currentMs += durationPerWord
                 }

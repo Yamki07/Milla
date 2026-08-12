@@ -20,9 +20,7 @@
     android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/flow_bubbles_section"
-        layout="@layout/layout_flow_bubbles_section" />
+
 
     <include
         android:id="@+id/abs_playlists"

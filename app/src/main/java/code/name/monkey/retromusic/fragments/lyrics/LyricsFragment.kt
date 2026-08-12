@@ -127,6 +127,20 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         setupToolbar()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (code.name.monkey.retromusic.util.PreferenceUtil.lyricsScreenOn) {
+            requireActivity().window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (code.name.monkey.retromusic.util.PreferenceUtil.lyricsScreenOn) {
+            requireActivity().window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
     private fun setupLyricsRecyclerView() {
         lyricsAdapter = LyricsAdapter().apply {
             setWaveColor(accentColor())
@@ -202,11 +216,18 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         // Sync Buttons
         binding.btnSyncMinus.setOnClickListener {
             lyricsAdapter.currentTimeOffsetMs -= 500L
+            val seconds = lyricsAdapter.currentTimeOffsetMs / 1000.0
+            val sign = if (seconds >= 0) "+" else ""
+            binding.headerTitle.text = "$sign${String.format("%.1f", seconds)}s"
         }
-        
+
         binding.btnSyncPlus.setOnClickListener {
             lyricsAdapter.currentTimeOffsetMs += 500L
+            val seconds = lyricsAdapter.currentTimeOffsetMs / 1000.0
+            val sign = if (seconds >= 0) "+" else ""
+            binding.headerTitle.text = "$sign${String.format("%.1f", seconds)}s"
         }
+
         
         // Translate Button
         binding.btnTranslate.accentColor()
@@ -215,7 +236,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                 lifecycleScope.launch {
                     binding.btnTranslate.isEnabled = false
                     try {
-                        val translated = TranslationHelper.translateLyrics(currentLyricsList)
+                        val translated = code.name.monkey.retromusic.lyrics.AiLyricsTranslator.translate(currentLyricsList)
                         currentLyricsList = translated
                         lyricsAdapter.submitList(translated)
                     } catch (e: Exception) {
@@ -227,7 +248,6 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
             }
         }
     }
-
     override fun onPlayingMetaChanged() {
         super.onPlayingMetaChanged()
         updateTitleSong()
@@ -247,12 +267,16 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         if (::lyricsAdapter.isInitialized) {
             lyricsAdapter.setWaveColor(accentColor())
         }
-        
-        // Update header texts
-        binding.headerTitle.text = song.title
-        binding.headerArtist.text = song.artistName
-        
-        // Load header cover
+
+        // In the new Monochrome layout:
+        // headerTitle = shows timing offset ("+0.0s" label)
+        // headerArtist = bottom mini player artist name
+        // miniAlbumName = bottom mini player song title
+        binding.headerTitle.text = "+0.0s"
+        binding.headerArtist.text = "${song.title} • ${song.artistName}"
+        binding.miniAlbumName?.text = song.albumName
+
+        // Load header cover (bottom mini player)
         Glide.with(this)
             .load(RetroGlideExtension.getSongModel(song))
             .simpleSongCoverOptions(song)
@@ -412,7 +436,8 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         }
         
         if (!lyrics.isNullOrEmpty()) {
-            binding.normalLyrics.text = lyrics
+            val cleanedLyrics = lyrics.replace(Regex("\\[\\d{2}:\\d{2}\\.\\d{2,3}\\]|<\\d{2}:\\d{2}\\.\\d{2,3}>"), "")
+            binding.normalLyrics.text = cleanedLyrics.trim()
             binding.normalLyrics.isVisible = true
             binding.recyclerView.isVisible = false
             binding.noLyricsFound.isVisible = false
@@ -471,6 +496,32 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     private fun fetchLyricsFromInternet() {
         binding.noLyricsFound.text = "Buscando letras en línea..."
         lifecycleScope.launch(Dispatchers.Main) {
+            // FASE 7: Milla AutoMix - Netease Syllable LRC & Translated Lyrics integration
+            val advancedResult = code.name.monkey.retromusic.lyrics.AdvancedLyricsProvider.fetchAdvancedLyrics(song.title, song.artistName)
+            if (advancedResult != null && advancedResult.isNotEmpty()) {
+                currentLyricsList = advancedResult
+                lyricsAdapter.submitList(currentLyricsList)
+                binding.recyclerView.isVisible = true
+                binding.normalLyrics.isVisible = false
+                binding.noLyricsFound.isVisible = false
+                lyricsType = LyricsType.SYNCED_LYRICS
+                startLyricsTicker()
+                
+                // Convert list to LRC string to save locally
+                val lrcStringBuilder = StringBuilder()
+                for (line in currentLyricsList) {
+                    val ms = line.timeMs
+                    val min = ms / 60000
+                    val sec = (ms % 60000) / 1000
+                    val hund = (ms % 1000) / 10
+                    val timeStr = String.format("[%02d:%02d.%02d]", min, sec, hund)
+                    lrcStringBuilder.append(timeStr).append(line.text).append("\n")
+                }
+                LyricUtil.writeLrc(song, lrcStringBuilder.toString())
+                return@launch
+            }
+
+            // Fallback to LRCLib
             val result = LRCLibFetcher.fetchLyrics(song)
             if (result != null) {
                 // Letra encontrada! Guardamos la letra para la próxima vez
@@ -492,7 +543,8 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                     } else {
                         binding.noLyricsFound.isVisible = false
                         binding.normalLyrics.isVisible = true
-                        binding.normalLyrics.text = result
+                        val cleanedLyrics = result.replace(Regex("\\[\\d{2}:\\d{2}\\.\\d{2,3}\\]|<\\d{2}:\\d{2}\\.\\d{2,3}>"), "")
+                        binding.normalLyrics.text = cleanedLyrics.trim()
                         lyricsType = LyricsType.NORMAL_LYRICS
                     }
                 } else {

@@ -1,0 +1,6 @@
+tree 2fa8471528bc97d07b5af653ed60215a1ca3c10c
+parent 954dfb632781cb2b48a5dc679f2cb8ecc9369ad3
+author = <=> 1582735764 +0530
+committer = <=> 1582735764 +0530
+
+Code refactor and Flat, Fit, Full, Circle theme toolbar shadow fixes

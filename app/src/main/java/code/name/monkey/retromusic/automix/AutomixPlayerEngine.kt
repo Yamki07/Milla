@@ -297,6 +297,7 @@ class AutomixPlayerEngine(private val context: Context) {
     }
 
     private fun checkAndTriggerAutomix() {
+        if (!code.name.monkey.retromusic.util.PreferenceUtil.isAutomixEnabled) return
         if (isTransitioning) return
         val current = currentSong ?: return
         val next = nextSong ?: return

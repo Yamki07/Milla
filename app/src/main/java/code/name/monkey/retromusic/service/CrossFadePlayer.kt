@@ -54,6 +54,14 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
     private var crossFadeDuration = PreferenceUtil.crossFadeDuration
     var isCrossFading = false
 
+    /** Perfil avanzado (Nivel 2+) para la canción A (actual). */
+    @Volatile
+    private var currentAutomixProfile: code.name.monkey.retromusic.automix.AdvancedAutomixProfile? = null
+
+    /** Perfil avanzado (Nivel 2+) para la canción B (siguiente). */
+    @Volatile
+    private var nextAutomixProfile: code.name.monkey.retromusic.automix.AdvancedAutomixProfile? = null
+
     /** Posición absoluta (ms) donde debe iniciar el fade-out Automix. 0 = no definido. */
     @Volatile
     private var automixCueOutMs: Long = 0L
@@ -285,7 +293,26 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
 
     private fun crossFade(fadeInMp: MediaPlayer, fadeOutMp: MediaPlayer) {
         isCrossFading = true
-        crossFadeAnimator = createFadeAnimator(context, fadeInMp, fadeOutMp) {
+        // AUTO MIX DJ (Nivel 4 - Energy Curve Matching): Si tenemos ambos perfiles, usar curvas
+        val cProf = currentAutomixProfile
+        val nProf = nextAutomixProfile
+        
+        // Determinar duración de transición basada en Nivel 2 (Estructuras)
+        var dynamicFadeDurationMs = crossFadeDuration * 1000L
+        if (cProf != null && nProf != null) {
+            // Nivel 2: Si el outro de A es instrumental pero B entra directo con vocal, hacer un fade más rápido.
+            if (cProf.endingType == "fade" || cProf.endingType == "instrumental") {
+                if (nProf.introStyle == "vocal") {
+                    dynamicFadeDurationMs = 2500L // Transición rápida para no ahogar la voz
+                } else {
+                    dynamicFadeDurationMs = 6000L // Transición suave instrumental a instrumental
+                }
+            } else if (cProf.endingType == "hard-stop") {
+                dynamicFadeDurationMs = 1500L // Transición muy rápida para cortes de golpe
+            }
+        }
+
+        crossFadeAnimator = createFadeAnimator(context, fadeInMp, fadeOutMp, duration = dynamicFadeDurationMs) {
             crossFadeAnimator = null
             durationListener.start()
             isCrossFading = false
@@ -387,9 +414,15 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
 
     /**
      * Resuelve el milisegundo absoluto de disparo Automix.
-     * Preferencia: cueOutMs > 0; fallback: duration - outro_silence_duration_ms.
+     * Nivel 3: Usa mixOutPoints avanzados si están disponibles.
+     * Preferencia: mixOutPoints > cueOutMs > duration - outro_silence.
      */
     private fun resolveAutomixTriggerMs(totalDurationMs: Int): Long {
+        currentAutomixProfile?.mixOutPoints?.firstOrNull { it > 0f }?.let { mixOutSec ->
+            val mixOutMs = (mixOutSec * 1000).toLong()
+            if (mixOutMs < totalDurationMs) return mixOutMs
+        }
+
         val cueOut = automixCueOutMs
         if (cueOut > 0L) {
             // Clamp al rango reproducible por si Room tiene un valor inconsistente
@@ -404,6 +437,7 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
 
     /**
      * Lanza la transición DJ en el milisegundo de cue-out de la pista actual.
+     * Nivel 3: Si B tiene mixInPoints, usar seekTo al punto óptimo.
      */
     private fun triggerAutomixTransition() {
         if (isCrossFading) return
@@ -414,11 +448,17 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
             if (nextSong != null && nextSong != Song.emptySong) {
                 nextDataSource = null
                 setDataSourceImpl(player, nextSong.uri.toString()) { success ->
-                    if (success) switchPlayer()
+                    if (success) {
+                        applyAutomixNextTrackSeek(player)
+                        switchPlayer()
+                    }
                 }
             } else if (!nextDataSource.isNullOrEmpty()) {
                 setDataSourceImpl(player, nextDataSource!!) { success ->
-                    if (success) switchPlayer()
+                    if (success) {
+                        applyAutomixNextTrackSeek(player)
+                        switchPlayer()
+                    }
                     nextDataSource = null
                 }
             } else {
@@ -430,9 +470,20 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
         }
     }
 
+    /** Avanza al mix-in point de la canción B si lo tiene (Nivel 3). */
+    private fun applyAutomixNextTrackSeek(player: MediaPlayer) {
+        nextAutomixProfile?.mixInPoints?.firstOrNull { it > 0f }?.let { mixInSec ->
+            try {
+                player.seekTo((mixInSec * 1000).toInt())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     /**
-     * Consulta asíncronamente Room (Offline-First) para cueOutMs y outro_silence_duration_ms
-     * de la pista actual. Llamado desde MusicService / setDataSource al cambiar de canción.
+     * Consulta asíncronamente Room (Offline-First) para cueOutMs, outro_silence y fullProfileJson
+     * de la pista actual (A) y la próxima (B). Llamado al cambiar de canción.
      */
     fun updateAutomixCueOut(songId: Long) {
         if (songId <= 0L) {
@@ -442,21 +493,41 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
         automixLoadJob?.cancel()
         automixTransitionTriggered = false
         automixLoadJob = automixScope.launch {
-            val (cueOut, outroSilence) = withContext(Dispatchers.IO) {
+            val nextSongId = MusicPlayerRemote.nextSong?.id ?: -1L
+            
+            data class AutoMixLoadResult(
+                val cueOut: Long,
+                val outroSilence: Long,
+                val profA: code.name.monkey.retromusic.automix.AdvancedAutomixProfile?,
+                val profB: code.name.monkey.retromusic.automix.AdvancedAutomixProfile?
+            )
+
+            val result = withContext(Dispatchers.IO) {
                 try {
                     val repository: RoomRepository =
                         org.koin.java.KoinJavaComponent.get(RoomRepository::class.java)
-                    val entity = repository.getAutomixDataBySongId(songId)
-                    Pair(
-                        entity?.cueOutMs?.takeIf { it > 0L } ?: 0L,
-                        entity?.outroSilenceDurationMs?.takeIf { it > 0L } ?: 0L
+                    
+                    val entityA = repository.getAutomixDataBySongId(songId)
+                    val entityB = if (nextSongId > 0) repository.getAutomixDataBySongId(nextSongId) else null
+                    
+                    val profA = code.name.monkey.retromusic.automix.AdvancedAutomixProfile.fromJson(entityA?.fullProfileJson)
+                    val profB = code.name.monkey.retromusic.automix.AdvancedAutomixProfile.fromJson(entityB?.fullProfileJson)
+
+                    AutoMixLoadResult(
+                        entityA?.cueOutMs?.takeIf { it > 0L } ?: 0L,
+                        entityA?.outroSilenceDurationMs?.takeIf { it > 0L } ?: 0L,
+                        profA,
+                        profB
                     )
-                } catch (_: Exception) {
-                    Pair(0L, 0L)
+                } catch (e: Exception) {
+                    AutoMixLoadResult(0L, 0L, null, null)
                 }
             }
-            automixCueOutMs = cueOut
-            automixOutroSilenceDurationMs = outroSilence
+            automixCueOutMs = result.cueOut
+            automixOutroSilenceDurationMs = result.outroSilence
+            currentAutomixProfile = result.profA
+            nextAutomixProfile = result.profB
+            
             if (PreferenceUtil.isAutomixEnabled) {
                 enforceAutomixPlaybackSpeed()
             }
@@ -468,6 +539,8 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
         automixLoadJob = null
         automixCueOutMs = 0L
         automixOutroSilenceDurationMs = 0L
+        currentAutomixProfile = null
+        nextAutomixProfile = null
         automixTransitionTriggered = false
     }
 

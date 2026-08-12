@@ -127,34 +127,64 @@ class LyricsAdapter : RecyclerView.Adapter<LyricsAdapter.LyricViewHolder>() {
             binding.lyricText.setLyricLine(line)
             binding.lyricText.animate().cancel()
 
-            if (isActive) {
-                // LÍNEA ACTIVA: Escala 1.15f, Alfa 1.0f, sin difuminado
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    binding.lyricText.setRenderEffect(null)
-                }
+            val isPast = !isActive && position < currentLineIndex
+            val isUpcoming = !isActive && position == currentLineIndex + 1
 
-                binding.lyricText.animate()
-                    .scaleX(1.15f)
-                    .scaleY(1.15f)
-                    .alpha(1.0f)
-                    .setDuration(280L)
-                    .setInterpolator(DecelerateInterpolator())
-                    .start()
-            } else {
-                // LÍNEA INACTIVA: Escala 0.9f, Alfa 0.4f, difuminado suave si API >= 31
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    binding.lyricText.setRenderEffect(
-                        RenderEffect.createBlurEffect(3.5f, 3.5f, Shader.TileMode.CLAMP)
-                    )
+            when {
+                isActive -> {
+                    // ACTIVE: scale(1.0) opacity(1) blur(0) — Monochrome .synced-line.active
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        binding.lyricText.setRenderEffect(null)
+                    }
+                    binding.lyricText.animate()
+                        .scaleX(1.0f).scaleY(1.0f)
+                        .alpha(1.0f)
+                        .setDuration(600L)
+                        .setInterpolator(android.view.animation.DecelerateInterpolator(2f))
+                        .start()
                 }
-
-                binding.lyricText.animate()
-                    .scaleX(0.9f)
-                    .scaleY(0.9f)
-                    .alpha(0.4f)
-                    .setDuration(280L)
-                    .setInterpolator(DecelerateInterpolator())
-                    .start()
+                isUpcoming -> {
+                    // UPCOMING: scale(0.98) opacity(0.7) blur(0.8px) — Monochrome .synced-line.upcoming
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        binding.lyricText.setRenderEffect(
+                            RenderEffect.createBlurEffect(1.5f, 1.5f, Shader.TileMode.CLAMP)
+                        )
+                    }
+                    binding.lyricText.animate()
+                        .scaleX(0.98f).scaleY(0.98f)
+                        .alpha(0.7f)
+                        .setDuration(600L)
+                        .setInterpolator(android.view.animation.DecelerateInterpolator(2f))
+                        .start()
+                }
+                isPast -> {
+                    // PAST: scale(0.93) opacity(0.3) blur(2px) — Monochrome .synced-line.past
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        binding.lyricText.setRenderEffect(
+                            RenderEffect.createBlurEffect(4f, 4f, Shader.TileMode.CLAMP)
+                        )
+                    }
+                    binding.lyricText.animate()
+                        .scaleX(0.93f).scaleY(0.93f)
+                        .alpha(0.3f)
+                        .setDuration(600L)
+                        .setInterpolator(android.view.animation.DecelerateInterpolator(2f))
+                        .start()
+                }
+                else -> {
+                    // DEFAULT INACTIVE: scale(0.95) opacity(0.5) blur(1.5px) — Monochrome .synced-line base
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        binding.lyricText.setRenderEffect(
+                            RenderEffect.createBlurEffect(2.5f, 2.5f, Shader.TileMode.CLAMP)
+                        )
+                    }
+                    binding.lyricText.animate()
+                        .scaleX(0.95f).scaleY(0.95f)
+                        .alpha(0.5f)
+                        .setDuration(600L)
+                        .setInterpolator(android.view.animation.DecelerateInterpolator(2f))
+                        .start()
+                }
             }
         }
 

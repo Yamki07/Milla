@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!-- Monochrome-style Synchronized Lyrics Panel
+     Active line: large bold white, full opacity, no blur
+     Inactive: dimmed, slightly scaled down, blurred
+-->
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -8,109 +13,206 @@
     android:fitsSystemWindows="true"
     android:background="@android:color/black">
 
-    <!-- Background inmersivo con Blur estilo Apple Music -->
+    <!-- Full-bleed blurred album art background -->
     <ImageView
         android:id="@+id/blurBackground"
         android:layout_width="match_parent"
+
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:contentDescription="@null" />
 
-    <!-- Capa de oscurecimiento para maximizar el contraste (80% negro) -->
+    <!-- Overlay: heavy darken to maximize contrast (Monochrome ocean theme: near-black) -->
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#CC000000" />
+        android:background="#D9000000" />
 
-    <!-- Cabecera Superior (Carátula, Título, Artista y Controles de Sync) -->
+    <!-- Top gradient fade so text doesn't fight header -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/gradient_top_to_transparent" />
+
+    <!-- ───── Monochrome-style Top Bar ─────
+         Lyrics | +0.0s  [+] [−] [⟳] [🌐] [✕]
+    -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title=""
+            app:titleTextColor="@android:color/transparent" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Monochrome header row:
+         [Title—] [+0.0s timing] [−] [+] [⟳] [🌐] -->
     <LinearLayout
         android:id="@+id/header_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
         android:layout_marginTop="?attr/actionBarSize"
         android:orientation="horizontal"
-        android:padding="16dp"
         android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp"
         android:elevation="4dp">
 
+        <!-- "Lyrics" label -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lyrics"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:fontFamily="@font/manrope_bold"
+            android:alpha="0.85" />
+
+        <!-- Timing display (+0.0s) -->
+        <TextView
+            android:id="@+id/header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textColor="#80FFFFFF"
+            android:textSize="13sp"
+            android:fontFamily="@font/manrope_bold"
+            android:text="+0.0s" />
+
+        <Space android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+        <!-- Timing controls: − and + -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@drawable/bg_sync_controls"
-            android:padding="4dp">
+            android:gravity="center_vertical">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_sync_minus"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:text="-"
-                android:textSize="20sp"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:text="−"
+                android:textSize="18sp"
+                android:textColor="#B3FFFFFF"
                 android:insetLeft="0dp"
                 android:insetTop="0dp"
                 android:insetRight="0dp"
                 android:insetBottom="0dp"
-                app:cornerRadius="20dp"
-                android:contentDescription="Retrasar" />
+                app:cornerRadius="18dp"
+                android:contentDescription="Retrasar letras" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_sync_plus"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="2dp"
                 android:text="+"
-                android:textSize="20sp"
+                android:textSize="18sp"
+                android:textColor="#B3FFFFFF"
                 android:insetLeft="0dp"
                 android:insetTop="0dp"
                 android:insetRight="0dp"
                 android:insetBottom="0dp"
-                app:cornerRadius="20dp"
-                android:contentDescription="Adelantar" />
+                app:cornerRadius="18dp"
+                android:contentDescription="Adelantar letras" />
+
+            <!-- Translate button -->
+            <ImageButton
+                android:id="@+id/btn_translate"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_language"
+                android:tint="#B3FFFFFF"
+                android:padding="7dp"
+                android:contentDescription="Traducir" />
+
+            <!-- Edit button -->
+            <ImageButton
+                android:id="@+id/edit_button"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_edit"
+                android:tint="#B3FFFFFF"
+                android:padding="7dp"
+                android:contentDescription="Editar letra" />
+
         </LinearLayout>
 
-        <!-- Carátula pequeña -->
+    </LinearLayout>
+
+    <!-- ───── Mini Now-Playing bar (like Monochrome bottom mini player) ─────  -->
+    <LinearLayout
+        android:id="@+id/mini_player_bar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:background="#1AFFFFFF"
+        android:gravity="center_vertical"
+        android:paddingStart="16dp"
+        android:paddingEnd="8dp">
+
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/header_cover"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:layout_marginStart="16dp"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small"
             android:scaleType="centerCrop" />
 
-        <!-- Título y Artista -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
             android:layout_marginStart="12dp">
-            
-            <TextView
-                android:id="@+id/header_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:singleLine="true"
-                android:ellipsize="marquee" />
-                
+
             <TextView
                 android:id="@+id/header_artist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#B3FFFFFF"
-                android:textSize="14sp"
+                android:textColor="#FFFFFF"
+                android:textSize="13sp"
+                android:fontFamily="@font/manrope_bold"
                 android:singleLine="true"
                 android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/mini_album_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#80FFFFFF"
+                android:textSize="11sp"
+                android:singleLine="true"
+                android:ellipsize="end" />
+
         </LinearLayout>
+
     </LinearLayout>
 
+    <!-- ───── Main lyrics area ───── -->
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="150dp">
+        android:layout_marginTop="112dp"
+        android:layout_marginBottom="64dp">
 
+        <!-- Static (non-synced) lyrics fallback -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -122,87 +224,52 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/normal_lyrics_padding"
                 android:textIsSelectable="true"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/lyrics_text_size"
+                android:textColor="#E6FFFFFF"
+                android:textSize="22sp"
+                android:lineSpacingMultiplier="1.6"
+                android:fontFamily="@font/manrope_bold"
+                android:letterSpacing="0.01"
                 tools:text="@tools:sample/lorem[100]" />
         </ScrollView>
 
-        <!-- RecyclerView nativo para Letras Sincrónicas con Efecto Ola -->
+        <!-- Synchronized lyrics RecyclerView (Monochrome wave effect) -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
             android:paddingTop="80dp"
-            android:paddingBottom="120dp"
+            android:paddingBottom="140dp"
             android:scrollbars="none" />
 
-        <TextView
+        <!-- No lyrics placeholder -->
+        <LinearLayout
             android:id="@+id/noLyricsFound"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/no_lyrics_found"
-            android:textColor="@android:color/white"
-            android:textSize="24sp"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎵"
+                android:textSize="48sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/no_lyrics_found"
+                android:textColor="#80FFFFFF"
+                android:textSize="18sp"
+                android:fontFamily="@font/manrope" />
+
+        </LinearLayout>
+
     </FrameLayout>
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:padding="0dp"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        app:contentInsetStartWithNavigation="0dp"
-        app:fabAlignmentMode="end"
-        app:elevation="0dp"
-        app:titleMargin="0dp"
-        app:titleMarginStart="0dp">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/transparent"
-            android:gravity="start"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:contentInsetStartWithNavigation="0dp"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:title=""
-            app:titleTextColor="@android:color/transparent"
-            app:titleMargin="0dp"
-            app:titleMarginStart="0dp" />
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- Botón de Traducción (Mundo) -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/btn_translate"
-        style="@style/Widget.Material3.FloatingActionButton.Primary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|end"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginEnd="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:fabSize="mini"
-        app:srcCompat="@drawable/ic_language"
-        android:contentDescription="Traducir Letra" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/edit_button"
-        style="@style/Widget.Material3.FloatingActionButton.Primary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:srcCompat="@drawable/ic_edit" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -26,7 +26,9 @@ data class RemoteTrackMetadata(
     val musicalKey: String,
     val cueOutMs: Long,
     val replayGain: Float,
-    val syncedLyrics: String? = null
+    val syncedLyrics: String? = null,
+    /** JSON completo con todos los datos avanzados (Beats, Energy Curve, Onsets, etc) */
+    val fullProfileJson: String? = null
 )
 
 /**
@@ -77,6 +79,9 @@ object SupabaseClientManager {
                         replayGain = obj.optDouble("replay_gain", 0.0).toFloat(),
                         syncedLyrics = if (obj.has("synced_lyrics") && !obj.isNull("synced_lyrics")) {
                             obj.optString("synced_lyrics")
+                        } else null,
+                        fullProfileJson = if (obj.has("full_profile_json") && !obj.isNull("full_profile_json")) {
+                            obj.optString("full_profile_json")
                         } else null
                     )
                 }
@@ -121,6 +126,9 @@ object SupabaseClientManager {
                     put("synced_lyrics", metadata.syncedLyrics)
                 } else {
                     put("synced_lyrics", JSONObject.NULL)
+                }
+                if (metadata.fullProfileJson != null) {
+                    put("full_profile_json", metadata.fullProfileJson)
                 }
             }
 

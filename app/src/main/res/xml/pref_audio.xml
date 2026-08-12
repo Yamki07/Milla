@@ -10,6 +10,13 @@
         android:title="@string/pref_title_automix"
         app:icon="@drawable/ic_album" />
 
+    <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEPreference
+        android:key="scan_local_metadata"
+        android:layout="@layout/list_item_view_no_title"
+        android:title="Scan Local Metadata (BPM/Key)"
+        android:summary="Upload tags from downloaded files to Supabase"
+        app:icon="@drawable/ic_search" />
+
     <code.name.monkey.retromusic.preferences.DurationPreference
         android:defaultValue="0"
         android:key="audio_fade_duration"

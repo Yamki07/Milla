@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!-- ─── AUDIO QUALITY ─── -->
+    <androidx.preference.PreferenceCategory
+        android:title="Calidad de Audio"
+        android:key="millay_quality_category">
+
+        <ListPreference
+            android:key="millay_streaming_quality"
+            android:title="Calidad de Reproducción"
+            android:summary="FLAC · Lossless de Alta Fidelidad"
+            android:entries="@array/millay_quality_labels"
+            android:entryValues="@array/millay_quality_values"
+            android:defaultValue="flac"
+            android:layout="@layout/list_item_view" />
+
+        <ListPreference
+            android:key="millay_download_quality"
+            android:title="Calidad de Descarga"
+            android:summary="FLAC · Lossless de Alta Fidelidad"
+            android:entries="@array/millay_quality_labels"
+            android:entryValues="@array/millay_quality_values"
+            android:defaultValue="flac"
+            android:layout="@layout/list_item_view" />
+
+        <SwitchPreference
+            android:key="millay_show_quality_badge"
+            android:title="Mostrar Badge de Calidad"
+            android:summary="Muestra FLAC · MP3 320 junto a la carátula en la lista"
+            android:defaultValue="true"
+            android:layout="@layout/list_item_view_switch" />
+
+        <SwitchPreference
+            android:key="millay_prefer_dolby"
+            android:title="Preferir Dolby Atmos"
+            android:summary="Solicita audio espacial Dolby Atmos cuando esté disponible"
+            android:defaultValue="false"
+            android:layout="@layout/list_item_view_switch" />
+
+    </androidx.preference.PreferenceCategory>
+
+    <!-- ─── DESCARGAS ─── -->
+    <androidx.preference.PreferenceCategory
+        android:title="Descargas"
+        android:key="millay_downloads_category">
+
+        <SwitchPreference
+            android:key="millay_embed_lyrics"
+            android:title="Incrustar Letras en el Audio"
+            android:summary="Descarga e incrusta archivo .lrc dentro del archivo de música"
+            android:defaultValue="true"
+            android:layout="@layout/list_item_view_switch" />
+
+        <SwitchPreference
+            android:key="millay_embed_cover"
+            android:title="Incrustar Carátula en el Audio"
+            android:summary="Incrusta la portada del álbum dentro del archivo de música"
+            android:defaultValue="true"
+            android:layout="@layout/list_item_view_switch" />
+
+        <SwitchPreference
+            android:key="millay_write_artists_separately"
+            android:title="Escribir Artistas por Separado"
+            android:summary="Escribe cada artista en metadatos separados si el reproductor lo soporta"
+            android:defaultValue="false"
+            android:layout="@layout/list_item_view_switch" />
+
+        <ListPreference
+            android:key="millay_cover_art_size"
+            android:title="Tamaño de Carátula"
+            android:summary="1280px (HD)"
+            android:entries="@array/millay_cover_size_labels"
+            android:entryValues="@array/millay_cover_size_values"
+            android:defaultValue="1280"
+            android:layout="@layout/list_item_view" />
+
+    </androidx.preference.PreferenceCategory>
+
+    <!-- ─── INTERFAZ ─── -->
+    <androidx.preference.PreferenceCategory
+        android:title="Interfaz"
+        android:key="millay_interface_category">
+
+        <SwitchPreference
+            android:key="millay_show_recommended"
+            android:title="Mostrar Canciones Recomendadas"
+            android:summary="Muestra canciones similares en la pantalla principal de Millay"
+            android:defaultValue="true"
+            android:layout="@layout/list_item_view_switch" />
+
+        <SwitchPreference
+            android:key="millay_show_top_charts"
+            android:title="Mostrar Top Charts"
+            android:summary="Muestra el Top Global en la pantalla de inicio de Millay"
+            android:defaultValue="true"
+            android:layout="@layout/list_item_view_switch" />
+
+        <SwitchPreference
+            android:key="millay_dynamic_colors"
+            android:title="Colores Dinámicos"
+            android:summary="Cambia el color de acento según la portada en reproducción"
+            android:defaultValue="true"
+            android:layout="@layout/list_item_view_switch" />
+
+        <SwitchPreference
+            android:key="millay_compact_artist_list"
+            android:title="Lista Compacta de Artistas"
+            android:summary="Muestra los artistas en formato compacto horizontal"
+            android:defaultValue="false"
+            android:layout="@layout/list_item_view_switch" />
+
+    </androidx.preference.PreferenceCategory>
+
+    <!-- ─── DATOS / AUTOMIX ─── -->
+    <androidx.preference.PreferenceCategory
+        android:title="Automix y Datos"
+        android:key="millay_automix_category">
+
+        <SwitchPreference
+            android:key="millay_contribute_metadata"
+            android:title="Contribuir Metadatos Anónimamente"
+            android:summary="Envía BPM y Key de canciones nuevas a Supabase para mejorar el Automix"
+            android:defaultValue="true"
+            android:layout="@layout/list_item_view_switch" />
+
+        <Preference
+            android:key="millay_scan_local_library"
+            android:title="Escanear Biblioteca Local"
+            android:summary="Lee BPM/Key de tus archivos descargados y los sube a Supabase"
+            android:layout="@layout/list_item_view_no_title" />
+
+    </androidx.preference.PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

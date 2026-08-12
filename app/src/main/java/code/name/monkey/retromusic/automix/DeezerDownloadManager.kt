@@ -113,6 +113,28 @@ object DeezerDownloadManager {
                     }
                     _downloadState.value = DownloadState.Completed(trackId, outputFile.absolutePath, song)
                     Log.i(TAG, "Descarga completada: ${outputFile.absolutePath}")
+
+                    // Silent anonymous metadata contribution to Supabase Automix system
+                    try {
+                        if (code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment.isContributeMetadata(context)) {
+                            val cleanArtist = song.artistName.filter { it.isLetterOrDigit() || it.isWhitespace() }.replace(" ", "_").lowercase()
+                            val cleanTitle = song.title.filter { it.isLetterOrDigit() || it.isWhitespace() }.replace(" ", "_").lowercase()
+                            val millaId = "${cleanArtist}_${cleanTitle}"
+                            code.name.monkey.retromusic.network.SupabaseClientManager.insertTrackMetadata(
+                                listOf(mapOf(
+                                    "track_id" to millaId,
+                                    "title" to song.title,
+                                    "artist" to song.artistName,
+                                    "album" to song.albumName,
+                                    "quality_format" to if (quality == 9) "flac" else "mp3_320",
+                                    "duration_ms" to song.duration
+                                ))
+                            )
+                        }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "Skipped metadata contribution: ${e.message}")
+                    }
+
                 } else {
                     if (outputFile.exists()) outputFile.delete()
                     _downloadState.value = DownloadState.Error(trackId, "Fallo al descargar o desencriptar el archivo")

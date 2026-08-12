@@ -877,6 +877,10 @@ object PreferenceUtil {
 
     val swipeDownToDismiss
         get() = sharedPreferences.getBoolean(SWIPE_DOWN_DISMISS, true)
+
+    var geminiApiKey: String
+        get() = sharedPreferences.getStringOrDefault("gemini_api_key", "")
+        set(value) = sharedPreferences.edit { putString("gemini_api_key", value) }
 }
 
 enum class CoverLyricsType {

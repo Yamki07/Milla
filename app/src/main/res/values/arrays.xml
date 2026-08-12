@@ -221,4 +221,30 @@
         <item>@string/choose_image</item>
         <item>@string/remove_image</item>
     </string-array>
+
+    <!-- Millay Quality Arrays -->
+    <string-array name="millay_quality_labels">
+        <item>FLAC (Lossless · Alta Fidelidad)</item>
+        <item>MP3 320kbps (Alta Calidad)</item>
+        <item>MP3 128kbps (Estándar)</item>
+    </string-array>
+
+    <string-array name="millay_quality_values">
+        <item>flac</item>
+        <item>mp3_320</item>
+        <item>mp3_128</item>
+    </string-array>
+
+    <string-array name="millay_cover_size_labels">
+        <item>1280px (HD)</item>
+        <item>1920px (Full HD)</item>
+        <item>640px (Estándar)</item>
+    </string-array>
+
+    <string-array name="millay_cover_size_values">
+        <item>1280</item>
+        <item>1920</item>
+        <item>640</item>
+    </string-array>
+
 </resources>

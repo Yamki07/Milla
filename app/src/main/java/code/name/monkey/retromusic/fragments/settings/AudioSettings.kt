@@ -30,6 +30,9 @@ import code.name.monkey.retromusic.EQUALIZER
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.activities.base.AbsBaseActivity.Companion.BLUETOOTH_PERMISSION_REQUEST
 import code.name.monkey.retromusic.util.NavigationUtil
+import code.name.monkey.retromusic.util.LocalMetadataScanner
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 /**
  * @author Hemanth S (h4h13).
@@ -50,7 +53,7 @@ class AudioSettings : AbsSettingsFragment() {
         }
 
         // Auto Mix DJ toggle
-        val automixPreference: SwitchPreferenceCompat? = findPreference(AUTOMIX_KEY)
+        val automixPreference: Preference? = findPreference(AUTOMIX_KEY)
         automixPreference?.setOnPreferenceChangeListener { _, newValue ->
             val isEnabled = newValue as Boolean
             if (isEnabled) {
@@ -61,6 +64,18 @@ class AudioSettings : AbsSettingsFragment() {
                 ).show()
             }
             // Persist via SharedPreferences (handled automatically by the preference framework)
+            true
+        }
+        
+        val scanPreference: Preference? = findPreference("scan_local_metadata")
+        scanPreference?.setOnPreferenceClickListener {
+            Toast.makeText(requireContext(), "Escaneando archivos locales y extrayendo BPM/Key...", Toast.LENGTH_SHORT).show()
+            GlobalScope.launch {
+                LocalMetadataScanner.scanAndUploadLocalTags(requireContext())
+                requireActivity().runOnUiThread {
+                    Toast.makeText(requireContext(), "¡Escaneo y subida completados!", Toast.LENGTH_SHORT).show()
+                }
+            }
             true
         }
 

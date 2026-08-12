@@ -33,8 +33,9 @@ import code.name.monkey.retromusic.automix.MillayTrackAdapter
 import code.name.monkey.retromusic.automix.MillayAlbumAdapter
 import code.name.monkey.retromusic.automix.MillayGenreAdapter
 import code.name.monkey.retromusic.fragments.base.AbsMainActivityFragment
+import code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment
+import code.name.monkey.retromusic.network.SupabaseClientManager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -42,9 +43,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import java.io.File
-import java.io.FileOutputStream
 
 /**
  * Millay Fragment — Native Android UI
@@ -132,7 +131,12 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
     private fun setupRecyclerView() {
         trackAdapter = MillayTrackAdapter(
             onPlay = { track -> playTrack(track) },
-            onDownload = { track -> showQualityDialog(track) }
+            onDownload = { track ->
+                // Use user's preferred quality from Millay Settings
+                val quality = MillaySettingsFragment.getDownloadQualityInt(requireContext())
+                val format = MillaySettingsFragment.getDownloadQuality(requireContext()).uppercase()
+                startDownload(track, quality, format)
+            }
         )
         tracksList.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -142,7 +146,11 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
 
         topTracksAdapter = MillayTrackAdapter(
             onPlay = { track -> playTrack(track) },
-            onDownload = { track -> showQualityDialog(track) }
+            onDownload = { track ->
+                val quality = MillaySettingsFragment.getDownloadQualityInt(requireContext())
+                val format = MillaySettingsFragment.getDownloadQuality(requireContext()).uppercase()
+                startDownload(track, quality, format)
+            }
         )
         topTracksList.apply {
             adapter = topTracksAdapter

@@ -74,5 +74,8 @@ class SongEntity(
     @ColumnInfo(name = "chorus_start_ms", defaultValue = "0")
     val chorusStartMs: Long = 0L,
     /** Ventana de salida Automix (ms antes del fin efectivo). */
-    val cueOutMs: Long = 0L
+    val cueOutMs: Long = 0L,
+    /** JSON caché con el perfil completo desde Supabase (Beats, curvas de energía, etc). */
+    @ColumnInfo(name = "full_profile_json")
+    val fullProfileJson: String? = null
 ) : Parcelable

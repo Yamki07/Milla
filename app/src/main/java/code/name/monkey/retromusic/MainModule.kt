@@ -42,7 +42,7 @@ private val roomModule = module {
 
     single {
         Room.databaseBuilder(androidContext(), RetroDatabase::class.java, "playlist.db")
-            .addMigrations(MIGRATION_23_24, MIGRATION_24_25)
+            .addMigrations(MIGRATION_23_24, MIGRATION_24_25, MIGRATION_25_26)
             .build()
     }
 

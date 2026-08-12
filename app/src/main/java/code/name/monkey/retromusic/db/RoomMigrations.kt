@@ -42,3 +42,14 @@ val MIGRATION_24_25 = object : Migration(24, 25) {
         )
     }
 }
+
+/**
+ * Añade la columna full_profile_json para cachear la metadata de Supabase (Auto Mix Nivel 2+).
+ */
+val MIGRATION_25_26 = object : Migration(25, 26) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE SongEntity ADD COLUMN full_profile_json TEXT"
+        )
+    }
+}

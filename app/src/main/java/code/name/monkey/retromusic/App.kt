@@ -61,6 +61,9 @@ class App : Application() {
         // Set Default values for now playing preferences
         // This will reduce startup time for now playing settings fragment as Preference listener of AbsSlidingMusicPanelActivity won't be called
         PreferenceManager.setDefaultValues(this, R.xml.pref_now_playing_screen, false)
+
+        // Inicializar el Crawler/Seeder de Supabase (FASE 3 - AutoMix Perfecto)
+        code.name.monkey.retromusic.automix.MillaySupabaseSeeder.enqueueOnce(this)
     }
 
     override fun onTerminate() {
