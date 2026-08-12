@@ -59,7 +59,7 @@ object SongMenuHelper : KoinComponent {
                 android.widget.Toast.makeText(activity, "Iniciando Radio Infinita desde ${song.title}...", android.widget.Toast.LENGTH_SHORT).show()
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
-                        val allSongsList = get<RealRepository>().songs()
+                        val allSongsList = get<RealRepository>().allSongs()
                         val allEntities = allSongsList.map { it.toSongEntity() }
                         withContext(Dispatchers.Main) {
                             code.name.monkey.retromusic.automix.AutomixRadioEngine.getInstance(activity)
