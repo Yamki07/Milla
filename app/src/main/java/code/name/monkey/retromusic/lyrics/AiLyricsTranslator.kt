@@ -137,34 +137,43 @@ object AiLyricsTranslator {
         try {
             val targetLangCode = if (targetLang.lowercase().contains("español")) "es" else "en"
             
-            // Google Translate GTX API supports combining multiple text blocks using multiple &q=
-            val chunks = lines.chunked(25) // Google URL limit is ~2000 chars, chunk by 25 lines
+            // Enviar texto completo unido por saltos de línea
+            val textToTranslate = lines.joinToString("\n") { it.text }
+            val urlStr = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=$targetLangCode&dt=t"
+            val url = URL(urlStr)
             
-            for (chunk in chunks) {
-                var urlStr = "https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=$targetLangCode&dt=t"
-                for (line in chunk) {
-                    val encoded = URLEncoder.encode(line.text, "UTF-8")
-                    urlStr += "&q=$encoded"
-                }
+            val payload = "q=" + URLEncoder.encode(textToTranslate, "UTF-8")
+            
+            val connection = url.openConnection() as HttpURLConnection
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("User-Agent", "Mozilla/5.0")
+            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
+            connection.connectTimeout = 10000
+            connection.readTimeout = 10000
+            connection.doOutput = true
+            
+            connection.outputStream.use { os ->
+                val input = payload.toByteArray(Charsets.UTF_8)
+                os.write(input, 0, input.size)
+            }
+            
+            if (connection.responseCode == 200) {
+                val responseStr = connection.inputStream.bufferedReader().use { it.readText() }
+                val jsonArray = JSONArray(responseStr)
+                val translations = jsonArray.optJSONArray(0)
                 
-                val url = URL(urlStr)
-                val connection = url.openConnection() as HttpURLConnection
-                connection.requestMethod = "GET"
-                connection.setRequestProperty("User-Agent", "Mozilla/5.0")
-                connection.connectTimeout = 10000
-                connection.readTimeout = 10000
-                
-                if (connection.responseCode == 200) {
-                    val responseStr = connection.inputStream.bufferedReader().use { it.readText() }
-                    // Format is [[[ "Translated 1", "Original 1", ...], ["Translated 2", "Original 2"]], ...]
-                    val jsonArray = JSONArray(responseStr)
-                    val translations = jsonArray.optJSONArray(0)
+                if (translations != null) {
+                    val fullTranslatedText = StringBuilder()
+                    for (i in 0 until translations.length()) {
+                        fullTranslatedText.append(translations.optJSONArray(i)?.optString(0, "") ?: "")
+                    }
                     
-                    if (translations != null && translations.length() == chunk.size) {
-                        for (i in 0 until translations.length()) {
-                            val translatedText = translations.optJSONArray(i)?.optString(0, "")?.trim() ?: ""
-                            val originalLine = chunk[i]
-                            
+                    val translatedLinesArray = fullTranslatedText.toString().split("\n")
+                    
+                    if (translatedLinesArray.size >= lines.size - 2) {
+                        for (i in lines.indices) {
+                            val translatedText = translatedLinesArray.getOrNull(i)?.trim() ?: ""
+                            val originalLine = lines[i]
                             val combinedText = if (translatedText.isNotEmpty() && !originalLine.text.equals(translatedText, ignoreCase = true)) {
                                 "${originalLine.text}\n$translatedText"
                             } else {
@@ -173,11 +182,13 @@ object AiLyricsTranslator {
                             result.add(originalLine.copy(text = combinedText))
                         }
                     } else {
-                        result.addAll(chunk) // Mismatch in translations, fallback to original
+                        result.addAll(lines) // Fallback
                     }
                 } else {
-                    result.addAll(chunk)
+                    result.addAll(lines)
                 }
+            } else {
+                result.addAll(lines)
             }
             return result
         } catch (e: Exception) {

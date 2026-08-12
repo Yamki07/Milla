@@ -70,9 +70,9 @@ class MillayHomeFragment : Fragment() {
         }
 
         btnHomeSettings.setOnClickListener {
-            // Open Millay Settings
-            parentFragmentManager.beginTransaction()
-                .replace(
+            // Open Millay Settings without destroying the NavHost
+            requireActivity().supportFragmentManager.beginTransaction()
+                .add(
                     android.R.id.content,
                     code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment()
                 )

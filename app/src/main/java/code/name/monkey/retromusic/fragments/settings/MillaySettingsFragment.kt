@@ -23,12 +23,25 @@ class MillaySettingsFragment : PreferenceFragmentCompat() {
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         return when (preference.key) {
             "millay_scan_local_library" -> {
-                Toast.makeText(requireContext(), "🎵 Borrando Supabase y Escaneando localmente...", Toast.LENGTH_SHORT).show()
+                val progressDialog = android.app.ProgressDialog(requireContext()).apply {
+                    setTitle("Escaneando Biblioteca Local")
+                    setMessage("🎵 Analizando BPM y Key...")
+                    setProgressStyle(android.app.ProgressDialog.STYLE_HORIZONTAL)
+                    setCancelable(false)
+                    max = 100
+                    show()
+                }
+                
                 GlobalScope.launch {
                     LocalMetadataScanner.scanEntireDeviceAndUpload(requireContext()) { progress, total ->
-                        // Optional progress update, skipping Toast per file to avoid spam
+                        requireActivity().runOnUiThread {
+                            progressDialog.max = total
+                            progressDialog.progress = progress
+                            progressDialog.setMessage("Analizando canción $progress de $total")
+                        }
                     }
                     requireActivity().runOnUiThread {
+                        progressDialog.dismiss()
                         Toast.makeText(requireContext(), "✅ ¡Escaneo y subida completados!", Toast.LENGTH_LONG).show()
                     }
                 }

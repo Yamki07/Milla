@@ -366,7 +366,26 @@ object DeezerDownloadManager {
 
                 // ── Portada HD 1000x1000 ──
                 try {
-                    val coverMd5 = privateTrack?.albumCoverId?.takeIf { it.isNotEmpty() }
+                    var coverMd5 = privateTrack?.albumCoverId?.takeIf { it.isNotEmpty() }
+                    
+                    // Fallback to public API if private API failed to get the cover MD5
+                    if (coverMd5.isNullOrEmpty()) {
+                        try {
+                            val publicReq = okhttp3.Request.Builder().url("https://api.deezer.com/track/${song.id}").get().build()
+                            val publicResp = httpClient.newCall(publicReq).execute()
+                            if (publicResp.isSuccessful) {
+                                val publicJson = org.json.JSONObject(publicResp.body?.string() ?: "{}")
+                                val albumObj = publicJson.optJSONObject("album")
+                                if (albumObj != null) {
+                                    coverMd5 = albumObj.optString("md5_image", "")
+                                }
+                            }
+                            publicResp.close()
+                        } catch (e: Exception) {
+                            Log.w(TAG, "Fallback de carátula falló: ${e.message}")
+                        }
+                    }
+
                     if (!coverMd5.isNullOrEmpty()) {
                         val coverUrl = "https://e-cdns-images.dzcdn.net/images/cover/$coverMd5/1000x1000-000000-80-0-0.jpg"
                         val coverReq = okhttp3.Request.Builder().url(coverUrl).get().build()

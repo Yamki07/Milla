@@ -46,6 +46,7 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.io.File
+import code.name.monkey.retromusic.automix.toSongEntity
 
 object SongMenuHelper : KoinComponent {
     val MENU_RES
@@ -56,7 +57,18 @@ object SongMenuHelper : KoinComponent {
         when (menuItemId) {
             R.id.action_infinite_radio -> {
                 android.widget.Toast.makeText(activity, "Iniciando Radio Infinita desde ${song.title}...", android.widget.Toast.LENGTH_SHORT).show()
-                // TODO: AutomixPlayerEngine.getInstance(activity).startInfiniteRadio(song)
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val allSongsList = get<RealRepository>().songs()
+                        val allEntities = allSongsList.map { it.toSongEntity() }
+                        withContext(Dispatchers.Main) {
+                            code.name.monkey.retromusic.automix.AutomixRadioEngine.getInstance(activity)
+                                .startUniversalDjSet(song.toSongEntity(), allEntities)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
                 return true
             }
             R.id.action_set_as_ringtone -> {
