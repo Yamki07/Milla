@@ -132,6 +132,8 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         if (code.name.monkey.retromusic.util.PreferenceUtil.lyricsScreenOn) {
             requireActivity().window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
+        updateHelper.start()
+        startLyricsTicker()
     }
 
     override fun onPause() {
@@ -139,6 +141,8 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         if (code.name.monkey.retromusic.util.PreferenceUtil.lyricsScreenOn) {
             requireActivity().window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
+        updateHelper.stop()
+        stopLyricsTicker()
     }
 
     private fun setupLyricsRecyclerView() {
@@ -201,7 +205,6 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     }
 
     private fun setupViews() {
-        binding.editButton.accentColor()
         binding.editButton.setOnClickListener {
             when (lyricsType) {
                 LyricsType.SYNCED_LYRICS -> {
@@ -218,19 +221,18 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
             lyricsAdapter.currentTimeOffsetMs -= 500L
             val seconds = lyricsAdapter.currentTimeOffsetMs / 1000.0
             val sign = if (seconds >= 0) "+" else ""
-            binding.headerTitle.text = "$sign${String.format("%.1f", seconds)}s"
+            binding.headerTitle.text = "$sign${String.format(java.util.Locale.US, "%.1f", seconds)}s"
         }
 
         binding.btnSyncPlus.setOnClickListener {
             lyricsAdapter.currentTimeOffsetMs += 500L
             val seconds = lyricsAdapter.currentTimeOffsetMs / 1000.0
             val sign = if (seconds >= 0) "+" else ""
-            binding.headerTitle.text = "$sign${String.format("%.1f", seconds)}s"
+            binding.headerTitle.text = "$sign${String.format(java.util.Locale.US, "%.1f", seconds)}s"
         }
 
         
         // Translate Button
-        binding.btnTranslate.accentColor()
         binding.btnTranslate.setOnClickListener {
             if (currentLyricsList.isNotEmpty()) {
                 lifecycleScope.launch {
@@ -494,7 +496,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     }
 
     private fun fetchLyricsFromInternet() {
-        binding.noLyricsFound.text = "Buscando letras en línea..."
+        (binding.noLyricsFound.getChildAt(1) as android.widget.TextView).text = "Buscando letras en línea..."
         lifecycleScope.launch(Dispatchers.Main) {
             // FASE 7: Milla AutoMix - Netease Syllable LRC & Translated Lyrics integration
             val advancedResult = code.name.monkey.retromusic.lyrics.AdvancedLyricsProvider.fetchAdvancedLyrics(song.title, song.artistName)
@@ -556,22 +558,12 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                     // Opcionalmente guardar como tag ID3 de letra plana
                 }
             } else {
-                binding.noLyricsFound.text = getString(R.string.no_lyrics_found)
+                (binding.noLyricsFound.getChildAt(1) as android.widget.TextView).text = getString(R.string.no_lyrics_found)
             }
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        updateHelper.start()
-        startLyricsTicker()
-    }
 
-    override fun onPause() {
-        super.onPause()
-        updateHelper.stop()
-        stopLyricsTicker()
-    }
 
     private fun startLyricsTicker() {
         stopLyricsTicker()

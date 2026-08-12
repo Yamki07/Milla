@@ -312,7 +312,7 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
             }
         }
 
-        crossFadeAnimator = createFadeAnimator(context, fadeInMp, fadeOutMp, duration = dynamicFadeDurationMs) {
+        crossFadeAnimator = createFadeAnimator(context, fadeInMp, fadeOutMp, durationMs = dynamicFadeDurationMs) {
             crossFadeAnimator = null
             durationListener.start()
             isCrossFading = false

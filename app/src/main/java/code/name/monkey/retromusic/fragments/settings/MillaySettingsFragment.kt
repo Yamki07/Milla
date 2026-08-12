@@ -6,7 +6,7 @@ import android.widget.Toast
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import code.name.monkey.retromusic.R
-import code.name.monkey.retromusic.util.LocalMetadataScanner
+import code.name.monkey.retromusic.automix.LocalMetadataScanner
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
@@ -23,11 +23,13 @@ class MillaySettingsFragment : PreferenceFragmentCompat() {
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
         return when (preference.key) {
             "millay_scan_local_library" -> {
-                Toast.makeText(requireContext(), "🎵 Escaneando tu biblioteca local...", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "🎵 Borrando Supabase y Escaneando localmente...", Toast.LENGTH_SHORT).show()
                 GlobalScope.launch {
-                    LocalMetadataScanner.scanAndUploadLocalTags(requireContext())
+                    LocalMetadataScanner.scanEntireDeviceAndUpload(requireContext()) { progress, total ->
+                        // Optional progress update, skipping Toast per file to avoid spam
+                    }
                     requireActivity().runOnUiThread {
-                        Toast.makeText(requireContext(), "✅ ¡Escaneo completado y datos subidos a Supabase!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), "✅ ¡Escaneo y subida completados!", Toast.LENGTH_LONG).show()
                     }
                 }
                 true

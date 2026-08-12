@@ -105,12 +105,18 @@ class MillayTrackAdapter(
             // Three-dot more menu
             moreBtn.setOnClickListener { v ->
                 val popup = PopupMenu(v.context, v)
-                popup.menu.add(0, 1, 0, "Descargar")
-                popup.menu.add(0, 2, 1, "Agregar a Cola")
-                popup.menu.add(0, 3, 2, "Ver Artista")
-                popup.menu.add(0, 4, 3, "Compartir")
+                popup.menu.add(0, 10, 0, "Radio Infinita") // Top of the list
+                popup.menu.add(0, 1, 1, "Descargar")
+                popup.menu.add(0, 2, 2, "Agregar a Cola")
+                popup.menu.add(0, 3, 3, "Ver Artista")
+                popup.menu.add(0, 4, 4, "Compartir")
                 popup.setOnMenuItemClickListener { item ->
                     when (item.itemId) {
+                        10 -> { 
+                            Toast.makeText(v.context, "Iniciando Radio Infinita desde ${track.title}...", Toast.LENGTH_SHORT).show()
+                            // AutomixPlayerEngine.getInstance(v.context).startInfiniteRadio(track.toSongEntity())
+                            true 
+                        }
                         1 -> { onDownload(track); true }
                         2 -> { Toast.makeText(v.context, "Agregado a cola: ${track.title}", Toast.LENGTH_SHORT).show(); true }
                         3 -> { Toast.makeText(v.context, "Artista: ${track.artistName}", Toast.LENGTH_SHORT).show(); true }

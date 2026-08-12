@@ -2,6 +2,8 @@ package code.name.monkey.retromusic.util
 
 import android.util.Log
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import java.net.HttpURLConnection
@@ -15,9 +17,10 @@ object TranslationHelper {
             
             // Milla AutoMix: Translate each line asynchronously using Coroutines for perfect alignment
             // Eliminamos el batching que rompe los saltos de linea y desincroniza.
-            val deferredTranslations = lines.map { originalLine ->
-                kotlinx.coroutines.async {
-                    if (originalLine.text.isBlank()) return@async originalLine
+            val deferredTranslations = kotlinx.coroutines.coroutineScope {
+                lines.map { originalLine ->
+                    async {
+                        if (originalLine.text.isBlank()) return@async originalLine
                     try {
                         val encodedText = URLEncoder.encode(originalLine.text, "UTF-8")
                         // Usamos un endpoint público confiable de traductor
@@ -54,6 +57,7 @@ object TranslationHelper {
                         originalLine
                     }
                 }
+            }
             }
             
             // Esperar todas las traducciones en paralelo (rapidísimo)

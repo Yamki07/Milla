@@ -54,6 +54,11 @@ object SongMenuHelper : KoinComponent {
     fun handleMenuClick(activity: FragmentActivity, song: Song, menuItemId: Int): Boolean {
         val libraryViewModel = activity.getViewModel() as LibraryViewModel
         when (menuItemId) {
+            R.id.action_infinite_radio -> {
+                android.widget.Toast.makeText(activity, "Iniciando Radio Infinita desde ${song.title}...", android.widget.Toast.LENGTH_SHORT).show()
+                // TODO: AutomixPlayerEngine.getInstance(activity).startInfiniteRadio(song)
+                return true
+            }
             R.id.action_set_as_ringtone -> {
                 if (RingtoneManager.requiresDialog(activity)) {
                     RingtoneManager.showDialog(activity)

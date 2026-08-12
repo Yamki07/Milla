@@ -120,15 +120,16 @@ object DeezerDownloadManager {
                             val cleanArtist = song.artistName.filter { it.isLetterOrDigit() || it.isWhitespace() }.replace(" ", "_").lowercase()
                             val cleanTitle = song.title.filter { it.isLetterOrDigit() || it.isWhitespace() }.replace(" ", "_").lowercase()
                             val millaId = "${cleanArtist}_${cleanTitle}"
-                            code.name.monkey.retromusic.network.SupabaseClientManager.insertTrackMetadata(
-                                listOf(mapOf(
-                                    "track_id" to millaId,
-                                    "title" to song.title,
-                                    "artist" to song.artistName,
-                                    "album" to song.albumName,
-                                    "quality_format" to if (quality == 9) "flac" else "mp3_320",
-                                    "duration_ms" to song.duration
-                                ))
+                            code.name.monkey.retromusic.network.SupabaseClientManager.uploadMetadata(
+                                code.name.monkey.retromusic.network.RemoteTrackMetadata(
+                                    trackId = millaId,
+                                    title = song.title,
+                                    artist = song.artistName,
+                                    bpm = 0f,
+                                    musicalKey = "",
+                                    cueOutMs = 0L,
+                                    replayGain = 0f
+                                )
                             )
                         }
                     } catch (e: Exception) {

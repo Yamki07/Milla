@@ -15,13 +15,15 @@ class AudioFader {
             context: Context,
             fadeInMp: MediaPlayer,
             fadeOutMp: MediaPlayer,
+            durationMs: Long? = null,
             endAction: (animator: Animator) -> Unit, /* Code to run when Animator Ends*/
         ): Animator? {
             // Get Global animator scale
             val animScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
 
             // Set duration according to the global animation scale, so cross-fade actually lasts for the duration set by the user
-            val duration = (PreferenceUtil.crossFadeDuration * 1000 ) / animScale
+            val baseDuration = durationMs?.toFloat() ?: (PreferenceUtil.crossFadeDuration * 1000f)
+            val duration = baseDuration / animScale
             if (duration == 0F) {
                 return null
             }

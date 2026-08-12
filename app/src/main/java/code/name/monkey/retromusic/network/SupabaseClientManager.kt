@@ -147,4 +147,55 @@ object SupabaseClientManager {
             Log.d(TAG, "uploadMetadata silencioso (sin internet o servidor no disponible): ${e.message}")
         }
     }
+
+    /**
+     * Elimina TODOS los registros de la tabla track_metadata.
+     * ADVERTENCIA: Esta es una operación destructiva, usada antes del escáner maestro local.
+     */
+    suspend fun clearAllData(): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val url = URL("$TABLE_ENDPOINT?track_id=not.is.null")
+            val connection = (url.openConnection() as HttpURLConnection).apply {
+                connectTimeout = 5000
+                readTimeout = 5000
+                requestMethod = "DELETE"
+                setRequestProperty("apikey", SUPABASE_ANON_KEY)
+                setRequestProperty("Authorization", "Bearer $SUPABASE_ANON_KEY")
+                setRequestProperty("User-Agent", "RetroMusic-Milla-Automix/1.0")
+            }
+            val responseCode = connection.responseCode
+            if (responseCode in 200..299) {
+                Log.w(TAG, "clearAllData: Base de datos borrada exitosamente.")
+                return@withContext true
+            } else {
+                Log.e(TAG, "clearAllData falló con HTTP $responseCode")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "clearAllData error: ${e.message}")
+        }
+        return@withContext false
+    }
+
+    suspend fun insertTrackMetadata(data: List<Map<String, Any>>) = withContext(Dispatchers.IO) {
+        for (item in data) {
+            val trackId = item["track_id"] as? String ?: continue
+            val title = item["title"] as? String ?: ""
+            val artist = item["artist"] as? String ?: ""
+            val bpm = (item["bpm"] as? Number)?.toFloat() ?: 0f
+            val key = item["musical_key"] as? String ?: ""
+            val cueOut = (item["cue_out_ms"] as? Number)?.toLong() ?: 0L
+            val gain = (item["replay_gain"] as? Number)?.toFloat() ?: 0f
+            
+            val metadata = RemoteTrackMetadata(
+                trackId = trackId,
+                title = title,
+                artist = artist,
+                bpm = bpm,
+                musicalKey = key,
+                cueOutMs = cueOut,
+                replayGain = gain
+            )
+            uploadMetadata(metadata)
+        }
+    }
 }

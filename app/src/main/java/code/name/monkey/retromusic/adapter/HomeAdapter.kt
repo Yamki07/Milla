@@ -50,6 +50,10 @@ class HomeAdapter(private val activity: AppCompatActivity) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == INFINITE_RADIO) {
+            val layout = LayoutInflater.from(activity).inflate(R.layout.item_liquid_glass_card, parent, false)
+            return InfiniteRadioViewHolder(layout)
+        }
         val layout =
             LayoutInflater.from(activity).inflate(R.layout.section_recycler_view, parent, false)
         return when (viewType) {
@@ -120,6 +124,13 @@ class HomeAdapter(private val activity: AppCompatActivity) :
                     )
                 }
             }
+            INFINITE_RADIO -> {
+                val viewHolder = holder as InfiniteRadioViewHolder
+                viewHolder.itemView.setOnClickListener {
+                    android.widget.Toast.makeText(activity, "Iniciando Automix Infinito...", android.widget.Toast.LENGTH_SHORT).show()
+                    // TODO: trigger infinite radio from Automix Engine
+                }
+            }
         }
     }
 
@@ -143,6 +154,8 @@ class HomeAdapter(private val activity: AppCompatActivity) :
             }
         }
     }
+
+    private inner class InfiniteRadioViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     @Suppress("UNCHECKED_CAST")
     private inner class ArtistViewHolder(view: View) : AbsHomeViewItem(view) {

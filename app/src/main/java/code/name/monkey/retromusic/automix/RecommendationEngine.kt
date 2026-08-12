@@ -59,7 +59,7 @@ object RecommendationEngine {
 
                     val query = "${spotifyTrack.name} ${spotifyTrack.artists.firstOrNull()?.name ?: ""}"
                     try {
-                        val deezerResults = DeezerApiClient.searchTracks(query)
+                        val deezerResults = DeezerApiClient.search(query)
                         val bestMatch = deezerResults.firstOrNull {
                             it.title.contains(spotifyTrack.name, ignoreCase = true) ||
                             spotifyTrack.name.contains(it.title, ignoreCase = true)
