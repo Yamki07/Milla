@@ -39,6 +39,14 @@
             android:defaultValue="false"
             android:layout="@layout/list_item_view_switch" />
 
+        <androidx.preference.EditTextPreference
+            android:key="millay_deezer_arl"
+            android:title="Token ARL de Deezer"
+            android:summary="Token arl para descargar y reproducir música de Deezer"
+            android:dialogTitle="Token ARL de Deezer"
+            android:defaultValue="24f0c28bb6b2250db18693a312c11451126061c05d33aa8a4dcdeb2f9c8af3c6091ae6ae9ddfc2033399f5dfa66f93cae00ed26d05fecb4e0219f6a134b79b11b73712cb1d025c9789c6f2cbd34db3919b1688798024976afc259b8e526cd47f"
+            android:layout="@layout/list_item_view" />
+
     </androidx.preference.PreferenceCategory>
 
     <!-- ─── DESCARGAS ─── -->

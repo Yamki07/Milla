@@ -33,16 +33,19 @@ class MillaySettingsFragment : PreferenceFragmentCompat() {
                 }
                 
                 GlobalScope.launch {
-                    LocalMetadataScanner.scanEntireDeviceAndUpload(requireContext()) { progress, total ->
-                        requireActivity().runOnUiThread {
+                    val currentContext = context ?: return@launch
+                    LocalMetadataScanner.scanEntireDeviceAndUpload(currentContext) { progress, total, title ->
+                        val act = activity ?: return@scanEntireDeviceAndUpload
+                        act.runOnUiThread {
                             progressDialog.max = total
                             progressDialog.progress = progress
-                            progressDialog.setMessage("Analizando canción $progress de $total")
+                            progressDialog.setMessage("Analizando: $progress de $total\n🎵 $title")
                         }
                     }
-                    requireActivity().runOnUiThread {
+                    val act = activity ?: return@launch
+                    act.runOnUiThread {
                         progressDialog.dismiss()
-                        Toast.makeText(requireContext(), "✅ ¡Escaneo y subida completados!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(currentContext, "✅ ¡Escaneo y subida completados!", Toast.LENGTH_LONG).show()
                     }
                 }
                 true

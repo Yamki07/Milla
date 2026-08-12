@@ -30,16 +30,14 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/searchView"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/ios_search_bg"
+                    android:background="@null"
                     android:hint="@string/action_search"
                     android:inputType="text|textAutoComplete"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif">
+                    android:textAppearance="@style/TextViewSubtitle1">
 
                     <requestFocus />
                 </com.google.android.material.textfield.TextInputEditText>

@@ -567,11 +567,24 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
 
     private fun startLyricsTicker() {
         stopLyricsTicker()
+        var lastBasePos = -1L
+        var lastSystemTime = 0L
+
         tickerJob = lifecycleScope.launch {
             while (isActive) {
                 if (lyricsType == LyricsType.SYNCED_LYRICS && currentLyricsList.isNotEmpty()) {
                     val offset = if (::lyricsAdapter.isInitialized) lyricsAdapter.currentTimeOffsetMs else 0L
-                    val currentPos = AudioPlayerHandler.playbackState.position + offset
+                    val basePos = AudioPlayerHandler.playbackState.position
+                    val isPlaying = MusicPlayerRemote.isPlaying
+                    
+                    if (basePos != lastBasePos) {
+                        lastBasePos = basePos
+                        lastSystemTime = System.currentTimeMillis()
+                    }
+                    
+                    val elapsed = if (isPlaying) System.currentTimeMillis() - lastSystemTime else 0L
+                    val currentPos = basePos + elapsed + offset
+                    
                     updateSyncLine(currentPos)
                 }
                 delay(16L) // ~60 FPS

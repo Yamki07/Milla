@@ -140,14 +140,14 @@ object PreferenceUtil {
 
     val defaultCategories = listOf(
         CategoryInfo(CategoryInfo.Category.Home, true),
-        CategoryInfo(CategoryInfo.Category.Deezer, true),
         CategoryInfo(CategoryInfo.Category.Songs, true),
+        CategoryInfo(CategoryInfo.Category.Albums, true),
         CategoryInfo(CategoryInfo.Category.Playlists, true),
-        CategoryInfo(CategoryInfo.Category.Search, true),
-        CategoryInfo(CategoryInfo.Category.Albums, false),
+        CategoryInfo(CategoryInfo.Category.Deezer, true),
         CategoryInfo(CategoryInfo.Category.Artists, false),
         CategoryInfo(CategoryInfo.Category.Genres, false),
-        CategoryInfo(CategoryInfo.Category.Folder, false)
+        CategoryInfo(CategoryInfo.Category.Folder, false),
+        CategoryInfo(CategoryInfo.Category.Search, false)
     )
 
     var libraryCategory: List<CategoryInfo>
@@ -692,13 +692,13 @@ object PreferenceUtil {
 
     var nowPlayingScreen: NowPlayingScreen
         get() {
-            val id: Int = sharedPreferences.getInt(NOW_PLAYING_SCREEN_ID, NowPlayingScreen.Blur.id)
+            val id: Int = sharedPreferences.getInt(NOW_PLAYING_SCREEN_ID, 0)
             for (nowPlayingScreen in NowPlayingScreen.values()) {
                 if (nowPlayingScreen.id == id) {
                     return nowPlayingScreen
                 }
             }
-            return NowPlayingScreen.Blur
+            return NowPlayingScreen.Adaptive
         }
         set(value) = sharedPreferences.edit {
             putInt(NOW_PLAYING_SCREEN_ID, value.id)

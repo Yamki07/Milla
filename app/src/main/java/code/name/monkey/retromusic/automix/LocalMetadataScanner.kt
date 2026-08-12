@@ -15,7 +15,7 @@ object LocalMetadataScanner {
 
     private const val TAG = "LocalMetadataScanner"
 
-    suspend fun scanEntireDeviceAndUpload(context: Context, onProgress: (Int, Int) -> Unit) = withContext(Dispatchers.IO) {
+    suspend fun scanEntireDeviceAndUpload(context: Context, onProgress: (Int, Int, String) -> Unit) = withContext(Dispatchers.IO) {
         try {
             Log.w(TAG, "Iniciando escáner total del dispositivo...")
             // 1. Limpiar base de datos
@@ -35,7 +35,7 @@ object LocalMetadataScanner {
 
             Log.i(TAG, "Escaneando $total canciones desde el almacenamiento local.")
             
-            // 3. Analizar y subir una por una (o en paralelo si se desea, pero secuencial es más seguro para jAudioTagger)
+            // 3. Analizar y subir una por una
             var count = 0
             for (song in songs) {
                 try {
@@ -46,7 +46,7 @@ object LocalMetadataScanner {
                 }
                 count++
                 withContext(Dispatchers.Main) {
-                    onProgress(count, total)
+                    onProgress(count, total, song.title)
                 }
             }
             Log.i(TAG, "Escaneo y subida completados exitosamente.")

@@ -55,7 +55,8 @@ class PlayerPlaybackControlsFragment :
     override val previousButton: ImageButton
         get() = binding.previousButton
 
-
+    override val automixButton: ImageButton
+        get() = binding.automixButton
 
     override val songTotalTime: TextView
         get() = binding.songTotalTime

@@ -32,6 +32,7 @@
         android:icon="@drawable/ic_equalizer"
         android:orderInCategory="3"
         android:title="Automix DJ"
+        android:visible="false"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_playback_speed"

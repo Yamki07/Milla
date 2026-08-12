@@ -179,7 +179,21 @@ object BpmScanner {
 
         if (!file.exists() || !file.canRead()) {
             Log.w(TAG, "No se puede leer el archivo de audio: $filePath")
-            return@withContext buildUnknownMetadata(actualDurationMs)
+            val failedMeta = buildFailedMetadata()
+            if (repository != null && songId != 0L) {
+                try {
+                    repository.updateSongAutomixData(
+                        songId = songId,
+                        bpm = failedMeta.bpm,
+                        key = failedMeta.musicalKey,
+                        replayGain = failedMeta.replayGain,
+                        cueOut = failedMeta.cueOutMs
+                    )
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error actualizando Room DB para fallido: ${e.message}")
+                }
+            }
+            return@withContext failedMeta
         }
 
         try {
@@ -188,7 +202,25 @@ object BpmScanner {
             } catch (e: Exception) {
                 null
             }
-            val tag: Tag? = audioFile?.tag
+            if (audioFile == null) {
+                Log.w(TAG, "No se pudo leer tags de audio con AudioFileIO: $filePath")
+                val failedMeta = buildFailedMetadata()
+                if (repository != null && songId != 0L) {
+                    try {
+                        repository.updateSongAutomixData(
+                            songId = songId,
+                            bpm = failedMeta.bpm,
+                            key = failedMeta.musicalKey,
+                            replayGain = failedMeta.replayGain,
+                            cueOut = failedMeta.cueOutMs
+                        )
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error actualizando Room DB para tags fallidos: ${e.message}")
+                    }
+                }
+                return@withContext failedMeta
+            }
+            val tag: Tag? = audioFile.tag
             val headerDurationMs = if (actualDurationMs > 0L) {
                 actualDurationMs
             } else {
@@ -611,6 +643,17 @@ object BpmScanner {
             musicalKey = "",
             replayGain = 0f,
             cueOutMs = fallbackCueOut,
+            cueInMs = 0L,
+            isAnalyzed = false
+        )
+    }
+
+    private fun buildFailedMetadata(): AutomixMetadata {
+        return AutomixMetadata(
+            bpm = -1f,
+            musicalKey = "FAILED",
+            replayGain = 0f,
+            cueOutMs = -1L,
             cueInMs = 0L,
             isAnalyzed = false
         )

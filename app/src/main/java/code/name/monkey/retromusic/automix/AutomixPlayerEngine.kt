@@ -133,7 +133,17 @@ class AutomixPlayerEngine(private val context: Context) {
                     // Fetch private track data to get trackToken, then get stream url
                     val track = code.name.monkey.retromusic.automix.DeezerApiClient.fetchPrivateTrackData(trackId)
                     if (track != null) {
-                        code.name.monkey.retromusic.automix.DeezerApiClient.getStreamUrl(track, "FLAC")
+                        val prefQuality = code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment.getStreamingQuality(context).uppercase()
+                        var url = code.name.monkey.retromusic.automix.DeezerApiClient.getStreamUrl(track, prefQuality)
+                        if (url == null && prefQuality != "MP3_320") {
+                            Log.d(TAG, "Fallback: stream con calidad $prefQuality falló. Intentando MP3_320...")
+                            url = code.name.monkey.retromusic.automix.DeezerApiClient.getStreamUrl(track, "MP3_320")
+                        }
+                        if (url == null && prefQuality != "MP3_128") {
+                            Log.d(TAG, "Fallback: stream con MP3_320 falló. Intentando MP3_128...")
+                            url = code.name.monkey.retromusic.automix.DeezerApiClient.getStreamUrl(track, "MP3_128")
+                        }
+                        url
                     } else null
                 }
                 if (streamUrl != null) dataSpec.withUri(Uri.parse(streamUrl)) else dataSpec

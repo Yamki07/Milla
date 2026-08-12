@@ -32,8 +32,18 @@ import java.util.concurrent.TimeUnit
 object DeezerApiClient {
     private const val TAG = "DeezerApiClient"
 
-    // ARL Premium — cookie de sesión Deezer
-    const val ARL_TOKEN = "24f0c28bb6b2250db18693a312c11451126061c05d33aa8a4dcdeb2f9c8af3c6091ae6ae9ddfc2033399f5dfa66f93cae00ed26d05fecb4e0219f6a134b79b11b73712cb1d025c9789c6f2cbd34db3919b1688798024976afc259b8e526cd47f"
+    private const val FALLBACK_ARL = "24f0c28bb6b2250db18693a312c11451126061c05d33aa8a4dcdeb2f9c8af3c6091ae6ae9ddfc2033399f5dfa66f93cae00ed26d05fecb4e0219f6a134b79b11b73712cb1d025c9789c6f2cbd34db3919b1688798024976afc259b8e526cd47f"
+
+    val arlToken: String
+        get() {
+            return try {
+                val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(code.name.monkey.retromusic.App.getContext())
+                val userArl = prefs.getString("millay_deezer_arl", "")?.trim()
+                if (!userArl.isNullOrBlank()) userArl else FALLBACK_ARL
+            } catch (e: Exception) {
+                FALLBACK_ARL
+            }
+        }
 
     // Tokens de sesión obtenidos de deezer.getUserData
     private var apiToken: String = ""
@@ -84,7 +94,7 @@ object DeezerApiClient {
                     .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36")
                     .addHeader("Accept-Language", "en-US,en;q=0.9")
                     .addHeader("Accept", "*/*")
-                    .addHeader("Cookie", "arl=$ARL_TOKEN")
+                    .addHeader("Cookie", "arl=$arlToken")
                     .post(bodyReq)
                     .build()
                 client.newCall(request).execute().use { response ->
@@ -121,7 +131,7 @@ object DeezerApiClient {
                 .url(url)
                 .post(body)
                 .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36")
-                .addHeader("Cookie", "arl=$ARL_TOKEN")
+                .addHeader("Cookie", "arl=$arlToken")
                 .build()
             try {
                 var responseJson: JSONObject? = null
@@ -144,7 +154,7 @@ object DeezerApiClient {
                     ensureSession()
                     url = "https://www.deezer.com/ajax/gw-light.php?method=$method&api_version=1.0&api_token=$apiToken&input=3"
                     request = Request.Builder().url(url).post(body)
-                        .addHeader("User-Agent", "Mozilla/5.0").addHeader("Cookie", "arl=$ARL_TOKEN").build()
+                        .addHeader("User-Agent", "Mozilla/5.0").addHeader("Cookie", "arl=$arlToken").build()
                     client.newCall(request).execute().use { response ->
                         val resBody = response.body?.string() ?: return@use
                         val json = JSONObject(resBody)
@@ -470,7 +480,7 @@ object DeezerApiClient {
                     .url("https://media.deezer.com/v1/get_url")
                     .post(body)
                     .addHeader("User-Agent", "Mozilla/5.0")
-                    .addHeader("Cookie", "arl=$ARL_TOKEN")
+                    .addHeader("Cookie", "arl=$arlToken")
                     .build()
 
                 var urlResult: String? = null
@@ -618,7 +628,7 @@ object DeezerApiClient {
                 val bodyReq = bodyData.toRequestBody("application/json;charset=UTF-8".toMediaType())
                 val request = Request.Builder()
                     .url("https://www.deezer.com/ajax/gw-light.php?method=deezer.getUserData&api_version=1.0&api_token=")
-                    .addHeader("Cookie", "arl=$ARL_TOKEN")
+                    .addHeader("Cookie", "arl=$arlToken")
                     .post(bodyReq)
                     .build()
                 client.newCall(request).execute().use { response ->

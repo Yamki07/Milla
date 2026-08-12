@@ -126,12 +126,15 @@ class MillayHomeFragment : Fragment() {
         topChartsRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         DeezerApiClient.searchTracks("Top 50 Global", onResult = { songs ->
             if (songs.isNotEmpty()) {
-                activity?.runOnUiThread {
-                    val mixes = songs.take(10).map { song ->
-                        DiscoverMix("TOP", "${song.title} - ${song.artistName}", "https://e-cdns-images.dzcdn.net/images/cover/${song.albumId}/500x500.jpg")
-                    }
-                    topChartsRecycler.adapter = MillaySongCardAdapter(mixes) { mix ->
-                        searchAndPlay(mix.title)
+                val act = activity ?: return@searchTracks
+                act.runOnUiThread {
+                    if (isAdded && view != null) {
+                        val mixes = songs.take(10).map { song ->
+                            DiscoverMix("TOP", "${song.title} - ${song.artistName}", "https://e-cdns-images.dzcdn.net/images/cover/${song.albumId}/500x500.jpg")
+                        }
+                        topChartsRecycler.adapter = MillaySongCardAdapter(mixes) { mix ->
+                            searchAndPlay(mix.title)
+                        }
                     }
                 }
             }
@@ -139,12 +142,18 @@ class MillayHomeFragment : Fragment() {
     }
 
     private fun playFlowMix(mood: String) {
-        Toast.makeText(context, "Iniciando Flow ReFreezer ($mood)...", Toast.LENGTH_SHORT).show()
+        val ctx = context
+        if (ctx != null) {
+            Toast.makeText(ctx, "Iniciando Flow ReFreezer ($mood)...", Toast.LENGTH_SHORT).show()
+        }
         DeezerApiClient.searchTracks(mood, onResult = { songs ->
             if (songs.isNotEmpty()) {
                 val songEntity = songs.first().toSongEntity()
-                activity?.runOnUiThread {
-                    AutomixPlayerEngine.getInstance(requireContext()).loadAndPlay(songEntity)
+                val act = activity ?: return@searchTracks
+                act.runOnUiThread {
+                    if (isAdded && context != null) {
+                        AutomixPlayerEngine.getInstance(act).loadAndPlay(songEntity)
+                    }
                 }
             }
         })
@@ -154,8 +163,11 @@ class MillayHomeFragment : Fragment() {
         DeezerApiClient.searchTracks(query, onResult = { songs ->
             if (songs.isNotEmpty()) {
                 val songEntity = songs.first().toSongEntity()
-                activity?.runOnUiThread {
-                    AutomixPlayerEngine.getInstance(requireContext()).loadAndPlay(songEntity)
+                val act = activity ?: return@searchTracks
+                act.runOnUiThread {
+                    if (isAdded && context != null) {
+                        AutomixPlayerEngine.getInstance(act).loadAndPlay(songEntity)
+                    }
                 }
             }
         })

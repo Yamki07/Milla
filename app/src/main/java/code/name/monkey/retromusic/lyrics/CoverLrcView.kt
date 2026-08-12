@@ -272,23 +272,55 @@ class CoverLrcView @JvmOverloads constructor(
 
     fun hasLrc(): Boolean = mLrcEntryList.isNotEmpty()
 
-    fun updateTime(time: Long) {
-        runOnUi {
-            mCurrentTime = time
-            if (!hasLrc()) return@runOnUi
-            
-            val line = findShowLine(time + 300L)
-            if (line != mCurrentLine) {
-                mCurrentLine = line
-                if (!isShowTimeline) {
-                    smoothScrollTo(line)
-                    animateCurrentTextSize()
+    private var lastBaseTime = 0L
+    private var lastSystemTime = 0L
+    private val tickerRunnable = object : Runnable {
+        override fun run() {
+            if (code.name.monkey.retromusic.helper.MusicPlayerRemote.isPlaying && hasLrc()) {
+                val elapsed = System.currentTimeMillis() - lastSystemTime
+                val interpolatedTime = lastBaseTime + elapsed
+                mCurrentTime = interpolatedTime
+                
+                val line = findShowLine(interpolatedTime + 300L)
+                if (line != mCurrentLine) {
+                    mCurrentLine = line
+                    if (!isShowTimeline) {
+                        smoothScrollTo(line)
+                        animateCurrentTextSize()
+                    } else {
+                        invalidate()
+                    }
                 } else {
                     invalidate()
                 }
+                postOnAnimationDelayed(this, 16L)
+            }
+        }
+    }
+
+    fun updateTime(time: Long) {
+        runOnUi {
+            lastBaseTime = time
+            lastSystemTime = System.currentTimeMillis()
+            mCurrentTime = time
+            if (!hasLrc()) return@runOnUi
+            
+            removeCallbacks(tickerRunnable)
+            if (code.name.monkey.retromusic.helper.MusicPlayerRemote.isPlaying) {
+                postOnAnimation(tickerRunnable)
             } else {
-                // Invalidate for syllable highlighting updates
-                invalidate()
+                val line = findShowLine(time + 300L)
+                if (line != mCurrentLine) {
+                    mCurrentLine = line
+                    if (!isShowTimeline) {
+                        smoothScrollTo(line)
+                        animateCurrentTextSize()
+                    } else {
+                        invalidate()
+                    }
+                } else {
+                    invalidate()
+                }
             }
         }
     }
@@ -447,6 +479,7 @@ class CoverLrcView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         removeCallbacks(hideTimelineRunnable)
+        removeCallbacks(tickerRunnable)
         viewScope.cancel()
         super.onDetachedFromWindow()
     }

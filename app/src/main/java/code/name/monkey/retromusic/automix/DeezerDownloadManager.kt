@@ -85,7 +85,19 @@ object DeezerDownloadManager {
                 _downloadState.value = DownloadState.Downloading(trackId, 0)
                 Log.d(TAG, "Iniciando descarga de Deezer para: ${song.title} ($trackId)")
 
-                val streamUrl = fetchUrlSuspending(trackId, quality)
+                var streamUrl = fetchUrlSuspending(trackId, quality)
+                var resolvedQuality = quality
+                if (streamUrl.isNullOrEmpty() && quality == 9) {
+                    Log.d(TAG, "Descarga en FLAC falló para $trackId. Reintentando en MP3 320kbps...")
+                    streamUrl = fetchUrlSuspending(trackId, 3)
+                    resolvedQuality = 3
+                }
+                if (streamUrl.isNullOrEmpty() && resolvedQuality != 1) {
+                    Log.d(TAG, "Descarga en MP3 320 falló para $trackId. Reintentando en MP3 128kbps...")
+                    streamUrl = fetchUrlSuspending(trackId, 1)
+                    resolvedQuality = 1
+                }
+
                 if (streamUrl.isNullOrEmpty()) {
                     _downloadState.value = DownloadState.Error(trackId, "No se pudo obtener el enlace de Deezer")
                     withContext(Dispatchers.Main) {
@@ -99,7 +111,7 @@ object DeezerDownloadManager {
                     downloadDir.mkdirs()
                 }
 
-                val extension = if (quality == 9) "flac" else "mp3"
+                val extension = if (resolvedQuality == 9) "flac" else "mp3"
                 val fileName = "${sanitizeFileName(song.artistName)} - ${sanitizeFileName(song.title)}.$extension"
                 val outputFile = File(downloadDir, fileName)
 
@@ -107,7 +119,7 @@ object DeezerDownloadManager {
                 if (success) {
                     _downloadState.value = DownloadState.PostProcessing(trackId)
                     tagAndEnrichDownloadedFile(context, outputFile, song)
-                    val mimeType = if (quality == 9) "audio/flac" else "audio/mpeg"
+                    val mimeType = if (resolvedQuality == 9) "audio/flac" else "audio/mpeg"
                     android.media.MediaScannerConnection.scanFile(context, arrayOf(outputFile.absolutePath), arrayOf(mimeType)) { path, uri ->
                         Log.i(TAG, "MediaScanner completado para: $path, uri=$uri")
                     }
