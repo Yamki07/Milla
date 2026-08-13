@@ -34,7 +34,7 @@ class TrackAnalysisWorker(
         val legacySongId = inputData.getLong(KEY_LEGACY_SONG_ID, 0L)
         if (sourceUri.isBlank() || !canRead(sourceUri)) return@withContext Result.failure()
 
-        val dao = try {
+        val dao: AutomixAnalysisDao = try {
             KoinJavaComponent.get(AutomixAnalysisDao::class.java)
         } catch (_: Exception) {
             return@withContext Result.retry()
