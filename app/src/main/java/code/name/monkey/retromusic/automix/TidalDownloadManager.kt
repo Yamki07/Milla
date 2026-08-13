@@ -132,29 +132,6 @@ object TidalDownloadManager {
                     _downloadState.value = DownloadState.Completed(trackId, outputFile.absolutePath, song)
                     Log.i(TAG, "Descarga completada: ${outputFile.absolutePath}")
 
-                    // Supabase Automix system metadata contribution
-                    try {
-                        if (code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment.isContributeMetadata(context)) {
-                            val cleanArtist = song.artistName.filter { it.isLetterOrDigit() || it.isWhitespace() }.replace(" ", "_").lowercase()
-                            val cleanTitle = song.title.filter { it.isLetterOrDigit() || it.isWhitespace() }.replace(" ", "_").lowercase()
-                            val millaId = "${cleanArtist}_${cleanTitle}"
-                            code.name.monkey.retromusic.network.SupabaseClientManager.uploadMetadata(
-                                code.name.monkey.retromusic.network.RemoteTrackMetadata(
-                                    trackId = millaId,
-                                    title = song.title,
-                                    artist = song.artistName,
-                                    bpm = 0f,
-                                    musicalKey = "",
-                                    cueOutMs = 0L,
-                                    replayGain = 0f
-                                )
-                            )
-                            Log.d(TAG, "Supabase metadata push successful for $millaId")
-                        }
-                    } catch (e: Exception) {
-                        Log.d(TAG, "Skipped metadata contribution: ${e.message}")
-                    }
-
                 } else {
                     if (outputFile.exists()) outputFile.delete()
                     _downloadState.value = DownloadState.Error(trackId, "Fallo al descargar el archivo de Tidal")
@@ -351,6 +328,14 @@ object TidalDownloadManager {
                 if (repository != null) {
                     try { repository.insertSongs(listOf(scannedEntity)) } catch (e: Exception) { }
                 }
+                code.name.monkey.retromusic.workers.TrackAnalysisWorker.enqueue(
+                    context = context,
+                    sourceUri = outputFile.toURI().toString(),
+                    title = song.title,
+                    artist = song.artistName,
+                    sourceType = "tidal_download",
+                    legacySongId = scannedEntity.id
+                )
 
                 if (scannedEntity.bpm > 0f || scannedEntity.musicalKey.isNotEmpty()) {
                     try {

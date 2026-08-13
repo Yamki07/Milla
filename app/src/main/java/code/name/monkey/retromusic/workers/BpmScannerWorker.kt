@@ -67,6 +67,14 @@ class BpmScannerWorker(
                             scanned.replayGain,
                             scanned.cueOutMs
                         )
+                        TrackAnalysisWorker.enqueue(
+                            context = applicationContext,
+                            sourceUri = scanned.data,
+                            title = scanned.title,
+                            artist = scanned.artistName,
+                            sourceType = "local_library",
+                            legacySongId = scanned.id
+                        )
                     } catch (e: Exception) {
                         Log.e(TAG, "Error escaneando canción ${song.id} (${song.title}): ${e.message}")
                     }
@@ -135,4 +143,3 @@ class BpmScannerWorker(
         }
     }
 }
-
