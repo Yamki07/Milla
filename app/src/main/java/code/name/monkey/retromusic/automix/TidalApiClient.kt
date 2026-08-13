@@ -22,7 +22,7 @@ object TidalApiClient {
     private const val TAG = "TidalApiClient"
     
     // Refresh Token obtenido via OAuth Device Flow
-    private const val REFRESH_TOKEN = "eyJraWQiOiJoUzFKYTdVMCIsImFsZyI6IkVTNTEyIn0.eyJ0eXBlIjoibzJfcmVmcmVzaCIsInVpZCI6MjA0MTg4NTU1LCJzY29wZSI6InJfdXNyIHdfdXNyIHdfc3ViIiwiY2lkIjoxMzMxOSwic1ZlciI6MSwiZ1ZlciI6MCwiaXNzIjoiaHR0cHM6Ly9hdXRoLnRpZGFsLmNvbS92MSJ9.AaUolbWQnLm7_AogbUR5gjnhkHRI1jOzOHFE-ix6D-sBFtMkoEBgMuem2APXp7eQNwFmaqXRSYXYdjbTIciULeKYAXviGhpgwUtmaPcwg1RgSaab0NeDJJxL_e2oBxT47qhS7eZQawC1Ug1FYnmRIDO0NOy219mHVlrWcKDYRZNsRuEf"
+    private const val REFRESH_TOKEN = "eyJraWQiOiJoUzFKYTdVMCIsImFsZyI6IkVTNTEyIn0.eyJ0eXBlIjoibzJfcmVmcmVzaCIsInVpZCI6MjA0MTg4NTU1LCJzY29wZSI6IndfdXNyIHJfdXNyIHdfc3ViIiwiY2lkIjoxMzMxOSwic1ZlciI6MSwiZ1ZlciI6MCwiaXNzIjoiaHR0cHM6Ly9hdXRoLnRpZGFsLmNvbS92MSJ9.ALlkbro7NIpyKNrtjCrh2_lqrxJIMUURSzLCi3KlqY7MTwAV9VO7-O4qbzog8AekvHKFf4l0HWgqD8OJk-YKlS_yAeBdhtxuY8bv_SdAcYdptgXOwYecdgGqIlPdTEobsgbyQ-105AN5Tu24MP8DG7qGgd24kzEmN2fQ5Jfs6A5w8LgH"
     private const val CLIENT_ID = "fX2JxdmntZWK0ixT"
     private const val CLIENT_SECRET = "1Nn9AfDAjxrgJFJbKNWLeAyKGVGmINuXPPLHVXAvxAg="
     
