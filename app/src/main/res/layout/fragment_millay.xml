@@ -5,16 +5,16 @@
     android:id="@+id/millayRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#080A12">
+    android:background="@color/millay_bg_primary">
 
-    <!-- Background gradient gradient blob -->
+    <!-- Background gradient blob — ambient gold/blue glow -->
     <View
         android:id="@+id/millayGradientBlob"
-        android:layout_width="350dp"
-        android:layout_height="350dp"
+        android:layout_width="400dp"
+        android:layout_height="400dp"
         android:layout_gravity="top|center_horizontal"
-        android:layout_marginTop="-80dp"
-        android:alpha="0.18"
+        android:layout_marginTop="-100dp"
+        android:alpha="0.12"
         android:background="@drawable/millay_blob_gradient" />
 
     <!-- Main scrollable content -->
@@ -53,20 +53,14 @@
                         android:id="@+id/millayGreeting"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:alpha="0.5"
-                        android:fontFamily="@font/manrope"
-                        android:text="Hola, bienvenido"
-                        android:textColor="#FFFFFF"
-                        android:textSize="13sp" />
+                        style="@style/Millay.Greeting"
+                        android:text="Hola, bienvenido" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/manrope_bold"
-                        android:text="Millay"
-                        android:textColor="#FFFFFF"
-                        android:textSize="30sp"
-                        android:textStyle="bold" />
+                        style="@style/Millay.HeroTitle"
+                        android:text="Millay" />
 
                 </LinearLayout>
 
@@ -106,8 +100,8 @@
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
                     android:singleLine="true"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#66FFFFFF"
+                    android:textColor="@color/millay_text_primary"
+                    android:textColorHint="@color/millay_text_tertiary"
                     android:textSize="15sp" />
 
             </FrameLayout>
@@ -125,7 +119,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
-                    android:indeterminateTint="#FF4B8B" />
+                    android:indeterminateTint="@color/millay_accent" />
 
             </FrameLayout>
 
@@ -137,16 +131,14 @@
                 android:orientation="vertical"
                 android:paddingTop="8dp">
 
-                <!-- Hot & New Albums -->
+                <!-- Top Albums -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginBottom="12dp"
-                    android:fontFamily="@font/manrope_bold"
-                    android:text="Top Albums"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
+                    style="@style/Millay.SectionTitle"
+                    android:text="Top Albums" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/millayTopAlbumsList"
@@ -156,7 +148,7 @@
                     android:orientation="horizontal"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginBottom="28dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <!-- Hot & New Tracks -->
@@ -165,10 +157,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginBottom="12dp"
-                    android:fontFamily="@font/manrope_bold"
-                    android:text="Nuevos Lanzamientos"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
+                    style="@style/Millay.SectionTitle"
+                    android:text="Nuevos Lanzamientos" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/millayTopTracksList"
@@ -178,7 +168,7 @@
                     android:orientation="horizontal"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginBottom="28dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
                 <!-- Genres -->
@@ -187,10 +177,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     android:layout_marginBottom="12dp"
-                    android:fontFamily="@font/manrope_bold"
-                    android:text="Explorar Géneros"
-                    android:textColor="#FFFFFF"
-                    android:textSize="20sp" />
+                    style="@style/Millay.SectionTitle"
+                    android:text="Explorar Géneros" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/millayGenresList"
@@ -199,7 +187,7 @@
                     android:clipToPadding="false"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    android:layout_marginBottom="24dp"
+                    android:layout_marginBottom="28dp"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="2" />
 
@@ -220,19 +208,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:fontFamily="@font/manrope_bold"
-                    android:text="Resultados"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp" />
+                    style="@style/Millay.SectionTitle"
+                    android:text="Resultados" />
 
                 <TextView
                     android:id="@+id/millayResultsCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:alpha="0.5"
-                    android:fontFamily="@font/manrope"
-                    android:textColor="#FFFFFF"
-                    android:textSize="13sp" />
+                    style="@style/Millay.MetaText"
+                    android:layout_gravity="center_vertical" />
 
             </LinearLayout>
 
@@ -259,7 +243,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/manrope_bold"
                     android:gravity="center"
                     android:text="⚠️"
                     android:textSize="40sp" />
@@ -269,25 +252,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:alpha="0.6"
-                    android:fontFamily="@font/manrope"
+                    style="@style/Millay.TrackSubtitle"
                     android:gravity="center"
-                    android:text="Error al buscar. Verifica tu conexión."
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    android:text="Error al buscar. Verifica tu conexión." />
 
                 <Button
                     android:id="@+id/millayRetryButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:background="@drawable/millay_pill_btn"
-                    android:fontFamily="@font/manrope_bold"
-                    android:paddingStart="24dp"
-                    android:paddingEnd="24dp"
-                    android:text="Reintentar"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    style="@style/Millay.PillButton"
+                    android:text="Reintentar" />
 
             </LinearLayout>
 
@@ -298,15 +273,15 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/millayMiniPlayer"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="72dp"
         android:layout_gravity="bottom"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="80dp"
-        android:elevation="12dp"
+        android:elevation="16dp"
         android:visibility="gone"
-        app:cardBackgroundColor="#CC1A1D2E"
-        app:cardCornerRadius="18dp">
+        app:cardBackgroundColor="@color/millay_mini_player_bg"
+        app:cardCornerRadius="20dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -319,8 +294,8 @@
             <!-- Album art -->
             <ImageView
                 android:id="@+id/millayMiniArt"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@drawable/millay_art_placeholder"
                 android:contentDescription="Portada"
                 android:scaleType="centerCrop" />
@@ -338,38 +313,34 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="marquee"
-                    android:fontFamily="@font/manrope_bold"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
                     android:text="—"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp" />
+                    style="@style/Millay.TrackTitle" />
 
                 <TextView
                     android:id="@+id/millayMiniArtist"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:alpha="0.55"
                     android:ellipsize="end"
-                    android:fontFamily="@font/manrope"
                     android:singleLine="true"
                     android:text="—"
-                    android:textColor="#FFFFFF"
-                    android:textSize="12sp" />
+                    style="@style/Millay.TrackSubtitle" />
 
             </LinearLayout>
 
             <!-- Controls -->
             <ImageButton
                 android:id="@+id/millayMiniPlayPause"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/millay_circle_btn"
                 android:contentDescription="Play/Pause"
-                android:padding="8dp"
-                android:src="@drawable/ic_play_arrow_white_32dp" />
+                android:padding="9dp"
+                android:src="@drawable/ic_play_arrow_white_32dp"
+                app:tint="@color/millay_accent_on" />
 
             <ImageButton
                 android:id="@+id/millayMiniNext"
@@ -380,7 +351,7 @@
                 android:contentDescription="Siguiente"
                 android:padding="6dp"
                 android:src="@drawable/ic_skip_next"
-                android:tint="#AAFFFFFF" />
+                android:tint="@color/millay_text_secondary" />
 
             <ImageButton
                 android:id="@+id/millayMiniDownload"
@@ -391,7 +362,7 @@
                 android:contentDescription="Descargar"
                 android:padding="6dp"
                 android:src="@drawable/ic_playlist_add"
-                android:tint="#FF4B8B" />
+                android:tint="@color/millay_accent" />
 
         </LinearLayout>
 

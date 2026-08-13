@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Gold accent pill button for primary actions (Start Infinite Radio, Retry, etc.) -->
+<!-- Active tab indicator — gold underline for selected Millay tabs -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="@color/millay_accent" />
-    <corners android:radius="24dp" />
+    <corners android:radius="2dp" />
+    <size android:height="3dp" />
 </shape>

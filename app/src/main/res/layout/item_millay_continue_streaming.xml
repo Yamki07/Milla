@@ -25,8 +25,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:textAppearance="@style/TextViewBody2"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textStyle="bold" />
+        style="@style/Millay.TrackTitle"
+        android:textSize="13sp" />
 
 </LinearLayout>

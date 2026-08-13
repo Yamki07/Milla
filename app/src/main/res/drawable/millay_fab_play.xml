@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Floating FAB play overlay for album cards — gold circle with shadow -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/millay_accent_dark">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/millay_accent" />
+        </shape>
+    </item>
+</ripple>

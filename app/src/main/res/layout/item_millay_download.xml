@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Download item card — dark glass surface with Millay palette -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -6,11 +7,11 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="12dp"
     android:layout_marginVertical="4dp"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="14dp"
     app:cardElevation="0dp"
     app:strokeWidth="1dp"
-    app:strokeColor="?attr/colorControlHighlight"
-    app:cardBackgroundColor="?attr/colorSurface">
+    app:strokeColor="@color/millay_border_subtle"
+    app:cardBackgroundColor="@color/millay_bg_card">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,6 +30,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:scaleType="centerCrop"
+                android:background="@drawable/millay_art_placeholder"
                 android:src="@drawable/default_audio_art" />
 
             <LinearLayout
@@ -43,8 +45,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Título de la canción"
-                    android:textAppearance="@style/TextViewBody1"
-                    android:textStyle="bold"
+                    style="@style/Millay.TrackTitle"
                     android:maxLines="1"
                     android:ellipsize="end" />
 
@@ -53,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Artista"
-                    android:textAppearance="@style/TextViewCaption"
+                    style="@style/Millay.TrackSubtitle"
                     android:maxLines="1"
                     android:ellipsize="end" />
 
@@ -62,9 +63,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="FLAC"
-                    android:textAppearance="@style/TextViewCaption"
-                    android:textColor="?attr/colorPrimary"
-                    android:paddingTop="2dp" />
+                    style="@style/Millay.QualityBadge"
+                    android:layout_marginTop="3dp" />
 
             </LinearLayout>
 
@@ -74,7 +74,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_save"
-                android:tint="?attr/colorPrimary"
+                android:tint="@color/millay_accent"
                 android:contentDescription="Estado" />
 
         </LinearLayout>
@@ -86,6 +86,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:visibility="gone"
+            app:indicatorColor="@color/millay_accent"
+            app:trackColor="@color/millay_progress_inactive"
             app:trackCornerRadius="4dp" />
 
     </LinearLayout>

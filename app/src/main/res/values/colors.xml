@@ -38,4 +38,46 @@
     <color name="widget_md3_bg_color">@color/lighterColorSurface</color>
     <color name="widget_circle_button_color">@color/md_indigo_A400</color>
     <color name="widget_md3_button_bg_color">@color/lighterColorSurface</color>
+
+    <!-- ══════════ MILLAY INTERNET PALETTE ══════════ -->
+    <!-- Background hierarchy -->
+    <color name="millay_bg_primary">#FF101820</color>
+    <color name="millay_bg_elevated">#FF182028</color>
+    <color name="millay_bg_card">#FF1A2430</color>
+    <color name="millay_bg_card_hover">#FF223040</color>
+    <color name="millay_bg_input">#FF1C2632</color>
+
+    <!-- Accent: vibrant gold/amber -->
+    <color name="millay_accent">#FFF5C518</color>
+    <color name="millay_accent_dark">#FFD4A810</color>
+    <color name="millay_accent_on">#FF0D0D0D</color>
+
+    <!-- Text -->
+    <color name="millay_text_primary">#FFFFFFFF</color>
+    <color name="millay_text_secondary">#B3A8B8CC</color>
+    <color name="millay_text_tertiary">#667A8EA3</color>
+
+    <!-- Badges & Quality labels -->
+    <color name="millay_badge_flac">#FF3D85C6</color>
+    <color name="millay_badge_flac_bg">#1A3D85C6</color>
+    <color name="millay_badge_explicit">#99FFFFFF</color>
+    <color name="millay_badge_explicit_bg">#33FFFFFF</color>
+
+    <!-- Interactive -->
+    <color name="millay_heart">#FFFF4B8B</color>
+    <color name="millay_border">#1AFFFFFF</color>
+    <color name="millay_border_subtle">#0DFFFFFF</color>
+    <color name="millay_glass">#12FFFFFF</color>
+    <color name="millay_glass_strong">#1EFFFFFF</color>
+    <color name="millay_overlay_dark">#CC101820</color>
+
+    <!-- Gradient blob (ambient glow) -->
+    <color name="millay_blob_start">#FFF5C518</color>
+    <color name="millay_blob_center">#FF3D85C6</color>
+    <color name="millay_blob_end">#FF6C3483</color>
+
+    <!-- Mini player -->
+    <color name="millay_mini_player_bg">#E6182028</color>
+    <color name="millay_progress_active">#FFF5C518</color>
+    <color name="millay_progress_inactive">#33FFFFFF</color>
 </resources>

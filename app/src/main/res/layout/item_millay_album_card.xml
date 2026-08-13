@@ -1,50 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Premium album card for Millay — dark card with FAB play overlay -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="140dp"
+    android:layout_width="160dp"
     android:layout_height="wrap_content"
     android:layout_marginEnd="12dp"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_marginBottom="8dp"
-        app:cardBackgroundColor="#1A1D2E"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="0dp">
+    <!-- Card container with art + play FAB overlay -->
+    <FrameLayout
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginBottom="10dp">
 
-        <ImageView
-            android:id="@+id/millayAlbumArt"
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/millay_art_placeholder"
-            android:scaleType="centerCrop" />
-            
-    </androidx.cardview.widget.CardView>
+            app:cardBackgroundColor="@color/millay_bg_card"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/millayAlbumArt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/millay_art_placeholder"
+                android:scaleType="centerCrop" />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Heart overlay — top right -->
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:background="@drawable/millay_icon_circle_bg"
+            android:padding="5dp"
+            android:src="@drawable/ic_favorite_border"
+            android:tint="@android:color/white" />
+
+        <!-- Play FAB — bottom right, overlapping card edge -->
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="-4dp"
+            android:background="@drawable/millay_fab_play"
+            android:elevation="6dp"
+            android:padding="8dp"
+            android:src="@drawable/ic_play_arrow_white_32dp"
+            app:tint="@color/millay_accent_on" />
+
+    </FrameLayout>
 
     <TextView
         android:id="@+id/millayAlbumTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ellipsize="end"
-        android:fontFamily="@font/manrope_bold"
         android:singleLine="true"
         android:text="Album Title"
-        android:textColor="#FFFFFF"
-        android:textSize="14sp" />
+        style="@style/Millay.TrackTitle" />
 
     <TextView
         android:id="@+id/millayAlbumArtist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alpha="0.6"
+        android:layout_marginTop="2dp"
         android:ellipsize="end"
-        android:fontFamily="@font/manrope"
         android:singleLine="true"
         android:text="Artist Name"
-        android:textColor="#FFFFFF"
-        android:textSize="12sp" />
+        style="@style/Millay.TrackSubtitle" />
 
 </LinearLayout>

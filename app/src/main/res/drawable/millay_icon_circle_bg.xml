@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Gold circular play button for mini player and FAB overlays -->
+<!-- Semi-transparent dark circle for icon buttons (heart, options, etc.) -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
-    <solid android:color="@color/millay_accent" />
+    <solid android:color="#66101820" />
 </shape>

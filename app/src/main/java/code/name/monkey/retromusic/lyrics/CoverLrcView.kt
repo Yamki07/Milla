@@ -293,7 +293,7 @@ class CoverLrcView @JvmOverloads constructor(
                 } else {
                     invalidate()
                 }
-                postOnAnimationDelayed(this, 16L)
+                postOnAnimation(this)
             }
         }
     }

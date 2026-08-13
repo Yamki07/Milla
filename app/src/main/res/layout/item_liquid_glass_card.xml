@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Infinite Radio card — premium glassmorphism with gold accent FAB -->
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -11,9 +12,9 @@
     android:focusable="true"
     app:cardCornerRadius="24dp"
     app:cardElevation="0dp"
-    app:cardBackgroundColor="#20FFFFFF"
+    app:cardBackgroundColor="@color/millay_bg_card"
     app:strokeWidth="1dp"
-    app:strokeColor="#40FFFFFF">
+    app:strokeColor="@color/millay_border">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:alpha="0.2"
+            android:alpha="0.15"
             android:src="@drawable/default_audio_art" />
 
         <LinearLayout
@@ -38,19 +39,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Radio Infinita"
-                android:textColor="@android:color/white"
-                android:textSize="22sp"
-                android:fontFamily="@font/manrope_bold"
-                android:textStyle="bold" />
+                style="@style/Millay.HeroTitle"
+                android:textSize="22sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Música ininterrumpida basada en tus gustos"
-                android:textColor="#B3FFFFFF"
-                android:textSize="14sp"
-                android:fontFamily="@font/manrope" />
+                style="@style/Millay.TrackSubtitle"
+                android:textSize="14sp" />
         </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -60,8 +58,8 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_play_arrow"
-            app:backgroundTint="?attr/colorAccent"
-            app:tint="@android:color/white"
+            app:backgroundTint="@color/millay_accent"
+            app:tint="@color/millay_accent_on"
             app:fabSize="mini"
             app:elevation="4dp" />
 

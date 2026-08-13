@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Genre card — dark glass with gradient border for Millay Genres section -->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="80dp"
+    android:layout_height="84dp"
     android:layout_margin="6dp"
-    app:cardBackgroundColor="#2A2D3E"
-    app:cardCornerRadius="12dp"
+    app:cardBackgroundColor="@color/millay_bg_card"
+    app:cardCornerRadius="14dp"
     app:cardElevation="0dp">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/millay_genre_bg" />
 
     <TextView
         android:id="@+id/millayGenreTitle"
@@ -16,7 +22,7 @@
         android:fontFamily="@font/manrope_bold"
         android:gravity="center"
         android:text="Genre"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/millay_text_primary"
         android:textSize="16sp" />
 
 </androidx.cardview.widget.CardView>

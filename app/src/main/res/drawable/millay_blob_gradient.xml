@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Blob gradient circle for the background visual effect -->
+<!-- Ambient glow blob — gold/blue/purple radial for Millay background -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
     <gradient
         android:angle="135"
-        android:centerColor="#9B59B6"
-        android:endColor="#3498DB"
-        android:startColor="#FF4B8B"
+        android:centerColor="@color/millay_blob_center"
+        android:endColor="@color/millay_blob_end"
+        android:startColor="@color/millay_blob_start"
         android:type="radial"
         android:gradientRadius="50%p" />
 </shape>

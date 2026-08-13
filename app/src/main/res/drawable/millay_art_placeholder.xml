@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Rounded rectangle album art placeholder -->
+<!-- Rounded rectangle album art placeholder — subtle glass surface -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#1AFFFFFF" />
-    <corners android:radius="10dp" />
+    <solid android:color="@color/millay_glass" />
+    <corners android:radius="12dp" />
 </shape>
