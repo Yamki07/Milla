@@ -35,8 +35,8 @@ object TidalApiClient {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
-    private suspend fun ensureSession() {
-        if (sessionInitialized && accessToken.isNotEmpty()) return
+    private suspend fun ensureSession(forceRefresh: Boolean = false) {
+        if (!forceRefresh && sessionInitialized && accessToken.isNotEmpty()) return
         withContext(Dispatchers.IO) {
             try {
                 val formBody = FormBody.Builder()
@@ -46,20 +46,21 @@ object TidalApiClient {
                     .build()
 
                 val authString = "$CLIENT_ID:$CLIENT_SECRET"
-                val encodedAuth = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    java.util.Base64.getEncoder().encodeToString(authString.toByteArray(StandardCharsets.UTF_8))
-                } else {
-                    android.util.Base64.encodeToString(authString.toByteArray(StandardCharsets.UTF_8), android.util.Base64.NO_WRAP)
-                }
+                val encodedAuth = android.util.Base64.encodeToString(authString.toByteArray(StandardCharsets.UTF_8), android.util.Base64.NO_WRAP)
 
                 val request = Request.Builder()
                     .url("https://auth.tidal.com/v1/oauth2/token")
                     .header("Authorization", "Basic $encodedAuth")
+                    .header("User-Agent", "Tidal/2.36.1 Android/10")
                     .post(formBody)
                     .build()
 
                 client.newCall(request).execute().use { response ->
                     val body = response.body?.string() ?: return@withContext
+                    if (!response.isSuccessful) {
+                        Log.e(TAG, "Tidal ensureSession Failed HTTP ${response.code}: $body")
+                        return@withContext
+                    }
                     val json = JSONObject(body)
                     accessToken = json.optString("access_token", "")
                     sessionInitialized = accessToken.isNotEmpty()
@@ -82,6 +83,7 @@ object TidalApiClient {
             val request = Request.Builder()
                 .url(url)
                 .addHeader("Authorization", "Bearer $accessToken")
+                .header("User-Agent", "Tidal/2.36.1 Android/10")
                 .get()
                 .build()
 
@@ -155,24 +157,34 @@ object TidalApiClient {
         }
     }
     
-    suspend fun getStreamUrl(trackId: String): String? = withContext(Dispatchers.IO) {
+    suspend fun getStreamUrl(trackId: String, retryCount: Int = 1): String? = withContext(Dispatchers.IO) {
         try {
             ensureSession()
             if (accessToken.isEmpty()) return@withContext null
 
-            val url = "https://api.tidalhifi.com/v1/tracks/$trackId/playbackinfopostpaywall?audioquality=LOSSLESS&playbackmode=STREAM&assetpresentation=FULL"
+            val url = "https://api.tidalhifi.com/v1/tracks/$trackId/playbackinfopostpaywall?audioquality=LOSSLESS&playbackmode=STREAM&assetpresentation=FULL&countryCode=US"
             val request = Request.Builder()
                 .url(url)
                 .addHeader("Authorization", "Bearer $accessToken")
+                .header("User-Agent", "Tidal/2.36.1 Android/10")
                 .get()
                 .build()
 
             client.newCall(request).execute().use { response ->
                 val resBody = response.body?.string() ?: return@withContext null
+                if (response.code == 401 && retryCount > 0) {
+                    Log.d(TAG, "Token expired, refreshing...")
+                    ensureSession(forceRefresh = true)
+                    return@withContext getStreamUrl(trackId, retryCount - 1)
+                }
+                if (!response.isSuccessful) {
+                    Log.e(TAG, "getStreamUrl Failed HTTP ${response.code}: $resBody")
+                    return@withContext null
+                }
+                
                 val json = JSONObject(resBody)
                 val manifestStr = json.optString("manifest")
                 if (manifestStr.isNotEmpty()) {
-                    // Base64 only exists on API 26+, fallback to android.util.Base64 for older devices
                     val decodedBytes = android.util.Base64.decode(manifestStr, android.util.Base64.DEFAULT)
                     val decodedManifest = String(decodedBytes, StandardCharsets.UTF_8)
                     val manifestJson = JSONObject(decodedManifest)
@@ -198,6 +210,7 @@ object TidalApiClient {
             val request = Request.Builder()
                 .url(url)
                 .addHeader("Authorization", "Bearer $accessToken")
+                .header("User-Agent", "Tidal/2.36.1 Android/10")
                 .get()
                 .build()
 
