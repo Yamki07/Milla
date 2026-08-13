@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 RetroMusic / Milla Automix Engine
+ *
+ * Licensed under the GNU General Public License v3
+ */
 package code.name.monkey.retromusic.automix
 
 import android.content.Context
@@ -11,20 +16,22 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jaudiotagger.audio.AudioFileIO
 import org.jaudiotagger.tag.FieldKey
-import org.jaudiotagger.tag.images.AndroidArtwork
 import code.name.monkey.retromusic.db.SongEntity
 import code.name.monkey.retromusic.repository.RoomRepository
 import java.io.File
 import java.io.FileOutputStream
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.coroutines.resume
 
+/**
+ * Gestor moderno de descargas nativo para Tidal con Corrutinas y Flow.
+ * Reemplaza a TidalDownloadManager, conectando con TidalApiClient para obtener FLAC/MP3 directos
+ * y guardado en almacenamiento físico para uso offline en Automix.
+ */
 object TidalDownloadManager {
     private const val TAG = "TidalDownloadManager"
 
@@ -50,59 +57,127 @@ object TidalDownloadManager {
     private val activeJobs = ConcurrentHashMap<String, Job>()
     private val httpClient = OkHttpClient()
 
-    fun downloadTrack(context: Context, song: Song, tidalTrackId: String, tidalCoverUrl: String) {
-        if (activeJobs.containsKey(tidalTrackId)) return
+    /**
+     * Alias para compatibilidad con la UI de Milla.
+     */
+    fun downloadTrack(context: Context, song: Song, quality: Int = 9) {
+        startDownload(context, song, quality)
+    }
+
+    /**
+     * Inicia la descarga de una canción [song] desde Tidal.
+     * @param quality 9 para FLAC, 3 para MP3 320kbps. (Tidal usa lossless principal, MP3 como fallback)
+     */
+    fun startDownload(context: Context, song: Song, quality: Int = 9) {
+        val trackId = song.id.toString()
+        if (activeJobs.containsKey(trackId)) {
+            Log.d(TAG, "Descarga ya en curso para trackId=$trackId")
+            return
+        }
 
         val job = CoroutineScope(Dispatchers.IO).launch {
             try {
-                _downloadState.value = DownloadState.Downloading(tidalTrackId, 0)
-                Log.d(TAG, "Iniciando descarga de Tidal para: ${song.title} ($tidalTrackId)")
+                _downloadState.value = DownloadState.Downloading(trackId, 0)
+                Log.d(TAG, "Iniciando descarga de Tidal para: ${song.title} ($trackId)")
 
-                val streamUrl = TidalApiClient.getStreamUrl(tidalTrackId)
+                // El trackId en Tidal es la URL interna "tidal://track/12345::cover" en la clase Song
+                // Extraemos el ID real si viene formateado así:
+                val realTrackId = if (song.data.startsWith("tidal://track/")) {
+                    song.data.removePrefix("tidal://track/").substringBefore("::")
+                } else {
+                    trackId
+                }
+
+                val coverId = if (song.data.contains("::")) {
+                    song.data.substringAfter("::")
+                } else {
+                    ""
+                }
+
+                val streamUrl = TidalApiClient.getStreamUrl(realTrackId)
+
                 if (streamUrl.isNullOrEmpty()) {
-                    _downloadState.value = DownloadState.Error(tidalTrackId, "No se pudo obtener el enlace de Tidal")
+                    _downloadState.value = DownloadState.Error(trackId, "No se pudo obtener el enlace de Tidal")
                     withContext(Dispatchers.Main) {
-                        android.widget.Toast.makeText(context, "Tidal Error: Token expirado o URL no encontrada", android.widget.Toast.LENGTH_LONG).show()
+                        android.widget.Toast.makeText(context, "Error: Token expirado o URL no encontrada", android.widget.Toast.LENGTH_LONG).show()
                     }
                     return@launch
                 }
 
-                val downloadDir = DeezerDownloadManager.getDownloadsDirectory(context)
-                if (!downloadDir.exists()) downloadDir.mkdirs()
+                val downloadDir = getDownloadsDirectory(context)
+                if (!downloadDir.exists()) {
+                    downloadDir.mkdirs()
+                }
 
-                // Tidal Lossless usually returns FLAC (sometimes inside MP4, but Jaudiotagger handles it or we save it directly)
-                val fileName = "${sanitizeFileName(song.artistName)} - ${sanitizeFileName(song.title)}.flac"
-                var outputFile = File(downloadDir, fileName)
+                // Tidal lossless usually FLAC
+                val isFlac = streamUrl.contains(".flac") || streamUrl.contains("audio/flac") || quality == 9
+                val extension = if (isFlac) "flac" else "mp3"
+                val fileName = "${sanitizeFileName(song.artistName)} - ${sanitizeFileName(song.title)}.$extension"
+                val outputFile = File(downloadDir, fileName)
 
-                val success = downloadDirect(streamUrl, outputFile, tidalTrackId)
+                val success = downloadDirect(streamUrl, outputFile, realTrackId)
                 if (success) {
-                    outputFile = ensureCorrectExtension(outputFile)
-                    _downloadState.value = DownloadState.PostProcessing(tidalTrackId)
-                    
-                    // Obtener letras de Tidal
-                    val lyrics = TidalApiClient.getLyrics(tidalTrackId)
-                    
-                    tagAndEnrichDownloadedFile(context, outputFile, song, tidalCoverUrl, lyrics)
-                    _downloadState.value = DownloadState.Completed(tidalTrackId, outputFile.absolutePath, song)
-                    Log.i(TAG, "Descarga Tidal completada: ${outputFile.absolutePath}")
+                    _downloadState.value = DownloadState.PostProcessing(trackId)
+                    tagAndEnrichDownloadedFile(context, outputFile, song, realTrackId, coverId)
+                    val mimeType = if (isFlac) "audio/flac" else "audio/mpeg"
+                    android.media.MediaScannerConnection.scanFile(context, arrayOf(outputFile.absolutePath), arrayOf(mimeType)) { path, uri ->
+                        Log.i(TAG, "MediaScanner completado para: $path, uri=$uri")
+                    }
+                    _downloadState.value = DownloadState.Completed(trackId, outputFile.absolutePath, song)
+                    Log.i(TAG, "Descarga completada: ${outputFile.absolutePath}")
+
+                    // Supabase Automix system metadata contribution
+                    try {
+                        if (code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment.isContributeMetadata(context)) {
+                            val cleanArtist = song.artistName.filter { it.isLetterOrDigit() || it.isWhitespace() }.replace(" ", "_").lowercase()
+                            val cleanTitle = song.title.filter { it.isLetterOrDigit() || it.isWhitespace() }.replace(" ", "_").lowercase()
+                            val millaId = "${cleanArtist}_${cleanTitle}"
+                            code.name.monkey.retromusic.network.SupabaseClientManager.uploadMetadata(
+                                code.name.monkey.retromusic.network.RemoteTrackMetadata(
+                                    trackId = millaId,
+                                    title = song.title,
+                                    artist = song.artistName,
+                                    bpm = 0f,
+                                    musicalKey = "",
+                                    cueOutMs = 0L,
+                                    replayGain = 0f
+                                )
+                            )
+                            Log.d(TAG, "Supabase metadata push successful for $millaId")
+                        }
+                    } catch (e: Exception) {
+                        Log.d(TAG, "Skipped metadata contribution: ${e.message}")
+                    }
+
                 } else {
                     if (outputFile.exists()) outputFile.delete()
-                    _downloadState.value = DownloadState.Error(tidalTrackId, "Fallo al descargar archivo Tidal")
+                    _downloadState.value = DownloadState.Error(trackId, "Fallo al descargar el archivo de Tidal")
                     withContext(Dispatchers.Main) {
-                        android.widget.Toast.makeText(context, "Tidal Error: Descarga falló", android.widget.Toast.LENGTH_LONG).show()
+                        android.widget.Toast.makeText(context, "Error: Descarga falló", android.widget.Toast.LENGTH_LONG).show()
                     }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Excepción en descarga de Tidal=$tidalTrackId: $e")
-                _downloadState.value = DownloadState.Error(tidalTrackId, e.message ?: "Error desconocido")
+                Log.e(TAG, "Excepción en descarga de trackId=$trackId: $e")
+                _downloadState.value = DownloadState.Error(trackId, e.message ?: "Error desconocido")
                 withContext(Dispatchers.Main) {
-                    android.widget.Toast.makeText(context, "Tidal Error: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
+                    android.widget.Toast.makeText(context, "Error: ${e.message}", android.widget.Toast.LENGTH_LONG).show()
                 }
             } finally {
-                activeJobs.remove(tidalTrackId)
+                activeJobs.remove(trackId)
             }
         }
-        activeJobs[tidalTrackId] = job
+        activeJobs[trackId] = job
+    }
+
+    fun cancelDownload(trackId: String) {
+        activeJobs[trackId]?.cancel()
+        activeJobs.remove(trackId)
+        _downloadState.value = DownloadState.Idle
+    }
+
+    fun getDownloadsDirectory(context: Context): File {
+        val baseDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC)
+        return File(baseDir, "RetroMusic")
     }
 
     private suspend fun downloadDirect(url: String, outputFile: File, trackId: String): Boolean =
@@ -132,76 +207,118 @@ object TidalDownloadManager {
                         
                         outputStream.write(buffer, 0, read)
                         bytesDownloaded += read
-
+                        
                         if (contentLength > 0) {
-                            val progress = ((bytesDownloaded * 100) / contentLength).toInt().coerceIn(0, 99)
-                            _downloadState.value = DownloadState.Downloading(trackId, progress)
+                            val percent = ((bytesDownloaded * 100) / contentLength).toInt()
+                            if (percent % 5 == 0) {
+                                _downloadState.value = DownloadState.Downloading(trackId, percent)
+                            }
                         }
                     }
+                    
+                    _downloadState.value = DownloadState.Downloading(trackId, 100)
                     outputStream.flush()
                 }
                 response.close()
                 true
             } catch (e: Exception) {
-                Log.e(TAG, "Error durante Tidal downloadDirect: $e")
+                Log.e(TAG, "Error durante downloadDirect: $e")
                 false
             }
         }
 
-    private suspend fun tagAndEnrichDownloadedFile(
-        context: Context, 
-        outputFile: File, 
-        song: Song, 
-        tidalCoverUrl: String, 
-        lyrics: String
-    ) = withContext(Dispatchers.IO) {
+    private suspend fun tagAndEnrichDownloadedFile(context: Context, outputFile: File, song: Song, realTrackId: String, coverId: String) =
+        withContext(Dispatchers.IO) {
+            // 1. Obtener letras (Tidal) o Fallback
+            var lyricsToSave = ""
             try {
-                val audioFile = AudioFileIO.read(outputFile)
-                val tag = audioFile.tagOrCreateAndSetDefault
+                lyricsToSave = TidalApiClient.getLyrics(realTrackId)
+                if (lyricsToSave.isEmpty()) {
+                    val lrcFromAmll = code.name.monkey.retromusic.util.AmllLyricsFetcher.fetchLyrics(song.title, song.artistName) ?: ""
+                    val lrcFromMusixmatch = if (lrcFromAmll.isEmpty()) {
+                        code.name.monkey.retromusic.util.MusixmatchFetcher.getEnhancedLrc(song.title, song.artistName) ?: ""
+                    } else ""
+                    val lrcFromLib = if (lrcFromAmll.isEmpty() && lrcFromMusixmatch.isEmpty()) {
+                        code.name.monkey.retromusic.util.LRCLibFetcher.fetchLyrics(song) ?: ""
+                    } else ""
+                    lyricsToSave = lrcFromAmll.ifEmpty { lrcFromMusixmatch.ifEmpty { lrcFromLib } }
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Error obteniendo letras: ${e.message}")
+            }
+
+            // 2. Etiquetado ID3 con JAudioTagger
+            try {
+                org.jaudiotagger.tag.TagOptionSingleton.getInstance().isAndroid = true
+
+                var audioFile: org.jaudiotagger.audio.AudioFile? = null
+                try {
+                    audioFile = AudioFileIO.read(outputFile)
+                } catch (e: Exception) {
+                    try {
+                        if (outputFile.name.endsWith(".mp3", ignoreCase = true)) {
+                            audioFile = org.jaudiotagger.audio.mp3.MP3File(outputFile)
+                        } else if (outputFile.name.endsWith(".flac", ignoreCase = true)) {
+                            audioFile = org.jaudiotagger.audio.flac.FlacFileReader().read(outputFile)
+                        }
+                    } catch (e2: Exception) {}
+                }
+
+                if (audioFile == null) return@withContext
+
+                var tag = audioFile.tag
+                if (tag == null || (audioFile is org.jaudiotagger.audio.mp3.MP3File && tag is org.jaudiotagger.tag.id3.ID3v24Tag)) {
+                    if (audioFile is org.jaudiotagger.audio.mp3.MP3File) {
+                        tag = org.jaudiotagger.tag.id3.ID3v23Tag()
+                        audioFile.tag = tag
+                    } else {
+                        tag = audioFile.createDefaultTag()
+                        audioFile.tag = tag
+                    }
+                }
+
                 tag.setField(FieldKey.TITLE, song.title)
                 tag.setField(FieldKey.ARTIST, song.artistName)
                 tag.setField(FieldKey.ALBUM, song.albumName)
-                if (song.year > 0) {
-                    tag.setField(FieldKey.YEAR, song.year.toString())
-                }
-                tag.setField(FieldKey.GENRE, "Milla Automix (Tidal)")
                 
-                if (lyrics.isNotEmpty()) {
+                if (lyricsToSave.isNotEmpty()) {
                     try {
-                        tag.setField(FieldKey.LYRICS, lyrics)
-                    } catch (e: Exception) {
-                        Log.w(TAG, "Error inyectando letras: $e")
-                    }
+                        tag.setField(FieldKey.LYRICS, lyricsToSave)
+                    } catch (e: Exception) { }
                 }
 
-                if (tidalCoverUrl.isNotEmpty()) {
+                // Portada HD
+                if (coverId.isNotEmpty()) {
                     try {
-                        val coverRequest = Request.Builder().url(tidalCoverUrl).get().build()
-                        val coverResponse = httpClient.newCall(coverRequest).execute()
-                        if (coverResponse.isSuccessful) {
-                            val coverBody = coverResponse.body
-                            if (coverBody != null) {
-                                val tempCoverFile = File(outputFile.parentFile, ".cover_tidal_${song.id}.jpg")
-                                FileOutputStream(tempCoverFile).use { out ->
-                                    out.write(coverBody.bytes())
+                        val coverUrl = "https://resources.tidal.com/images/${coverId.replace("-", "/")}/1280x1280.jpg"
+                        val coverReq = okhttp3.Request.Builder().url(coverUrl).get().build()
+                        val coverResp = httpClient.newCall(coverReq).execute()
+                        if (coverResp.isSuccessful) {
+                            val coverBytes = coverResp.body?.bytes()
+                            if (coverBytes != null && coverBytes.isNotEmpty()) {
+                                val tempCover = File(outputFile.parentFile, ".cover_${realTrackId}.jpg")
+                                FileOutputStream(tempCover).use { it.write(coverBytes) }
+                                try {
+                                    val artwork = org.jaudiotagger.tag.images.ArtworkFactory.createArtworkFromFile(tempCover)
+                                    tag.deleteArtworkField()
+                                    tag.setField(artwork)
+                                } finally {
+                                    tempCover.delete()
                                 }
-                                val artwork = AndroidArtwork.createArtworkFromFile(tempCoverFile)
-                                tag.deleteArtworkField()
-                                tag.setField(artwork)
-                                tempCoverFile.delete()
                             }
                         }
-                        coverResponse.close()
+                        coverResp.close()
                     } catch (e: Exception) {
-                        Log.w(TAG, "No se pudo etiquetar carátula Tidal: ${e.message}")
+                        Log.w(TAG, "No se pudo incrustar portada: ${e.message}")
                     }
                 }
+
                 audioFile.commit()
-                Log.i(TAG, "Etiquetado físico ID3 (Tidal) completo para: ${outputFile.name}")
             } catch (e: Exception) {
-                Log.e(TAG, "Error etiquetando archivo ID3 Tidal: $e")
+                Log.e(TAG, "Error etiquetando archivo ID3: $e")
             }
 
+            // 3. Enriquecimiento BPM / Camelot Key
             try {
                 val entity = SongEntity(
                     playlistCreatorId = 0L,
@@ -224,53 +341,29 @@ object TidalDownloadManager {
                     org.koin.java.KoinJavaComponent.get(RoomRepository::class.java)
                 } catch (e: Exception) { null }
 
-                val scannedEntity = BpmScanner.scanSongEntity(entity, repository)
+                val scannedEntity = code.name.monkey.retromusic.automix.BpmScanner.scanSongEntity(entity, repository)
                 if (repository != null) {
-                    try {
-                        repository.insertSongs(listOf(scannedEntity))
-                    } catch (e: Exception) {
-                        Log.w(TAG, "No se pudo insertar canción Tidal en Room DB: ${e.message}")
-                    }
+                    try { repository.insertSongs(listOf(scannedEntity)) } catch (e: Exception) { }
                 }
 
-                try {
-                    val audioFile = AudioFileIO.read(outputFile)
-                    val tag = audioFile.tagOrCreateAndSetDefault
-                    if (scannedEntity.bpm > 0f) {
-                        tag.setField(FieldKey.BPM, scannedEntity.bpm.toInt().toString())
-                    }
-                    if (scannedEntity.musicalKey.isNotEmpty()) {
-                        tag.setField(FieldKey.KEY, scannedEntity.musicalKey)
-                    }
+                if (scannedEntity.bpm > 0f || scannedEntity.musicalKey.isNotEmpty()) {
                     try {
-                        tag.setField(FieldKey.COMMENT, "REPLAYGAIN_TRACK_GAIN=${scannedEntity.replayGain} dB")
-                    } catch (ignore: Exception) {}
-                    audioFile.commit()
-                } catch (e: Exception) {
-                    Log.w(TAG, "No se pudo inyectar BPM/Key Tidal en ID3: ${e.message}")
+                        val af = AudioFileIO.read(outputFile)
+                        val t = if (af is org.jaudiotagger.audio.mp3.MP3File) {
+                            var t2 = af.tag as? org.jaudiotagger.tag.id3.AbstractID3v2Tag
+                            if (t2 == null) { t2 = org.jaudiotagger.tag.id3.ID3v23Tag(); af.tag = t2 }
+                            t2
+                        } else af.tagOrCreateAndSetDefault
+                        if (scannedEntity.bpm > 0f) t.setField(FieldKey.BPM, scannedEntity.bpm.toInt().toString())
+                        if (scannedEntity.musicalKey.isNotEmpty()) t.setField(FieldKey.KEY, scannedEntity.musicalKey)
+                        try { t.setField(FieldKey.COMMENT, "REPLAYGAIN_TRACK_GAIN=${scannedEntity.replayGain} dB") } catch (ignore: Exception) {}
+                        af.commit()
+                    } catch (e: Exception) { }
                 }
             } catch (e: Exception) {
-                Log.e(TAG, "Error en enriquecimiento RMS y Room DB Tidal: $e")
+                Log.e(TAG, "Error en enriquecimiento Room DB: $e")
             }
         }
-
-    private fun ensureCorrectExtension(file: File): File {
-        try {
-            val bytes = ByteArray(8)
-            java.io.FileInputStream(file).use { it.read(bytes) }
-            val isMp4 = bytes.size >= 8 && bytes[4] == 'f'.code.toByte() && bytes[5] == 't'.code.toByte() && bytes[6] == 'y'.code.toByte() && bytes[7] == 'p'.code.toByte()
-            if (isMp4 && file.name.endsWith(".flac")) {
-                val newFile = File(file.parent, file.name.replace(".flac", ".m4a"))
-                if (file.renameTo(newFile)) {
-                    Log.i(TAG, "Formato MP4 detectado, renombrado a .m4a: ${newFile.name}")
-                    return newFile
-                }
-            }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error comprobando extensión del archivo: $e")
-        }
-        return file
-    }
 
     private fun sanitizeFileName(name: String): String {
         return name.replace("[\\\\/:*?\"<>|]".toRegex(), "_").trim()

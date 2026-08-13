@@ -271,20 +271,20 @@ class MainActivity : AbsCastActivity() {
         
         // Observar estado
         lifecycleScope.launch {
-            code.name.monkey.retromusic.automix.DeezerDownloadManager.downloadState.collect { state ->
+            code.name.monkey.retromusic.automix.TidalDownloadManager.downloadState.collect { state ->
                 when (state) {
-                    is code.name.monkey.retromusic.automix.DeezerDownloadManager.DownloadState.Downloading -> {
+                    is code.name.monkey.retromusic.automix.TidalDownloadManager.DownloadState.Downloading -> {
                         downloadCardView?.visibility = android.view.View.VISIBLE
                         downloadProgressBar?.isIndeterminate = false
                         downloadProgressBar?.progress = state.progress
                         downloadTextView?.text = "Descargando (${state.progress}%)"
                     }
-                    is code.name.monkey.retromusic.automix.DeezerDownloadManager.DownloadState.PostProcessing -> {
+                    is code.name.monkey.retromusic.automix.TidalDownloadManager.DownloadState.PostProcessing -> {
                         downloadCardView?.visibility = android.view.View.VISIBLE
                         downloadProgressBar?.isIndeterminate = true
                         downloadTextView?.text = "Procesando archivo..."
                     }
-                    is code.name.monkey.retromusic.automix.DeezerDownloadManager.DownloadState.Completed -> {
+                    is code.name.monkey.retromusic.automix.TidalDownloadManager.DownloadState.Completed -> {
                         downloadProgressBar?.isIndeterminate = false
                         downloadProgressBar?.progress = 100
                         downloadTextView?.text = "¡Listo! Descarga completada"
@@ -292,13 +292,13 @@ class MainActivity : AbsCastActivity() {
                         kotlinx.coroutines.delay(2500)
                         downloadCardView?.visibility = android.view.View.GONE
                     }
-                    is code.name.monkey.retromusic.automix.DeezerDownloadManager.DownloadState.Error -> {
+                    is code.name.monkey.retromusic.automix.TidalDownloadManager.DownloadState.Error -> {
                         downloadProgressBar?.isIndeterminate = false
                         downloadTextView?.text = "Error: ${state.message}"
                         kotlinx.coroutines.delay(3000)
                         downloadCardView?.visibility = android.view.View.GONE
                     }
-                    is code.name.monkey.retromusic.automix.DeezerDownloadManager.DownloadState.Idle -> {
+                    is code.name.monkey.retromusic.automix.TidalDownloadManager.DownloadState.Idle -> {
                         downloadCardView?.visibility = android.view.View.GONE
                     }
                 }

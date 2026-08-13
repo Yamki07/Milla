@@ -30,7 +30,7 @@ import code.name.monkey.retromusic.db.SongEntity
 import code.name.monkey.retromusic.fragments.base.AbsMainActivityFragment
 import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.automix.BpmScanner
-import code.name.monkey.retromusic.automix.DeezerDownloadManager
+import code.name.monkey.retromusic.automix.TidalDownloadManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -76,16 +76,16 @@ class DeezerFragment : AbsMainActivityFragment(R.layout.fragment_deezer_milla) {
         )
 
         CoroutineScope(Dispatchers.Main).launch {
-            DeezerDownloadManager.downloadState.collect { state ->
+            TidalDownloadManager.downloadState.collect { state ->
                 when (state) {
-                    is DeezerDownloadManager.DownloadState.Completed -> {
+                    is TidalDownloadManager.DownloadState.Completed -> {
                         Toast.makeText(
                             requireContext(),
                             "Descarga completada en Milla DJ: ${state.song.title} 🎵",
                             Toast.LENGTH_LONG
                         ).show()
                     }
-                    is DeezerDownloadManager.DownloadState.Error -> {
+                    is TidalDownloadManager.DownloadState.Error -> {
                         Toast.makeText(
                             requireContext(),
                             "Error en descarga: ${state.message}",
@@ -245,7 +245,7 @@ class DeezerFragment : AbsMainActivityFragment(R.layout.fragment_deezer_milla) {
                 menu?.setOnClickListener {
                     if (layoutPosition in dataSet.indices) {
                         val song = dataSet[layoutPosition]
-                        DeezerDownloadManager.downloadTrack(activity, song)
+                        TidalDownloadManager.downloadTrack(activity, song)
                         Toast.makeText(
                             activity,
                             "Descarga iniciada: ${song.title} ⬇️",

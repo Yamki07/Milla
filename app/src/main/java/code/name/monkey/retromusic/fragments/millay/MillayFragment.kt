@@ -26,8 +26,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.automix.DeezerApiClient
-import code.name.monkey.retromusic.automix.DeezerDecryptor
-import code.name.monkey.retromusic.automix.DeezerDownloadManager
+
+import code.name.monkey.retromusic.automix.TidalDownloadManager
 import code.name.monkey.retromusic.automix.DeezerTrack
 import code.name.monkey.retromusic.automix.MillayTrackAdapter
 import code.name.monkey.retromusic.automix.MillayAlbumAdapter
@@ -378,7 +378,7 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
                     albumArtist = track.artistName
                 )
                 val currentContext = context ?: return@launch
-                DeezerDownloadManager.downloadTrack(currentContext, song, quality)
+                TidalDownloadManager.downloadTrack(currentContext, song, quality)
             } catch (e: Exception) {
                 val currentContext = context ?: return@launch
                 Toast.makeText(currentContext, "Error al descargar: ${e.message}", Toast.LENGTH_SHORT).show()

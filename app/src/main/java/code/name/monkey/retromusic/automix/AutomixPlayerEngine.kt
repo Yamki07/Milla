@@ -123,42 +123,7 @@ class AutomixPlayerEngine(private val context: Context) {
         val path = song.data.trim()
         player.stop()
         player.clearMediaItems()
-        return if (path.startsWith("deezer://track/", true)) {
-            val trackId = path.substringAfter("deezer://track/")
-            val upstreamFactory = androidx.media3.datasource.DefaultDataSource.Factory(context)
-            
-            // Create a ResolvingDataSource to fetch the real stream URL
-            val resolver = androidx.media3.datasource.ResolvingDataSource.Resolver { dataSpec ->
-                val streamUrl = kotlinx.coroutines.runBlocking {
-                    // Fetch private track data to get trackToken, then get stream url
-                    val track = code.name.monkey.retromusic.automix.DeezerApiClient.fetchPrivateTrackData(trackId)
-                    if (track != null) {
-                        val prefQuality = code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment.getStreamingQuality(context).uppercase()
-                        var url = code.name.monkey.retromusic.automix.DeezerApiClient.getStreamUrl(track, prefQuality)
-                        if (url == null && prefQuality != "MP3_320") {
-                            Log.d(TAG, "Fallback: stream con calidad $prefQuality falló. Intentando MP3_320...")
-                            url = code.name.monkey.retromusic.automix.DeezerApiClient.getStreamUrl(track, "MP3_320")
-                        }
-                        if (url == null && prefQuality != "MP3_128") {
-                            Log.d(TAG, "Fallback: stream con MP3_320 falló. Intentando MP3_128...")
-                            url = code.name.monkey.retromusic.automix.DeezerApiClient.getStreamUrl(track, "MP3_128")
-                        }
-                        url
-                    } else null
-                }
-                if (streamUrl != null) dataSpec.withUri(Uri.parse(streamUrl)) else dataSpec
-            }
-            
-            val resolvingFactory = androidx.media3.datasource.ResolvingDataSource.Factory(upstreamFactory, resolver)
-            
-            // Wrap it in DeezerDataSourceFactory to decrypt the Blowfish stream on the fly
-            val deezerFactory = createDeezerDataSourceFactory(resolvingFactory, trackId)
-            val mediaItem = MediaItem.fromUri(Uri.parse(path))
-            val mediaSource = androidx.media3.exoplayer.source.ProgressiveMediaSource.Factory(deezerFactory)
-                .createMediaSource(mediaItem)
-            player.setMediaSource(mediaSource)
-            true
-        } else if (path.startsWith("tidal://track/", true)) {
+        return if (path.startsWith("tidal://track/", true)) {
             val split = path.removePrefix("tidal://track/").split("::")
             val trackId = split[0]
             val upstreamFactory = androidx.media3.datasource.DefaultDataSource.Factory(context)
@@ -199,16 +164,7 @@ class AutomixPlayerEngine(private val context: Context) {
         }
     }
 
-    /**
-     * Crea un [DataSource.Factory] envolviendo cualquier factory upstream con [DeezerDataSource]
-     * para descifrar paquetes Blowfish de Deezer en memoria al vuelo sin servidores intermedios.
-     */
-    fun createDeezerDataSourceFactory(
-        upstreamFactory: DataSource.Factory,
-        trackId: String
-    ): DataSource.Factory = DataSource.Factory {
-        DeezerDataSource(upstreamFactory.createDataSource(), trackId)
-    }
+
 
 
     /**

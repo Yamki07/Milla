@@ -14,12 +14,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
-import code.name.monkey.retromusic.automix.DeezerDownloadManager
+import code.name.monkey.retromusic.automix.TidalDownloadManager
 import kotlinx.coroutines.launch
 
 /**
  * Tab 3 de Millay — Lista de descargas activas y completadas desde Deezer.
- * Observa [DeezerDownloadManager.downloadState] con StateFlow para actualizarse en tiempo real.
+ * Observa [TidalDownloadManager.downloadState] con StateFlow para actualizarse en tiempo real.
  */
 class MillayDownloadsFragment : Fragment(R.layout.fragment_millay_downloads) {
 
@@ -47,18 +47,18 @@ class MillayDownloadsFragment : Fragment(R.layout.fragment_millay_downloads) {
     }
 
     /**
-     * Escucha el StateFlow de DeezerDownloadManager y actualiza la lista en tiempo real.
+     * Escucha el StateFlow de TidalDownloadManager y actualiza la lista en tiempo real.
      */
     private fun observeDownloads() {
         viewLifecycleOwner.lifecycleScope.launch {
-            DeezerDownloadManager.downloadState.collect { state ->
+            TidalDownloadManager.downloadState.collect { state ->
                 when (state) {
-                    is DeezerDownloadManager.DownloadState.Downloading -> {
+                    is TidalDownloadManager.DownloadState.Downloading -> {
                         val existing = downloadItems.indexOfFirst { it.trackId == state.trackId }
                         if (existing >= 0) {
                             downloadItems[existing] = downloadItems[existing].copy(
                                 progress = state.progress,
-                                status = DeezerDownloadManager.Status.DOWNLOADING
+                                status = TidalDownloadManager.Status.DOWNLOADING
                             )
                             downloadAdapter.notifyItemChanged(existing)
                         } else {
@@ -68,13 +68,13 @@ class MillayDownloadsFragment : Fragment(R.layout.fragment_millay_downloads) {
                                 artist = "",
                                 quality = "FLAC",
                                 progress = state.progress,
-                                status = DeezerDownloadManager.Status.DOWNLOADING
+                                status = TidalDownloadManager.Status.DOWNLOADING
                             ))
                             downloadAdapter.notifyItemInserted(0)
                         }
                         updateEmptyState()
                     }
-                    is DeezerDownloadManager.DownloadState.Completed -> {
+                    is TidalDownloadManager.DownloadState.Completed -> {
                         val existing = downloadItems.indexOfFirst { it.trackId == state.trackId }
                         val completed = MillayDownloadItem(
                             trackId = state.trackId,
@@ -82,7 +82,7 @@ class MillayDownloadsFragment : Fragment(R.layout.fragment_millay_downloads) {
                             artist = state.song.artistName,
                             quality = if (state.filePath.endsWith(".flac")) "FLAC" else "MP3 320",
                             progress = 100,
-                            status = DeezerDownloadManager.Status.DONE
+                            status = TidalDownloadManager.Status.DONE
                         )
                         if (existing >= 0) {
                             downloadItems[existing] = completed
@@ -93,11 +93,11 @@ class MillayDownloadsFragment : Fragment(R.layout.fragment_millay_downloads) {
                         }
                         updateEmptyState()
                     }
-                    is DeezerDownloadManager.DownloadState.Error -> {
+                    is TidalDownloadManager.DownloadState.Error -> {
                         val existing = downloadItems.indexOfFirst { it.trackId == state.trackId }
                         if (existing >= 0) {
                             downloadItems[existing] = downloadItems[existing].copy(
-                                status = DeezerDownloadManager.Status.ERROR
+                                status = TidalDownloadManager.Status.ERROR
                             )
                             downloadAdapter.notifyItemChanged(existing)
                         }

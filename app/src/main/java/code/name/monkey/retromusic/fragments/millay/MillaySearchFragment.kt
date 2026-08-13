@@ -32,7 +32,7 @@ import kotlinx.coroutines.withContext
 
 /**
  * Tab 2 de Millay — Búsqueda en Alta Calidad con filtros de formato (FLAC / MP3 320).
- * Conectada directamente con AutomixPlayerEngine y DeezerDownloadManager.
+ * Conectada directamente con AutomixPlayerEngine y TidalDownloadManager.
  */
 class MillaySearchFragment : Fragment(R.layout.fragment_millay_search) {
 
@@ -122,10 +122,7 @@ class MillaySearchFragment : Fragment(R.layout.fragment_millay_search) {
                         searchResultsRecycler.adapter = MillaySongRowAdapter(
                             songs = mergedSongs,
                             onDownloadClick = { song ->
-                                val split = song.data.removePrefix("tidal://track/").split("::")
-                                val tidalId = split[0]
-                                val coverUrl = if (split.size > 1 && split[1].isNotEmpty()) "https://resources.tidal.com/images/${split[1].replace("-", "/")}/1280x1280.jpg" else ""
-                                TidalDownloadManager.downloadTrack(requireContext(), song, tidalId, coverUrl)
+                                TidalDownloadManager.downloadTrack(requireContext(), song)
                                 
                                 Toast.makeText(
                                     requireContext(),

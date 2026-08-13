@@ -13,7 +13,7 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
-import code.name.monkey.retromusic.automix.DeezerDownloadManager
+import code.name.monkey.retromusic.automix.TidalDownloadManager
 import com.google.android.material.progressindicator.LinearProgressIndicator
 
 /**
@@ -25,7 +25,7 @@ data class MillayDownloadItem(
     val artist: String,
     val quality: String,
     val progress: Int,
-    val status: DeezerDownloadManager.Status
+    val status: TidalDownloadManager.Status
 )
 
 /**
@@ -56,21 +56,21 @@ class MillayDownloadsAdapter(
         holder.qualityBadge.text = item.quality
 
         when (item.status) {
-            DeezerDownloadManager.Status.DOWNLOADING -> {
+            TidalDownloadManager.Status.DOWNLOADING -> {
                 holder.downloadProgress.isVisible = true
                 holder.downloadProgress.progress  = item.progress
                 holder.statusIcon.setImageResource(android.R.drawable.stat_sys_download)
             }
-            DeezerDownloadManager.Status.POST_PROCESSING -> {
+            TidalDownloadManager.Status.POST_PROCESSING -> {
                 holder.downloadProgress.isVisible = true
                 holder.downloadProgress.isIndeterminate = true
                 holder.statusIcon.setImageResource(android.R.drawable.stat_notify_sync)
             }
-            DeezerDownloadManager.Status.DONE -> {
+            TidalDownloadManager.Status.DONE -> {
                 holder.downloadProgress.isVisible = false
                 holder.statusIcon.setImageResource(android.R.drawable.checkbox_on_background)
             }
-            DeezerDownloadManager.Status.ERROR -> {
+            TidalDownloadManager.Status.ERROR -> {
                 holder.downloadProgress.isVisible = false
                 holder.statusIcon.setImageResource(android.R.drawable.stat_notify_error)
             }
