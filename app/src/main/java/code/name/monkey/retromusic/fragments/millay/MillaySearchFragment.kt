@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.automix.AutomixPlayerEngine
 import code.name.monkey.retromusic.automix.BpmScanner
-import code.name.monkey.retromusic.automix.DeezerApiClient
-import code.name.monkey.retromusic.automix.DeezerDownloadManager
+import code.name.monkey.retromusic.automix.TidalApiClient
+import code.name.monkey.retromusic.automix.TidalDownloadManager
 import code.name.monkey.retromusic.db.SongEntity
 import code.name.monkey.retromusic.model.Song
 import com.google.android.material.chip.ChipGroup
@@ -91,28 +91,26 @@ class MillaySearchFragment : Fragment(R.layout.fragment_millay_search) {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val deezerDeferred = async { DeezerApiClient.search(query) }
-
-
-                val deezerTracks = try { deezerDeferred.await() } catch(e: Exception) { emptyList() }
+                val tidalDeferred = async { TidalApiClient.search(query) }
+                val tidalTracks = try { tidalDeferred.await() } catch(e: Exception) { emptyList() }
                 val mergedSongs = mutableListOf<Song>()
                 
-                for (i in deezerTracks.indices) {
-                    val d = deezerTracks[i]
+                for (i in tidalTracks.indices) {
+                    val t = tidalTracks[i]
                     mergedSongs.add(Song(
-                        id = d.id.toLongOrNull() ?: 0L,
-                        title = d.title,
+                        id = t.id.toLongOrNull() ?: 0L,
+                        title = t.title,
                         trackNumber = 1,
                         year = 2026,
-                        duration = d.durationSec * 1000L,
-                        data = "deezer://track/${d.id}",
+                        duration = t.durationSec * 1000L,
+                        data = "tidal://track/${t.id}::${t.albumCoverId}",
                         dateModified = System.currentTimeMillis(),
                         albumId = 0L,
-                        albumName = d.albumTitle,
+                        albumName = t.albumTitle,
                         artistId = 0L,
-                        artistName = d.artistName,
-                        composer = "deezer",
-                        albumArtist = d.artistName
+                        artistName = t.artistName,
+                        composer = "tidal",
+                        albumArtist = t.artistName
                     ))
                 }
 
@@ -124,14 +122,11 @@ class MillaySearchFragment : Fragment(R.layout.fragment_millay_search) {
                         searchResultsRecycler.adapter = MillaySongRowAdapter(
                             songs = mergedSongs,
                             onDownloadClick = { song ->
-                                if (song.composer == "tidal") {
-                                    val split = song.data.removePrefix("tidal://track/").split("::")
-                                    val tidalId = split[0]
-                                    val coverUrl = if (split.size > 1 && split[1].isNotEmpty()) "https://resources.tidal.com/images/${split[1].replace("-", "/")}/1280x1280.jpg" else ""
-                                    code.name.monkey.retromusic.automix.TidalDownloadManager.downloadTrack(requireContext(), song, tidalId, coverUrl)
-                                } else {
-                                    DeezerDownloadManager.downloadTrack(requireContext(), song, selectedQuality)
-                                }
+                                val split = song.data.removePrefix("tidal://track/").split("::")
+                                val tidalId = split[0]
+                                val coverUrl = if (split.size > 1 && split[1].isNotEmpty()) "https://resources.tidal.com/images/${split[1].replace("-", "/")}/1280x1280.jpg" else ""
+                                TidalDownloadManager.downloadTrack(requireContext(), song, tidalId, coverUrl)
+                                
                                 Toast.makeText(
                                     requireContext(),
                                     "⬇️ Descargando: ${song.title} (${song.composer})",
@@ -176,7 +171,7 @@ class MillaySearchFragment : Fragment(R.layout.fragment_millay_search) {
         trackNumber = this.trackNumber,
         year = this.year,
         duration = this.duration,
-        data = "deezer://track/${this.id}",
+        data = this.data,
         dateModified = this.dateModified,
         albumId = this.albumId,
         albumName = this.albumName,

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="vertical"
+    android:background="@color/millay_bg_primary"
     tools:ignore="MissingPrefix">
 
     <com.google.android.material.textview.MaterialTextView
@@ -15,7 +16,9 @@
         android:layout_marginStart="16dp"
         android:minWidth="40dp"
         android:singleLine="true"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="@color/millay_text_secondary"
+        android:fontFamily="@font/manrope_medium"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/progressSlider"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/progressSlider"
@@ -26,7 +29,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:maxHeight="2dp"
-        style="@style/Widget.Retro.Slider"
+        app:trackColorActive="@color/millay_accent"
+        app:trackColorInactive="@color/millay_border_subtle"
+        app:thumbColor="@color/millay_accent"
         app:layout_constraintEnd_toStartOf="@id/songTotalTime"
         app:layout_constraintStart_toEndOf="@id/songCurrentProgress"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +46,9 @@
         android:gravity="end"
         android:minWidth="40dp"
         android:singleLine="true"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="@color/millay_text_secondary"
+        android:fontFamily="@font/manrope_medium"
+        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@+id/progressSlider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -60,9 +67,8 @@
         android:paddingHorizontal="16dp"
         android:scrollHorizontally="true"
         android:singleLine="true"
-        android:textAppearance="@style/TextViewHeadline6"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textStyle="bold"
+        style="@style/Millay.HeroTitle"
+        android:textSize="22sp"
         app:layout_constraintBottom_toTopOf="@+id/text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -83,8 +89,8 @@
         android:paddingVertical="8dp"
         android:scrollHorizontally="true"
         android:singleLine="true"
-        android:textAppearance="@style/TextViewBody1"
-        android:textColor="?android:attr/textColorSecondary"
+        style="@style/Millay.TrackSubtitle"
+        android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@+id/songInfo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +105,8 @@
         android:maxLines="2"
         android:paddingHorizontal="16dp"
         android:paddingBottom="8dp"
-        android:textColor="?android:attr/textColorSecondary"
+        android:textColor="@color/millay_accent"
+        android:fontFamily="@font/manrope_bold"
         android:textSize="12sp"
         app:layout_constraintBottom_toTopOf="@+id/playPauseButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -111,7 +118,7 @@
         android:id="@+id/automixButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/roundSelector"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="12dp"
         android:scaleType="fitCenter"
         android:contentDescription="Mesa de mezclas Automix"
@@ -120,13 +127,13 @@
         app:layout_constraintTop_toBottomOf="@+id/songTotalTime"
         app:srcCompat="@drawable/ic_equalizer"
         tools:ignore="MissingPrefix"
-        tools:tint="@color/md_black_1000" />
+        app:tint="@color/millay_text_secondary" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/repeatButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/roundSelector"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="16dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/previousButton"
@@ -136,13 +143,13 @@
         app:layout_constraintTop_toTopOf="@+id/previousButton"
         app:srcCompat="@drawable/ic_repeat"
         tools:ignore="MissingPrefix"
-        tools:tint="@color/md_black_1000" />
+        app:tint="@color/millay_text_secondary" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/previousButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/roundSelector"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="16dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/playPauseButton"
@@ -151,26 +158,28 @@
         app:layout_constraintTop_toTopOf="@+id/playPauseButton"
         app:srcCompat="@drawable/ic_skip_previous"
         tools:ignore="MissingPrefix"
-        tools:tint="@color/md_black_1000" />
+        app:tint="@color/millay_text_primary" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/playPauseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/roundSelector"
+        android:backgroundTint="@color/millay_accent"
+        app:tint="@color/millay_bg_primary"
+        app:borderWidth="0dp"
+        app:elevation="8dp"
         app:layout_constraintBottom_toTopOf="@+id/volumeFragmentContainer"
         app:layout_constraintEnd_toStartOf="@+id/nextButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/previousButton"
         app:layout_constraintTop_toBottomOf="@+id/songInfo"
-        app:srcCompat="@drawable/ic_pause"
-        tools:tint="@color/md_black_1000" />
+        app:srcCompat="@drawable/ic_pause" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/nextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/roundSelector"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="16dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/playPauseButton"
@@ -179,13 +188,13 @@
         app:layout_constraintTop_toTopOf="@+id/playPauseButton"
         app:srcCompat="@drawable/ic_skip_next"
         tools:ignore="MissingPrefix"
-        tools:tint="@color/md_black_1000" />
+        app:tint="@color/millay_text_primary" />
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/shuffleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/roundSelector"
+        android:background="?attr/selectableItemBackgroundBorderless"
         android:padding="16dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="@+id/nextButton"
@@ -194,7 +203,7 @@
         app:layout_constraintTop_toTopOf="@+id/nextButton"
         app:srcCompat="@drawable/ic_shuffle"
         tools:ignore="MissingPrefix"
-        tools:tint="@color/md_black_1000" />
+        app:tint="@color/millay_text_secondary" />
 
     <FrameLayout
         android:id="@+id/volumeFragmentContainer"
@@ -202,6 +211,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:background="@color/md_red_400"
+        tools:background="@color/millay_bg_card"
         tools:layout_height="52dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

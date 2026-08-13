@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.automix.AutomixPlayerEngine
-import code.name.monkey.retromusic.automix.DeezerApiClient
+import code.name.monkey.retromusic.automix.TidalApiClient
 import code.name.monkey.retromusic.automix.toSongEntity
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
@@ -124,13 +124,15 @@ class MillayHomeFragment : Fragment() {
 
     private fun setupTopCharts() {
         topChartsRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        DeezerApiClient.searchTracks("Top 50 Global", onResult = { songs ->
+        TidalApiClient.searchTracks("Top 50 Global", onResult = { songs ->
             if (songs.isNotEmpty()) {
                 val act = activity ?: return@searchTracks
                 act.runOnUiThread {
                     if (isAdded && view != null) {
                         val mixes = songs.take(10).map { song ->
-                            DiscoverMix("TOP", "${song.title} - ${song.artistName}", "https://e-cdns-images.dzcdn.net/images/cover/${song.albumId}/500x500.jpg")
+                            val split = song.data.removePrefix("tidal://track/").split("::")
+                            val coverUrl = if (split.size > 1 && split[1].isNotEmpty()) "https://resources.tidal.com/images/${split[1].replace("-", "/")}/500x500.jpg" else ""
+                            DiscoverMix("TOP", "${song.title} - ${song.artistName}", coverUrl)
                         }
                         topChartsRecycler.adapter = MillaySongCardAdapter(mixes) { mix ->
                             searchAndPlay(mix.title)
@@ -146,7 +148,7 @@ class MillayHomeFragment : Fragment() {
         if (ctx != null) {
             Toast.makeText(ctx, "Iniciando Flow ReFreezer ($mood)...", Toast.LENGTH_SHORT).show()
         }
-        DeezerApiClient.searchTracks(mood, onResult = { songs ->
+        TidalApiClient.searchTracks(mood, onResult = { songs ->
             if (songs.isNotEmpty()) {
                 val songEntity = songs.first().toSongEntity()
                 val act = activity ?: return@searchTracks
@@ -160,7 +162,7 @@ class MillayHomeFragment : Fragment() {
     }
 
     private fun searchAndPlay(query: String) {
-        DeezerApiClient.searchTracks(query, onResult = { songs ->
+        TidalApiClient.searchTracks(query, onResult = { songs ->
             if (songs.isNotEmpty()) {
                 val songEntity = songs.first().toSongEntity()
                 val act = activity ?: return@searchTracks

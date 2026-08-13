@@ -119,6 +119,41 @@ object TidalApiClient {
             emptyList()
         }
     }
+
+    /**
+     * Backward compatibility for MillayHomeFragment
+     */
+    fun searchTracks(
+        query: String,
+        onResult: (List<Song>) -> Unit,
+        onError: (Exception) -> Unit = {}
+    ) {
+        kotlinx.coroutines.GlobalScope.launch(Dispatchers.IO) {
+            try {
+                val results = search(query)
+                val songs = results.mapIndexed { index, track ->
+                    Song(
+                        id = track.id.toLongOrNull() ?: 0L,
+                        title = track.title,
+                        trackNumber = index + 1,
+                        year = 2026,
+                        duration = track.durationSec * 1000L,
+                        data = "tidal://track/${track.id}::${track.albumCoverId}",
+                        dateModified = System.currentTimeMillis(),
+                        albumId = 0L,
+                        albumName = track.albumTitle,
+                        artistId = 0L,
+                        artistName = track.artistName,
+                        composer = "tidal",
+                        albumArtist = track.artistName
+                    )
+                }
+                onResult(songs)
+            } catch (e: Exception) {
+                onError(e)
+            }
+        }
+    }
     
     suspend fun getStreamUrl(trackId: String): String? = withContext(Dispatchers.IO) {
         try {
