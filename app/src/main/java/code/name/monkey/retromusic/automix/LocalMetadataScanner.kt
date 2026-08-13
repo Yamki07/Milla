@@ -2,14 +2,14 @@ package code.name.monkey.retromusic.automix
 
 import android.content.Context
 import android.util.Log
-import code.name.monkey.retromusic.network.SupabaseClientManager
 import code.name.monkey.retromusic.repository.RealSongRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
  * Escanea toda la biblioteca local de forma manual a petición del usuario.
- * Destruye la base de datos de Supabase y sube datos completamente reales leídos de los archivos.
+ * Cada pista se analiza y sincroniza mediante el upsert idempotente de BpmScanner.
+ * Nunca borra el catálogo remoto compartido antes de empezar.
  */
 object LocalMetadataScanner {
 
@@ -18,14 +18,7 @@ object LocalMetadataScanner {
     suspend fun scanEntireDeviceAndUpload(context: Context, onProgress: (Int, Int, String) -> Unit) = withContext(Dispatchers.IO) {
         try {
             Log.w(TAG, "Iniciando escáner total del dispositivo...")
-            // 1. Limpiar base de datos
-            val cleared = SupabaseClientManager.clearAllData()
-            if (!cleared) {
-                Log.e(TAG, "No se pudo limpiar la base de datos en Supabase, abortando escaneo.")
-                return@withContext
-            }
-            
-            // 2. Obtener todas las canciones locales
+            // 1. Obtener todas las canciones locales
             val songs = RealSongRepository(context).songs()
             val total = songs.size
             if (total == 0) {
@@ -35,7 +28,8 @@ object LocalMetadataScanner {
 
             Log.i(TAG, "Escaneando $total canciones desde el almacenamiento local.")
             
-            // 3. Analizar y subir una por una
+            // 2. Analizar y subir una por una. BpmScanner usa generateTrackId y
+            // SupabaseClientManager.uploadMetadata con resolution=merge-duplicates.
             var count = 0
             for (song in songs) {
                 try {

@@ -1,6 +1,7 @@
 package code.name.monkey.retromusic.automix
 
 import android.util.Log
+import code.name.monkey.retromusic.BuildConfig
 import code.name.monkey.retromusic.model.Song
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -21,10 +22,12 @@ import java.nio.charset.StandardCharsets
 object TidalApiClient {
     private const val TAG = "TidalApiClient"
     
-    // Refresh Token obtenido via OAuth Device Flow
-    private const val REFRESH_TOKEN = "eyJraWQiOiJoUzFKYTdVMCIsImFsZyI6IkVTNTEyIn0.eyJ0eXBlIjoibzJfcmVmcmVzaCIsInVpZCI6MjA0MTg4NTU1LCJzY29wZSI6IndfdXNyIHJfdXNyIHdfc3ViIiwiY2lkIjoxMzMxOSwic1ZlciI6MSwiZ1ZlciI6MCwiaXNzIjoiaHR0cHM6Ly9hdXRoLnRpZGFsLmNvbS92MSJ9.ALlkbro7NIpyKNrtjCrh2_lqrxJIMUURSzLCi3KlqY7MTwAV9VO7-O4qbzog8AekvHKFf4l0HWgqD8OJk-YKlS_yAeBdhtxuY8bv_SdAcYdptgXOwYecdgGqIlPdTEobsgbyQ-105AN5Tu24MP8DG7qGgd24kzEmN2fQ5Jfs6A5w8LgH"
-    private const val CLIENT_ID = "fX2JxdmntZWK0ixT"
-    private const val CLIENT_SECRET = "1Nn9AfDAjxrgJFJbKNWLeAyKGVGmINuXPPLHVXAvxAg="
+    private val refreshToken: String
+        get() = BuildConfig.TIDAL_REFRESH_TOKEN
+    private val clientId: String
+        get() = BuildConfig.TIDAL_CLIENT_ID
+    private val clientSecret: String
+        get() = BuildConfig.TIDAL_CLIENT_SECRET
     
     private var accessToken: String = ""
     private var sessionInitialized = false
@@ -39,15 +42,20 @@ object TidalApiClient {
 
     private suspend fun ensureSession(forceRefresh: Boolean = false) {
         if (!forceRefresh && sessionInitialized && accessToken.isNotEmpty()) return
+        if (refreshToken.isBlank() || clientId.isBlank() || clientSecret.isBlank()) {
+            lastError = "TIDAL no está configurado: completa local.properties con las credenciales de desarrollo."
+            Log.e(TAG, lastError ?: "Configuración TIDAL ausente")
+            return
+        }
         withContext(Dispatchers.IO) {
             try {
                 val formBody = FormBody.Builder()
-                    .add("refresh_token", REFRESH_TOKEN)
-                    .add("client_id", CLIENT_ID)
+                    .add("refresh_token", refreshToken)
+                    .add("client_id", clientId)
                     .add("grant_type", "refresh_token")
                     .build()
 
-                val authString = "$CLIENT_ID:$CLIENT_SECRET"
+                val authString = "$clientId:$clientSecret"
                 val encodedAuth = android.util.Base64.encodeToString(authString.toByteArray(StandardCharsets.UTF_8), android.util.Base64.NO_WRAP)
 
                 val request = Request.Builder()
@@ -68,7 +76,7 @@ object TidalApiClient {
                     accessToken = json.optString("access_token", "")
                     sessionInitialized = accessToken.isNotEmpty()
                     lastError = null
-                    Log.d(TAG, "Tidal Session initialized: ${accessToken.take(10)}...")
+                    Log.d(TAG, "Tidal Session initialized")
                 }
             } catch (e: Exception) {
                 lastError = "Auth Error: ${e.message}"

@@ -25,6 +25,10 @@ android {
         versionName = "6.6.0"
 
         buildConfigField("String", "GOOGLE_PLAY_LICENSING_KEY", "\"${getProperty(getProperties("../public.properties"), "GOOGLE_PLAY_LICENSE_KEY")}\"")
+        val localProperties = getProperties("local.properties")
+        buildConfigField("String", "TIDAL_REFRESH_TOKEN", buildConfigString(getProperty(localProperties, "TIDAL_REFRESH_TOKEN", "")))
+        buildConfigField("String", "TIDAL_CLIENT_ID", buildConfigString(getProperty(localProperties, "TIDAL_CLIENT_ID", "")))
+        buildConfigField("String", "TIDAL_CLIENT_SECRET", buildConfigString(getProperty(localProperties, "TIDAL_CLIENT_SECRET", "")))
     }
     val signingProperties = getProperties("retro.properties")
     val theSigningConfig = if (signingProperties != null) {
@@ -191,5 +195,8 @@ fun getProperties(fileName: String): Properties? {
     return properties
 }
 
-fun getProperty(properties: Properties?, name: String): String =
-    properties?.getProperty(name) ?: "$name missing"
+fun getProperty(properties: Properties?, name: String, defaultValue: String = "$name missing"): String =
+    properties?.getProperty(name) ?: defaultValue
+
+fun buildConfigString(value: String): String =
+    "\"${value.replace("\\", "\\\\").replace("\"", "\\\"")}\""

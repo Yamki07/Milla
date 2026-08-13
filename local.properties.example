@@ -1,0 +1,6 @@
+# Copia este archivo como local.properties en tu entorno de desarrollo.
+# No subas local.properties ni valores reales a Git.
+sdk.dir=/ruta/al/Android/Sdk
+TIDAL_REFRESH_TOKEN=
+TIDAL_CLIENT_ID=
+TIDAL_CLIENT_SECRET=
