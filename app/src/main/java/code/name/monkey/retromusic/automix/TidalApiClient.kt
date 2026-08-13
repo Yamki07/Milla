@@ -28,8 +28,10 @@ object TidalApiClient {
     
     private var accessToken: String = ""
     private var sessionInitialized = false
+    var lastError: String? = null
 
     private val client = OkHttpClient.Builder()
+        .connectionSpecs(listOf(okhttp3.ConnectionSpec.MODERN_TLS, okhttp3.ConnectionSpec.COMPATIBLE_TLS, okhttp3.ConnectionSpec.CLEARTEXT))
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(30, TimeUnit.SECONDS)
@@ -58,15 +60,18 @@ object TidalApiClient {
                 client.newCall(request).execute().use { response ->
                     val body = response.body?.string() ?: return@withContext
                     if (!response.isSuccessful) {
+                        lastError = "Auth Failed HTTP ${response.code}: $body"
                         Log.e(TAG, "Tidal ensureSession Failed HTTP ${response.code}: $body")
                         return@withContext
                     }
                     val json = JSONObject(body)
                     accessToken = json.optString("access_token", "")
                     sessionInitialized = accessToken.isNotEmpty()
+                    lastError = null
                     Log.d(TAG, "Tidal Session initialized: ${accessToken.take(10)}...")
                 }
             } catch (e: Exception) {
+                lastError = "Auth Error: ${e.message}"
                 Log.e(TAG, "Tidal ensureSession error: $e")
             }
         }
@@ -178,6 +183,7 @@ object TidalApiClient {
                     return@withContext getStreamUrl(trackId, retryCount - 1)
                 }
                 if (!response.isSuccessful) {
+                    lastError = "Stream URL Failed HTTP ${response.code}: $resBody"
                     Log.e(TAG, "getStreamUrl Failed HTTP ${response.code}: $resBody")
                     return@withContext null
                 }
@@ -185,17 +191,30 @@ object TidalApiClient {
                 val json = JSONObject(resBody)
                 val manifestStr = json.optString("manifest")
                 if (manifestStr.isNotEmpty()) {
-                    val decodedBytes = android.util.Base64.decode(manifestStr, android.util.Base64.DEFAULT)
-                    val decodedManifest = String(decodedBytes, StandardCharsets.UTF_8)
-                    val manifestJson = JSONObject(decodedManifest)
-                    val urls = manifestJson.optJSONArray("urls")
-                    if (urls != null && urls.length() > 0) {
-                        return@withContext urls.getString(0)
+                    try {
+                        // Fix padding for strict Android Base64 decoders
+                        val paddedManifestStr = manifestStr + "=".repeat((4 - manifestStr.length % 4) % 4)
+                        val decodedBytes = android.util.Base64.decode(paddedManifestStr, android.util.Base64.DEFAULT)
+                        val decodedManifest = String(decodedBytes, StandardCharsets.UTF_8)
+                        val manifestJson = JSONObject(decodedManifest)
+                        val urls = manifestJson.optJSONArray("urls")
+                        if (urls != null && urls.length() > 0) {
+                            lastError = null
+                            return@withContext urls.getString(0)
+                        } else {
+                            lastError = "No URLs in manifest"
+                        }
+                    } catch (e: Exception) {
+                        lastError = "Manifest Parse Error: ${e.message}"
+                        Log.e(TAG, "Failed to parse manifest: $e")
                     }
+                } else {
+                    lastError = "Empty manifest returned by Tidal (Account tier limitation?)"
                 }
                 return@withContext null
             }
         } catch (e: Exception) {
+            lastError = "Network Error: ${e.message}"
             Log.e(TAG, "getStreamUrl error: $e")
             null
         }

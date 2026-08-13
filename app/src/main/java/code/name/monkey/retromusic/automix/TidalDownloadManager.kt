@@ -99,7 +99,8 @@ object TidalDownloadManager {
                 if (streamUrl.isNullOrEmpty()) {
                     _downloadState.value = DownloadState.Error(trackId, "No se pudo obtener el enlace de Tidal")
                     withContext(Dispatchers.Main) {
-                        android.widget.Toast.makeText(context, "Error: Token expirado o URL no encontrada", android.widget.Toast.LENGTH_LONG).show()
+                        val errorMsg = TidalApiClient.lastError ?: "Token expirado o URL no encontrada"
+                        android.widget.Toast.makeText(context, "Error: $errorMsg", android.widget.Toast.LENGTH_LONG).show()
                     }
                     return@launch
                 }
@@ -109,9 +110,10 @@ object TidalDownloadManager {
                     downloadDir.mkdirs()
                 }
 
-                // Tidal lossless usually FLAC
-                val isFlac = streamUrl.contains(".flac") || streamUrl.contains("audio/flac") || quality == 9
-                val extension = if (isFlac) "flac" else "mp3"
+                // Identify actual format from URL
+                val isFlac = streamUrl.contains(".flac") || streamUrl.contains("audio/flac")
+                val isMp4 = streamUrl.contains(".mp4") || streamUrl.contains("audio/mp4")
+                val extension = if (isFlac) "flac" else if (isMp4) "m4a" else "mp3"
                 val fileName = "${sanitizeFileName(song.artistName)} - ${sanitizeFileName(song.title)}.$extension"
                 val outputFile = File(downloadDir, fileName)
 
@@ -119,7 +121,11 @@ object TidalDownloadManager {
                 if (success) {
                     _downloadState.value = DownloadState.PostProcessing(trackId)
                     tagAndEnrichDownloadedFile(context, outputFile, song, realTrackId, coverId)
-                    val mimeType = if (isFlac) "audio/flac" else "audio/mpeg"
+                    val mimeType = when (extension) {
+                        "flac" -> "audio/flac"
+                        "m4a" -> "audio/mp4"
+                        else -> "audio/mpeg"
+                    }
                     android.media.MediaScannerConnection.scanFile(context, arrayOf(outputFile.absolutePath), arrayOf(mimeType)) { path, uri ->
                         Log.i(TAG, "MediaScanner completado para: $path, uri=$uri")
                     }
