@@ -22,12 +22,16 @@ import java.nio.charset.StandardCharsets
 object TidalApiClient {
     private const val TAG = "TidalApiClient"
     
+    private const val DEFAULT_REFRESH_TOKEN = "eyJraWQiOiJoUzFKYTdVMCIsImFsZyI6IkVTNTEyIn0.eyJ0eXBlIjoibzJfcmVmcmVzaCIsInVpZCI6MjA0MTg4NTU1LCJzY29wZSI6IndfdXNyIHJfdXNyIHdfc3ViIiwiY2lkIjoxMzMxOSwic1ZlciI6MSwiZ1ZlciI6MCwiaXNzIjoiaHR0cHM6Ly9hdXRoLnRpZGFsLmNvbS92MSJ9.ALlkbro7NIpyKNrtjCrh2_lqrxJIMUURSzLCi3KlqY7MTwAV9VO7-O4qbzog8AekvHKFf4l0HWgqD8OJk-YKlS_yAeBdhtxuY8bv_SdAcYdptgXOwYecdgGqIlPdTEobsgbyQ-105AN5Tu24MP8DG7qGgd24kzEmN2fQ5Jfs6A5w8LgH"
+    private const val DEFAULT_CLIENT_ID = "fX2JxdmntZWK0ixT"
+    private const val DEFAULT_CLIENT_SECRET = "1Nn9AfDAjxrgJFJbKNWLeAyKGVGmINuXPPLHVXAvxAg="
+
     private val refreshToken: String
-        get() = BuildConfig.TIDAL_REFRESH_TOKEN
+        get() = BuildConfig.TIDAL_REFRESH_TOKEN.ifBlank { DEFAULT_REFRESH_TOKEN }
     private val clientId: String
-        get() = BuildConfig.TIDAL_CLIENT_ID
+        get() = BuildConfig.TIDAL_CLIENT_ID.ifBlank { DEFAULT_CLIENT_ID }
     private val clientSecret: String
-        get() = BuildConfig.TIDAL_CLIENT_SECRET
+        get() = BuildConfig.TIDAL_CLIENT_SECRET.ifBlank { DEFAULT_CLIENT_SECRET }
     
     private var accessToken: String = ""
     private var sessionInitialized = false

@@ -27,9 +27,12 @@ android {
 
         buildConfigField("String", "GOOGLE_PLAY_LICENSING_KEY", "\"${getProperty(getProperties("../public.properties"), "GOOGLE_PLAY_LICENSE_KEY")}\"")
         val localProperties = getProperties("local.properties")
-        buildConfigField("String", "TIDAL_REFRESH_TOKEN", buildConfigString(getProperty(localProperties, "TIDAL_REFRESH_TOKEN", "")))
-        buildConfigField("String", "TIDAL_CLIENT_ID", buildConfigString(getProperty(localProperties, "TIDAL_CLIENT_ID", "")))
-        buildConfigField("String", "TIDAL_CLIENT_SECRET", buildConfigString(getProperty(localProperties, "TIDAL_CLIENT_SECRET", "")))
+        val defaultRefreshToken = "eyJraWQiOiJoUzFKYTdVMCIsImFsZyI6IkVTNTEyIn0.eyJ0eXBlIjoibzJfcmVmcmVzaCIsInVpZCI6MjA0MTg4NTU1LCJzY29wZSI6IndfdXNyIHJfdXNyIHdfc3ViIiwiY2lkIjoxMzMxOSwic1ZlciI6MSwiZ1ZlciI6MCwiaXNzIjoiaHR0cHM6Ly9hdXRoLnRpZGFsLmNvbS92MSJ9.ALlkbro7NIpyKNrtjCrh2_lqrxJIMUURSzLCi3KlqY7MTwAV9VO7-O4qbzog8AekvHKFf4l0HWgqD8OJk-YKlS_yAeBdhtxuY8bv_SdAcYdptgXOwYecdgGqIlPdTEobsgbyQ-105AN5Tu24MP8DG7qGgd24kzEmN2fQ5Jfs6A5w8LgH"
+        val defaultClientId = "fX2JxdmntZWK0ixT"
+        val defaultClientSecret = "1Nn9AfDAjxrgJFJbKNWLeAyKGVGmINuXPPLHVXAvxAg="
+        buildConfigField("String", "TIDAL_REFRESH_TOKEN", buildConfigString(getProperty(localProperties, "TIDAL_REFRESH_TOKEN", defaultRefreshToken)))
+        buildConfigField("String", "TIDAL_CLIENT_ID", buildConfigString(getProperty(localProperties, "TIDAL_CLIENT_ID", defaultClientId)))
+        buildConfigField("String", "TIDAL_CLIENT_SECRET", buildConfigString(getProperty(localProperties, "TIDAL_CLIENT_SECRET", defaultClientSecret)))
     }
     val signingProperties = getProperties("retro.properties")
     val theSigningConfig = if (signingProperties != null) {

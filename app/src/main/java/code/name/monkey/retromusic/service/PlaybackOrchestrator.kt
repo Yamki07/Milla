@@ -259,16 +259,24 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
 
     private fun createMediaSource(song: Song): MediaSource {
         val path = song.data.trim()
-        val item = MediaItem.Builder().setMediaId(song.id.toString()).setUri(song.uri).build()
         if (!path.startsWith("tidal://track/", true)) {
+            val item = MediaItem.Builder().setMediaId(song.id.toString()).setUri(song.uri).build()
             return ProgressiveMediaSource.Factory(DefaultDataSource.Factory(context)).createMediaSource(item)
         }
         val trackId = path.removePrefix("tidal://track/").substringBefore("::")
         val upstream = DefaultDataSource.Factory(context)
         val resolver = ResolvingDataSource.Resolver { spec ->
             val streamUrl = runBlocking(Dispatchers.IO) { TidalApiClient.getStreamUrl(trackId) }
-            streamUrl?.let { spec.withUri(Uri.parse(it)) } ?: spec
+            if (!streamUrl.isNullOrEmpty()) {
+                spec.withUri(Uri.parse(streamUrl))
+            } else {
+                spec
+            }
         }
+        val item = MediaItem.Builder()
+            .setMediaId(song.id.toString())
+            .setUri(Uri.parse("https://tidal.com/stream/$trackId"))
+            .build()
         return ProgressiveMediaSource.Factory(ResolvingDataSource.Factory(upstream, resolver)).createMediaSource(item)
     }
 
