@@ -145,7 +145,12 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
                 val mediaSource = resolveTidalStreamUrlAsync(song)
                 withContext(Dispatchers.Main) {
                     if (nextSong?.id == song.id) {
-                        activePlayer.removeMediaItems(1, activePlayer.mediaItemCount)
+                        val count = activePlayer.mediaItemCount
+                        if (count > 1) {
+                            activePlayer.removeMediaItems(1, count)
+                        } else if (count == 0) {
+                            activePlayer.clearMediaItems()
+                        }
                         activePlayer.addMediaSource(mediaSource)
                     }
                 }
