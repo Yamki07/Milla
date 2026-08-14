@@ -1425,3 +1425,1869 @@
 1424,Mac Miller,Circles,2020,1,Circles,78,39,156,4/4,C# Menor,12A,2:50
 1425,Mac Miller,Circles,2020,2,Good News,87,43.5,174,4/4,A# Menor,3A,5:42
 1426,Mac Miller,Circles,2020,3,Blue World,148,74,296,4/4,D# Menor,2A,3:29
+1427,Héctor Lavoe,La Voz,1975,1,El Todopoderoso,100,50,200,4/4,F# Menor,11A,4:20
+1428,Héctor Lavoe,La Voz,1975,2,Emborráchame de Amor,90,45,180,4/4,C# Menor,12A,3:10
+1429,Héctor Lavoe,La Voz,1975,3,Paraíso de Dulzura,96,48,192,4/4,A# Menor,3A,4:34
+1430,Héctor Lavoe,La Voz,1975,4,Mi Gente,108,54,216,4/4,D# Menor,2A,5:30
+1431,Héctor Lavoe,De Ti Depende,1976,1,Periódico de Ayer,105,52.5,210,4/4,G# Menor,1A,6:48
+1432,Héctor Lavoe,De Ti Depende,1976,2,Vamos a Reír un Poco,98,49,196,4/4,F# Menor,11A,7:35
+1433,Héctor Lavoe,De Ti Depende,1976,3,Hacha y Machete,104,52,208,4/4,C# Menor,12A,5:32
+1434,Héctor Lavoe,Comedia,1978,1,El Cantante,104,52,208,4/4,F# Menor,11A,10:23
+1435,Héctor Lavoe,Comedia,1978,2,Bandolera,102,51,204,4/4,G# Menor,1A,9:25
+1436,Héctor Lavoe,Comedia,1978,3,Songoro Cosongo,100,50,200,4/4,A# Menor,3A,7:45
+1437,Héctor Lavoe,Reventó,1985,1,De Qué Tamaño Es Tu Amor,95,47.5,190,4/4,D# Menor,2A,4:15
+1438,Héctor Lavoe,Reventó,1985,2,La Fama,100,50,200,4/4,C# Menor,12A,5:28
+1439,Héctor Lavoe,Vigilante (con Willie Colón),1983,1,Juanito Alimaña,104,52,208,4/4,F# Menor,11A,7:34
+1440,Héctor Lavoe,Vigilante (con Willie Colón),1983,2,Triste y Vacía,95,47.5,190,4/4,G# Menor,1A,6:05
+1441,Marc Anthony,Todo a Su Tiempo,1995,1,Hasta Ayer,92,46,184,4/4,F# Menor,11A,3:58
+1442,Marc Anthony,Todo a Su Tiempo,1995,2,Te Conozco Bien,94,47,188,4/4,C# Menor,12A,5:00
+1443,Marc Anthony,Todo a Su Tiempo,1995,3,Nadie Como Ella,98,49,196,4/4,G# Menor,1A,4:43
+1444,Marc Anthony,Contra la Corriente,1997,1,Y Hubo Alguien,95,47.5,190,4/4,A# Menor,3A,6:31
+1445,Marc Anthony,Contra la Corriente,1997,2,Contra la Corriente,92,46,184,4/4,D# Menor,2A,5:14
+1446,Marc Anthony,Contra la Corriente,1997,3,Si Te Vas,96,48,192,4/4,F# Menor,11A,4:43
+1447,Marc Anthony,Libre,2001,1,Celos,95,47.5,190,4/4,C# Menor,12A,4:47
+1448,Marc Anthony,Valió la Pena,2004,1,Valió la Pena,98,49,196,4/4,A Menor,8A,4:52
+1449,Marc Anthony,Valió la Pena,2004,2,Ahora Quien,85,42.5,170,4/4,E Menor,9A,5:11
+1450,Marc Anthony,Valió la Pena,2004,3,Tu Amor Me Hace Bien,96,48,192,4/4,G# Menor,1A,5:02
+1451,Marc Anthony,3,2013,1,Vivir Mi Vida,105,52.5,210,4/4,C Menor,5A,4:12
+1452,Marc Anthony,3,2013,2,Flor Pálida,92,46,184,4/4,D# Menor,2A,4:57
+1453,Marc Anthony,3,2013,3,Cambio de Piel,94,47,188,4/4,F# Menor,11A,4:36
+1454,Marc Anthony,Pa'llá Voy,2022,1,Pa'llá Voy,96,48,192,4/4,A Menor,8A,4:07
+1455,Marc Anthony,Pa'llá Voy,2022,2,Mala,98,49,196,4/4,C# Menor,12A,3:48
+1456,Celia Cruz,Celia & Johnny,1974,1,Quimbara,108,54,216,4/4,D# Menor,2A,4:53
+1457,Celia Cruz,Celia & Johnny,1974,2,Toro Mata,102,51,204,4/4,F# Menor,11A,5:37
+1458,Celia Cruz,Tremendo Caché,1975,1,Cúcala,105,52.5,210,4/4,G# Menor,1A,4:18
+1459,Celia Cruz,Tremendo Caché,1975,2,Sopita en Botella,100,50,200,4/4,C# Menor,12A,4:42
+1460,Celia Cruz,Mi Vida Es Cantar,1998,1,La Vida Es Un Carnaval,104,52,208,4/4,D Menor,7A,4:35
+1461,Celia Cruz,Siempre Viviré,2000,1,Yo Viviré (I Will Survive),118,59,236,4/4,A Menor,8A,4:32
+1462,Celia Cruz,La Negra Tiene Tumbao,2001,1,La Negra Tiene Tumbao,100,50,200,4/4,F# Menor,11A,4:14
+1463,Celia Cruz,La Negra Tiene Tumbao,2001,2,Hay Que Empezar Otra Vez,98,49,196,4/4,C# Menor,12A,4:38
+1464,Celia Cruz,Regalo del Alma,2003,1,Ríe y Llora,102,51,204,4/4,G# Menor,1A,4:12
+1465,Celia Cruz,Regalo del Alma,2003,2,Ella Tiene Fuego,100,50,200,4/4,D# Menor,2A,4:05
+1466,Celia Cruz,Son con Guaguancó,1966,1,Bemba Colorá,112,56,224,4/4,F# Menor,11A,7:45
+1467,Celia Cruz,Incomparable Celia,1958,1,Burundanga,105,52.5,210,4/4,A# Menor,3A,3:10
+1468,Rubén Blades,Siembra (con Willie Colón),1978,1,Plástico,108,54,216,4/4,F# Menor,11A,6:37
+1469,Rubén Blades,Siembra (con Willie Colón),1978,2,Buscando Guayaba,105,52.5,210,4/4,C# Menor,12A,5:43
+1470,Rubén Blades,Siembra (con Willie Colón),1978,3,Pedro Navaja,95,47.5,190,4/4,D Menor,7A,7:21
+1471,Rubén Blades,Siembra (con Willie Colón),1978,4,María Lionza,102,51,204,4/4,G# Menor,1A,5:27
+1472,Rubén Blades,Siembra (con Willie Colón),1978,5,Siembra,104,52,208,4/4,A# Menor,3A,5:21
+1473,Rubén Blades,Buscando América,1984,1,Decisiones,105,52.5,210,4/4,D# Menor,2A,5:00
+1474,Rubén Blades,Buscando América,1984,2,Desapariciones,92,46,184,4/4,F# Menor,11A,6:20
+1475,Rubén Blades,Buscando América,1984,3,Padre Antonio y el Monaguillo Andrés,100,50,200,4/4,C# Menor,12A,8:02
+1476,Rubén Blades,Escenas,1985,1,Sorpresas,95,47.5,190,4/4,G# Menor,1A,7:30
+1477,Rubén Blades,Amor y Control,1992,1,Amor y Control,88,44,176,4/4,F# Menor,11A,5:50
+1478,Rubén Blades,Amor y Control,1992,2,Canto a la Madre,90,45,180,4/4,C# Menor,12A,4:56
+1479,Rubén Blades,Tiempos,1999,1,Día a Día,92,46,184,4/4,A# Menor,3A,5:54
+1480,Rubén Blades,Mundo,2002,1,Primogenio,95,47.5,190,4/4,D# Menor,2A,6:14
+1481,Willie Colón,Cosa Nuestra,1969,1,Che Che Colé,108,54,216,4/4,F# Menor,11A,3:30
+1482,Willie Colón,Cosa Nuestra,1969,2,Juana Peña,104,52,208,4/4,G# Menor,1A,5:37
+1483,Willie Colón,La Gran Fuga,1970,1,Ghana' E,102,51,204,4/4,C# Menor,12A,4:01
+1484,Willie Colón,La Gran Fuga,1970,2,Barrunto,95,47.5,190,4/4,A# Menor,3A,5:52
+1485,Willie Colón,Asalto Navideño,1971,1,Aires de Navidad,105,52.5,210,4/4,D# Menor,2A,3:44
+1486,Willie Colón,Asalto Navideño,1971,2,La Murga,106,53,212,4/4,F# Menor,11A,5:34
+1487,Willie Colón,El Juicio,1972,1,Piraña,104,52,208,4/4,G# Menor,1A,5:15
+1488,Willie Colón,El Juicio,1972,2,Aguanilé,108,54,216,4/4,C# Menor,12A,6:08
+1489,Willie Colón,Lo Mato,1973,1,Calle Luna Calle Sol,105,52.5,210,4/4,A# Menor,3A,3:45
+1490,Willie Colón,Lo Mato,1973,2,Todo Tiene Su Final,100,50,200,4/4,D# Menor,2A,4:58
+1491,Willie Colón,Solo,1979,1,Sin Poderte Hablar,90,45,180,4/4,F# Menor,11A,5:08
+1492,Willie Colón,Fantasmas,1981,1,Gitana,94,47,188,4/4,C# Menor,12A,6:54
+1493,Willie Colón,Fantasmas,1981,2,Amor Verdadero,92,46,184,4/4,G# Menor,1A,5:30
+1494,Willie Colón,Especial No. 5,1986,1,El Gran Varón,94,47,188,4/4,G Menor,6A,6:54
+1495,Willie Colón,Top Secrets,1989,1,Talento de Televisión,105,52.5,210,4/4,D Mayor,10B,4:40
+1496,Willie Colón,Honra y Cultura,1991,1,Idilio,94,47,188,4/4,A# Menor,3A,5:10
+1497,Frankie Ruiz,Solista Pero No Solo,1985,1,La Cura,94,47,188,4/4,F# Menor,11A,4:56
+1498,Frankie Ruiz,Solista Pero No Solo,1985,2,Esta Cobardía,92,46,184,4/4,G# Menor,1A,5:40
+1499,Frankie Ruiz,Solista Pero No Solo,1985,3,Tú Con Él,95,47.5,190,4/4,G Mayor,9B,5:00
+1500,Frankie Ruiz,Solista Pero No Solo,1985,4,Amor de un Momento,95,47.5,190,4/4,A# Menor,3A,4:48
+1501,Frankie Ruiz,Voy Pa' Encima,1987,1,Desnúdate Mujer,95,47.5,190,4/4,D# Menor,2A,4:47
+1502,Frankie Ruiz,Voy Pa' Encima,1987,2,Voy Pa' Encima,98,49,196,4/4,F# Menor,11A,4:24
+1503,Frankie Ruiz,Voy Pa' Encima,1987,3,Quiero Llenarte,94,47,188,4/4,C# Menor,12A,4:28
+1504,Frankie Ruiz,En Vivo y... A Todo Color!,1988,1,Deseándote,94,47,188,4/4,G# Menor,1A,4:50
+1505,Frankie Ruiz,En Vivo y... A Todo Color!,1988,2,Me Acostumbré,92,46,184,4/4,A# Menor,3A,4:48
+1506,Frankie Ruiz,Más Grande Que Nunca,1989,1,Para Darte Fuego,96,48,192,4/4,D# Menor,2A,4:32
+1507,Frankie Ruiz,Mi Libertad,1992,1,Mi Libertad,95,47.5,190,4/4,F# Menor,11A,4:20
+1508,Frankie Ruiz,Mi Libertad,1992,2,Bailando,98,49,196,4/4,C# Menor,12A,4:56
+1509,Frankie Ruiz,Puerto Rico Soy Yo,1993,1,La Rueda,95,47.5,190,4/4,G# Menor,1A,5:28
+1510,Frankie Ruiz,Tranquilo,1996,1,Ironía,92,46,184,4/4,A# Menor,3A,4:58
+1511,Grupo Niche,No Hay Quinto Malo,1984,1,Cali Pachanguero,102,51,204,4/4,F# Menor,11A,5:12
+1512,Grupo Niche,No Hay Quinto Malo,1984,2,La Fiera,98,49,196,4/4,C# Menor,12A,4:40
+1513,Grupo Niche,Triunfo,1985,1,Del Puente Pa'llá,100,50,200,4/4,G# Menor,1A,4:55
+1514,Grupo Niche,Triunfo,1985,2,Listo Medellín,102,51,204,4/4,A# Menor,3A,4:42
+1515,Grupo Niche,Historia Musical,1987,1,Ana Milé,94,47,188,4/4,D# Menor,2A,5:45
+1516,Grupo Niche,Tapando el Hueco,1988,1,Nuestro Sueño,92,46,184,4/4,F# Menor,11A,5:40
+1517,Grupo Niche,Tapando el Hueco,1988,2,Cómo Podré Disimular,94,47,188,4/4,C# Menor,12A,5:10
+1518,Grupo Niche,Cielo de Tambores,1990,1,Una Aventura,94,47,188,4/4,G# Menor,1A,5:30
+1519,Grupo Niche,Cielo de Tambores,1990,2,Busca Por Dentro,90,45,180,4/4,A# Menor,3A,5:42
+1520,Grupo Niche,Cielo de Tambores,1990,3,Sin Sentimiento,95,47.5,190,4/4,D# Menor,2A,4:54
+1521,Grupo Niche,Cielo de Tambores,1990,4,Cali Ají,102,51,204,4/4,F# Menor,11A,4:36
+1522,Grupo Niche,Llegando al 100%,1991,1,Hagamos Lo Que Diga El Corazón,90,45,180,4/4,C# Menor,12A,5:08
+1523,Grupo Niche,Un Alto en el Camino,1993,1,Gotas de Lluvia,92,46,184,4/4,G# Menor,1A,5:33
+1524,Grupo Niche,40,2020,1,Algo Que Se Quede,95,47.5,190,4/4,A# Menor,3A,4:24
+1525,Gilberto Santa Rosa,Punto de Vista,1990,1,Vivir Sin Ella,92,46,184,4/4,F# Menor,11A,5:12
+1526,Gilberto Santa Rosa,Punto de Vista,1990,2,Impaciencia,95,47.5,190,4/4,C# Menor,12A,4:40
+1527,Gilberto Santa Rosa,Perspectiva,1991,1,Conciencia,94,47,188,4/4,G# Menor,1A,5:26
+1528,Gilberto Santa Rosa,Perspectiva,1991,2,Que Manera de Quererte,96,48,192,4/4,A# Menor,3A,5:30
+1529,Gilberto Santa Rosa,Perspectiva,1991,3,Peligro,95,47.5,190,4/4,D# Menor,2A,4:38
+1530,Gilberto Santa Rosa,A Dos Tiempos de un Tiempo,1992,1,Perdóname,90,45,180,4/4,F# Menor,11A,5:04
+1531,Gilberto Santa Rosa,Nace Aquí,1993,1,Sin Voluntad,92,46,184,4/4,C# Menor,12A,4:46
+1532,Gilberto Santa Rosa,Nace Aquí,1993,2,Mal de Amor,95,47.5,190,4/4,G# Menor,1A,4:50
+1533,Gilberto Santa Rosa,Esencia,1996,1,No Quiero Na' Regala'o,100,50,200,4/4,A# Menor,3A,4:32
+1534,Gilberto Santa Rosa,Expresión,1999,1,Que Alguien Me Diga,88,44,176,4/4,D# Menor,2A,4:52
+1535,Gilberto Santa Rosa,Expresión,1999,2,Déjate Querer,96,48,192,4/4,F# Menor,11A,4:44
+1536,Gilberto Santa Rosa,Auténtico,2004,1,Sombra Loca,95,47.5,190,4/4,C# Menor,12A,4:28
+1537,Gilberto Santa Rosa,Directo al Corazón,2006,1,Por La Herida de un Amor,90,45,180,4/4,G# Menor,1A,4:12
+1538,Gilberto Santa Rosa,Colegas,2020,1,La Familia,102,51,204,4/4,A# Menor,3A,5:18
+1539,Joe Arroyo,Fuego en mi Mente,1988,1,La Rebelión (No Le Pegue a la Negra),105,52.5,210,4/4,G Menor,6A,4:45
+1540,Joe Arroyo,Fuego en mi Mente,1988,2,Yamulemau,108,54,216,4/4,C# Menor,12A,4:30
+1541,Joe Arroyo,En Acción,1989,1,En Barranquilla Me Quedo,104,52,208,4/4,C# Mayor,3B,5:08
+1542,Joe Arroyo,En Acción,1989,2,Pal Bailador,105,52.5,210,4/4,F# Menor,11A,4:24
+1543,Joe Arroyo,La Guerra de los Callados,1990,1,Centurión de la Noche,106,53,212,4/4,A# Menor,3A,4:56
+1544,Joe Arroyo,La Guerra de los Callados,1990,2,La Noche,105,52.5,210,4/4,D# Menor,2A,4:10
+1545,Joe Arroyo,Musa Original,1986,1,Tania,102,51,204,4/4,G# Menor,1A,4:18
+1546,Joe Arroyo,Musa Original,1986,2,Mary,100,50,200,4/4,C# Menor,12A,4:35
+1547,Joe Arroyo,Toque de Clase,1991,1,A Mi Dios Todo Le Debo,102,51,204,4/4,F# Menor,11A,4:40
+1548,Joe Arroyo,Fuego Tropical,1993,1,Sabré Olvidar,95,47.5,190,4/4,A# Menor,3A,4:52
+1549,Joe Arroyo,Reinventor,1995,1,Tumbatecho,108,54,216,4/4,D# Menor,2A,4:30
+1550,Joe Arroyo,Éxitos,1998,1,El Preso,105,52.5,210,4/4,G# Menor,1A,5:02
+1551,El Gran Combo,De Punta a Punta,1971,1,Don Goyo,104,52,208,4/4,F# Menor,11A,3:40
+1552,El Gran Combo,De Punta a Punta,1971,2,Achilipú,106,53,212,4/4,G# Menor,1A,3:15
+1553,El Gran Combo,7,1975,1,Un Verano en Nueva York,105,52.5,210,4/4,C# Menor,12A,4:50
+1554,El Gran Combo,7,1975,2,Vagabundo,98,49,196,4/4,A# Menor,3A,4:15
+1555,El Gran Combo,Internacional,1977,1,Brujería,102,51,204,4/4,D# Menor,2A,4:30
+1556,El Gran Combo,Internacional,1977,2,Ojos Chinos,104,52,208,4/4,F# Menor,11A,4:12
+1557,El Gran Combo,Aquí No Ha Pasado Nada,1979,1,Así Son,100,50,200,4/4,G# Menor,1A,4:38
+1558,El Gran Combo,Aquí No Ha Pasado Nada,1979,2,Mujer Celosa,102,51,204,4/4,C# Menor,12A,4:45
+1559,El Gran Combo,Happy Days,1981,1,Timbalero,108,54,216,4/4,A# Menor,3A,5:12
+1560,El Gran Combo,Happy Days,1981,2,Falsaria,95,47.5,190,4/4,D# Menor,2A,4:36
+1561,El Gran Combo,Universidad de la Salsa,1983,1,Y No Hago Más Na',95,47.5,190,4/4,F# Menor,11A,4:24
+1562,El Gran Combo,Universidad de la Salsa,1983,2,Mujer Celosa,102,51,204,4/4,G# Menor,1A,4:10
+1563,El Gran Combo,Innovando,1985,1,No Me Olvides Jamás,94,47,188,4/4,C# Menor,12A,4:48
+1564,El Gran Combo,Romántico y Sabroso,1988,1,Ámame,92,46,184,4/4,A# Menor,3A,4:35
+1565,El Gran Combo,Arroz con Habichuela,2006,1,Arroz con Habichuela,102,51,204,4/4,F# Menor,11A,4:50
+1566,El Gran Combo,Arroz con Habichuela,2006,2,Si La Ves Por Ahí,95,47.5,190,4/4,D# Menor,2A,4:22
+1567,Cheo Feliciano,Cheo,1971,1,Anacaona,108,54,216,4/4,F# Menor,11A,4:15
+1568,Cheo Feliciano,Cheo,1971,2,Mi Triste Problema,90,45,180,4/4,G# Menor,1A,4:32
+1569,Cheo Feliciano,Cheo,1971,3,Pa' Beber,102,51,204,4/4,C# Menor,12A,3:40
+1570,Cheo Feliciano,With a Little Help,1973,1,El Ratón,90,45,180,4/4,D Menor,7A,5:20
+1571,Cheo Feliciano,"Sentimiento, Tú",1980,1,Amada Mía,85,42.5,170,4/4,A# Menor,3A,4:10
+1572,Cheo Feliciano,Profundo,1982,1,Sobre una Tumba Humilde,95,47.5,190,4/4,F# Menor,11A,4:45
+1573,Ismael Rivera,Esto Fue Lo Que Trajo El Barco,1972,1,Dime Por Qué,102,51,204,4/4,F# Menor,11A,4:48
+1574,Ismael Rivera,Esto Fue Lo Que Trajo El Barco,1972,2,San Miguel Arcángel,104,52,208,4/4,G# Menor,1A,4:15
+1575,Ismael Rivera,Traigo de Todo,1974,1,El Nazareno,104,52,208,4/4,C# Menor,12A,5:08
+1576,Ismael Rivera,Traigo de Todo,1974,2,Qué Te Pasa a Ti,105,52.5,210,4/4,A# Menor,3A,4:32
+1577,Ismael Rivera,Soy Feliz,1975,1,Las Caras Lindas,100,50,200,4/4,D# Menor,2A,5:12
+1578,Ismael Rivera,De Todas Maneras Rosas,1977,1,El Incomprendido,95,47.5,190,4/4,F# Menor,11A,4:45
+1579,Ismael Miranda,Así Se Compone Un Son,1973,1,Así Se Compone Un Son,106,53,212,4/4,F# Menor,11A,5:30
+1580,Ismael Miranda,Así Se Compone Un Son,1973,2,Ahora Sí,104,52,208,4/4,G# Menor,1A,4:18
+1581,Ismael Miranda,En Fa Menor,1974,1,Borinquen Tiene Montuno,108,54,216,4/4,C# Menor,12A,4:56
+1582,Ismael Miranda,En Fa Menor,1974,2,Señor Sereno,105,52.5,210,4/4,A# Menor,3A,4:12
+1583,Ismael Miranda,Este Es Ismael Miranda,1975,1,María Luisa,102,51,204,4/4,D# Menor,2A,4:40
+1584,Ismael Miranda,No Voy al Festival,1977,1,Abran Paso,106,53,212,4/4,F# Menor,11A,4:24
+1585,Ray Barretto,Barretto Power,1970,1,O Elefante,105,52.5,210,4/4,F# Menor,11A,4:32
+1586,Ray Barretto,Barretto Power,1970,2,Quítate la Máscara,108,54,216,4/4,G# Menor,1A,4:40
+1587,Ray Barretto,The Message,1971,1,Arrepiéntete,102,51,204,4/4,C# Menor,12A,4:15
+1588,Ray Barretto,Que Viva la Música,1972,1,Cocinando,104,52,208,4/4,A# Menor,3A,8:10
+1589,Ray Barretto,Indestructible,1973,1,Indestructible,106,53,212,4/4,D# Menor,2A,4:14
+1590,Ray Barretto,Indestructible,1973,2,El Hijo de Obatalá,105,52.5,210,4/4,F# Menor,11A,6:10
+1591,Eddie Palmieri,Superimposition,1970,1,La Malanga,105,52.5,210,4/4,F# Menor,11A,4:12
+1592,Eddie Palmieri,Vámonos Pa'l Monte,1971,1,Vámonos Pa'l Monte,106,53,212,4/4,G# Menor,1A,7:10
+1593,Eddie Palmieri,Sentido,1973,1,Puerto Rico,102,51,204,4/4,C# Menor,12A,6:58
+1594,Eddie Palmieri,The Sun of Latin Music,1974,1,Nada de Ti,100,50,200,4/4,A# Menor,3A,6:24
+1595,Eddie Palmieri,The Sun of Latin Music,1974,2,Un Día Bonito,105,52.5,210,4/4,D# Menor,2A,8:45
+1596,Eddie Palmieri,"Lucumí, Macumba, Voodoo",1978,1,Bilongo,104,52,208,4/4,F# Menor,11A,5:30
+1597,Tito Puente,Dance Mania,1958,1,El Cayuco,108,54,216,4/4,F# Menor,11A,2:34
+1598,Tito Puente,Dance Mania,1958,2,Complicación,106,53,212,4/4,G# Menor,1A,3:18
+1599,Tito Puente,El Rey Bravo,1962,1,Oye Cómo Va,130,65,260,4/4,A Menor,8A,4:15
+1600,Tito Puente,Para Los Rumberos,1972,1,Para Los Rumberos,108,54,216,4/4,C# Menor,12A,3:20
+1601,Tito Puente,Mambo Diablo,1985,1,Ran Kan Kan,112,56,224,4/4,D# Menor,2A,3:40
+1602,Tito Puente,Masterpiece (con Eddie Palmieri),2000,1,La Mulata Rumbera,106,53,212,4/4,F# Menor,11A,4:50
+1603,Fania All-Stars,Live at the Cheetah,1971,1,Quítate Tú,108,54,216,4/4,F# Menor,11A,16:45
+1604,Fania All-Stars,Live at the Cheetah,1971,2,Anacaona,108,54,216,4/4,G# Menor,1A,7:12
+1605,Fania All-Stars,Live at Yankee Stadium,1975,1,Mi Gente,108,54,216,4/4,C# Menor,12A,6:15
+1606,Fania All-Stars,Live at Yankee Stadium,1975,2,Ponte Duro,112,56,224,4/4,A# Menor,3A,9:24
+1607,Fania All-Stars,Tribute to Tito Rodríguez,1976,1,Mama Guela,106,53,212,4/4,D# Menor,2A,4:30
+1608,Fania All-Stars,Rhythm Machine,1977,1,Ella Fue (She Was),105,52.5,210,4/4,F# Menor,11A,3:45
+1609,Tito Nieves,The Classic,1988,1,Sonámbulo,94,47,188,4/4,F# Menor,11A,4:48
+1610,Tito Nieves,The Classic,1988,2,De Mí Enamórate,92,46,184,4/4,G# Menor,1A,4:36
+1611,Tito Nieves,I Like It Like That,1996,1,I Like It Like That,128,64,256,4/4,A Menor,8A,4:24
+1612,Tito Nieves,Fabricando Fantasías,2004,1,Fabricando Fantasías,94,47,188,4/4,C# Menor,12A,4:34
+1613,Tito Nieves,Fabricando Fantasías,2004,2,"Ya No Queda Nada (ft. La India, Nicky Jam)",95,47.5,190,4/4,D# Menor,2A,4:12
+1614,Tito Nieves,"Hoy, Mañana y Siempre",2006,1,Más Que Tu Amigo,96,48,192,4/4,F# Menor,11A,4:15
+1615,Jerry Rivera,Abriendo Puertas,1990,1,Dime,92,46,184,4/4,F# Menor,11A,4:32
+1616,Jerry Rivera,Abriendo Puertas,1990,2,Esa Niña,94,47,188,4/4,G# Menor,1A,4:56
+1617,Jerry Rivera,Cuenta Conmigo,1992,1,Amores Como el Nuestro,94,47,188,4/4,C# Menor,12A,5:00
+1618,Jerry Rivera,Cuenta Conmigo,1992,2,Cuenta Conmigo,95,47.5,190,4/4,A# Menor,3A,4:44
+1619,Jerry Rivera,Cuenta Conmigo,1992,3,Casi Un Hechizo,92,46,184,4/4,D# Menor,2A,4:38
+1620,Jerry Rivera,Cara de Niño,1993,1,Qué Hay de Malo,94,47,188,4/4,F# Menor,11A,4:35
+1621,Jerry Rivera,Cara de Niño,1993,2,Cara de Niño,96,48,192,4/4,G# Menor,1A,4:30
+1622,Víctor Manuelle,Inconfundible,1999,1,Pero Dile,95,47.5,190,4/4,F# Menor,11A,4:45
+1623,Víctor Manuelle,Inconfundible,1999,2,Si La Ves,94,47,188,4/4,G# Menor,1A,4:38
+1624,Víctor Manuelle,A Pesar de Todo,1997,1,Dile a Ella,96,48,192,4/4,C# Menor,12A,4:56
+1625,Víctor Manuelle,A Pesar de Todo,1997,2,He Tratado,92,46,184,4/4,A# Menor,3A,4:32
+1626,Víctor Manuelle,Travesía,2004,1,Tengo Ganas,95,47.5,190,4/4,D# Menor,2A,4:28
+1627,Víctor Manuelle,Decisión Unánime,2006,1,Nuestro Amor Se Ha Vuelto Ayer,92,46,184,4/4,F# Menor,11A,4:30
+1628,La Sonora Ponceña,Hacheros Pa' Un Palo,1968,1,Hacheros Pa' Un Palo,106,53,212,4/4,F# Menor,11A,4:15
+1629,La Sonora Ponceña,Fuego en el 23,1969,1,Fuego en el 23,108,54,216,4/4,G# Menor,1A,4:30
+1630,La Sonora Ponceña,Desde Puerto Rico a Nueva York,1972,1,Prende el Fogón,105,52.5,210,4/4,C# Menor,12A,5:10
+1631,La Sonora Ponceña,Musical Conquest,1976,1,Yambeque,108,54,216,4/4,A# Menor,3A,6:14
+1632,La Sonora Ponceña,New Heights,1980,1,Boranda,102,51,204,4/4,D# Menor,2A,6:20
+1633,La Sonora Ponceña,Back to the Road,1989,1,Ramona,104,52,208,4/4,F# Menor,11A,5:45
+1634,Bobby Valentín,Soy Boricua,1972,1,Soy Boricua,105,52.5,210,4/4,F# Menor,11A,3:58
+1635,Bobby Valentín,Soy Boricua,1972,2,Pirata de la Mar,108,54,216,4/4,G# Menor,1A,4:24
+1636,Bobby Valentín,Rey del Bajo,1974,1,El Jíbaro y la Naturaleza,104,52,208,4/4,C# Menor,12A,4:50
+1637,Bobby Valentín,Va a la Cárcel,1975,1,La Boda de Ella,102,51,204,4/4,A# Menor,3A,5:45
+1638,Bobby Valentín,Musical Seduction,1977,1,El Caiman,105,52.5,210,4/4,D# Menor,2A,5:12
+1639,Bobby Valentín,La Gran Reunión,1990,1,Cantaré Con Una Sola Voz,100,50,200,4/4,F# Menor,11A,4:35
+1640,Adalberto Santiago,Adalberto,1977,1,La Noche Más Linda,95,47.5,190,4/4,F# Menor,11A,4:20
+1641,Adalberto Santiago,Adalberto,1977,2,Ay Caray,102,51,204,4/4,G# Menor,1A,4:15
+1642,Adalberto Santiago,Calidad,1982,1,Nadie Se Salva de la Rumba,105,52.5,210,4/4,C# Menor,12A,5:20
+1643,Adalberto Santiago,Sex Symbol,1989,1,Cosas del Alma,90,45,180,4/4,A# Menor,3A,4:12
+1644,Lalo Rodríguez,Un Nuevo Despertar,1988,1,Ven Devórame Otra Vez,84,42,168,4/4,F Menor,4A,5:12
+1645,Lalo Rodríguez,Un Nuevo Despertar,1988,2,Sí Te Mentí,90,45,180,4/4,G# Menor,1A,4:40
+1646,Lalo Rodríguez,Un Nuevo Despertar,1988,3,Deseo Salvaje,92,46,184,4/4,C# Menor,12A,4:32
+1647,Lalo Rodríguez,Sexsacional,1989,1,Pero Llegaste Tú,90,45,180,4/4,A# Menor,3A,4:15
+1648,Lalo Rodríguez,Nací Para Cantar,1994,1,Aunque Lo Dudes,92,46,184,4/4,D# Menor,2A,4:45
+1649,Eddie Santiago,Atrevido y Diferente,1986,1,Tú Me Quemas,92,46,184,4/4,F# Menor,11A,4:56
+1650,Eddie Santiago,Atrevido y Diferente,1986,2,Qué Locura Enamorarme de Ti,94,47,188,4/4,C# Mayor,3B,5:08
+1651,Eddie Santiago,Atrevido y Diferente,1986,3,Volcán de Amor,90,45,180,4/4,G# Menor,1A,4:34
+1652,Eddie Santiago,Sigo Atrevido,1987,1,Lluvia,94,47,188,4/4,A# Menor,3A,5:02
+1653,Eddie Santiago,Sigo Atrevido,1987,2,Todo Empezó,92,46,184,4/4,D# Menor,2A,4:48
+1654,Eddie Santiago,Invasión de la Privacidad,1988,1,Antídoto y Veneno,95,47.5,190,4/4,F# Menor,11A,5:12
+1655,Rey Ruiz,Rey Ruiz,1992,1,No Me Acostumbro,92,46,184,4/4,F# Menor,11A,4:40
+1656,Rey Ruiz,Rey Ruiz,1992,2,Amiga,90,45,180,4/4,G# Menor,1A,4:32
+1657,Rey Ruiz,Mi Media Mitad,1994,1,Mi Media Mitad,94,47,188,4/4,C# Menor,12A,4:56
+1658,Rey Ruiz,Mi Media Mitad,1994,2,Si Te Preguntan,92,46,184,4/4,A# Menor,3A,4:35
+1659,Rey Ruiz,En Cuerpo y Alma,1995,1,Estamos Solos,90,45,180,4/4,D# Menor,2A,4:24
+1660,Luis Enrique,Amor de Cerca,1988,1,Desesperado,92,46,184,4/4,F# Menor,11A,4:30
+1661,Luis Enrique,Mi Mundo,1989,1,Yo No Puedo Ser Tu Amigo,94,47,188,4/4,G# Menor,1A,4:42
+1662,Luis Enrique,Luces del Alma,1990,1,Date un Chance,95,47.5,190,4/4,C# Menor,12A,4:38
+1663,Luis Enrique,Ciclos,2009,1,Yo No Sé Mañana,95,47.5,190,4/4,E Menor,9A,4:15
+1664,Luis Enrique,Ciclos,2009,2,Cómo Volver a Ser Feliz,90,45,180,4/4,A# Menor,3A,4:08
+1665,Tony Vega,Yo Prometo,1989,1,Lo Mío Es Amor,94,47,188,4/4,F# Menor,11A,4:42
+1666,Tony Vega,Hablando de Frente,1991,1,Esa Mujer,95,47.5,190,4/4,G# Menor,1A,4:50
+1667,Tony Vega,Aparentemente,1992,1,Aparentemente,92,46,184,4/4,C# Menor,12A,4:48
+1668,Tony Vega,Si Me Miras a los Ojos,1994,1,Dile,90,45,180,4/4,A# Menor,3A,4:35
+1669,Pedro Arroyo,Lo Mejor de Pedro Arroyo,1995,1,Quisiera Contarle,92,46,184,4/4,F# Menor,11A,4:38
+1670,Pedro Arroyo,Lo Mejor de Pedro Arroyo,1995,2,Cuando Hablan Las Miradas,90,45,180,4/4,G# Menor,1A,4:45
+1671,Pedro Arroyo,Lo Mejor de Pedro Arroyo,1995,3,He Decidido Olvidarte,92,46,184,4/4,C# Menor,12A,4:30
+1672,Willy Chirino,Oxígeno,1991,1,Medias Negras,102,51,204,4/4,F# Menor,11A,4:24
+1673,Willy Chirino,Oxígeno,1991,2,Oxígeno,105,52.5,210,4/4,G# Menor,1A,4:15
+1674,Willy Chirino,Acuarela del Caribe,1990,1,Soy Guajiro,104,52,208,4/4,C# Menor,12A,4:40
+1675,Willy Chirino,South Beach,1993,1,Los Campeones de la Salsa,106,53,212,4/4,A# Menor,3A,4:35
+1676,Oscar D'León,Dimension Latina 75,1975,1,Llorarás,105,52.5,210,4/4,F# Menor,11A,3:52
+1677,Oscar D'León,Dimension Latina 75,1975,2,Taboga,102,51,204,4/4,G# Menor,1A,3:40
+1678,Oscar D'León,Con Bajo y Todo,1976,1,Sin Tu Cariño,104,52,208,4/4,C# Menor,12A,4:10
+1679,Oscar D'León,El Más Grande,1979,1,Qué Bueno Baila Usted,108,54,216,4/4,A# Menor,3A,4:25
+1680,Oscar D'León,En Nueva York,1988,1,Detalles,94,47,188,4/4,D# Menor,2A,4:50
+1681,Oscar D'León,Navidad de Soneros,1990,1,La Mazucamba,106,53,212,4/4,F# Menor,11A,4:15
+1682,Dimensión Latina,En la 6ta Dimensión,1976,1,Sigue Tu Camino,105,52.5,210,4/4,F# Menor,11A,4:12
+1683,Dimensión Latina,En la 6ta Dimensión,1976,2,Parampampam,108,54,216,4/4,G# Menor,1A,3:45
+1684,Dimensión Latina,77,1977,1,El Eco de un Tambor,104,52,208,4/4,C# Menor,12A,4:30
+1685,Guayacán Orquesta,50 Años,1990,1,"Oiga, Mire, Vea",102,51,204,4/4,F# Menor,11A,4:48
+1686,Guayacán Orquesta,50 Años,1990,2,Carro de Fuego,104,52,208,4/4,G# Menor,1A,4:32
+1687,Guayacán Orquesta,Sentimental de Punta a Punta,1991,1,Invierno en Primavera,92,46,184,4/4,C# Menor,12A,4:56
+1688,Guayacán Orquesta,Sentimental de Punta a Punta,1991,2,"Te Amo, Te Extraño",90,45,180,4/4,A# Menor,3A,4:40
+1689,Guayacán Orquesta,A Verso y Golpe,1993,1,Torero,105,52.5,210,4/4,D# Menor,2A,4:38
+1690,Orquesta Guayacán,Marcando la Diferencia,1995,1,Cada Día Que Pasa,92,46,184,4/4,F# Menor,11A,4:30
+1691,Orquesta Guayacán,Marcando la Diferencia,1995,2,Mujer de Carne y Hueso,94,47,188,4/4,G# Menor,1A,4:45
+1692,La 33,La 33,2004,1,La Pantera Mambo,108,54,216,4/4,F# Menor,11A,5:42
+1693,La 33,La 33,2004,2,Soledad,100,50,200,4/4,C# Menor,12A,4:50
+1694,La 33,Gózalo,2007,1,Qué Bello,105,52.5,210,4/4,G# Menor,1A,4:24
+1695,La 33,Gózalo,2007,2,Plinio Guzmán,106,53,212,4/4,A# Menor,3A,4:35
+1696,Yuri Buenaventura,Herencia Africana,1996,1,Ne Me Quitte Pas,95,47.5,190,4/4,F# Menor,11A,4:45
+1697,Yuri Buenaventura,Herencia Africana,1996,2,Salsa,104,52,208,4/4,G# Menor,1A,4:15
+1698,Yuri Buenaventura,Vagabundo,2003,1,Vagabundo,98,49,196,4/4,C# Menor,12A,4:20
+1699,Orquesta Adolescentes,Reclamando Nuestro Espacio,1995,1,Anhelo,92,46,184,4/4,F# Menor,11A,4:35
+1700,Orquesta Adolescentes,Reclamando Nuestro Espacio,1995,2,Hoy Aprendí,90,45,180,4/4,G# Menor,1A,4:40
+1701,Orquesta Adolescentes,Persona Ideal,1997,1,Persona Ideal (Aquel Lugar),92,46,184,4/4,C# Menor,12A,4:50
+1702,Orquesta Adolescentes,Persona Ideal,1997,2,Clase Social,94,47,188,4/4,A# Menor,3A,4:30
+1703,Orquesta Adolescentes,La Misma Pluma,1998,1,Me Negó,94,47,188,4/4,D# Menor,2A,4:38
+1704,Orquesta Adolescentes,Ahora Más Que Nunca,2001,1,Virgen,91,45.5,182,4/4,A♭ Mayor,4B,4:45
+1705,Servando y Florentino,Los Primera,1997,1,Una Fan Enamorada,90,45,180,4/4,F# Menor,11A,4:45
+1706,Servando y Florentino,Los Primera,1997,2,Estás Hecha Para Mí,92,46,184,4/4,G# Menor,1A,4:20
+1707,Servando y Florentino,Muchacho Solitario,1999,1,Muchacho Solitario,90,45,180,4/4,C# Menor,12A,4:15
+1708,Sonora Carruseles,Heavy Salsa,1998,1,Micaela,108,54,216,4/4,F# Menor,11A,4:25
+1709,Sonora Carruseles,Heavy Salsa,1998,2,Al Son de los Cueros,110,55,220,4/4,G# Menor,1A,4:38
+1710,Sonora Carruseles,Salsa y Candela,2000,1,Ave María Lola,106,53,212,4/4,C# Menor,12A,4:40
+1711,Richie Ray & Bobby Cruz,Agúzate,1969,1,Agúzate,108,54,216,4/4,F# Menor,11A,4:35
+1712,Richie Ray & Bobby Cruz,El Bestial Sonido,1971,1,Sonido Bestial,112,56,224,4/4,C# Menor,12A,6:45
+1713,Richie Ray & Bobby Cruz,Jammin' Live,1972,1,Los Fariseos,106,53,212,4/4,G# Menor,1A,5:20
+1714,Richie Ray & Bobby Cruz,1975,1975,1,Juan en la Ciudad,105,52.5,210,4/4,A# Menor,3A,6:05
+1715,Lebrón Brothers,Salsa y Control,1970,1,Salsa y Control,104,52,208,4/4,F# Menor,11A,4:15
+1716,Lebrón Brothers,Llegamos,1971,1,Diez Lágrimas,94,47,188,4/4,G# Menor,1A,4:40
+1717,Lebrón Brothers,Asunto de Familia,1973,1,Qué Pena,92,46,184,4/4,C# Menor,12A,4:30
+1718,Lebrón Brothers,Distinto y Diferente,1976,1,Temperatura,102,51,204,4/4,A# Menor,3A,4:55
+1719,Roberto Roena,Apollo Sound 5,1973,1,Cómo Te Hago Entender,90,45,180,4/4,F# Menor,11A,4:48
+1720,Roberto Roena,Lucky 7,1976,1,Mi Desengaño,104,52,208,4/4,G# Menor,1A,5:30
+1721,Roberto Roena,La 8va Maravilla,1977,1,Marejada Feliz,100,50,200,4/4,C# Menor,12A,4:50
+1722,Roberto Roena,Apollo Sound 9,1978,1,Lamento de Concepción,95,47.5,190,4/4,A# Menor,3A,5:12
+1723,Andy Montañez,El Gigante del Salsa,1977,1,Casi Te Envidio,95,47.5,190,4/4,F# Menor,11A,4:35
+1724,Andy Montañez,Hoy y Ayer,1980,1,"Cobarde, Cobarde",92,46,184,4/4,G# Menor,1A,4:24
+1725,Andy Montañez,Versátil,1985,1,Payaso,90,45,180,4/4,C# Menor,12A,4:40
+1726,Andy Montañez,AM / PM,2006,1,Sabor a Mí (Salsa),92,46,184,4/4,A# Menor,3A,4:15
+1727,Papo Lucca,Papo Lucca and the Cuban Jazz,1993,1,Tres Lindas Cubanas,108,54,216,4/4,F# Menor,11A,5:20
+1728,Papo Lucca,Latin Jazz Piano,1996,1,Sonora Sol,106,53,212,4/4,G# Menor,1A,4:45
+1729,Charlie Aponte,Una Nueva Historia,2015,1,Para Festejar,102,51,204,4/4,F# Menor,11A,4:30
+1730,Charlie Aponte,Una Nueva Historia,2015,2,Así Es El Amor,95,47.5,190,4/4,G# Menor,1A,4:15
+1731,Juan Luis Guerra,Ojalá Que Llueva Café,1989,1,Ojalá Que Llueva Café,125,62.5,250,4/4,G# Menor,1A,4:12
+1732,Juan Luis Guerra,Ojalá Que Llueva Café,1989,2,Woman del Callao,130,65,260,4/4,C# Menor,12A,3:45
+1733,Juan Luis Guerra,Bachata Rosa,1990,1,La Bilirrubina,130,65,260,4/4,D# Menor,2A,4:05
+1734,Juan Luis Guerra,Bachata Rosa,1990,2,Burbujas de Amor,130,65,260,4/4,F# Menor,11A,4:08
+1735,Juan Luis Guerra,Bachata Rosa,1990,3,Bachata Rosa,128,64,256,4/4,A# Menor,3A,4:18
+1736,Juan Luis Guerra,Areíto,1992,1,El Costo de la Vida,132,66,264,4/4,G# Menor,1A,4:10
+1737,Juan Luis Guerra,Ni Es Lo Mismo Ni Es Igual,1998,1,El Niágara en Bicicleta,130,65,260,4/4,C# Menor,12A,4:05
+1738,Juan Luis Guerra,Ni Es Lo Mismo Ni Es Igual,1998,2,Palomita Blanca,128,64,256,4/4,F# Menor,11A,3:44
+1739,Juan Luis Guerra,Para Ti,2004,1,Las Avispas,134,67,268,4/4,A# Menor,3A,3:18
+1740,Juan Luis Guerra,La Llave de Mi Corazón,2007,1,La Llave de Mi Corazón,132,66,264,4/4,D# Menor,2A,3:15
+1741,Elvis Crespo,Suavemente,1998,1,Suavemente,124,62,248,4/4,G# Menor,1A,4:28
+1742,Elvis Crespo,Suavemente,1998,2,Tu Sonrisa,128,64,256,4/4,C# Menor,12A,4:32
+1743,Elvis Crespo,Suavemente,1998,3,Luna Llena,126,63,252,4/4,F# Menor,11A,4:25
+1744,Elvis Crespo,Píntame,1999,1,Píntame,128,64,256,4/4,A# Menor,3A,4:20
+1745,Elvis Crespo,Píntame,1999,2,Tiemblo,125,62.5,250,4/4,D# Menor,2A,4:15
+1746,Elvis Crespo,Saboréalo,2004,1,Hora Enamorada,126,63,252,4/4,G# Menor,1A,3:58
+1747,Wilfrido Vargas,El Funcionario,1983,1,El Africano,135,67.5,270,4/4,F# Menor,11A,4:40
+1748,Wilfrido Vargas,El Jardinero,1984,1,El Jardinero,138,69,276,4/4,G# Menor,1A,4:50
+1749,Wilfrido Vargas,Wilfrido 86,1986,1,El Baile del Perrito,140,70,280,4/4,C# Menor,12A,4:12
+1750,Wilfrido Vargas,Animación,1989,1,Volveré,130,65,260,4/4,A# Menor,3A,4:25
+1751,Wilfrido Vargas,Abusadora,1993,1,Abusadora,134,67,268,4/4,D# Menor,2A,4:18
+1752,Los Hermanos Rosario,Los Dueños del Swing,1995,1,La Dueña del Swing,136,68,272,4/4,F# Menor,11A,4:40
+1753,Los Hermanos Rosario,Los Dueños del Swing,1995,2,Moviendo la Cadera,155,77.5,310,4/4,G minor,6A,4:25
+1754,Los Hermanos Rosario,Bomba Mi Hermano,1999,1,Rompecintura,138,69,276,4/4,C# Menor,12A,4:12
+1755,Los Hermanos Rosario,Aura,2007,1,Aló,135,67.5,270,4/4,A# Menor,3A,4:05
+1756,Eddy Herrera,El Jardinero,1990,1,Carolina,130,65,260,4/4,F# Menor,11A,4:15
+1757,Eddy Herrera,Atrevido,2000,1,Pégame Tu Vicio,132,66,264,4/4,G# Menor,1A,4:18
+1758,Eddy Herrera,Atrevido,2000,2,Demasiado Niña,130,65,260,4/4,C# Menor,12A,4:10
+1759,Eddy Herrera,Lleno de Gracia,2001,1,Tu Eres Ajena,133,66.5,266,4/4,A Mayor,11B,4:12
+1760,Eddy Herrera,Para Siempre,2003,1,Ajena,132,66,264,4/4,A# Menor,3A,4:20
+1761,Olga Tañón,Sola,1992,1,Me Cambio Por Ella,130,65,260,4/4,F# Menor,11A,3:40
+1762,Olga Tañón,Mujer de Fuego,1993,1,Muchacho Malo,132,66,264,4/4,G# Menor,1A,3:45
+1763,Olga Tañón,Mujer de Fuego,1993,2,Presencié Tu Amor,130,65,260,4/4,C# Menor,12A,3:50
+1764,Olga Tañón,Siente el Amor,1994,1,Es Mentiroso,134,67,268,4/4,A# Menor,3A,3:58
+1765,Olga Tañón,Nuevos Senderos,1996,1,Basta Ya,85,42.5,170,4/4,D# Menor,2A,4:24
+1766,Olga Tañón,Sobrevivir,2002,1,Así Es La Vida,132,66,264,4/4,F# Menor,11A,3:45
+1767,Sergio Vargas,La Quiero a Morir,1986,1,La Quiero a Morir,130,65,260,4/4,F# Menor,11A,4:15
+1768,Sergio Vargas,Ciclón,1987,1,Si Algún Día La Ves,128,64,256,4/4,G# Menor,1A,4:20
+1769,Sergio Vargas,Por Ellas,1989,1,La Ventanita,132,66,264,4/4,C# Menor,12A,4:10
+1770,Sergio Vargas,Mi Pasatiempo,1998,1,Ni Tu Ni Yo,130,65,260,4/4,A# Menor,3A,4:05
+1771,Toño Rosario,Atado a Ti,1991,1,Jenny,134,67,268,4/4,F# Menor,11A,4:12
+1772,Toño Rosario,Retorno,1993,1,Kulikitaka,138,69,276,4/4,G# Menor,1A,3:50
+1773,Toño Rosario,Quiero Volver a Empezar,1995,1,Resistiré,132,66,264,4/4,C# Menor,12A,4:20
+1774,Toño Rosario,Don Goyo,2007,1,Dale Vieja Dale,136,68,272,4/4,A# Menor,3A,3:45
+1775,Milly Quezada,Hasta Siempre,1997,1,Volvió Juanita,130,65,260,4/4,F# Menor,11A,4:10
+1776,Milly Quezada,Vive,1998,1,Vive,132,66,264,4/4,G# Menor,1A,4:05
+1777,Milly Quezada,Tesoros de mi Tierra,2000,1,Entre Tu Espada y Mi Pared,128,64,256,4/4,C# Menor,12A,4:15
+1778,Johnny Ventura,El Caballo Negro,1974,1,Patacón Pisao,135,67.5,270,4/4,F# Menor,11A,3:50
+1779,Johnny Ventura,El Caballo Negro,1974,2,Pitaste,138,69,276,4/4,G# Menor,1A,3:40
+1780,Johnny Ventura,Merenguero Hasta la Tambora,1985,1,Merenguero Hasta la Tambora,140,70,280,4/4,C# Menor,12A,4:12
+1781,Kinito Méndez,El Hombre Divertido,1995,1,El Cacharrero,140,70,280,4/4,F# Menor,11A,3:45
+1782,Kinito Méndez,El Hombre Divertido,1995,2,El Hombre Divertido,138,69,276,4/4,G# Menor,1A,4:00
+1783,Kinito Méndez,Sua Sua,1997,1,Cachamba,142,71,284,4/4,C# Menor,12A,3:50
+1784,Coco Band,Coco Band,1988,1,La Faldita,138,69,276,4/4,F# Menor,11A,3:45
+1785,Coco Band,La Coco es la Coco,1990,1,Salsa con Coco,140,70,280,4/4,G# Menor,1A,4:10
+1786,Coco Band,La Coco es la Coco,1990,2,El Batecito,142,71,284,4/4,C# Menor,12A,3:50
+1787,Fernando Villalona,El Mayimbe,1982,1,Dominicano Soy,130,65,260,4/4,F# Menor,11A,4:15
+1788,Fernando Villalona,Confundido,1987,1,Félix Cumbé,132,66,264,4/4,G# Menor,1A,4:20
+1789,Fernando Villalona,Cama y Mesa,1990,1,Cama y Mesa,128,64,256,4/4,C# Menor,12A,4:10
+1790,Los Toros Band,Se Soltaron,1991,1,"Quizás Sí, Quizás No",130,65,260,4/4,F# Menor,11A,4:10
+1791,Los Toros Band,Toromanía,1994,1,Las Mujeres Pobres,132,66,264,4/4,G# Menor,1A,4:15
+1792,Los Toros Band,Toromanía,1994,2,Si Tu Estuvieras,128,64,256,4/4,C# Menor,12A,4:20
+1793,La Makina,A Mil Por Hora,1996,1,No Me Digas Que No,132,66,264,4/4,F# Menor,11A,4:05
+1794,La Makina,A Mil Por Hora,1996,2,Nadie Se Muere,134,67,268,4/4,G# Menor,1A,3:58
+1795,La Makina,Los Reyes del Ritmo,1998,1,Mi Reina,130,65,260,4/4,C# Menor,12A,4:12
+1796,Manny Manuel,El Rey de Corazones,1995,1,Cómo Duele,130,65,260,4/4,F# Menor,11A,4:15
+1797,Manny Manuel,El Rey de Corazones,1995,2,Fiera Callada,132,66,264,4/4,G# Menor,1A,4:20
+1798,Manny Manuel,Auténtico,1996,1,Si Una Vez,134,67,268,4/4,C# Menor,12A,3:58
+1799,Giselle,Giselle,1995,1,Pesadilla,130,65,260,4/4,F# Menor,11A,4:10
+1800,Giselle,Quiero Estar Contigo,1997,1,A Que Regresas,132,66,264,4/4,G# Menor,1A,4:15
+1801,Giselle,Atada,1998,1,Fuego en la Cintura,134,67,268,4/4,C# Menor,12A,3:55
+1802,Rikarena,Rikarena con Ganas,1994,1,Cuando el Amor Se Daña,134,67,268,4/4,F# Menor,11A,4:20
+1803,Rikarena,Más Rikarena,1995,1,Ay!,136,68,272,4/4,G# Menor,1A,4:10
+1804,Rikarena,Bravo,1996,1,Licor,135,67.5,270,4/4,C# Menor,12A,4:05
+1805,Grupo Manía,A Bombazo Sí,1993,1,Me Miras y Te Miro,130,65,260,4/4,F# Menor,11A,4:05
+1806,Grupo Manía,Alto Honor,1997,1,Caracolito,135,67.5,270,4/4,G# Menor,1A,4:12
+1807,Grupo Manía,The Dynasty,1998,1,Teléfono,132,66,264,4/4,C# Menor,12A,4:15
+1808,Ilegales,Ilegales,1995,1,La Morena,130,65,260,4/4,F# Menor,11A,4:10
+1809,Ilegales,Rebotando,1997,1,El Taqui Taqui,132,66,264,4/4,G# Menor,1A,3:55
+1810,Ilegales,El Sonido,2011,1,Chucuchá,130,65,260,4/4,C# Menor,12A,3:30
+1811,Proyecto Uno,In Da House,1993,1,Está Pegao,128,64,256,4/4,F# Menor,11A,4:20
+1812,Proyecto Uno,In Da House,1993,2,El Tiburón,130,65,260,4/4,C Mayor,8B,4:55
+1813,Proyecto Uno,4,1998,1,Latinos,132,66,264,4/4,G# Menor,1A,4:10
+1814,Sandy & Papo,Sandy & Papo MC,1995,1,Mueve Mueve,130,65,260,4/4,F# Menor,11A,4:15
+1815,Sandy & Papo,Sandy & Papo MC,1995,2,La Chica Sexy,132,66,264,4/4,G# Menor,1A,4:20
+1816,Sandy & Papo,Otra Vez,1997,1,El Alacrán,134,67,268,4/4,C# Menor,12A,4:05
+1817,Fulanito,El Hombre Más Famoso,1997,1,Guallando,135,67.5,270,4/4,F# Menor,11A,4:10
+1818,Fulanito,El Hombre Más Famoso,1997,2,Chillando Goma,138,69,276,4/4,G# Menor,1A,4:00
+1819,Fulanito,El Padrino,1999,1,La Novela,136,68,272,4/4,C# Menor,12A,3:58
+1820,Los Cantantes,El Venao,1995,1,El Venao,132,66,264,4/4,F# Menor,11A,4:20
+1821,Los Cantantes,El Venao,1995,2,La Cosquillita,134,67,268,4/4,G# Menor,1A,3:50
+1822,Bonny Cepeda,Noche de Discotheque,1984,1,Una Fotografía,130,65,260,4/4,F# Menor,11A,4:15
+1823,Bonny Cepeda,Dance,1985,1,Asesina,132,66,264,4/4,G# Menor,1A,4:10
+1824,Bonny Cepeda,Con Sabor,1986,1,Me Tiene Chivo,135,67.5,270,4/4,C# Menor,12A,4:00
+1825,Jossie Esteban,En Acción,1987,1,El Cantinero,135,67.5,270,4/4,F# Menor,11A,4:05
+1826,Jossie Esteban,Pegando el Pecho,1989,1,Pirulo,138,69,276,4/4,G# Menor,1A,4:10
+1827,Jossie Esteban,Noche de Copas,1991,1,Noche de Copas,132,66,264,4/4,C# Menor,12A,4:20
+1828,Chichi Peralta,Pa' Otro La'o,1997,1,Amor Narcótico,125,62.5,250,4/4,F# Menor,11A,5:20
+1829,Chichi Peralta,Pa' Otro La'o,1997,2,Procura,128,64,256,4/4,G# Menor,1A,4:32
+1830,Chichi Peralta,De Vuelta al Barrio,2000,1,La Ciguapa,126,63,252,4/4,C# Menor,12A,4:15
+1831,Joseph Fonseca,Noche de Fantasía,2000,1,Noche de Fantasía,130,65,260,4/4,F# Menor,11A,4:10
+1832,Joseph Fonseca,Escúchame,2002,1,Que Levante la Mano,132,66,264,4/4,G# Menor,1A,4:15
+1833,Joseph Fonseca,Escúchame,2002,2,El Caballito,136,68,272,4/4,C# Menor,12A,3:58
+1834,La Línea,La Línea,1997,1,Si Me Dejas No Vale,130,65,260,4/4,F# Menor,11A,4:05
+1835,La Línea,La Línea,1997,2,El Baile del Sapo,135,67.5,270,4/4,G# Menor,1A,3:50
+1836,Rubby Pérez,Simplemente Amor,1987,1,Volveré,130,65,260,4/4,F# Menor,11A,4:20
+1837,Rubby Pérez,Buscando Tus Besos,1989,1,Enamorado de Ella,132,66,264,4/4,G# Menor,1A,4:15
+1838,Rubby Pérez,El Cantante,1999,1,Perro Ajeno,134,67,268,4/4,C# Menor,12A,4:10
+1839,Aventura,Generation Next,1999,1,Cuándo Volverás,125,62.5,250,4/4,C# Menor,12A,3:30
+1840,Aventura,We Broke the Rules,2002,1,Obsesión,128,64,256,4/4,F# Menor,11A,4:14
+1841,Aventura,We Broke the Rules,2002,2,Todavía Me Amas,126,63,252,4/4,G# Menor,1A,4:43
+1842,Aventura,Love & Hate,2003,1,Hermanita,125,62.5,250,4/4,A# Menor,3A,4:35
+1843,Aventura,God's Project,2005,1,Ella y Yo (ft. Don Omar),125,62.5,250,4/4,D# Menor,2A,4:27
+1844,Aventura,God's Project,2005,2,Un Beso,125,62.5,250,4/4,C Mayor,8B,4:23
+1845,Aventura,God's Project,2005,3,La Boda,126,63,252,4/4,F# Menor,11A,4:49
+1846,Aventura,The Last,2009,1,Por Un Segundo,125,62.5,250,4/4,G# Menor,1A,4:15
+1847,Aventura,The Last,2009,2,Dile al Amor,126,63,252,4/4,C# Menor,12A,3:49
+1848,Aventura,The Last,2009,3,El Malo,127,63.5,254,4/4,A# Menor,3A,3:58
+1849,Romeo Santos,"Fórmula, Vol. 1",2011,1,You,125,62.5,250,4/4,F# Menor,11A,4:08
+1850,Romeo Santos,"Fórmula, Vol. 1",2011,2,Promise (ft. Usher),126,63,252,4/4,G# Menor,1A,4:12
+1851,Romeo Santos,"Fórmula, Vol. 1",2011,3,Mi Santa,128,64,256,4/4,C# Menor,12A,3:49
+1852,Romeo Santos,"Fórmula, Vol. 2",2014,1,Propuesta Indecente,123,61.5,246,4/4,D Mayor,10B,3:55
+1853,Romeo Santos,"Fórmula, Vol. 2",2014,2,Eres Mía,126,63,252,4/4,A# Menor,3A,4:10
+1854,Romeo Santos,"Fórmula, Vol. 2",2014,3,Cancioncitas de Amor,125,62.5,250,4/4,D# Menor,2A,3:57
+1855,Romeo Santos,"Fórmula, Vol. 2",2014,4,Hilito,117,58.5,234,4/4,F Menor,4A,3:54
+1856,Romeo Santos,Golden,2017,1,Héroe Favorito,126,63,252,4/4,F# Menor,11A,3:59
+1857,Romeo Santos,Golden,2017,2,Imitadora,126,63,252,4/4,G# Menor,1A,3:54
+1858,Romeo Santos,Golden,2017,3,"Bella y Sensual (ft. Daddy Yankee, Nicky Jam)",128,64,256,4/4,C# Menor,12A,3:24
+1859,Romeo Santos,Utopía,2019,1,Inmortal (con Aventura),125,62.5,250,4/4,A# Menor,3A,4:16
+1860,Romeo Santos,"Fórmula, Vol. 3",2022,1,Sin Fin (ft. Justin Timberlake),125,62.5,250,4/4,D# Menor,2A,3:54
+1861,Romeo Santos,"Fórmula, Vol. 3",2022,2,El Pañuelo (ft. Rosalía),128,64,256,4/4,F# Menor,11A,3:54
+1862,Prince Royce,Prince Royce,2010,1,Stand by Me,126,63,252,4/4,F# Menor,11A,3:25
+1863,Prince Royce,Prince Royce,2010,2,Corazón Sin Cara,125,62.5,250,4/4,G# Menor,1A,3:31
+1864,Prince Royce,Phase II,2012,1,Las Cosas Pequeñas,126,63,252,4/4,C# Menor,12A,3:35
+1865,Prince Royce,Phase II,2012,2,Incondicional,127,63.5,254,4/4,A# Menor,3A,3:27
+1866,Prince Royce,Soy El Mismo,2013,1,Darte un Beso,128,64,256,4/4,D# Menor,2A,3:26
+1867,Prince Royce,Soy El Mismo,2013,2,Te Robaré,125,62.5,250,4/4,F# Menor,11A,3:39
+1868,Prince Royce,FIVE,2017,1,Culpa al Corazón,126,63,252,4/4,G# Menor,1A,3:42
+1869,Prince Royce,FIVE,2017,2,Deja vu (ft. Shakira),128,64,256,4/4,C# Menor,12A,3:16
+1870,Prince Royce,ALTER EGO,2020,1,Carita de Inocente,128,64,256,4/4,A# Menor,3A,3:11
+1871,Anthony Santos,La Chupadera,1992,1,Voy Pa'llá,130,65,260,4/4,F# Menor,11A,4:15
+1872,Anthony Santos,La Chupadera,1992,2,Por Mi Timidez,128,64,256,4/4,G# Menor,1A,4:20
+1873,Anthony Santos,Corazón Bonito,1993,1,Jaula de Oro,130,65,260,4/4,C# Menor,12A,4:30
+1874,Anthony Santos,El Mayimbe... y Nada Más,1995,1,Me Enamoré,128,64,256,4/4,A# Menor,3A,4:18
+1875,Anthony Santos,Enamorado,1999,1,Creíste,130,65,260,4/4,D# Menor,2A,4:25
+1876,Raulín Rodríguez,Regresa Amor,1993,1,Medicina de Amor,128,64,256,4/4,F# Menor,11A,4:10
+1877,Raulín Rodríguez,Regresa Amor,1993,2,Nereyda,130,65,260,4/4,G# Menor,1A,4:15
+1878,Raulín Rodríguez,Soledad,1995,1,Soledad,128,64,256,4/4,C# Menor,12A,4:20
+1879,Raulín Rodríguez,Esta Noche,2013,1,Esta Noche,126,63,252,4/4,A# Menor,3A,4:05
+1880,Raulín Rodríguez,Esta Noche,2013,2,Pide Lo Que Quieras,128,64,256,4/4,D# Menor,2A,4:12
+1881,Frank Reyes,Bachata de Gala,1996,1,Princesa,126,63,252,4/4,F# Menor,11A,4:15
+1882,Frank Reyes,Déjame Entrar,2002,1,Nada de Nada,128,64,256,4/4,G# Menor,1A,4:20
+1883,Frank Reyes,Déjame Entrar,2002,2,Quién Eres Tú,126,63,252,4/4,C# Menor,12A,4:18
+1884,Frank Reyes,Cuando Se Quiere Se Puede,2004,1,Vo' a Llorar,128,64,256,4/4,A# Menor,3A,4:12
+1885,Frank Reyes,Dosis de Amor,2005,1,Amor Desperdiciado,126,63,252,4/4,D# Menor,2A,4:22
+1886,Zacarías Ferreira,El Triste,2000,1,El Triste,126,63,252,4/4,F# Menor,11A,4:10
+1887,Zacarías Ferreira,El Triste,2000,2,Es Tan Difícil,128,64,256,4/4,G# Menor,1A,4:15
+1888,Zacarías Ferreira,Quédate Conmigo,2011,1,Asesina,128,64,256,4/4,C# Menor,12A,4:05
+1889,Zacarías Ferreira,Quédate Conmigo,2011,2,Amiga Veneno,126,63,252,4/4,A# Menor,3A,4:20
+1890,Zacarías Ferreira,El Amor,2017,1,La Asesina,128,64,256,4/4,D# Menor,2A,3:58
+1891,Luis Vargas,Inocente,1993,1,Loco de Amor,130,65,260,4/4,F# Menor,11A,4:15
+1892,Luis Vargas,Inocente,1993,2,Volvió el Dolor,128,64,256,4/4,G# Menor,1A,4:20
+1893,Luis Vargas,El Dolor,1995,1,Traicionera,130,65,260,4/4,C# Menor,12A,4:10
+1894,Luis Vargas,En Persona,2001,1,Debo de Morir,128,64,256,4/4,A# Menor,3A,4:25
+1895,Monchy & Alexandra,Hoja en Blanco,1999,1,Hoja en Blanco,126,63,252,4/4,F# Menor,11A,4:58
+1896,Monchy & Alexandra,Confesiones,2002,1,Dos Locos,128,64,256,4/4,G# Menor,1A,4:05
+1897,Monchy & Alexandra,Confesiones,2002,2,Te Quiero Igual Que Ayer,126,63,252,4/4,C# Menor,12A,4:18
+1898,Monchy & Alexandra,Hasta el Fin,2004,1,Perdidos,128,64,256,4/4,A# Menor,3A,4:25
+1899,Toby Love,Toby Love,2006,1,Tengo Un Amor,126,63,252,4/4,F# Menor,11A,4:15
+1900,Toby Love,Love Is Back,2008,1,Llorar Lloviendo,128,64,256,4/4,G# Menor,1A,3:58
+1901,Toby Love,Love Is Back,2008,2,Casi Casi,126,63,252,4/4,C# Menor,12A,4:05
+1902,Xtreme,Xtreme,2005,1,Te Extraño,126,63,252,4/4,F# Menor,11A,3:40
+1903,Xtreme,Haciendo Historia,2006,1,Shorty Shorty,128,64,256,4/4,G# Menor,1A,3:30
+1904,Xtreme,Chapter Dos,2008,1,No Me Digas Que No,126,63,252,4/4,C# Menor,12A,3:45
+1905,Elvis Martínez,Todo Se Paga,1998,1,Así Te Amo,128,64,256,4/4,F# Menor,11A,4:15
+1906,Elvis Martínez,Directo al Corazón,1999,1,Maestra,126,63,252,4/4,G# Menor,1A,4:20
+1907,Elvis Martínez,Yo Soy Tu Dueño,2005,1,Tu Arrebato,128,64,256,4/4,C# Menor,12A,4:10
+1908,Yoskar Sarante,No Me Digas Que No,2000,1,Llora Alma Mía,128,64,256,4/4,F# Menor,11A,4:12
+1909,Yoskar Sarante,Llora Alma Mía,2002,1,No Tengo Suerte En El Amor,126,63,252,4/4,G# Menor,1A,4:25
+1910,Yoskar Sarante,Viví,2004,1,Guitarra,128,64,256,4/4,C# Menor,12A,4:18
+1911,Kiko Rodríguez,Directo al Corazón,1999,1,El Beso Que No Le Di,128,64,256,4/4,F# Menor,11A,4:15
+1912,Kiko Rodríguez,Para Ti,2002,1,Bandida,126,63,252,4/4,G# Menor,1A,4:20
+1913,Kiko Rodríguez,Éxitos,2005,1,Ya Te Olvidé,128,64,256,4/4,C# Menor,12A,4:10
+1914,Joe Veras,Con Más Amor,1997,1,El Hombre de Tu Vida,128,64,256,4/4,F# Menor,11A,4:12
+1915,Joe Veras,Reencuentro,2000,1,Inténtalo Tú,126,63,252,4/4,G# Menor,1A,4:18
+1916,Joe Veras,Carta de Verano,2003,1,Cartas de Verano,128,64,256,4/4,C# Menor,12A,4:25
+1917,Teodoro Reyes,Sentimiento,1994,1,Vuelve Mami,128,64,256,4/4,F# Menor,11A,4:15
+1918,Teodoro Reyes,Sentimiento,1994,2,Los Pobres También Lloran,126,63,252,4/4,G# Menor,1A,4:20
+1919,Teodoro Reyes,Amor Bonito,1996,1,Moriré Bebiendo,128,64,256,4/4,C# Menor,12A,4:10
+1920,Leonardo Paniagua,Lo Mejor de Leonardo,1980,1,Chiquitita (Bachata),126,63,252,4/4,F# Menor,11A,3:55
+1921,Leonardo Paniagua,Lo Mejor de Leonardo,1980,2,Un Beso y una Flor,128,64,256,4/4,G# Menor,1A,4:10
+1922,Leonardo Paniagua,Éxitos,1985,1,Ella Se Fue,126,63,252,4/4,C# Menor,12A,4:15
+1923,El Chaval,Devuélveme Todo,2007,1,Dónde Están Esos Amigos,128,64,256,4/4,F# Menor,11A,4:18
+1924,El Chaval,Devuélveme Todo,2007,2,Aquellos Días,126,63,252,4/4,G# Menor,1A,4:12
+1925,El Chaval,Sigo Siendo Yo,2017,1,Dile a Él,128,64,256,4/4,C# Menor,12A,4:05
+1926,Andy Andy,Aquí Conmigo,2002,1,Qué Ironía,126,63,252,4/4,F# Menor,11A,4:10
+1927,Andy Andy,Ironía,2005,1,A Quién Le Importa,128,64,256,4/4,G# Menor,1A,4:15
+1928,Andy Andy,Tú Me Haces Falta,2007,1,Necesito Un Amor,126,63,252,4/4,C# Menor,12A,4:20
+1929,Domenic Marte,Intimamente,2004,1,Ven Tú,128,64,256,4/4,F# Menor,11A,4:12
+1930,Domenic Marte,Intimamente,2004,2,La Quiero,126,63,252,4/4,G# Menor,1A,4:05
+1931,Domenic Marte,Deseos de Amarte,2007,1,Ya Que Te Vas a Ir,128,64,256,4/4,C# Menor,12A,4:18
+1932,Daniel Santacruz,Bachata Stereo,2011,1,Lento,126,63,252,4/4,F# Menor,11A,3:40
+1933,Daniel Santacruz,Toda la Vida,2014,1,Si Digo Te Quiero,128,64,256,4/4,G# Menor,1A,3:45
+1934,Daniel Santacruz,Momentos de Cine,2018,1,Rápida y Furiosa,126,63,252,4/4,C# Menor,12A,3:35
+1935,Grupo Extra,Diferente,2011,1,Me Emborracharé,128,64,256,4/4,F# Menor,11A,4:10
+1936,Grupo Extra,The Movie,2018,1,Lejos De Ti,126,63,252,4/4,G# Menor,1A,3:58
+1937,Grupo Extra,The Movie,2018,2,Te Vas,128,64,256,4/4,C# Menor,12A,4:05
+1938,Kewin Cosmos,Cosmos,2018,1,Dile,126,63,252,4/4,F# Menor,11A,3:45
+1939,Kewin Cosmos,Cosmos,2018,2,Evidencias,128,64,256,4/4,G# Menor,1A,3:50
+1940,Kewin Cosmos,Singles,2021,1,Solo,126,63,252,4/4,C# Menor,12A,3:40
+1941,Vitorino,Bachata Pura,2015,1,Mi Gran Amor,128,64,256,4/4,F# Menor,11A,4:10
+1942,Vitorino,Bachata Pura,2015,2,Amor Prohibido,126,63,252,4/4,G# Menor,1A,4:05
+1943,Alex Bueno,Ternura,1992,1,Que Vuelva,128,64,256,4/4,F# Menor,11A,4:15
+1944,Alex Bueno,Bachata,1999,1,Colegiala,126,63,252,4/4,G# Menor,1A,4:10
+1945,Alex Bueno,Bachata,1999,2,Quiéreme,128,64,256,4/4,C# Menor,12A,4:20
+1946,Los Kjarkas,Canto a la Mujer de mi Pueblo,1981,1,Llorando se fue,116,58,232,4/4,A Menor,8A,3:40
+1947,Los Kjarkas,Canto a la Mujer de mi Pueblo,1981,2,Wayayay,120,60,240,4/4,E Menor,9A,3:50
+1948,Los Kjarkas,El Amor y la Libertad,1987,1,Imillitay,118,59,236,4/4,D Menor,7A,3:35
+1949,Los Kjarkas,El Amor y la Libertad,1987,2,Tiempo al tiempo,112,56,224,4/4,A Menor,8A,4:15
+1950,Los Kjarkas,Hermanos,1991,1,Ave de Cristal,85,42.5,170,4/4,C# Menor,12A,4:20
+1951,Los Kjarkas,Hermanos,1991,2,Munasq'echay,120,60,240,4/4,E Menor,9A,3:45
+1952,Charijayac,Cielo Rosa,1985,1,Tamia,108,54,216,4/4,E Menor,9A,4:10
+1953,Charijayac,Cielo Rosa,1985,2,Movimiento Indígena,115,57.5,230,4/4,A Menor,8A,3:55
+1954,Charijayac,Otavalo Manta,1989,1,Juyayay,120,60,240,4/4,B Menor,10A,4:20
+1955,Charijayac,Otavalo Manta,1989,2,Huarmicuna,114,57,228,4/4,D Menor,7A,3:48
+1956,Charijayac,Acuarela,1992,1,Rikcharina,116,58,232,4/4,E Menor,9A,4:05
+1957,Savia Andina,Savia Andina,1976,1,Tempestad,125,62.5,250,4/4,A Menor,8A,3:20
+1958,Savia Andina,Savia Andina,1976,2,A los Bosques,110,55,220,4/4,E Menor,9A,3:45
+1959,Savia Andina,El Minero,1978,1,El Minero,118,59,236,4/4,D Menor,7A,3:50
+1960,Savia Andina,Diez Años,1985,1,K'alanchito,120,60,240,4/4,G Menor,6A,3:15
+1961,Yarina,Xiscap,2000,1,Ñuka Shunku,112,56,224,4/4,E Menor,9A,4:10
+1962,Yarina,Xiscap,2000,2,Runa Kawsay,118,59,236,4/4,A Menor,8A,3:50
+1963,Yarina,Yarina In Concert,2005,1,Puka Runa,120,60,240,4/4,B Menor,10A,4:15
+1964,Proyección,A Qué Volver,1987,1,Secreta Intimidad,110,55,220,4/4,E Menor,9A,4:20
+1965,Proyección,A Qué Volver,1987,2,Paloma del Alma Mía,112,56,224,4/4,A Menor,8A,4:15
+1966,Proyección,No Vuelvo a Amar,1990,1,Sambos de Corazón,128,64,256,4/4,D Menor,7A,3:50
+1967,Churay,Churay En Vivo,2022,1,Vuelve (ft. Linda Pichamba),116,58,232,4/4,E Menor,9A,4:05
+1968,Churay,Churay En Vivo,2022,2,Warmikuna,118,59,236,4/4,A Menor,8A,3:45
+1969,Churay,Churay En Vivo,2022,3,Kusikuy,120,60,240,4/4,B Menor,10A,3:30
+1970,K'ala Marka,Solo Por Ti,1993,1,Pastor Solitario,110,55,220,4/4,E Menor,9A,4:15
+1971,K'ala Marka,Solo Por Ti,1993,2,Cuando Florezca el Chuño,120,60,240,4/4,A Menor,8A,3:40
+1972,K'ala Marka,De los Andes al Mundo,1998,1,Aguas Claras,115,57.5,230,4/4,D Menor,7A,4:10
+1973,Tupay,América,1996,1,Ya No Quiero Saber de Ti,112,56,224,4/4,E Menor,9A,4:10
+1974,Tupay,Sin Fronteras,1999,1,Cholero,124,62,248,4/4,A Menor,8A,3:45
+1975,Tupay,Folclore con Pasión,2003,1,Saya Negra,128,64,256,4/4,D Menor,7A,4:00
+1976,Inti-Illimani,Autores Chilenos,1971,1,Alturas,125,62.5,250,6/8,A Menor,8A,3:10
+1977,Inti-Illimani,Viva Chile!,1973,1,El Pueblo Unido Jamás Será Vencido,115,57.5,230,4/4,E Menor,9A,4:30
+1978,Inti-Illimani,Hacia la Libertad,1975,1,Samba Lando,118,59,236,4/4,D Menor,7A,4:15
+1979,Illapu,Vuelvo Amoroso,1991,1,Vuelvo para vivir,115,57.5,230,4/4,E Menor,9A,4:15
+1980,Illapu,Multirracial,1995,1,Lejos del amor,118,59,236,4/4,A Menor,8A,4:05
+1981,Illapu,En Vivo,1998,1,Candombe para José,125,62.5,250,4/4,D Menor,7A,3:40
+1982,Puka Pukara,Sanjuanitos de Oro,1995,1,Otavalo Manta,120,60,240,4/4,E Menor,9A,3:45
+1983,Puka Pukara,Sanjuanitos de Oro,1995,2,Inti Raymi,122,61,244,4/4,A Menor,8A,3:30
+1984,Los Nocheros,Signos,1998,1,Entre la Tierra y el Cielo,85,42.5,170,4/4,F# Menor,11A,4:10
+1985,Los Nocheros,Nocheros,1999,1,Roja Boca,88,44,176,4/4,G# Menor,1A,3:50
+1986,Los Nocheros,Señal de Amor,2001,1,No Saber de Ti,86,43,172,4/4,C# Menor,12A,4:15
+1987,Mercedes Sosa,Mujeres Argentinas,1969,1,Alfonsina y el Mar,75,37.5,150,3/4,A Menor,8A,4:35
+1988,Mercedes Sosa,Cantora 1,2009,1,Gracias a la Vida (con Shakira),80,40,160,4/4,E Menor,9A,4:12
+1989,Mercedes Sosa,Cantora 1,2009,2,Todo Cambia,82,41,164,4/4,C# Menor,12A,4:45
+1990,Mercedes Sosa,Cantora 2,2009,1,Solo le Pido a Dios (con León Gieco),88,44,176,4/4,D Menor,7A,4:20
+1991,Alborada,Meditación,2004,1,Ananau,120,60,240,4/4,A Menor,8A,4:15
+1992,Alborada,Meditación,2004,2,Relámpago,122,61,244,4/4,E Menor,9A,4:00
+1993,Alborada,Melodías del Corazón,2007,1,White Buffalo,118,59,236,4/4,D Menor,7A,4:30
+1994,William Luna,Mírame,2000,1,Niñachay,115,57.5,230,4/4,E Menor,9A,4:20
+1995,William Luna,Mírame,2000,2,Vienes y te vas,118,59,236,4/4,A Menor,8A,3:55
+1996,William Luna,Refugio,2005,1,Linda Wawita,120,60,240,4/4,B Menor,10A,3:40
+1997,Los Jairas,Gringo Bandolero,1968,1,Gringo Bandolero,118,59,236,4/4,A Menor,8A,3:30
+1998,Los Jairas,Los Jairas,1970,1,El Cisne,112,56,224,4/4,E Menor,9A,3:45
+1999,Wara,El Inca,1973,1,El Inca,125,62.5,250,4/4,A Menor,8A,5:20
+2000,Wara,Maya,1975,1,Collita,120,60,240,4/4,E Menor,9A,4:15
+2001,Awatiñas,Kullawada,1982,1,Mayata Tunkaru,120,60,240,4/4,E Menor,9A,3:45
+2002,Awatiñas,Kullawada,1982,2,Urphila,118,59,236,4/4,A Menor,8A,4:10
+2003,Amaru,Amaru de Bolivia,1985,1,Plegaria de Amor,112,56,224,4/4,A Menor,8A,4:20
+2004,Amaru,Amaru de Bolivia,1985,2,Llorando Tu Ausencia,115,57.5,230,4/4,E Menor,9A,3:55
+2005,Sumaq,Sumaq Melodías,2002,1,Chaupi Punllapi,118,59,236,4/4,E Menor,9A,3:45
+2006,Sumaq,Sumaq Melodías,2002,2,San Juan de Imbabura,120,60,240,4/4,A Menor,8A,3:30
+2007,Inca Son,Voices of the Andes,1995,1,El Cóndor Pasa,85,42.5,170,4/4,E Menor,9A,4:10
+2008,Inca Son,Voices of the Andes,1995,2,Vírgenes del Sol,115,57.5,230,4/4,A Menor,8A,3:50
+2009,Macchu Picchu Ensemble,Traditional Flutes,1998,1,Ojos Azules,95,47.5,190,4/4,A Menor,8A,3:40
+2010,Macchu Picchu Ensemble,Traditional Flutes,1998,2,Valicha,120,60,240,4/4,D Menor,7A,3:15
+2011,Quilapayún,Basta,1969,1,La Muralla,115,57.5,230,4/4,E Menor,9A,4:15
+2012,Quilapayún,Santa María,1970,1,Cantata Santa María de Iquique,110,55,220,4/4,A Menor,8A,18:20
+2013,Jaime Guardia,Charango del Perú,1978,1,Madre Mía,110,55,220,4/4,A Menor,8A,3:30
+2014,Jaime Guardia,Charango del Perú,1978,2,Huaynos de Ayacucho,118,59,236,4/4,E Menor,9A,4:10
+2015,Raúl García Zárate,Guitarra Andina,1975,1,Adiós Pueblo de Ayacucho,80,40,160,4/4,A Menor,8A,4:25
+2016,Raúl García Zárate,Guitarra Andina,1975,2,Toro Velay,115,57.5,230,4/4,E Menor,9A,3:45
+2017,Atahualpa Yupanqui,Camino del Indio,1957,1,Los Ejes de mi Carreta,75,37.5,150,4/4,A Menor,8A,3:20
+2018,Atahualpa Yupanqui,Camino del Indio,1957,2,El Arriero,80,40,160,4/4,E Menor,9A,3:45
+2019,Atahualpa Yupanqui,Luna Tucumana,1960,1,Luna Tucumana,85,42.5,170,3/4,D Menor,7A,3:30
+2020,Jorge Cafrune,Cafrune Canta,1964,1,Zamba de mi Esperanza,78,39,156,3/4,A Menor,8A,3:40
+2021,Jorge Cafrune,Cafrune Canta,1964,2,Chiquillada,85,42.5,170,4/4,E Menor,9A,3:25
+2022,Horacio Guarany,Si Se Calla el Cantor,1972,1,Si Se Calla el Cantor,90,45,180,4/4,A Menor,8A,3:50
+2023,Horacio Guarany,Si Se Calla el Cantor,1972,2,Caballo Que No Galopa,118,59,236,4/4,E Menor,9A,3:15
+2024,Soledad,Poncho al Viento,1996,1,A Don Ata,125,62.5,250,4/4,A Menor,8A,3:25
+2025,Soledad,La Sole,1997,1,Tren del Cielo,128,64,256,4/4,E Menor,9A,3:40
+2026,Soledad,Brindis,2006,1,Brindis,85,42.5,170,4/4,D Menor,7A,3:55
+2027,Luciano Pereyra,Amaneciendo,1998,1,Como Tú,92,46,184,4/4,F# Menor,11A,3:40
+2028,Luciano Pereyra,La Vida Al Viento,2017,1,Quédate Conmigo,94,47,188,4/4,C# Menor,12A,3:30
+2029,Los Tekis,Cantaré,1998,1,Lágrimas,120,60,240,4/4,A Menor,8A,3:35
+2030,Los Tekis,Carnaval Pasión,2005,1,Cómo Has Hecho,124,62,248,4/4,E Menor,9A,3:20
+2031,Chango Spasiuk,Tarefero de Mis Pagos,2004,1,Tierra Colorada,125,62.5,250,6/8,A Menor,8A,4:10
+2032,Chango Spasiuk,Tarefero de Mis Pagos,2004,2,Posadas,120,60,240,6/8,E Menor,9A,3:50
+2033,Chabuca Granda,Dialogando,1968,1,La Flor de la Canela,80,40,160,3/4,A Menor,8A,3:25
+2034,Chabuca Granda,Dialogando,1968,2,Fina Estampa,85,42.5,170,3/4,E Menor,9A,3:10
+2035,Chabuca Granda,Cada Canción,1973,1,José Antonio,80,40,160,3/4,D Menor,7A,3:45
+2036,Eva Ayllón,Para Todos,1986,1,Enamorada de Mi País,95,47.5,190,4/4,A Menor,8A,4:15
+2037,Eva Ayllón,Kimba Fá,2008,1,Mal Paso,100,50,200,4/4,E Menor,9A,3:50
+2038,Eva Ayllón,Kimba Fá,2008,2,Le Dije a Papá,105,52.5,210,4/4,D Menor,7A,3:35
+2039,Susana Baca,Susana Baca,1997,1,María Landó,95,47.5,190,4/4,A Menor,8A,4:50
+2040,Susana Baca,Eco de Sombras,2000,1,Negra Presuntuosa,90,45,180,4/4,E Menor,9A,4:20
+2041,Tupac Amaru,Vientos de los Andes,1998,1,Imbabura Manta,120,60,240,4/4,E Menor,9A,3:45
+2042,Tupac Amaru,Vientos de los Andes,1998,2,Runa Llaqta,118,59,236,4/4,A Menor,8A,3:30
+2043,Wankarani,Aires de mi Tierra,2001,1,Pueblo Andino,115,57.5,230,4/4,E Menor,9A,3:40
+2044,Wankarani,Aires de mi Tierra,2001,2,Kusillo Danza,120,60,240,4/4,A Menor,8A,3:25
+2045,Pukará,Pukará Canta,1996,1,Coplas de Carnaval,125,62.5,250,4/4,E Menor,9A,3:50
+2046,Pukará,Pukará Canta,1996,2,Tinku Pukará,128,64,256,4/4,A Menor,8A,3:35
+2047,Norte Potosí,Fuerza Potosí,1999,1,Tinku Potosino,130,65,260,4/4,E Menor,9A,3:40
+2048,Norte Potosí,Fuerza Potosí,1999,2,Viento del Norte,128,64,256,4/4,A Menor,8A,3:20
+2049,Kusillo,Kichwa Manta,2004,1,San Juanito Alegre,120,60,240,4/4,E Menor,9A,3:35
+2050,Kusillo,Kichwa Manta,2004,2,Ñuka Llakta,118,59,236,4/4,A Menor,8A,3:45
+2051,Grupo Sisay,Sisay en Tokio,2006,1,Aires Andinos,118,59,236,4/4,E Menor,9A,4:10
+2052,Grupo Sisay,Sisay en Tokio,2006,2,Inti Raymi San Juan,122,61,244,4/4,A Menor,8A,3:40
+2053,Takina Kawsay,Takina,2008,1,Kawsay Raymi,120,60,240,4/4,E Menor,9A,3:50
+2054,Takina Kawsay,Takina,2008,2,Yuyay,116,58,232,4/4,A Menor,8A,3:30
+2055,Música Maestro,Grandes Éxitos,2000,1,Morenadas Clásicas,125,62.5,250,4/4,E Menor,9A,4:15
+2056,Música Maestro,Grandes Éxitos,2000,2,Caporales del Alma,128,64,256,4/4,A Menor,8A,3:50
+2057,Canto 4,Canto 4,2007,1,Sombra Herida,90,45,180,4/4,E Menor,9A,3:45
+2058,Canto 4,Canto 4,2007,2,Cuarto Creciente,92,46,184,4/4,A Menor,8A,3:30
+2059,Los Cuatro de Córdoba,Córdoba Canta,1974,1,Zamba para Olvidar,80,40,160,3/4,A Menor,8A,4:10
+2060,Los Cuatro de Córdoba,Córdoba Canta,1974,2,De Alberdi,85,42.5,170,3/4,E Menor,9A,3:40
+2061,Los Chalchaleros,50 Años,1998,1,Zamba de mi Esperanza,80,40,160,3/4,A Menor,8A,3:50
+2062,Los Chalchaleros,50 Años,1998,2,Luna Cautiva,82,41,164,3/4,E Menor,9A,3:45
+2063,Los Chalchaleros,50 Años,1998,3,Lloraré,85,42.5,170,3/4,D Menor,7A,3:20
+2064,Los Fronterizos,Misa Criolla,1964,1,Kyrie (Misa Criolla),75,37.5,150,4/4,A Menor,8A,3:50
+2065,Los Fronterizos,Misa Criolla,1964,2,Gloria (Misa Criolla),115,57.5,230,6/8,E Menor,9A,4:20
+2066,Los Fronterizos,Éxitos,1970,1,El Indio Muerto,80,40,160,4/4,D Menor,7A,3:40
+2067,Facundo Cabral,En Vivo,1982,1,No Soy de Aquí Ni Soy de Allá,85,42.5,170,4/4,C Mayor,8B,4:10
+2068,Facundo Cabral,En Vivo,1982,2,Pobrecito mi Patrón,88,44,176,4/4,G Mayor,9B,3:45
+2069,Piero,Mi Viejo,1969,1,Mi Viejo,78,39,156,4/4,A Menor,8A,3:25
+2070,Piero,Mi Viejo,1969,2,Llegando Llegaste,82,41,164,4/4,E Menor,9A,3:10
+2071,Piero,Canto de la Esperanza,1981,1,Los Americanos,90,45,180,4/4,D Menor,7A,4:00
+2072,Sexteto Mayor,Tango Pasión,1993,1,La Cumparsita,120,60,240,4/4,G Menor,6A,3:45
+2073,Sexteto Mayor,Tango Pasión,1993,2,El Choclo,125,62.5,250,4/4,D Menor,7A,3:30
+2074,Astor Piazzolla,Libertango,1974,1,Libertango,135,67.5,270,4/4,A Menor,8A,2:48
+2075,Astor Piazzolla,Adiós Nonino,1969,1,Adiós Nonino,70,35,140,4/4,G Menor,6A,8:10
+2076,Astor Piazzolla,Oblivion,1982,1,Oblivion,65,32.5,130,4/4,C Menor,5A,3:40
+2077,Violeta Parra,Últimas Composiciones,1966,1,Gracias a la Vida,75,37.5,150,4/4,A Menor,8A,4:32
+2078,Violeta Parra,Últimas Composiciones,1966,2,Volver a los 17,85,42.5,170,4/4,E Menor,9A,5:15
+2079,Violeta Parra,Últimas Composiciones,1966,3,Run Run Se Fue Pa'l Norte,90,45,180,4/4,D Menor,7A,3:50
+2080,Víctor Jara,Pongo en tus Manos,1969,1,Te Recuerdo Amanda,80,40,160,4/4,A Menor,8A,2:33
+2081,Víctor Jara,El Derecho de Vivir en Paz,1971,1,El Derecho de Vivir en Paz,85,42.5,170,4/4,E Menor,9A,4:35
+2082,Víctor Jara,Manifiesto,1974,1,Manifiesto,78,39,156,4/4,D Menor,7A,4:28
+2083,Los Jaivas,Todos Juntos,1972,1,Todos Juntos,115,57.5,230,4/4,A Menor,8A,5:50
+2084,Los Jaivas,Alturas de Machu Picchu,1981,1,Sube a Nacer Conmigo Hermano,120,60,240,4/4,E Menor,9A,4:48
+2085,Los Jaivas,Alturas de Machu Picchu,1981,2,Mira Niñita,85,42.5,170,4/4,C Mayor,8B,6:55
+2086,Illari,Illari,2005,1,Viento y Sol,118,59,236,4/4,E Menor,9A,3:40
+2087,Illari,Illari,2005,2,San Juanito Andino,120,60,240,4/4,A Menor,8A,3:25
+2088,Kaypacha,Kaypacha,2008,1,Pacha Mama,115,57.5,230,4/4,E Menor,9A,4:10
+2089,Kaypacha,Kaypacha,2008,2,Tinku Danza,125,62.5,250,4/4,A Menor,8A,3:35
+2090,Ayllu Llakta,Ayllu,2010,1,Otavalo Alegre,120,60,240,4/4,E Menor,9A,3:30
+2091,Ayllu Llakta,Ayllu,2010,2,Sanjuanito de Fiesta,122,61,244,4/4,A Menor,8A,3:45
+2092,Chitripu,Raymi,2012,1,Fiesta del Sol,120,60,240,4/4,E Menor,9A,3:40
+2093,Chitripu,Raymi,2012,2,Zapateo Kichwa,124,62,248,4/4,A Menor,8A,3:20
+2094,Kori Killa,Kori Killa,2015,1,Llorando en la Montaña,112,56,224,4/4,E Menor,9A,3:50
+2095,Kori Killa,Kori Killa,2015,2,Inti,118,59,236,4/4,A Menor,8A,3:35
+2096,Runamanta,Runamanta,2018,1,Runa Kawsay,118,59,236,4/4,E Menor,9A,3:45
+2097,Runamanta,Runamanta,2018,2,Corazón Andino,120,60,240,4/4,A Menor,8A,3:30
+2098,Julio Jaramillo,El Ruiseñor de América,1965,1,Nuestro Juramento,85,42.5,170,3/4,A Menor,8A,3:10
+2099,Julio Jaramillo,El Ruiseñor de América,1965,2,Fatalidad,88,44,176,3/4,D Menor,7A,3:05
+2100,Julio Jaramillo,Éxitos Inmortales,1970,1,Cinco Centavitos,82,41,164,4/4,E Menor,9A,2:50
+2101,Julio Jaramillo,Éxitos Inmortales,1970,2,Rondando Tu Esquina,86,43,172,4/4,C# Menor,12A,3:15
+2102,Julio Jaramillo,Éxitos Inmortales,1970,3,Ódiame,84,42,168,3/4,A# Menor,3A,3:08
+2103,Juan Fernando Velasco,Para que no me olvides,1999,1,Para que no me olvides,85,42.5,170,4/4,F# Menor,11A,4:15
+2104,Juan Fernando Velasco,Para que no me olvides,1999,2,Déjame,90,45,180,4/4,G# Menor,1A,4:02
+2105,Juan Fernando Velasco,Tanto Amor,2002,1,Chao Lola,120,60,240,4/4,C# Menor,12A,3:40
+2106,Juan Fernando Velasco,Tanto Amor,2002,2,Dicen,88,44,176,4/4,A# Menor,3A,4:10
+2107,Juan Fernando Velasco,Con Toda el Alma,2008,1,El Aguacate (Pasillo),80,40,160,3/4,D# Menor,2A,3:45
+2108,Tercer Mundo,Uno Más Uno,1992,1,Si Dijeras,120,60,240,4/4,F# Menor,11A,3:45
+2109,Tercer Mundo,Tu Madre,1997,1,Tarjetitas,125,62.5,250,4/4,G# Menor,1A,3:50
+2110,Tercer Mundo,Tu Madre,1997,2,Te Extraño Un Poco,118,59,236,4/4,C# Menor,12A,3:35
+2111,Papá Changó,Caminando,2008,1,Negrita,130,65,260,4/4,F# Menor,11A,3:40
+2112,Papá Changó,Caminando,2008,2,Lady,135,67.5,270,4/4,G# Menor,1A,3:30
+2113,Papá Changó,No Te Detengas,2012,1,Yo No Quiero,128,64,256,4/4,C# Menor,12A,3:45
+2114,AU-D,Asfalto Caliente,1992,1,Tres Notas,90,45,180,4/4,F# Menor,11A,3:45
+2115,AU-D,Asfalto Caliente,1992,2,Crema de Limón,95,47.5,190,4/4,G# Menor,1A,3:30
+2116,AU-D,Sudamérica,1996,1,Vago Soy,92,46,184,4/4,C# Menor,12A,3:50
+2117,AU-D,Sudamérica,1996,2,Mientras Me Quieras,90,45,180,4/4,A# Menor,3A,4:10
+2118,Verde 70,Alegre Depresión,2000,1,Me Tienes Me Puedes Me Dueles,125,62.5,250,4/4,F# Menor,11A,3:45
+2119,Verde 70,Alegre Depresión,2000,2,En la Inmensidad,120,60,240,4/4,G# Menor,1A,3:30
+2120,Verde 70,Ruta Melancolía,2003,1,No Es Al Azar,128,64,256,4/4,C# Menor,12A,3:55
+2121,Mirella Cesa,Mirella Cesa,2006,1,El Amor Es Así,115,57.5,230,4/4,F# Menor,11A,3:40
+2122,Mirella Cesa,Deseo Concedido,2013,1,La Corriente,118,59,236,4/4,G# Menor,1A,3:30
+2123,Mirella Cesa,Arcaiko,2018,1,A Besos,120,60,240,4/4,C# Menor,12A,3:25
+2124,Tranzas,Caparazón,1997,1,Un Nuevo Amor,88,44,176,4/4,F# Menor,11A,4:15
+2125,Tranzas,Caparazón,1997,2,Dime Si Recuerdas,85,42.5,170,4/4,G# Menor,1A,4:10
+2126,Tranzas,Por Ti,2000,1,Mori,85,42.5,170,4/4,C# Menor,12A,3:55
+2127,Alex Ponce,Ser Humano,2023,1,Plan,120,60,240,4/4,F# Menor,11A,3:05
+2128,Alex Ponce,Ser Humano,2023,2,Guerra Perdida,115,57.5,230,4/4,G# Menor,1A,3:12
+2129,Alex Ponce,Ruido,2024,1,Traición,125,62.5,250,4/4,C# Menor,12A,2:58
+2130,Guardarraya,Chamba,2003,1,1535,115,57.5,230,4/4,F# Menor,11A,4:10
+2131,Guardarraya,Me Fui a Volver,2017,1,Lero Lero,120,60,240,4/4,G# Menor,1A,4:20
+2132,Guardarraya,Me Fui a Volver,2017,2,La Diabla,125,62.5,250,4/4,C# Menor,12A,3:50
+2133,Sal y Mileto,Sal y Mileto,1999,1,Aguanta,130,65,260,4/4,F# Menor,11A,4:45
+2134,Sal y Mileto,Disko Cero,2001,1,Kito con K,135,67.5,270,4/4,G# Menor,1A,4:15
+2135,Cruks en Karnak,La Caperuza,1997,1,El Aguajal,120,60,240,4/4,F# Menor,11A,4:10
+2136,Cruks en Karnak,Las Desventuras,2003,1,Al Borde,125,62.5,250,4/4,G# Menor,1A,3:55
+2137,Hermanos Miño Naranjo,Grandes Pasillos,1970,1,Tú y Yo,80,40,160,3/4,A Menor,8A,3:15
+2138,Hermanos Miño Naranjo,Grandes Pasillos,1970,2,Guayaquil de Mis Amores,85,42.5,170,3/4,E Menor,9A,3:10
+2139,Benítez y Valencia,Inmortales,1968,1,Vasija de Barro,85,42.5,170,3/4,A Menor,8A,3:30
+2140,Benítez y Valencia,Inmortales,1968,2,La Bocina,90,45,180,6/8,E Menor,9A,3:20
+2141,Olimpo Cárdenas,Grandes de Olimpo,1965,1,Lágrimas Negras,80,40,160,3/4,A Menor,8A,3:15
+2142,Olimpo Cárdenas,Grandes de Olimpo,1965,2,Licor Bendito,82,41,164,3/4,E Menor,9A,3:10
+2143,Carlota Jaramillo,La Reina del Pasillo,1960,1,Sendas Distintas,78,39,156,3/4,A Menor,8A,3:25
+2144,Carlota Jaramillo,La Reina del Pasillo,1960,2,Esta Pena Mía,80,40,160,3/4,E Menor,9A,3:15
+2145,Margarita Laso,El Trébol de la Paz,1995,1,Amanecer,85,42.5,170,3/4,A Menor,8A,3:40
+2146,Margarita Laso,Gallito Verde,2002,1,Corazón de Piedra,90,45,180,6/8,E Menor,9A,3:30
+2147,Paulina Tamayo,La Grande del Ecuador,1998,1,Amor Fingido,85,42.5,170,3/4,A Menor,8A,3:45
+2148,Paulina Tamayo,La Grande del Ecuador,1998,2,Callejón sin Salida,88,44,176,3/4,E Menor,9A,3:30
+2149,Hermanas Mendoza Suasti,Voces de Oro,1965,1,Incertidumbre,80,40,160,3/4,A Menor,8A,3:15
+2150,Hermanas Mendoza Suasti,Voces de Oro,1965,2,Alma Lojana,85,42.5,170,3/4,E Menor,9A,3:20
+2151,Fausto Miño,SerraCosteño,2007,1,Baila Mi Vida,115,57.5,230,4/4,F# Menor,11A,3:40
+2152,Fausto Miño,SerraCosteño,2007,2,Entra Mi Vida,118,59,236,4/4,G# Menor,1A,3:30
+2153,Daniel Betancourth,Seductora,2007,1,Seductora,120,60,240,4/4,F# Menor,11A,3:35
+2154,Daniel Betancourth,Sobrenatural,2010,1,Bella,118,59,236,4/4,G# Menor,1A,3:40
+2155,Marqués,En Vivo,2018,1,Por Qué Es Tan Cruel el Amor,88,44,176,4/4,F# Menor,11A,4:10
+2156,Marqués,En Vivo,2018,2,Te Voy a Amar,90,45,180,4/4,G# Menor,1A,3:55
+2157,Maykel,A Prueba de Todo,2014,1,Guapa,126,63,252,4/4,F# Menor,11A,3:45
+2158,Maykel,A Prueba de Todo,2014,2,Violeta,128,64,256,4/4,G# Menor,1A,3:30
+2159,Sergio Sacoto,Nada Es Lo Que Parece,2008,1,Al Borde (Acústico),115,57.5,230,4/4,F# Menor,11A,3:45
+2160,Sergio Sacoto,Nada Es Lo Que Parece,2008,2,Morí (Acústico),85,42.5,170,4/4,G# Menor,1A,3:50
+2161,Mamá Vudú,Aerosol,2001,1,Lidiando con el Fantasma,130,65,260,4/4,F# Menor,11A,3:40
+2162,Mamá Vudú,Macrosensor,2004,1,Cartografía,128,64,256,4/4,G# Menor,1A,3:35
+2163,Swing Original Monks,La Cosecha,2013,1,Caminito,125,62.5,250,4/4,F# Menor,11A,3:50
+2164,Swing Original Monks,Somos,2016,1,Agua,128,64,256,4/4,G# Menor,1A,3:40
+2165,Rocola Bacalao,Mi Primer Disco,2003,1,Condoto,140,70,280,4/4,F# Menor,11A,3:30
+2166,Rocola Bacalao,Infauto,2007,1,Guayaquil City,145,72.5,290,4/4,G# Menor,1A,3:45
+2167,Mortero,Mortero,2008,1,Rebelión,160,80,320,4/4,F# Menor,11A,2:45
+2168,Mortero,Mortero,2008,2,Grito de Guerra,165,82.5,330,4/4,G# Menor,1A,2:30
+2169,La Grupa,La Grupa,2002,1,Por Ti,120,60,240,4/4,F# Menor,11A,3:45
+2170,La Grupa,La Grupa,2002,2,Arroyito de Amor,118,59,236,4/4,G# Menor,1A,3:30
+2171,Da Pawn,El Peón,2013,1,Dibujo Por Dibujar,110,55,220,4/4,F# Menor,11A,4:15
+2172,Da Pawn,Eco,2016,1,Cambio de Tonalidad,115,57.5,230,4/4,G# Menor,1A,4:05
+2173,La Máquina Camaleón,Roja,2014,1,El Amuleto,120,60,240,4/4,F# Menor,11A,3:45
+2174,La Máquina Camaleón,Amarilla,2017,1,Motora,125,62.5,250,4/4,G# Menor,1A,3:30
+2175,Luz Pinos,Humana,2017,1,Mozo,115,57.5,230,4/4,F# Menor,11A,3:40
+2176,Luz Pinos,Humana,2017,2,Café con Leche,110,55,220,4/4,G# Menor,1A,3:35
+2177,Renato Abad,Renato,2015,1,Te Amaré,88,44,176,4/4,F# Menor,11A,3:50
+2178,Renato Abad,Renato,2015,2,Vuelve Conmigo,90,45,180,4/4,G# Menor,1A,3:40
+2179,Widinson,Éxitos de Oro,2010,1,Dos Morenas,130,65,260,4/4,F# Menor,11A,3:45
+2180,Widinson,Éxitos de Oro,2010,2,El Casorio,132,66,264,4/4,G# Menor,1A,3:30
+2181,Gerardo Morán,El Más Querido,2000,1,El Más Querido,128,64,256,4/4,F# Menor,11A,3:40
+2182,Gerardo Morán,El Más Querido,2000,2,En Vida,130,65,260,4/4,G# Menor,1A,3:35
+2183,Sharon La Hechicera,Corazón Valiente,1999,1,Corazón Valiente,130,65,260,4/4,F# Menor,11A,3:40
+2184,Sharon La Hechicera,Corazón Valiente,1999,2,La Hechicera,132,66,264,4/4,G# Menor,1A,3:30
+2185,Ángel Guaraca,El Indio Cantor,2002,1,El Indio Cantor,125,62.5,250,4/4,E Menor,9A,3:45
+2186,Ángel Guaraca,El Indio Cantor,2002,2,Sanjuanitos de Fiesta,128,64,256,4/4,A Menor,8A,3:30
+2187,Jaime Enrique Aymara,El Ídolo,2004,1,Dime Cómo Te Olvido,128,64,256,4/4,F# Menor,11A,3:40
+2188,Jaime Enrique Aymara,El Ídolo,2004,2,Que Levante la Mano,130,65,260,4/4,G# Menor,1A,3:35
+2189,Tierra Canela,Diosas de la Cumbia,2001,1,La Carta Final,128,64,256,4/4,F# Menor,11A,3:40
+2190,Tierra Canela,Diosas de la Cumbia,2001,2,Mi Joven Profesor de Amor,130,65,260,4/4,G# Menor,1A,3:35
+2191,Las Chicas Dulces,Grandes Éxitos,2003,1,Pecado,128,64,256,4/4,F# Menor,11A,3:40
+2192,Las Chicas Dulces,Grandes Éxitos,2003,2,Te Extraño Tanto,130,65,260,4/4,G# Menor,1A,3:30
+2193,Michael Jackson,Thriller,1982,1,Billie Jean,117,58.5,234,4/4,F# Menor,11A,4:54
+2194,Michael Jackson,Thriller,1982,2,Beat It,138,69,276,4/4,E♭ Menor,2A,4:18
+2195,Michael Jackson,Thriller,1982,3,Thriller,118,59,236,4/4,C# Menor,12A,5:57
+2196,Michael Jackson,Bad,1987,1,Bad,114,57,228,4/4,A Menor,8A,4:07
+2197,Michael Jackson,Bad,1987,2,Smooth Criminal,118,59,236,4/4,A Menor,8A,4:17
+2198,Michael Jackson,Bad,1987,3,Man in the Mirror,100,50,200,4/4,G Mayor,9B,5:19
+2199,Taylor Swift,1989,2014,1,Blank Space,96,48,192,4/4,F Mayor,7B,3:51
+2200,Taylor Swift,1989,2014,2,Shake It Off,160,80,320,4/4,G Mayor,9B,3:39
+2201,Taylor Swift,Lover,2019,1,Cruel Summer,170,85,340,4/4,A Mayor,11B,2:58
+2202,Taylor Swift,Midnights,2022,1,Anti-Hero,97,48.5,194,4/4,E Mayor,12B,3:20
+2203,Taylor Swift,TTPD,2024,1,Fortnight (ft. Post Malone),96,48,192,4/4,B Mayor,1B,3:48
+2204,Bruno Mars,Doo-Wops & Hooligans,2010,1,Just the Way You Are,109,54.5,218,4/4,F Mayor,7B,3:40
+2205,Bruno Mars,Unorthodox Jukebox,2012,1,Locked Out of Heaven,144,72,288,4/4,D Menor,7A,3:53
+2206,Bruno Mars,Uptown Special,2014,1,Uptown Funk (con Mark Ronson),115,57.5,230,4/4,D Menor,7A,4:30
+2207,Bruno Mars,24K Magic,2016,1,24K Magic,107,53.5,214,4/4,F# Menor,11A,3:46
+2208,Bruno Mars,24K Magic,2016,2,That's What I Like,134,67,268,4/4,A# Menor,3A,3:26
+2209,Dua Lipa,Dua Lipa,2017,1,New Rules,116,58,232,4/4,A Menor,8A,3:29
+2210,Dua Lipa,Future Nostalgia,2020,1,Don't Start Now,124,62,248,4/4,B Menor,10A,3:03
+2211,Dua Lipa,Future Nostalgia,2020,2,Levitating,103,51.5,206,4/4,B Menor,10A,3:23
+2212,Dua Lipa,Radical Optimism,2024,1,Houdini,117,58.5,234,4/4,D Menor,7A,3:05
+2213,The Weeknd,Beauty Behind the Madness,2015,1,Can't Feel My Face,108,54,216,4/4,A Menor,8A,3:33
+2214,The Weeknd,Starboy,2016,1,Starboy (ft. Daft Punk),186,93,372,4/4,G# Menor,1A,3:50
+2215,The Weeknd,After Hours,2020,1,Blinding Lights,171,85.5,342,4/4,F# Menor,11A,3:20
+2216,The Weeknd,After Hours,2020,2,Save Your Tears,118,59,236,4/4,C Mayor,8B,3:35
+2217,Beyoncé,Dangerously in Love,2003,1,Crazy in Love (ft. Jay-Z),99,49.5,198,4/4,D Menor,7A,3:56
+2218,Beyoncé,I Am... Sasha Fierce,2008,1,Single Ladies,97,48.5,194,4/4,E Mayor,12B,3:13
+2219,Beyoncé,I Am... Sasha Fierce,2008,2,Halo,80,40,160,4/4,B Mayor,1B,4:21
+2220,Beyoncé,Cowboy Carter,2024,1,TEXAS HOLD 'EM,110,55,220,4/4,D Mayor,10B,3:53
+2221,Adele,21,2011,1,Rolling in the Deep,105,52.5,210,4/4,C Menor,5A,3:48
+2222,Adele,21,2011,2,Someone Like You,68,34,136,4/4,A Mayor,11B,4:45
+2223,Adele,25,2015,1,Hello,79,39.5,158,4/4,F Menor,4A,4:55
+2224,Adele,30,2021,1,Easy On Me,70,35,140,4/4,F Mayor,7B,3:44
+2225,Shakira,Pies Descalzos,1995,1,Antología,92,46,184,4/4,A Mayor,11B,4:14
+2226,Shakira,Dónde Están los Ladrones?,1998,1,"Ciega, Sordomuda",125,62.5,250,4/4,D Mayor,10B,4:28
+2227,Shakira,Laundry Service,2001,1,"Whenever, Wherever",108,54,216,4/4,C# Menor,12A,3:16
+2228,Shakira,Oral Fixation Vol. 2,2005,1,Hips Don't Lie (ft. Wyclef Jean),100,50,200,4/4,B♭ Minor,3A,3:38
+2229,Ed Sheeran,x,2014,1,Thinking Out Loud,79,39.5,158,4/4,D Mayor,10B,4:41
+2230,Ed Sheeran,÷,2017,1,Shape of You,96,48,192,4/4,C# Menor,12A,3:53
+2231,Ed Sheeran,÷,2017,2,Perfect,95,47.5,190,12/8,A♭ Mayor,4B,4:23
+2232,Ed Sheeran,#ERROR!,2021,1,Bad Habits,126,63,252,4/4,B Menor,10A,3:51
+2233,Billie Eilish,When We All Fall Asleep,2019,1,Bad Guy,135,67.5,270,4/4,G Menor,6A,3:14
+2234,Billie Eilish,Happier Than Ever,2021,1,Happier Than Ever,160,80,320,4/4,C Mayor,8B,4:58
+2235,Billie Eilish,Hit Me Hard and Soft,2024,1,BIRDS OF A FEATHER,105,52.5,210,4/4,D Mayor,10B,3:16
+2236,Harry Styles,Harry Styles,2017,1,Sign of the Times,120,60,240,4/4,F Mayor,7B,5:40
+2237,Harry Styles,Fine Line,2019,1,Watermelon Sugar,95,47.5,190,4/4,A Menor,8A,2:54
+2238,Harry Styles,Harry's House,2022,1,As It Was,174,87,348,4/4,A Mayor,11B,2:47
+2239,Justin Bieber,Purpose,2015,1,Sorry,100,50,200,4/4,C# Menor,12A,3:20
+2240,Justin Bieber,Purpose,2015,2,Love Yourself,100,50,200,4/4,E Mayor,12B,3:53
+2241,Justin Bieber,Justice,2021,1,"Peaches (ft. Daniel Caesar, Giveon)",90,45,180,4/4,C Mayor,8B,3:18
+2242,Rihanna,Good Girl Gone Bad,2007,1,Umbrella (ft. Jay-Z),87,43.5,174,4/4,B♭ Minor,3A,4:35
+2243,Rihanna,Talk That Talk,2011,1,We Found Love (ft. Calvin Harris),128,64,256,4/4,F# Mayor,2B,3:35
+2244,Rihanna,Unapologetic,2012,1,Diamonds,92,46,184,4/4,B Menor,10A,3:45
+2245,Rihanna,Anti,2016,1,Work (ft. Drake),92,46,184,4/4,C# Menor,12A,3:39
+2246,Lady Gaga,The Fame Monster,2009,1,Bad Romance,119,59.5,238,4/4,A Menor,8A,4:54
+2247,Lady Gaga,The Fame Monster,2009,2,Poker Face,119,59.5,238,4/4,G# Menor,1A,3:57
+2248,Lady Gaga,Born This Way,2011,1,Born This Way,124,62,248,4/4,F# Mayor,2B,4:20
+2249,Lady Gaga,A Star Is Born,2018,1,Shallow (con Bradley Cooper),96,48,192,4/4,G Mayor,9B,3:36
+2250,Katy Perry,Teenage Dream,2010,1,Firework,124,62,248,4/4,A♭ Mayor,4B,3:47
+2251,Katy Perry,Teenage Dream,2010,2,Teenage Dream,120,60,240,4/4,B♭ Major,6B,3:47
+2252,Katy Perry,Prism,2013,1,Roar,90,45,180,4/4,B♭ Major,6B,3:43
+2253,Katy Perry,Prism,2013,2,Dark Horse (ft. Juicy J),132,66,264,4/4,B♭ Minor,3A,3:35
+2254,Ariana Grande,Dangerous Woman,2016,1,Side to Side (ft. Nicki Minaj),159,79.5,318,4/4,F# Menor,11A,3:46
+2255,Ariana Grande,"thank u, next",2019,1,"thank u, next",107,53.5,214,4/4,B♭ Major,6B,3:27
+2256,Ariana Grande,"thank u, next",2019,2,7 rings,140,70,280,4/4,C# Menor,12A,2:58
+2257,Ariana Grande,eternal sunshine,2024,1,we can't be friends,116,58,232,4/4,F Mayor,7B,3:48
+2258,Madonna,Like a Virgin,1984,1,Like a Virgin,120,60,240,4/4,F# Mayor,2B,3:38
+2259,Madonna,Like a Virgin,1984,2,Material Girl,120,60,240,4/4,C Mayor,8B,4:00
+2260,Madonna,I'm Breathless,1990,1,Vogue,120,60,240,4/4,A♭ Minor,1A,5:16
+2261,Madonna,Confessions on a Dance Floor,2005,1,Hung Up,120,60,240,4/4,D Menor,7A,5:36
+2262,Elton John,Honky Château,1972,1,Rocket Man,68,34,136,4/4,B♭ Major,6B,4:41
+2263,Elton John,Madman Across the Water,1971,1,Tiny Dancer,72,36,144,4/4,C Mayor,8B,6:15
+2264,Elton John,Too Low for Zero,1983,1,I'm Still Standing,177,88.5,354,4/4,A# Menor,3A,3:02
+2265,Queen,A Night at the Opera,1975,1,Bohemian Rhapsody,72,36,144,4/4,B♭ Major,6B,5:55
+2266,Queen,News of the World,1977,1,We Are the Champions,64,32,128,6/8,F Menor,4A,2:59
+2267,Queen,Jazz,1978,1,Don't Stop Me Now,156,78,312,4/4,F Mayor,7B,3:29
+2268,Coldplay,Parachutes,2000,1,Yellow,88,44,176,4/4,B Mayor,1B,4:29
+2269,Coldplay,A Rush of Blood to the Head,2002,1,The Scientist,73,36.5,146,4/4,F Major,7B,5:09
+2270,Coldplay,Viva la Vida,2008,1,Viva La Vida,138,69,276,4/4,A♭ Major,4B,4:01
+2271,Maroon 5,Songs About Jane,2002,1,She Will Be Loved,102,51,204,4/4,C Menor,5A,4:17
+2272,Maroon 5,Hands All Over,2010,1,Moves Like Jagger (ft. Christina Aguilera),128,64,256,4/4,B Menor,10A,3:21
+2273,Maroon 5,V,2014,1,Sugar,120,60,240,4/4,D♭ Major,3B,3:55
+2274,Imagine Dragons,Night Visions,2012,1,Radioactive,136,68,272,4/4,B Menor,10A,3:06
+2275,Imagine Dragons,Night Visions,2012,2,Demons,90,45,180,4/4,E♭ Major,5B,2:57
+2276,Imagine Dragons,Evolve,2017,1,Believer,125,62.5,250,4/4,A# Menor,3A,3:24
+2277,Justin Timberlake,Justified,2002,1,Cry Me a River,74,37,148,4/4,G# Menor,1A,4:48
+2278,Justin Timberlake,FutureSex/LoveSounds,2006,1,SexyBack,117,58.5,234,4/4,A# Menor,3A,4:02
+2279,Justin Timberlake,The 20/20 Experience,2013,1,Mirrors,77,38.5,154,4/4,D# Menor,2A,8:05
+2280,Sam Smith,In the Lonely Hour,2014,1,Stay With Me,84,42,168,4/4,A Menor,8A,2:52
+2281,Sam Smith,In the Lonely Hour,2014,2,I'm Not The Only One,82,41,164,4/4,F Major,7B,3:59
+2282,Sam Smith,Gloria,2023,1,Unholy (con Kim Petras),131,65.5,262,4/4,C# Menor,12A,2:36
+2283,Olivia Rodrigo,SOUR,2021,1,drivers license,144,72,288,4/4,B♭ Major,6B,4:02
+2284,Olivia Rodrigo,SOUR,2021,2,good 4 u,167,83.5,334,4/4,F# Menor,11A,2:58
+2285,Olivia Rodrigo,GUTS,2023,1,vampire,138,69,276,4/4,F Major,7B,3:39
+2286,Miley Cyrus,Bangerz,2013,1,Wrecking Ball,120,60,240,4/4,D Menor,7A,3:41
+2287,Miley Cyrus,Plastic Hearts,2020,1,Midnight Sky,110,55,220,4/4,E Menor,9A,3:43
+2288,Miley Cyrus,Endless Summer Vacation,2023,1,Flowers,118,59,236,4/4,A Menor,8A,3:20
+2289,Sia,1000 Forms of Fear,2014,1,Chandelier,117,58.5,234,4/4,A# Menor,3A,3:36
+2290,Sia,1000 Forms of Fear,2014,2,Elastic Heart,130,65,260,4/4,A Major,11B,4:17
+2291,Sia,This Is Acting,2016,1,Cheap Thrills,90,45,180,4/4,F# Menor,11A,3:31
+2292,Alicia Keys,Songs in A Minor,2001,1,Fallin',96,48,192,6/8,E Menor,9A,3:30
+2293,Alicia Keys,The Diary of Alicia Keys,2003,1,If I Ain't Got You,118,59,236,6/8,G Mayor,9B,3:48
+2294,Alicia Keys,As I Am,2007,1,No One,90,45,180,4/4,E Mayor,12B,4:13
+2295,John Legend,Get Lifted,2004,1,Ordinary People,85,42.5,170,4/4,F# Menor,11A,4:41
+2296,John Legend,Love in the Future,2013,1,All of Me,120,60,240,4/4,A♭ Major,4B,4:29
+2297,Shawn Mendes,Handwritten,2015,1,Stitches,150,75,300,4/4,A# Menor,3A,3:26
+2298,Shawn Mendes,Illuminate,2016,1,Treat You Better,83,41.5,166,4/4,A# Menor,3A,3:07
+2299,Shawn Mendes,Shawn Mendes,2018,1,In My Blood,140,70,280,4/4,F Major,7B,3:31
+2300,Camila Cabello,Camila,2018,1,Havana (ft. Young Thug),105,52.5,210,4/4,G Menor,6A,3:37
+2301,Camila Cabello,Camila,2018,2,Never Be the Same,130,65,260,4/4,C Mayor,8B,3:46
+2302,Camila Cabello,Romance,2019,1,Señorita (con Shawn Mendes),117,58.5,234,4/4,A Menor,8A,3:10
+2303,Selena Gomez,Revival,2015,1,Hands to Myself,111,55.5,222,4/4,E♭ Major,5B,3:20
+2304,Selena Gomez,Rare,2020,1,Lose You to Love Me,102,51,204,4/4,B♭ Major,6B,3:26
+2305,Selena Gomez,Singles,2022,1,Calm Down (con Rema),107,53.5,214,4/4,B Menor,10A,3:59
+2306,Britney Spears,...Baby One More Time,1999,1,...Baby One More Time,93,46.5,186,4/4,C Menor,5A,3:30
+2307,Britney Spears,Oops!... I Did It Again,2000,1,Oops!... I Did It Again,95,47.5,190,4/4,C# Menor,12A,3:31
+2308,Britney Spears,In The Zone,2003,1,Toxic,143,71.5,286,4/4,C Menor,5A,3:18
+2309,Christina Aguilera,Christina Aguilera,1999,1,Genie in a Bottle,88,44,176,4/4,F Menor,4A,3:38
+2310,Christina Aguilera,Stripped,2002,1,Beautiful,78,39,156,4/4,E♭ Major,5B,3:58
+2311,Christina Aguilera,Stripped,2002,2,Fighter,95,47.5,190,4/4,E Menor,9A,4:05
+2312,Ricky Martin,Vuelve,1998,1,La Copa de la Vida,108,54,216,4/4,A Menor,8A,4:28
+2313,Ricky Martin,Ricky Martin,1999,1,Livin' la Vida Loca,178,89,356,4/4,C# Menor,12A,4:03
+2314,Ricky Martin,A Quien Quiera Escuchar,2015,1,La Mordidita (ft. Yotuel),142,71,284,4/4,C Mayor,8B,3:31
+2315,Enrique Iglesias,Escape,2001,1,Hero,75,37.5,150,4/4,G Mayor,9B,4:24
+2316,Enrique Iglesias,Sex and Love,2014,1,Bailando (ft. Gente de Zona),91,45.5,182,4/4,G Mayor,9B,4:03
+2317,Enrique Iglesias,Sex and Love,2014,2,El Perdón (con Nicky Jam),90,45,180,4/4,G# Menor,1A,3:27
+2318,Alejandro Sanz,Más,1997,1,Corazón Partío,98,49,196,4/4,G Menor,6A,5:46
+2319,Alejandro Sanz,Más,1997,2,Amiga Mía,85,42.5,170,4/4,A# Menor,3A,6:12
+2320,Alejandro Sanz,El Alma al Aire,2000,1,Cuando Nadie Me Ve,78,39,156,4/4,D Menor,7A,5:07
+2321,Luis Miguel,Busca una Mujer,1988,1,La Incondicional,85,42.5,170,4/4,G# Menor,1A,4:16
+2322,Luis Miguel,20 Años,1990,1,Culpable o No,80,40,160,4/4,E Menor,9A,3:56
+2323,Luis Miguel,Romance,1991,1,Sabor a Mí,75,37.5,150,4/4,C Mayor,8B,3:06
+2324,Luis Miguel,Aries,1993,1,Hasta Que Me Olvides,78,39,156,4/4,D# Menor,2A,4:40
+2325,Chayanne,Atado a Tu Amor,1998,1,Dejaría Todo,82,41,164,4/4,F# Menor,11A,4:44
+2326,Chayanne,Simplemente,2000,1,Torero,132,66,264,4/4,E Menor,9A,3:37
+2327,Chayanne,Sincero,2003,1,Un Siglo Sin Ti,80,40,160,4/4,C# Menor,12A,4:41
+2328,Camilo,Por Primera Vez,2020,1,Tutu (con Pedro Capó),146,73,292,4/4,B Mayor,1B,2:58
+2329,Camilo,Mis Manos,2021,1,Vida de Rico,180,90,360,4/4,F# Mayor,2B,3:01
+2330,Camilo,De Adentro Pa Afuera,2022,1,Índigo (con Evaluna Montaner),116,58,232,4/4,C Mayor,8B,3:34
+2331,BTS,Love Yourself: Tear,2018,1,Fake Love,155,77.5,310,4/4,D# Menor,2A,4:02
+2332,BTS,Map of the Soul: Persona,2019,1,Boy With Luv (ft. Halsey),120,60,240,4/4,G Mayor,9B,3:49
+2333,BTS,BE,2020,1,Dynamite,114,57,228,4/4,F# Menor,11A,3:19
+2334,BTS,Butter,2021,1,Butter,110,55,220,4/4,A♭ Major,4B,2:44
+2335,BLACKPINK,Square Up,2018,1,DDU-DU DDU-DU,140,70,280,4/4,E Menor,9A,3:29
+2336,BLACKPINK,Kill This Love,2019,1,Kill This Love,132,66,264,4/4,D# Menor,2A,3:09
+2337,BLACKPINK,The Album,2020,1,How You Like That,130,65,260,4/4,B Menor,10A,3:01
+2338,BLACKPINK,Born Pink,2022,1,Pink Venom,90,45,180,4/4,C# Menor,12A,3:06
+2339,Stray Kids,GO LIVE,2020,1,God's Menu,157,78.5,314,4/4,F# Menor,11A,2:48
+2340,Stray Kids,ODDINARY,2022,1,MANIAC,120,60,240,4/4,C# Menor,12A,3:02
+2341,Stray Kids,5-STAR,2023,1,S-Class,145,72.5,290,4/4,G# Menor,1A,3:16
+2342,Stray Kids,ATE,2024,1,Chk Chk Boom,138,69,276,4/4,A# Menor,3A,2:28
+2343,TWICE,Fancy You,2019,1,Fancy,120,60,240,4/4,C# Menor,12A,3:35
+2344,TWICE,Feel Special,2019,1,Feel Special,129,64.5,258,4/4,B♭ Major,6B,3:27
+2345,TWICE,Formula of Love,2021,1,The Feels,120,60,240,4/4,B Menor,10A,3:18
+2346,NewJeans,New Jeans,2022,1,Hype Boy,100,50,200,4/4,E Menor,9A,2:59
+2347,NewJeans,New Jeans,2022,2,Attention,105,52.5,210,4/4,A# Menor,3A,3:00
+2348,NewJeans,OMG,2023,1,Ditto,134,67,268,4/4,F# Menor,11A,3:05
+2349,NewJeans,Get Up,2023,1,Super Shy,150,75,300,4/4,F Menor,4A,2:34
+2350,EXO,XOXO,2013,1,Growl,110,55,220,4/4,C# Menor,12A,3:27
+2351,EXO,EX'ACT,2016,1,Monster,118,59,236,4/4,D# Menor,2A,3:41
+2352,EXO,Love Shot,2018,1,Love Shot,130,65,260,4/4,F# Menor,11A,3:20
+2353,SEVENTEEN,Al1,2017,1,Don't Wanna Cry,100,50,200,4/4,A Menor,8A,3:23
+2354,SEVENTEEN,Face the Sun,2022,1,HOT,125,62.5,250,4/4,C# Menor,12A,3:17
+2355,SEVENTEEN,FML,2023,1,Super,138,69,276,4/4,A# Menor,3A,3:20
+2356,Red Velvet,The Red Summer,2017,1,Red Flavor,125,62.5,250,4/4,A Major,11B,3:11
+2357,Red Velvet,Perfect Velvet,2018,1,Bad Boy,150,75,300,4/4,D# Menor,2A,3:30
+2358,Red Velvet,The ReVe Festival,2019,1,Psycho,140,70,280,4/4,A♭ Major,4B,3:30
+2359,IU,Palette,2017,1,Palette (ft. G-Dragon),105,52.5,210,4/4,D♭ Major,3B,3:37
+2360,IU,Palette,2017,2,Through the Night,80,40,160,4/4,E♭ Major,5B,4:13
+2361,IU,LILAC,2021,1,Celebrity,100,50,200,4/4,F# Mayor,2B,3:15
+2362,TOMORROW X TOGETHER,The Chaos Chapter: Freeze,2021,1,0X1=LOVESONG (I Know I Love You),140,70,280,4/4,F# Menor,11A,3:22
+2363,TOMORROW X TOGETHER,The Name Chapter: Temptation,2023,1,Sugar Rush Ride,125,62.5,250,4/4,D# Menor,2A,3:07
+2364,YOASOBI,The Book,2019,1,Yoru ni Kakeru (Racing into the Night),130,65,260,4/4,E♭ Minor,2A,4:21
+2365,YOASOBI,The Book 3,2023,1,Idol,166,83,332,4/4,F# Menor,11A,3:33
+2366,YOASOBI,The Book 3,2023,2,Monster,134,67,268,4/4,C# Menor,12A,3:26
+2367,Kenshi Yonezu,Bootleg,2017,1,Peace Sign,168,84,336,4/4,F# Minor,11A,3:58
+2368,Kenshi Yonezu,Stray Sheep,2018,1,Lemon,87,43.5,174,4/4,G# Menor,1A,4:15
+2369,Kenshi Yonezu,Lost Corner,2022,1,KICK BACK,102,51,204,4/4,G Menor,6A,3:13
+2370,Utada Hikaru,First Love,1999,1,Automatic,82,41,164,4/4,F Menor,4A,5:28
+2371,Utada Hikaru,First Love,1999,2,First Love,78,39,156,4/4,G Major,9B,4:17
+2372,Utada Hikaru,Bad Mode,2021,1,One Last Kiss,125,62.5,250,4/4,E Mayor,12B,4:12
+2373,Ado,Kyogen,2020,1,Usseewa,178,89,356,4/4,G# Menor,1A,3:24
+2374,Ado,Kyogen,2021,1,Odo,125,62.5,250,4/4,C# Menor,12A,3:30
+2375,Ado,Zanmu,2023,1,Show,128,64,256,4/4,A# Menor,3A,3:05
+2376,King Gnu,Ceremony,2019,1,Hakujitsu,90,45,180,4/4,D# Menor,2A,4:35
+2377,King Gnu,The Greatest Unknown,2023,1,SPECIALZ,120,60,240,4/4,C# Menor,12A,3:58
+2378,LiSA,LEO-NiNE,2019,1,Gurenge,135,67.5,270,4/4,E Minor,9A,3:58
+2379,LiSA,LEO-NiNE,2020,1,Homura,76,38,152,4/4,F# Minor,11A,4:35
+2380,Fujii Kaze,Help Ever Hurt Never,2020,1,Shinunoga E-Wa,158,79,316,4/4,E Minor,9A,3:05
+2381,Fujii Kaze,Love All Serve All,2022,1,Matsuri,112,56,224,4/4,A Minor,8A,3:45
+2382,Official HIGE DANdism,Traveler,2019,1,Pretender,92,46,184,4/4,A♭ Major,4B,5:26
+2383,Official HIGE DANdism,Editorial,2022,1,Mixed Nuts,150,75,300,4/4,B Major,1B,3:33
+2384,Eve,Smile,2020,1,Kaikai Kitan,140,70,280,4/4,C# Menor,12A,3:41
+2385,Eve,Kaizin,2022,1,Dramaturgy,145,72.5,290,4/4,F# Menor,11A,3:58
+2386,Aimyon,Falling into your eyes,2018,1,Marigold,106,53,212,4/4,D Major,10B,5:06
+2387,Aimyon,Tamago,2020,1,Naked Heart,82,41,164,4/4,G Major,9B,4:55
+2388,Daft Punk,Discovery,2001,1,One More Time,123,61.5,246,4/4,D Major,10B,5:20
+2389,Daft Punk,Discovery,2001,2,"Harder, Better, Faster, Stronger",123,61.5,246,4/4,F# Minor,11A,3:44
+2390,Daft Punk,Random Access Memories,2013,1,Get Lucky (ft. Pharrell Williams),116,58,232,4/4,F# Minor,11A,4:08
+2391,Daft Punk,Random Access Memories,2013,2,Instant Crush (ft. Julian Casablancas),110,55,220,4/4,A♭ Major,4B,5:37
+2392,Stromae,Cheese,2010,1,Alors on Danse,120,60,240,4/4,F Minor,4A,3:26
+2393,Stromae,Racine Carrée,2013,1,Papaoutai,116,58,232,4/4,C# Minor,12A,3:52
+2394,Stromae,Racine Carrée,2013,2,Tous les Mêmes,121,60.5,242,4/4,A Minor,8A,3:33
+2395,Stromae,Multitude,2022,1,Santé,120,60,240,4/4,B♭ Minor,3A,3:11
+2396,Édith Piaf,La Vie En Rose,1947,1,La Vie en Rose,75,37.5,150,4/4,C Major,8B,3:05
+2397,Édith Piaf,Récital 1961,1960,1,"Non, je ne regrette rien",90,45,180,4/4,G Major,9B,2:22
+2398,Édith Piaf,Milord,1959,1,Milord,125,62.5,250,4/4,D Minor,7A,4:30
+2399,Indila,Mini World,2014,1,Dernière Danse,110,55,220,4/4,C# Minor,12A,3:43
+2400,Indila,Mini World,2014,2,Tourner Dans Le Vide,120,60,240,4/4,E Minor,9A,4:06
+2401,Indila,Mini World,2014,3,Love Story,115,57.5,230,4/4,A Minor,8A,5:16
+2402,Aya Nakamura,Nakamura,2018,1,Djadja,98,49,196,4/4,A# Minor,3A,2:51
+2403,Aya Nakamura,Nakamura,2018,2,Copines,93,46.5,186,4/4,C# Minor,12A,2:51
+2404,Aya Nakamura,AYA,2020,1,Jolie Nana,100,50,200,4/4,F# Minor,11A,2:27
+2405,David Guetta,One Love,2009,1,Memories (ft. Kid Cudi),130,65,260,4/4,G# Minor,1A,3:30
+2406,David Guetta,Nothing but the Beat,2011,1,Titanium (ft. Sia),126,63,252,4/4,E♭ Major,5B,4:05
+2407,David Guetta,Singles,2022,1,I'm Good (Blue) (con Bebe Rexha),128,64,256,4/4,G Minor,6A,2:55
+2408,Jain,Zanaka,2015,1,Come,102,51,204,4/4,E Minor,9A,2:42
+2409,Jain,Zanaka,2015,2,Makeba,118,59,236,4/4,F Minor,4A,4:09
+2410,Zaz,Zaz,2010,1,Je veux,155,77.5,310,4/4,D Minor,7A,3:39
+2411,Zaz,Recto Verso,2013,1,On ira,128,64,256,4/4,G Major,9B,3:00
+2412,GIMS,Subliminal,2013,1,Bella,100,50,200,4/4,A Minor,8A,3:46
+2413,GIMS,Mon Cœur Avait Raison,2015,1,Sapés Comme Jamais,108,54,216,4/4,F# Minor,11A,3:26
+2414,Kendji Girac,Kendji,2014,1,Andalouse,125,62.5,250,4/4,F# Minor,11A,2:49
+2415,Kendji Girac,Kendji,2014,2,Color Gitano,128,64,256,4/4,A Minor,8A,3:33
+2416,Angèle,Brol,2018,1,Balance Ton Quoi,95,47.5,190,4/4,C Major,8B,3:09
+2417,Angèle,Brol,2018,2,Tout Oublier,120,60,240,4/4,F# Minor,11A,3:22
+2418,Mylène Farmer,L'Autre...,1991,1,Désenchantée,124,62,248,4/4,C Minor,5A,5:22
+2419,Mylène Farmer,Ainsi soit je...,1988,1,Pourvu qu'elles soient douces,122,61,244,4/4,A Minor,8A,4:52
+2420,Jul,My World,2015,1,Wesh Alors,120,60,240,4/4,C# Minor,12A,3:15
+2421,Jul,L'Ovni,2016,1,Tchikita,128,64,256,4/4,G# Minor,1A,3:12
+2422,PNL,Dans la Légende,2016,1,DA,130,65,260,4/4,C# Minor,12A,3:50
+2423,PNL,Deux Frères,2019,1,Au DD,125,62.5,250,4/4,F# Minor,11A,4:04
+2424,MC Solaar,Prose Combat,1994,1,Nouveau Western,88,44,176,4/4,A Minor,8A,4:34
+2425,MC Solaar,Qui sème le vent,1991,1,Caroline,90,45,180,4/4,E Minor,9A,4:44
+2426,Charles Aznavour,La Bohème,1965,1,La Bohème,80,40,160,3/4,D Minor,7A,4:05
+2427,Charles Aznavour,Hier Encore,1964,1,Hier Encore,75,37.5,150,3/4,A Minor,8A,2:23
+2428,Jacques Brel,Ne Me Quitte Pas,1959,1,Ne Me Quitte Pas,70,35,140,4/4,A Minor,8A,3:50
+2429,Jacques Brel,Amsterdam,1964,1,Amsterdam,120,60,240,3/4,D Minor,7A,3:15
+2430,Serge Gainsbourg,Jane Birkin / Serge Gainsbourg,1969,1,Je t'aime... moi non plus,75,37.5,150,4/4,C Major,8B,4:22
+2431,Serge Gainsbourg,Histoire de Melody Nelson,1971,1,Melody,70,35,140,4/4,A Minor,8A,7:32
+2432,Clara Luciani,Sainte-Victoire,2018,1,La Grenade,120,60,240,4/4,D Minor,7A,3:15
+2433,Clara Luciani,Cœur,2021,1,Respire Encore,124,62,248,4/4,B Minor,10A,3:48
+2434,Christine and the Queens,Chaleur Humaine,2014,1,Tilted / Christine,108,54,216,4/4,E Minor,9A,3:54
+2435,Christine and the Queens,Chris,2018,1,"Damn, dis-moi",112,56,224,4/4,A Minor,8A,3:20
+2436,Anitta,Versions of Me,2022,1,Envolver,92,46,184,4/4,B♭ Minor,3A,3:13
+2437,Anitta,Kisses,2019,1,Banana (con Becky G),100,50,200,4/4,C# Minor,12A,3:15
+2438,Anitta,Funk Generation,2024,1,"Double Team (con Brray, Bad Gyal)",130,65,260,4/4,F# Minor,11A,2:40
+2439,Caetano Veloso,Transa,1972,1,You Don't Know Me,120,60,240,4/4,A Minor,8A,3:48
+2440,Caetano Veloso,Bicho,1977,1,O Leãozinho,85,42.5,170,4/4,C Major,8B,3:05
+2441,Caetano Veloso,Prenda Minha,1998,1,Sozinho,70,35,140,4/4,D Major,10B,3:15
+2442,Roberto Carlos,Roberto Carlos 1977,1977,1,Amigo,80,40,160,4/4,D Major,10B,3:30
+2443,Roberto Carlos,O Inimitável,1968,1,Detalhes,75,37.5,150,4/4,G Major,9B,5:00
+2444,Seu Jorge,Samba Esporte Fino,2001,1,Carolina,115,57.5,230,4/4,G Major,9B,5:50
+2445,Seu Jorge,Cru,2004,1,Tive Razão,90,45,180,4/4,A Minor,8A,4:20
+2446,Seu Jorge,América Brasil,2007,1,Burguesinha,120,60,240,4/4,C Major,8B,4:15
+2447,Seu Jorge,Músicas para Churrasco,2011,1,Amiga da Minha Mulher,118,59,236,4/4,D Major,10B,4:10
+2448,Marília Mendonça,Marília Mendonça,2015,1,Infiel,125,62.5,250,4/4,E Minor,9A,3:25
+2449,Marília Mendonça,Realidade,2017,1,De Quem É a Culpa?,75,37.5,150,4/4,A Major,11B,3:48
+2450,Marília Mendonça,Todos os Cantos,2019,1,Ciumeira,120,60,240,4/4,F# Minor,11A,3:10
+2451,Gilberto Gil,Expresso 2222,1972,1,Expresso 2222,130,65,260,4/4,D Major,10B,2:40
+2452,Gilberto Gil,Realce,1979,1,Toda Menina Baiana,120,60,240,4/4,G Major,9B,3:50
+2453,Gilberto Gil,As Canções de Eu Tu Eles,2000,1,Esperando na Janela,125,62.5,250,4/4,A Major,11B,4:20
+2454,Chico Buarque,Construção,1971,1,Construção,135,67.5,270,3/4,A Minor,8A,6:25
+2455,Chico Buarque,Meus Caros Amigos,1976,1,O Que Será?,120,60,240,4/4,D Minor,7A,2:50
+2456,Chico Buarque,Chico Buarque,1978,1,Cálice (con Milton Nascimento),80,40,160,4/4,E Minor,9A,4:00
+2457,Elis Regina,Elis & Tom,1974,1,Águas de Março (con Tom Jobim),140,70,280,4/4,B♭ Major,6B,3:32
+2458,Elis Regina,Falso Brilhante,1976,1,Como Nossos Pais,80,40,160,4/4,C Major,8B,4:20
+2459,Elis Regina,Essa Mulher,1979,1,O Bêbado e a Equilibrista,120,60,240,4/4,G Major,9B,3:45
+2460,Tom Jobim,The Composer of Desafinado,1963,1,Garota de Ipanema,128,64,256,4/4,F Major,7B,3:30
+2461,Tom Jobim,Wave,1967,1,Wave,130,65,260,4/4,D Major,10B,2:56
+2462,Tom Jobim,Wave,1967,2,Corcovado,115,57.5,230,4/4,C Major,8B,3:15
+2463,João Gilberto,Chega de Saudade,1959,1,Chega de Saudade,130,65,260,4/4,D Minor,7A,2:01
+2464,João Gilberto,Chega de Saudade,1959,2,Desafinado,125,62.5,250,4/4,F Major,7B,1:58
+2465,João Gilberto,Getz/Gilberto,1964,1,The Girl from Ipanema,125,62.5,250,4/4,D♭ Major,3B,5:24
+2466,Ivete Sangalo,Festa,2001,1,Festa,135,67.5,270,4/4,F# Minor,11A,3:45
+2467,Ivete Sangalo,Clube Carnavalesco,2003,1,Sorte Grande (Poeira),140,70,280,4/4,C# Minor,12A,3:48
+2468,Gusttavo Lima,Inventor dos Amores,2010,1,Inventor dos Amores,120,60,240,4/4,D Major,10B,3:20
+2469,Gusttavo Lima,Gusttavo Lima e Você,2011,1,Balada (Tchê Tcherere),128,64,256,4/4,A Minor,8A,3:22
+2470,Gusttavo Lima,O Embaixador,2018,1,Apelido Carinhoso,118,59,236,4/4,G Major,9B,3:15
+2471,Michel Teló,Na Balada,2011,1,Ai Se Eu Te Pego,96,48,192,4/4,B Major,1B,2:46
+2472,Michel Teló,Na Balada,2011,2,Humilde Residência,125,62.5,250,4/4,D Major,10B,3:12
+2473,Alok,Singles,2016,1,"Hear Me Now (con Bruno Martini, Zeeba)",122,61,244,4/4,A Minor,8A,3:12
+2474,Alok,Singles,2020,1,Don't Say Goodbye (con Tove Lo),124,62,248,4/4,F# Minor,11A,3:06
+2475,Ludmilla,A Danada Sou Eu,2016,1,Cheguei,130,65,260,4/4,F# Minor,11A,2:54
+2476,Ludmilla,Numanice #2,2022,1,Maldivas,100,50,200,4/4,C# Minor,12A,2:50
+2477,Jorge & Mateus,Ao Vivo em Goiânia,2007,1,Pode Chorar,120,60,240,4/4,D Major,10B,3:15
+2478,Jorge & Mateus,Os Anjos Cantam,2015,1,Sosseguei,118,59,236,4/4,G Major,9B,3:18
+2479,Luan Santana,Ao Vivo,2009,1,Meteoro,125,62.5,250,4/4,A Major,11B,3:12
+2480,Luan Santana,1977,2016,1,Acordando o Prédio,120,60,240,4/4,D Major,10B,3:20
+2481,Luan Santana,Singles,2021,1,Morena,122,61,244,4/4,F# Minor,11A,2:46
+2482,Salvador Sobral,Excuse Me,2016,1,Excuse Me,110,55,220,4/4,A Minor,8A,4:20
+2483,Salvador Sobral,Eurovision Winner,2017,1,Amar Pelos Dois,80,40,160,3/4,D Minor,7A,3:05
+2484,Mariza,Fado em Mim,2001,1,Ó Gente da Minha Terra,80,40,160,4/4,A Minor,8A,4:00
+2485,Mariza,Transparente,2005,1,Chuva,75,37.5,150,4/4,E Minor,9A,4:05
+2486,Mariza,Mariza,2018,1,Quem Me Dera,95,47.5,190,4/4,D Minor,7A,4:15
+2487,Amália Rodrigues,Busto,1962,1,Estranha Forma de Vida,75,37.5,150,4/4,A Minor,8A,3:15
+2488,Amália Rodrigues,Com Que Voz,1970,1,Barco Negro,85,42.5,170,4/4,D Minor,7A,4:10
+2489,Amália Rodrigues,Clássicos do Fado,1955,1,Uma Casa Portuguesa,90,45,180,4/4,C Major,8B,2:50
+2490,Jowell & Randy,El Momento,2010,1,Loco,95,47.5,190,4/4,F# Menor,11A,4:02
+2491,Jowell & Randy,El Momento,2010,2,Un Poco Loca,96,48,192,4/4,G# Menor,1A,4:24
+2492,Jowell & Randy,Sobredoxis,2013,1,Sobredoxis de Amor,96,48,192,4/4,C# Menor,12A,3:40
+2493,Jowell & Randy,Viva El Perreo,2020,1,Anaranjado (con J Balvin),94,47,188,4/4,A# Menor,3A,3:45
+2494,Jowell & Randy,Viva El Perreo,2020,2,Safaera (con Bad Bunny),96,48,192,4/4,D Mayor,10B,4:55
+2495,Baby Rasta & Gringo,Romances del Ruido,2000,1,Cierra Los Ojos,90,45,180,4/4,F# Menor,11A,4:48
+2496,Baby Rasta & Gringo,Los Cotizados,2015,1,Me Niegas,95,47.5,190,4/4,G# Menor,1A,3:24
+2497,Baby Rasta & Gringo,Los Cotizados,2015,2,Un Beso,94,47,188,4/4,C# Menor,12A,3:20
+2498,Trebol Clan,Los Bacatranes,2004,1,Gata Fiera,96,48,192,4/4,D# Menor,2A,3:24
+2499,Trebol Clan,Los Bacatranes,2004,2,Bailame,96,48,192,4/4,F# Menor,11A,3:15
+2500,Trebol Clan,Los Bacatranes,2004,3,No Le Temas a Él (con Héctor & Tito),95,47.5,190,4/4,A# Menor,3A,3:32
+2501,Tony Dize,La Melodía de la Calle,2008,1,El Doctorado,94,47,188,4/4,G# Menor,1A,4:24
+2502,Tony Dize,La Melodía de la Calle,2008,2,Permítame (con Yandel),95,47.5,190,4/4,F# Menor,11A,3:05
+2503,Tony Dize,La Melodía de la Calle,2008,3,Quizás,90,45,180,4/4,C# Menor,12A,3:06
+2504,Tony Dize,La Melodía de la Calle: Updated,2009,1,Prometo Olvidarte,92,46,184,4/4,A# Menor,3A,3:38
+2505,Dyland & Lenny,My World,2010,1,Nadie Te Amará Como Yo,128,64,256,4/4,F# Menor,11A,3:28
+2506,Dyland & Lenny,My World,2010,2,Quiere Pa' Que Te Quieran,125,62.5,250,4/4,G# Menor,1A,3:35
+2507,Magnate & Valentino,Rompiendo El Hielo,2002,1,Gata Celosa (con Héctor & Tito),96,48,192,4/4,C# Menor,12A,3:12
+2508,Magnate & Valentino,Sin Límite,2004,1,Vuelve a Mí,90,45,180,4/4,F# Menor,11A,3:40
+2509,Magnate & Valentino,Química Perfecta,2009,1,Si Te Acuerdas de Mí,92,46,184,4/4,A# Menor,3A,3:42
+2510,Yaga & Mackie,Sonando Diferente,2002,1,Maúlla,95,47.5,190,4/4,F# Menor,11A,3:20
+2511,Yaga & Mackie,Clase Aparte,2004,1,Acepto La Culpa,90,45,180,4/4,G# Menor,1A,3:35
+2512,R.K.M & Ken-Y,Masterpiece,2006,1,Down,92,46,184,4/4,C# Menor,12A,3:45
+2513,R.K.M & Ken-Y,Masterpiece,2006,2,Igual Que Ayer,90,45,180,4/4,F# Menor,11A,3:52
+2514,R.K.M & Ken-Y,Masterpiece,2006,3,Me Matas,90,45,180,4/4,G# Menor,1A,3:16
+2515,R.K.M & Ken-Y,The Royalty,2008,1,Te Regalo Amores,94,47,188,4/4,A# Menor,3A,3:59
+2516,Zion,The Perfect Melody,2007,1,Zun Da Da,96,48,192,4/4,F# Menor,11A,5:03
+2517,Zion,The Perfect Melody,2007,2,The Way She Moves (ft. Akon),105,52.5,210,4/4,G# Menor,1A,3:52
+2518,Zion,The Perfect Melody,2007,3,Fantasma,92,46,184,4/4,C# Menor,12A,3:55
+2519,Lennox,Los Mero Meros,2006,1,Toma,96,48,192,4/4,F# Menor,11A,3:10
+2520,Lennox,Singles,2021,1,Brisa (ft. Zion),94,47,188,4/4,G# Menor,1A,3:25
+2521,Tony Lenta,Slow Motion,2013,1,Descontrol,95,47.5,190,4/4,C# Menor,12A,3:15
+2522,Tony Lenta,Momentos,2015,1,Tu Conmigo,94,47,188,4/4,A# Menor,3A,3:20
+2523,Franco El Gorila,Welcome to the Jungle,2009,1,He Querido Quererte (con Tico),90,45,180,4/4,F# Menor,11A,3:28
+2524,Franco El Gorila,Welcome to the Jungle,2009,2,Psiquiátrica Loca,96,48,192,4/4,G# Menor,1A,2:52
+2525,Cosculluela,El Príncipe,2009,1,Prrrum,95,47.5,190,4/4,C# Menor,12A,3:58
+2526,Cosculluela,El Príncipe,2009,2,Na Na Nau,96,48,192,4/4,F# Menor,11A,4:24
+2527,Cosculluela,El Príncipe,2009,3,Un Pesito,95,47.5,190,4/4,A# Menor,3A,3:25
+2528,Cosculluela,Blanco Perla,2016,1,Manicomio,90,45,180,4/4,G# Menor,1A,4:15
+2529,Cosculluela,Blanco Perla,2016,2,A Donde Voy (ft. Daddy Yankee),95,47.5,190,4/4,D# Menor,2A,4:10
+2530,Kendo Kaponi,Kendo Edition,2016,1,Llamo Pa' Verte,90,45,180,4/4,F# Menor,11A,3:40
+2531,Kendo Kaponi,El Alfa y El Omega,2021,1,Resistencia,92,46,184,4/4,C# Menor,12A,4:15
+2532,Gotay,El Del Mambo,2013,1,Que Quieres De Mi,90,45,180,4/4,F# Menor,11A,3:35
+2533,Gotay,El Del Mambo,2013,2,Lo Que Quiero,94,47,188,4/4,G# Menor,1A,3:20
+2534,Pusho,El MVP,2016,1,La Realidad,95,47.5,190,4/4,C# Menor,12A,3:20
+2535,Pusho,El MVP,2016,2,Te Fuiste (con Ozuna),90,45,180,4/4,A# Menor,3A,4:00
+2536,Almighty,La Bestia,2019,1,Panda (Spanish Remix),140,70,280,4/4,F# Menor,11A,4:10
+2537,Almighty,La Bestia,2019,2,Ocho,140,70,280,4/4,G# Menor,1A,4:15
+2538,Almighty,Genelipsis,2022,1,Monigote,130,65,260,4/4,C# Menor,12A,3:45
+2539,Jon Z,JonTrapVolta,2017,1,0 Sentimientos,140,70,280,4/4,F# Menor,11A,3:50
+2540,Jon Z,JonTrapVolta,2017,2,Viajo Sin Ver,140,70,280,4/4,G# Menor,1A,4:15
+2541,Jon Z,Voodoo,2019,1,Bésame,95,47.5,190,4/4,C# Menor,12A,3:20
+2542,Noriel,Trap Capos: Season 1,2016,1,"Cuatro Babys (con Maluma, Bryant Myers)",130,65,260,4/4,F# Menor,11A,4:38
+2543,Noriel,Trap Capos: Season 1,2016,2,"Diablita (con Baby Rasta, Anuel AA)",140,70,280,4/4,G# Menor,1A,4:15
+2544,Noriel,Trap Capos: Season 2,2018,1,Doble Personalidad (con Yandel),135,67.5,270,4/4,C# Menor,12A,3:45
+2545,Lary Over,El Guasón,2018,1,Sola,140,70,280,4/4,F# Menor,11A,3:40
+2546,Lary Over,El Guasón,2018,2,Prepago,140,70,280,4/4,G# Menor,1A,3:55
+2547,Brytiago,Organánico,2020,1,Asesina (con Darell),94,47,188,4/4,C# Menor,12A,4:28
+2548,Brytiago,Organánico,2020,2,Bebé (ft. Anuel AA),92,46,184,4/4,A# Menor,3A,3:30
+2549,Brytiago,TrapVibes,2023,1,Punto G,130,65,260,4/4,F# Menor,11A,3:10
+2550,Darell,La Verdadera Vuelta,2017,1,Tu Peor Error,90,45,180,4/4,F# Menor,11A,3:45
+2551,Darell,LVV: The Real Rondon,2020,1,Booty Call,95,47.5,190,4/4,G# Menor,1A,3:18
+2552,Darell,EVERYBODY GO TO THE DISCOTEK,2023,1,Lollipop,118,59,236,4/4,C# Menor,12A,3:02
+2553,Justin Quiles,La Promesa,2016,1,Si Ella Quisiera,90,45,180,4/4,F# Menor,11A,3:30
+2554,Justin Quiles,Real G,2019,1,DJ No Pare,94,47,188,4/4,G# Menor,1A,3:15
+2555,Justin Quiles,La Última Promesa,2021,1,Jeans,92,46,184,4/4,C# Menor,12A,3:08
+2556,Justin Quiles,La Última Promesa,2021,2,"Loco (con Chimbala, Zion & Lennox)",125,62.5,250,4/4,A# Menor,3A,3:47
+2557,Dalex,Climaxxx,2019,1,Pa Mí (Remix),90,45,180,4/4,F# Menor,11A,4:15
+2558,Dalex,Climaxxx,2019,2,Bellaquita,94,47,188,4/4,G# Menor,1A,3:25
+2559,Dalex,Unisex,2021,1,Hola,92,46,184,4/4,C# Menor,12A,3:10
+2560,Lenny Tavárez,Krack,2021,1,Hola,94,47,188,4/4,F# Menor,11A,3:12
+2561,Lenny Tavárez,Krack,2021,2,"TBT (con Sebastián Yatra, Manuel Turizo)",95,47.5,190,4/4,G# Menor,1A,3:58
+2562,Lenny Tavárez,Brillar,2024,1,Felicidades,92,46,184,4/4,C# Menor,12A,3:05
+2563,Micro TDH,Inefable,2017,1,Cafuné,85,42.5,170,4/4,F# Menor,11A,3:40
+2564,Micro TDH,Inefable,2017,2,Bésame,90,45,180,4/4,G# Menor,1A,3:20
+2565,Micro TDH,NUEVE,2021,1,Te Vi (con Piso 21),102,51,204,4/4,C# Mayor,3B,3:51
+2566,Micro TDH,NUEVE,2021,2,Dime Cuantas Veces (con Rels B),90,45,180,4/4,A# Menor,3A,3:35
+2567,Danny Ocean,54+1,2019,1,Me Rehúso,105,52.5,210,4/4,C# Mayor,3B,3:25
+2568,Danny Ocean,54+1,2019,2,Dembow,105,52.5,210,4/4,G# Menor,1A,3:30
+2569,Danny Ocean,@dannocean,2022,1,Fuera del Mercado,92,46,184,4/4,F# Menor,11A,3:08
+2570,Danny Ocean,Reflexa,2024,1,Cero Condiciones,120,60,240,4/4,A# Menor,3A,2:45
+2571,Kapo,Tu Tranquilo,2024,1,OHNANA,105,52.5,210,4/4,C# Menor,12A,2:46
+2572,Kapo,Tu Tranquilo,2024,2,UWAIE,103,51.5,206,4/4,A Menor,8A,2:42
+2573,Kapo,Tu Tranquilo,2024,3,DÓNDE (con Ryan Castro),92,46,184,4/4,A Mayor,11B,3:02
+2574,Beéle,Singles,2019,1,Loco,105,52.5,210,4/4,F# Menor,11A,3:20
+2575,Beéle,Singles,2020,1,Inolvidable,95,47.5,190,4/4,G# Menor,1A,3:15
+2576,Beéle,Singles,2023,1,frente al mar,100,50,200,4/4,B♭ Major,6B,3:02
+2577,Beéle,Singles,2024,1,mi refe (con Ovy On The Drums),123,61.5,246,4/4,G Menor,6A,3:10
+2578,Boza,Más Negro Que Rojo,2020,1,Hecha Pa' Mí,100,50,200,4/4,E Mayor,12B,3:05
+2579,Boza,Bolarí,2022,1,Ella,98,49,196,4/4,C# Menor,12A,3:15
+2580,Boza,Bolarí,2022,2,Orion (con Elena Rose),95,47.5,190,4/4,F# Menor,11A,3:02
+2581,Luar La L,L3TRA,2021,1,De Respuesta,140,70,280,4/4,F# Menor,11A,3:30
+2582,Luar La L,L3TRA,2021,2,Caile,140,70,280,4/4,G# Menor,1A,3:15
+2583,Luar La L,L3TRA 2,2023,1,TELEFONO NUEVO (con Bad Bunny),140,70,280,4/4,C# Menor,12A,3:43
+2584,Sahir,Amanecer,2023,1,Quédate,90,45,180,4/4,F# Menor,11A,3:05
+2585,Sahir,Amanecer,2023,2,Vuelo,95,47.5,190,4/4,G# Menor,1A,2:58
+2586,Neutro Shorty,19-40,2016,1,Soy Yo,140,70,280,4/4,F# Menor,11A,3:45
+2587,Neutro Shorty,Apokalypsis,2019,1,Bad Boy (con Big Soto),140,70,280,4/4,G# Menor,1A,3:20
+2588,Neutro Shorty,Hay Vida en Venus,2021,1,Lástima,130,65,260,4/4,C# Menor,12A,3:30
+2589,Big Soto,Young Cream,2017,1,Chupón,140,70,280,4/4,F# Menor,11A,3:20
+2590,Big Soto,The Parceros,2021,1,Prendo,135,67.5,270,4/4,G# Menor,1A,3:10
+2591,LIT killah,MAWZ,2021,1,En La Oscuridad,140,70,280,4/4,F# Menor,11A,2:55
+2592,LIT killah,MAWZ,2021,2,Entre Nosotros (con Tiago PZK),90,45,180,4/4,A# Menor,3A,3:12
+2593,LIT killah,SnipeZ,2022,1,La Trampa es Ley,140,70,280,4/4,C# Menor,12A,2:40
+2594,Reik,Reik,2005,1,Yo Quisiera,125,62.5,250,4/4,D Major,10B,3:38
+2595,Reik,Reik,2005,2,Noviembre Sin Ti,75,37.5,150,4/4,G Major,9B,3:22
+2596,Reik,Un Día Más,2008,1,Inolvidable,128,64,256,4/4,A Minor,8A,3:42
+2597,Reik,Des/Amor,2016,1,Ya Me Enteré,75,37.5,150,4/4,D Major,10B,3:24
+2598,Reik,Ahora,2019,1,"Me Niego (ft. Ozuna, Wisin)",94,47,188,4/4,C# Menor,12A,3:42
+2599,Reik,Ahora,2019,2,Amigos Con Derechos (con Maluma),96,48,192,4/4,F# Menor,11A,3:45
+2600,Camila,Todo Cambió,2006,1,Abrázame,75,37.5,150,4/4,A Major,11B,3:51
+2601,Camila,Todo Cambió,2006,2,Todo Cambió,80,40,160,4/4,D Major,10B,3:14
+2602,Camila,Todo Cambió,2006,3,Coleccionista de Canciones,80,40,160,4/4,C# Menor,12A,5:20
+2603,Camila,Dejarte de Amar,2010,1,Mientes,80,40,160,4/4,F# Menor,11A,3:26
+2604,Camila,Dejarte de Amar,2010,2,Aléjate de Mí,78,39,156,4/4,G# Menor,1A,4:18
+2605,Camila,Dejarte de Amar,2010,3,Bésame,75,37.5,150,4/4,D# Menor,2A,4:12
+2606,Sin Bandera,Sin Bandera,2002,1,Entra En Mi Vida,85,42.5,170,4/4,A Major,11B,4:09
+2607,Sin Bandera,Sin Bandera,2002,2,Kilómetros,80,40,160,4/4,G Major,9B,3:42
+2608,Sin Bandera,Sin Bandera,2002,3,Sirena,100,50,200,4/4,D Major,10B,4:28
+2609,Sin Bandera,De Viaje,2003,1,Mientes Tan Bien,75,37.5,150,4/4,F# Menor,11A,3:48
+2610,Sin Bandera,De Viaje,2003,2,Que Lloro,78,39,156,4/4,C# Menor,12A,4:02
+2611,Sin Bandera,Mañana,2005,1,Suelta Mi Mano,75,37.5,150,4/4,A# Menor,3A,3:46
+2612,Ha*Ash,Ha*Ash,2003,1,Odio Amarte,120,60,240,4/4,G Major,9B,3:30
+2613,Ha*Ash,Mundos Opuestos,2005,1,¿Qué Hago Yo?,75,37.5,150,4/4,F# Menor,11A,3:26
+2614,Ha*Ash,A Tiempo,2011,1,Impermeable,125,62.5,250,4/4,C# Menor,12A,4:07
+2615,Ha*Ash,Primera Fila: Hecho Realidad,2014,1,"Perdón, Perdón",75,37.5,150,4/4,A Minor,8A,3:46
+2616,Ha*Ash,Primera Fila: Hecho Realidad,2014,2,Lo Aprendí de Ti,78,39,156,4/4,E Major,12B,3:17
+2617,Ha*Ash,30 de Febrero,2017,1,100 Años (con Prince Royce),95,47.5,190,4/4,D Major,10B,3:14
+2618,Jesse & Joy,Esta Es Mi Vida,2006,1,Espacio Sideral,116,58,232,4/4,D Major,10B,3:42
+2619,Jesse & Joy,Esta Es Mi Vida,2006,2,Ya No Quiero,120,60,240,4/4,A Major,11B,3:28
+2620,Jesse & Joy,¿Con Quién Se Queda El Perro?,2011,1,¡Corre!,128,64,256,4/4,B Minor,10A,4:49
+2621,Jesse & Joy,¿Con Quién Se Queda El Perro?,2011,2,La de la Mala Suerte,80,40,160,4/4,F# Menor,11A,4:11
+2622,Jesse & Joy,¿Con Quién Se Queda El Perro?,2011,3,¿Con Quién Se Queda El Perro?,110,55,220,4/4,G Major,9B,3:08
+2623,Jesse & Joy,Un Besito Más,2015,1,Ecos de Amor,78,39,156,4/4,C# Menor,12A,3:35
+2624,Morat,Sobre el Amor y Sus Efectos Secundarios,2016,1,Cómo Te Atreves,128,64,256,4/4,A Major,11B,4:01
+2625,Morat,Sobre el Amor y Sus Efectos Secundarios,2016,2,Mi Nuevo Vicio (con Paulina Rubio),125,62.5,250,4/4,D Major,10B,3:20
+2626,Morat,Balas Perdidas,2018,1,Besos en Guerra (con Juanes),120,60,240,4/4,F# Menor,11A,3:51
+2627,Morat,Balas Perdidas,2018,2,Cuando Nadie Ve,125,62.5,250,4/4,G Major,9B,3:39
+2628,Morat,¿A Dónde Vamos?,2021,1,No Se Va,120,60,240,4/4,C Major,8B,3:36
+2629,Morat,Si Ayer Fuera Hoy,2022,1,506 (con Juanes),125,62.5,250,4/4,E Minor,9A,3:14
+2630,Sebastián Yatra,MANTRA,2018,1,Traicionera,92,46,184,4/4,F# Menor,11A,3:48
+2631,Sebastián Yatra,MANTRA,2018,2,No Hay Nadie Más,75,37.5,150,4/4,D Major,10B,3:48
+2632,Sebastián Yatra,Fantasía,2019,1,Un Año (con Reik),78,39,156,4/4,A Major,11B,2:41
+2633,Sebastián Yatra,Fantasía,2019,2,Cristina,80,40,160,4/4,C# Menor,12A,3:22
+2634,Sebastián Yatra,Dharma,2022,1,Tacones Rojos,123,61.5,246,4/4,B Major,1B,3:09
+2635,Sebastián Yatra,Dharma,2022,2,Pareja del Año (con Myke Towers),90,45,180,4/4,G# Menor,1A,3:15
+2636,Mau y Ricky,Para Aventuras y Curiosidades,2019,1,"Desconocidos (con Manuel Turizo, Camilo)",95,47.5,190,4/4,F# Menor,11A,3:24
+2637,Mau y Ricky,Para Aventuras y Curiosidades,2019,2,Ya No Tiene Novio (con Sebastián Yatra),96,48,192,4/4,C# Menor,12A,3:18
+2638,Mau y Ricky,rifresh,2020,1,Papás,120,60,240,4/4,G# Menor,1A,2:54
+2639,Mau y Ricky,Hotel Caracas,2024,1,Vas a Destrozarme,85,42.5,170,4/4,A# Menor,3A,3:12
+2640,CNCO,Primera Cita,2016,1,Reggaetón Lento (Bailemos),94,47,188,4/4,F# Menor,11A,3:42
+2641,CNCO,Primera Cita,2016,2,Quisiera,90,45,180,4/4,G# Menor,1A,3:05
+2642,CNCO,CNCO,2018,1,Hey DJ (con Yandel),95,47.5,190,4/4,C# Menor,12A,3:25
+2643,CNCO,CNCO,2018,2,Se Vuelve Loca,96,48,192,4/4,A# Menor,3A,3:11
+2644,Lali,Soy,2016,1,Soy,120,60,240,4/4,F# Menor,11A,3:31
+2645,Lali,Brava,2018,1,Sin Querer Queriendo (con Mau y Ricky),95,47.5,190,4/4,G# Menor,1A,3:48
+2646,Lali,Libra,2020,1,Ladrón (con Cazzu),140,70,280,4/4,C# Menor,12A,3:20
+2647,Lali,LALI,2023,1,Disciplina,128,64,256,4/4,A# Menor,3A,2:38
+2648,Lali,LALI,2023,2,N5,125,62.5,250,4/4,D# Menor,2A,2:34
+2649,Tini,Quiero Volver,2018,1,Te Quiero Más (con Nacho),95,47.5,190,4/4,F# Menor,11A,3:25
+2650,Tini,Quiero Volver,2018,2,Consejo de Amor (con Morat),85,42.5,170,4/4,G# Menor,1A,3:19
+2651,Tini,Tini Tini Tini,2020,1,Fresa (con Lalo Ebratt),96,48,192,4/4,C# Menor,12A,2:46
+2652,Tini,Cupido,2023,1,Miénteme (con María Becerra),92,46,184,4/4,A# Menor,3A,2:45
+2653,Tini,Cupido,2023,2,La Triple T,120,60,240,4/4,D# Menor,2A,2:47
+2654,Tini,Cupido,2023,3,Cupido,125,62.5,250,4/4,F# Menor,11A,2:54
+2655,Danna Paola,SIE7E+,2020,1,Mala Fama,96,48,192,4/4,F# Menor,11A,3:07
+2656,Danna Paola,SIE7E+,2020,2,Oye Pablo,98,49,196,4/4,G# Menor,1A,2:58
+2657,Danna Paola,K.O.,2021,1,Sodio,125,62.5,250,4/4,C# Menor,12A,3:05
+2658,Danna Paola,CHILDSTAR,2024,1,XT4S1S,128,64,256,4/4,A# Menor,3A,3:38
+2659,Aitana,Spoiler,2019,1,Teléfono,100,50,200,4/4,F# Menor,11A,3:43
+2660,Aitana,Spoiler,2019,2,Vas a Quedarte,75,37.5,150,4/4,G# Menor,1A,3:46
+2661,Aitana,11 Razones,2020,1,11 Razones,150,75,300,4/4,C# Menor,12A,3:33
+2662,Aitana,11 Razones,2020,2,Corazón Sin Vida (con Sebastián Yatra),140,70,280,4/4,A# Menor,3A,3:02
+2663,Aitana,alpha,2023,1,Los Ángeles,128,64,256,4/4,D# Menor,2A,2:38
+2664,Aitana,alpha,2023,2,Las Babys,130,65,260,4/4,F# Menor,11A,2:33
+2665,Lola Índigo,Akelarre,2019,1,Ya No Quiero Ná,125,62.5,250,4/4,F# Menor,11A,3:12
+2666,Lola Índigo,La Niña,2021,1,"La Niña de la Escuela (con Tini, Belinda)",96,48,192,4/4,G# Menor,1A,3:24
+2667,Lola Índigo,El Dragón,2023,1,AN1MAL,128,64,256,4/4,C# Menor,12A,2:34
+2668,Lola Índigo,El Dragón,2023,2,El Tonto (con Quevedo),125,62.5,250,4/4,A# Menor,3A,3:05
+2669,Ana Mena,Index,2018,1,"Ya Es Hora (con Becky G, De La Ghetto)",96,48,192,4/4,F# Menor,11A,3:26
+2670,Ana Mena,Bellodrama,2023,1,Música Ligera,128,64,256,4/4,G# Menor,1A,3:56
+2671,Ana Mena,Bellodrama,2023,2,Las 12 (con Belinda),128,64,256,4/4,C# Menor,12A,2:52
+2672,Ana Mena,Bellodrama,2023,3,Madrid City,130,65,260,4/4,A# Menor,3A,2:46
+2673,Abraham Mateo,AM,2013,1,Señorita,128,64,256,4/4,F# Menor,11A,3:21
+2674,Abraham Mateo,Who I AM,2014,1,All the Girls,125,62.5,250,4/4,G# Menor,1A,3:30
+2675,Abraham Mateo,Insomnio,2024,1,Clavaíto (con Chanel),128,64,256,4/4,C# Menor,12A,2:40
+2676,Abraham Mateo,Insomnio,2024,2,Maníaca,130,65,260,4/4,A# Menor,3A,2:55
+2677,David Bisbal,Corazón Latino,2002,1,Ave María,130,65,260,4/4,D Menor,7A,3:31
+2678,David Bisbal,Corazón Latino,2002,2,Dígale,78,39,156,4/4,F# Menor,11A,4:24
+2679,David Bisbal,Bulería,2004,1,Bulería,132,66,264,4/4,G# Menor,1A,4:13
+2680,David Bisbal,Premonición,2006,1,Quién Me Iba a Decir,125,62.5,250,4/4,C# Menor,12A,3:38
+2681,David Bisbal,Sin Mirar Atrás,2009,1,Esclavo de Sus Besos,128,64,256,4/4,A# Menor,3A,3:57
+2682,David Bisbal,Me Siento Vivo,2023,1,Ajedrez,130,65,260,4/4,D# Menor,2A,3:12
+2683,Pablo Alborán,Pablo Alborán,2011,1,Solamente Tú,78,39,156,4/4,A Major,11B,4:08
+2684,Pablo Alborán,Pablo Alborán,2011,2,Miedo,75,37.5,150,4/4,F# Menor,11A,3:44
+2685,Pablo Alborán,Tanto,2012,1,Tanto,82,41,164,4/4,G# Menor,1A,4:16
+2686,Pablo Alborán,Terral,2014,1,Por Fin,75,37.5,150,4/4,C# Menor,12A,4:01
+2687,Pablo Alborán,Prometo,2017,1,Saturno,80,40,160,4/4,A# Menor,3A,4:12
+2688,Pablo Alborán,La Cuarta Hoja,2022,1,Amigos (con María Becerra),96,48,192,4/4,D# Menor,2A,3:25
+2689,Melendi,Sin Noticias de Holanda,2003,1,Caminando Por La Vida,125,62.5,250,4/4,F# Menor,11A,3:35
+2690,Melendi,Que El Cielo Espere Sentao,2005,1,Con Sólo Una Sonrisa,85,42.5,170,4/4,G# Menor,1A,3:50
+2691,Melendi,Curiosa la Cara de tu Padre,2008,1,Un Violinista en Tu Tejado,120,60,240,4/4,C# Menor,12A,3:48
+2692,Melendi,Quítate las Gafas,2016,1,Destino o Casualidad (con Ha*Ash),78,39,156,4/4,A# Menor,3A,4:18
+2693,Malú,Aprendiz,1998,1,Aprendiz,75,37.5,150,4/4,F# Menor,11A,4:48
+2694,Malú,Guerra Fría,2010,1,Blanco y Negro,125,62.5,250,4/4,G# Menor,1A,3:55
+2695,Malú,Sí,2013,1,A Prueba de Ti,128,64,256,4/4,C# Menor,12A,3:32
+2696,Vanesa Martín,Crónica de un Baile,2014,1,Sin Saber Por Qué,80,40,160,4/4,F# Menor,11A,4:10
+2697,Vanesa Martín,Munay,2016,1,Complicidad,85,42.5,170,4/4,G# Menor,1A,3:58
+2698,Vanesa Martín,Todas las Mujeres Que Habitan en Mí,2018,1,Inventas,90,45,180,4/4,C# Menor,12A,3:45
+2699,Manuel Carrasco,Bailar el Viento,2015,1,Ya No,80,40,160,4/4,F# Menor,11A,3:50
+2700,Manuel Carrasco,La Cruz del Mapa,2018,1,Déjame Ser,85,42.5,170,4/4,G# Menor,1A,3:40
+2701,Manuel Carrasco,Corazón y Flecha,2022,1,Fue,88,44,176,4/4,C# Menor,12A,3:30
+2702,Fonseca,Corazón,2005,1,Te Mando Flores,100,50,200,4/4,A Major,11B,4:28
+2703,Fonseca,Corazón,2005,2,Hace Tiempo,95,47.5,190,4/4,F# Menor,11A,3:37
+2704,Fonseca,Gratitud,2008,1,Arroyito,105,52.5,210,4/4,G# Menor,1A,3:58
+2705,Fonseca,Ilusión,2011,1,Eres Mi Sueño,125,62.5,250,4/4,C# Menor,12A,3:40
+2706,Fonseca,Conexión,2015,1,Vine a Buscarte,98,49,196,4/4,A# Menor,3A,4:10
+2707,Carlos Vives,Clásicos de la Provincia,1993,1,La Gota Fría,125,62.5,250,4/4,G Major,9B,3:34
+2708,Carlos Vives,Clásicos de la Provincia,1993,2,Matilde Lina,120,60,240,4/4,D Major,10B,3:58
+2709,Carlos Vives,La Tierra del Olvido,1995,1,La Tierra del Olvido,95,47.5,190,4/4,A Major,11B,4:25
+2710,Carlos Vives,El Amor de Mi Tierra,1999,1,Fruta Fresca,115,57.5,230,4/4,C Major,8B,3:52
+2711,Carlos Vives,Déjame Entrar,2001,1,Déjame Entrar,110,55,220,4/4,F# Menor,11A,4:00
+2712,Carlos Vives,Corazón Profundo,2013,1,Volví a Nacer,120,60,240,4/4,G# Menor,1A,3:42
+2713,Carlos Vives,VIVES,2017,1,La Bicicleta (con Shakira),180,90,360,4/4,C Major,8B,3:48
+2714,Carlos Vives,VIVES,2017,2,Robarte un Beso (con Sebastián Yatra),98,49,196,4/4,A Major,11B,3:14
+2715,Andrés Cepeda,El Carpintero,2001,1,Tengo Ganas,80,40,160,4/4,F# Menor,11A,3:55
+2716,Andrés Cepeda,Para Amarte Mejor,2005,1,Besos Usados,85,42.5,170,4/4,G# Menor,1A,4:05
+2717,Andrés Cepeda,Día Tras Día,2009,1,Día Tras Día,88,44,176,4/4,C# Menor,12A,4:02
+2718,Andrés Cepeda,Lo Mejor Que Hay En Mi Vida,2012,1,Lo Mejor Que Hay En Mi Vida,90,45,180,4/4,A# Menor,3A,3:40
+2719,Andrés Cepeda,TRECE,2020,1,Magia (con Sebastián Yatra),92,46,184,4/4,D# Menor,2A,3:15
+2720,Santiago Cruz,Cruce de Caminos,2009,1,"Y Si Te Quedas, ¿Qué?",75,37.5,150,4/4,F# Menor,11A,3:42
+2721,Santiago Cruz,Cruce de Caminos,2009,2,Baja La Guardia,80,40,160,4/4,G# Menor,1A,3:55
+2722,Santiago Cruz,A Quien Corresponda,2012,1,Desde Lejos,85,42.5,170,4/4,C# Menor,12A,4:08
+2723,Juanes,Fíjate Bien,2000,1,Fíjate Bien,95,47.5,190,4/4,F# Menor,11A,4:54
+2724,Juanes,Un Día Normal,2002,1,A Dios le Pido,95,47.5,190,4/4,G# Menor,1A,3:26
+2725,Juanes,Un Día Normal,2002,2,Es Por Ti,80,40,160,4/4,C# Menor,12A,4:11
+2726,Juanes,Un Día Normal,2002,3,Mala Gente,100,50,200,4/4,A# Menor,3A,3:16
+2727,Juanes,Mi Sangre,2004,1,La Camisa Negra,97,48.5,194,4/4,F# Menor,11A,3:36
+2728,Juanes,Mi Sangre,2004,2,Volverte a Ver,85,42.5,170,4/4,D# Menor,2A,3:37
+2729,Juanes,La Vida... Es Un Ratico,2007,1,Me Enamora,100,50,200,4/4,F# Menor,11A,3:14
+2730,Juanes,La Vida... Es Un Ratico,2007,2,Gotas de Agua Dulce,95,47.5,190,4/4,G# Menor,1A,3:08
+2731,Bacilos,Bacilos,2000,1,Tabaco y Chanel,110,55,220,4/4,F# Menor,11A,5:12
+2732,Bacilos,Caraluna,2002,1,Caraluna,125,62.5,250,4/4,G# Menor,1A,4:28
+2733,Bacilos,Caraluna,2002,2,Mi Primer Millón,115,57.5,230,4/4,C# Menor,12A,3:58
+2734,Bacilos,Sin Vergüenza,2004,1,Pasos de Gigante,120,60,240,4/4,A# Menor,3A,4:00
+2735,Esteman,1er Acto,2012,1,No Te Metas a Mi Facebook,125,62.5,250,4/4,F# Menor,11A,3:20
+2736,Esteman,Caótica Belleza,2015,1,Baila,120,60,240,4/4,G# Menor,1A,3:30
+2737,Esteman,Amor Libre,2019,1,Fuimos Amor,85,42.5,170,4/4,C# Menor,12A,3:40
+2738,Esteman,Si Volviera a Nacer,2021,1,Te Alejas Más de Mí (con Daniela Spalla),118,59,236,4/4,A# Menor,3A,3:15
+2739,Elsa y Elmar,Rey,2015,1,Exploradora,110,55,220,4/4,F# Menor,11A,3:40
+2740,Elsa y Elmar,Eres Diamante,2019,1,Ojos Noche,80,40,160,4/4,G# Menor,1A,3:45
+2741,Elsa y Elmar,ya no somos los mismos,2022,1,vuelve,85,42.5,170,4/4,C# Menor,12A,3:12
+2742,Elsa y Elmar,ya no somos los mismos,2022,2,corazones negros,90,45,180,4/4,A# Menor,3A,3:20
+2743,Monsieur Periné,Hecho a Mano,2012,1,La Muerte,130,65,260,4/4,F# Menor,11A,4:10
+2744,Monsieur Periné,Hecho a Mano,2012,2,Suin Romanticon,135,67.5,270,4/4,G# Menor,1A,3:05
+2745,Monsieur Periné,Caja de Música,2015,1,Nuestra Canción (con Vicente García),115,57.5,230,4/4,C# Menor,12A,4:15
+2746,Monsieur Periné,Encanto Tropical,2018,1,Bailar Contigo,120,60,240,4/4,A# Menor,3A,3:40
+2747,Los Mesoneros,Indeleble,2011,1,Indeleble,130,65,260,4/4,F# Menor,11A,3:45
+2748,Los Mesoneros,Caiga la Noche,2017,1,Te Lo Advertí,125,62.5,250,4/4,G# Menor,1A,3:30
+2749,Los Mesoneros,Pangea,2019,1,Pangea,115,57.5,230,4/4,C# Menor,12A,3:40
+2750,Los Mesoneros,Nuestro Año,2024,1,Sucre,120,60,240,4/4,A# Menor,3A,3:15
+2751,Rawayana,Licencia Para Ser Libre,2011,1,Fuego Azul,110,55,220,4/4,F# Menor,11A,4:10
+2752,Rawayana,Rawayanaland,2013,1,Ay Ay Ay,115,57.5,230,4/4,G# Menor,1A,3:40
+2753,Rawayana,Trippy Caribbean,2016,1,Véngase I,95,47.5,190,4/4,C# Menor,12A,3:45
+2754,Rawayana,Cuando los Acéfalos Predominan,2021,1,Into You,100,50,200,4/4,A# Menor,3A,3:30
+2755,Rawayana,¿Quién Trae las Cornetas?,2023,1,Binikini (con Danny Ocean),105,52.5,210,4/4,D# Menor,2A,3:15
+2756,Rawayana,¿Quién Trae las Cornetas?,2023,2,Dame Un Break,115,57.5,230,4/4,F# Menor,11A,3:12
+2757,Los Amigos Invisibles,The New Sound of the Venezuelan Gozadera,1998,1,Ponerte en Cuatro,125,62.5,250,4/4,F# Menor,11A,4:15
+2758,Los Amigos Invisibles,Arepa 3000,2000,1,Cuchi-Cuchi,120,60,240,4/4,G# Menor,1A,3:45
+2759,Los Amigos Invisibles,Commercial,2009,1,Mentiras,120,60,240,4/4,C# Menor,12A,3:40
+2760,Los Amigos Invisibles,Commercial,2009,2,Viviré Para Ti (con Natalia Lafourcade),115,57.5,230,4/4,A# Menor,3A,4:10
+2761,Los Amigos Invisibles,El Paradise,2017,1,Espiral,125,62.5,250,4/4,D# Menor,2A,3:30
+2762,Zoé,Rocanlover,2003,1,Love,115,57.5,230,4/4,F# Menor,11A,4:10
+2763,Zoé,Memo Rex Commander,2006,1,Vía Láctea,120,60,240,4/4,G# Menor,1A,4:12
+2764,Zoé,Memo Rex Commander,2006,2,Paula,90,45,180,4/4,C# Menor,12A,4:20
+2765,Zoé,Reptilectric,2008,1,Reptilectric,125,62.5,250,4/4,A# Menor,3A,3:45
+2766,Zoé,Reptilectric,2008,2,Poli,95,47.5,190,4/4,D# Menor,2A,3:42
+2767,Zoé,MTV Unplugged/Música de Fondo,2011,1,Soñé,92,46,184,4/4,F# Menor,11A,3:45
+2768,Zoé,MTV Unplugged/Música de Fondo,2011,2,Labios Rotos,118,59,236,4/4,G# Menor,1A,4:00
+2769,Zoé,Prográmaton,2013,1,Arrullo de Estrellas,85,42.5,170,4/4,C# Menor,12A,4:15
+2770,Babasónicos,Jessico,2001,1,El Loco,95,47.5,190,4/4,F# Menor,11A,3:10
+2771,Babasónicos,Jessico,2001,2,Rubí,120,60,240,4/4,G# Menor,1A,3:45
+2772,Babasónicos,Infame,2003,1,Irresponsables,125,62.5,250,4/4,C# Menor,12A,2:36
+2773,Babasónicos,Infame,2003,2,Putita,130,65,260,4/4,A# Menor,3A,3:45
+2774,Babasónicos,Anoche,2005,1,Carismático,128,64,256,4/4,D# Menor,2A,2:38
+2775,Babasónicos,Anoche,2005,2,Yegua,125,62.5,250,4/4,F# Menor,11A,2:30
+2776,Miranda!,Sin Restricciones,2004,1,Yo Te Diré,128,64,256,4/4,F# Menor,11A,3:25
+2777,Miranda!,Sin Restricciones,2004,2,Don,130,65,260,4/4,G# Menor,1A,3:04
+2778,Miranda!,Sin Restricciones,2004,3,Navidad,125,62.5,250,4/4,C# Menor,12A,3:10
+2779,Miranda!,El Disco de Tu Corazón,2007,1,Prisionero,128,64,256,4/4,A# Menor,3A,3:28
+2780,Miranda!,El Disco de Tu Corazón,2007,2,Perfecta (con Julieta Venegas),125,62.5,250,4/4,D# Menor,2A,3:45
+2781,Miranda!,Hotel Miranda!,2023,1,Uno los Dos (con Emilia),125,62.5,250,4/4,F# Menor,11A,3:44
+2782,Cuarteto de Nos,Raro,2006,1,Ya No Sé Qué Hacer Conmigo,130,65,260,4/4,F# Menor,11A,4:02
+2783,Cuarteto de Nos,Raro,2006,2,Yendo a la Casa de Damián,135,67.5,270,4/4,G# Menor,1A,3:15
+2784,Cuarteto de Nos,Bipolar,2009,1,El Hijo de Hernández,130,65,260,4/4,C# Menor,12A,3:58
+2785,Cuarteto de Nos,Porfiado,2012,1,Cuando Sea Grande,125,62.5,250,4/4,A# Menor,3A,4:12
+2786,Cuarteto de Nos,Habla Tu Espejo,2014,1,No Llora,85,42.5,170,4/4,D# Menor,2A,4:18
+2787,Enanitos Verdes,Contrarreloj,1986,1,La Muralla Verde,135,67.5,270,4/4,G Major,9B,2:40
+2788,Enanitos Verdes,Contrarreloj,1986,2,Tus Viejas Cartas,85,42.5,170,4/4,D Major,10B,3:30
+2789,Enanitos Verdes,Habitaciones Extrañas,1987,1,Por El Resto,125,62.5,250,4/4,C Major,8B,4:20
+2790,Enanitos Verdes,Big Bang,1994,1,Lamento Boliviano,108,54,216,4/4,E Minor,9A,3:42
+2791,Enanitos Verdes,Guerra Gaucha,1996,1,Eterna Soledad,90,45,180,4/4,A Minor,8A,4:14
+2792,Enanitos Verdes,Néctar,1999,1,Luz de Día,80,40,160,4/4,D Major,10B,4:32
+2793,Soda Stereo,Nada Personal,1985,1,Nada Personal,130,65,260,4/4,F# Menor,11A,4:52
+2794,Soda Stereo,Signos,1986,1,Persiana Americana,126,63,252,4/4,G# Menor,1A,4:52
+2795,Soda Stereo,Signos,1986,2,Signos,120,60,240,4/4,C# Menor,12A,5:16
+2796,Soda Stereo,Doble Vida,1988,1,En la Ciudad de la Furia,112,56,224,4/4,E Minor,9A,5:50
+2797,Soda Stereo,Canción Animal,1990,1,De Música Ligera,135,67.5,270,4/4,B Minor,10A,3:32
+2798,Soda Stereo,Canción Animal,1990,2,Té Para Tres,78,39,156,4/4,G Major,9B,4:07
+2799,Soda Stereo,Dynamo,1992,1,Primavera 0,132,66,264,4/4,A# Menor,3A,3:40
+2800,Soda Stereo,Sueño Stereo,1995,1,Zoom,120,60,240,4/4,D# Menor,2A,3:26
+2801,Gustavo Cerati,Amor Amarillo,1993,1,Amor Amarillo,115,57.5,230,4/4,F# Menor,11A,5:35
+2802,Gustavo Cerati,Bocanada,1999,1,Puente,120,60,240,4/4,G Major,9B,4:33
+2803,Gustavo Cerati,Bocanada,1999,2,Bocanada,90,45,180,4/4,C# Menor,12A,4:07
+2804,Gustavo Cerati,Siempre Es Hoy,2002,1,Cosas Imposibles,125,62.5,250,4/4,A# Menor,3A,5:08
+2805,Gustavo Cerati,Ahí Vamos,2006,1,Crimen,75,37.5,150,4/4,A Minor,8A,3:52
+2806,Gustavo Cerati,Ahí Vamos,2006,2,Adiós,110,55,220,4/4,D Major,10B,3:51
+2807,Gustavo Cerati,Fuerza Natural,2009,1,Déjà Vu,128,64,256,4/4,F# Menor,11A,3:24
+2808,Charly García,Yendo de la Cama al Living,1982,1,Yendo de la Cama al Living,115,57.5,230,4/4,F# Menor,11A,4:42
+2809,Charly García,Clics Modernos,1983,1,Nos Siguen Pegando Abajo,130,65,260,4/4,G# Menor,1A,3:30
+2810,Charly García,Clics Modernos,1983,2,No Me Dejan Salir,125,62.5,250,4/4,C# Menor,12A,4:20
+2811,Charly García,Clics Modernos,1983,3,Los Dinosaurios,80,40,160,4/4,C Major,8B,3:28
+2812,Charly García,Piano Bar,1984,1,Demoliendo Hoteles,140,70,280,4/4,A# Menor,3A,2:18
+2813,Charly García,Parte de la Religión,1987,1,Rezo Por Vos (con Spinetta),85,42.5,170,4/4,D# Menor,2A,4:10
+2814,Charly García,La Hija de la Lágrima,1994,1,Chipi Chipi,120,60,240,4/4,F# Menor,11A,3:10
+2815,Fito Páez,Ciudad de Pobres Corazones,1987,1,Ciudad de Pobres Corazones,130,65,260,4/4,F# Menor,11A,5:10
+2816,Fito Páez,Tercer Mundo,1990,1,El Amor Después del Amor,118,59,236,4/4,G# Menor,1A,5:10
+2817,Fito Páez,El Amor Después del Amor,1992,1,Tumbas de la Gloria,85,42.5,170,4/4,C# Menor,12A,4:34
+2818,Fito Páez,El Amor Después del Amor,1992,2,A Rodar Mi Vida,135,67.5,270,4/4,A# Menor,3A,4:44
+2819,Fito Páez,El Amor Después del Amor,1992,3,Un Vestido y un Amor,75,37.5,150,4/4,D# Menor,2A,3:18
+2820,Fito Páez,Circo Beat,1994,1,Mariposa Tecknicolor,125,62.5,250,4/4,G Major,9B,3:43
+2821,Fito Páez,Abre,1999,1,Al Lado del Camino,80,40,160,4/4,F# Menor,11A,5:28
+2822,Spinetta,Almendra,1969,1,Muchacha (Ojos de Papel),75,37.5,150,4/4,A Major,11B,3:04
+2823,Spinetta,Artaud (Pescado Rabioso),1973,1,Bajan,120,60,240,4/4,G Major,9B,3:26
+2824,Spinetta,Artaud (Pescado Rabioso),1973,2,Todas las Hojas Son del Viento,115,57.5,230,4/4,C Major,8B,2:12
+2825,Spinetta,Pelusón of Milk,1991,1,Seguir Viviendo Sin Tu Amor,88,44,176,4/4,F# Menor,11A,2:40
+2826,Spinetta,Para los Árboles,2003,1,Cisne,85,42.5,170,4/4,C# Menor,12A,4:15
+2827,Andrés Calamaro,Alta Suciedad,1997,1,Flaca,120,60,240,4/4,G Major,9B,4:47
+2828,Andrés Calamaro,Alta Suciedad,1997,2,Loco,110,55,220,4/4,C# Menor,12A,3:42
+2829,Andrés Calamaro,Alta Suciedad,1997,3,Crímenes Perfectos,80,40,160,4/4,A# Menor,3A,4:24
+2830,Andrés Calamaro,Honestidad Brutal,1999,1,Paloma,125,62.5,250,4/4,D# Menor,2A,4:56
+2831,Andrés Calamaro,Honestidad Brutal,1999,2,Te Quiero Igual,120,60,240,4/4,F# Menor,11A,3:55
+2832,Andrés Calamaro,El Regreso,2005,1,Mil Horas (con Los Abuelos),125,62.5,250,4/4,D Minor,7A,2:50
+2833,Andrés Calamaro,La Lengua Popular,2007,1,Los Chicos,130,65,260,4/4,G# Menor,1A,3:12
+2834,Los Fabulosos Cadillacs,Bares y Fondas,1986,1,Silencio Hospital,140,70,280,4/4,F# Menor,11A,2:10
+2835,Los Fabulosos Cadillacs,El León,1992,1,Carnaval Toda La Vida,125,62.5,250,4/4,G# Menor,1A,6:05
+2836,Los Fabulosos Cadillacs,El León,1992,2,"Manuel Santillán, El León",135,67.5,270,4/4,C# Menor,12A,3:58
+2837,Los Fabulosos Cadillacs,Vasos Vacíos,1993,1,Matador,128,64,256,4/4,D Minor,7A,4:35
+2838,Los Fabulosos Cadillacs,Vasos Vacíos,1993,2,Vasos Vacíos (con Celia Cruz),105,52.5,210,4/4,A# Menor,3A,4:40
+2839,Los Fabulosos Cadillacs,Fabulosos Calavera,1997,1,El Muerto,130,65,260,4/4,D# Menor,2A,4:24
+2840,Los Fabulosos Cadillacs,La Marcha del Golazo Solitario,1999,1,La Vida,115,57.5,230,4/4,F# Menor,11A,2:50
+2841,Los Auténticos Decadentes,El Milagro Argentino,1989,1,Vení Raquel,135,67.5,270,4/4,F# Menor,11A,3:05
+2842,Los Auténticos Decadentes,Mi Vida Loca,1995,1,La Guitarra,130,65,260,4/4,G# Menor,1A,3:40
+2843,Los Auténticos Decadentes,Mi Vida Loca,1995,2,Corazón,125,62.5,250,4/4,C# Menor,12A,4:12
+2844,Los Auténticos Decadentes,Mi Vida Loca,1995,3,El Murguero,140,70,280,4/4,A# Menor,3A,5:00
+2845,Los Auténticos Decadentes,Cualquiera Puede Cantar,1997,1,Los Piratas,130,65,260,4/4,D# Menor,2A,3:42
+2846,Los Auténticos Decadentes,Hoy Trasnoche,2000,1,Besándote,120,60,240,4/4,F# Menor,11A,3:05
+2847,Café Tacvba,Café Tacuba,1992,1,Las Persianas,145,72.5,290,4/4,F# Menor,11A,2:54
+2848,Café Tacvba,Café Tacuba,1992,2,María,120,60,240,4/4,G# Menor,1A,3:56
+2849,Café Tacvba,Re,1994,1,La Ingrata,155,77.5,310,4/4,C# Menor,12A,3:32
+2850,Café Tacvba,Re,1994,2,Las Flores,130,65,260,4/4,A# Menor,3A,2:16
+2851,Café Tacvba,Re,1994,3,El Baile y el Salón,115,57.5,230,4/4,D# Menor,2A,5:08
+2852,Café Tacvba,Avalancha de Éxitos,1996,1,Chilanga Banda,90,45,180,4/4,F# Menor,11A,3:30
+2853,Café Tacvba,Avalancha de Éxitos,1996,2,Cómo Te Extraño Mi Amor,130,65,260,4/4,G# Menor,1A,3:38
+2854,Café Tacvba,Cuatro Caminos,2003,1,Eres,80,40,160,4/4,C# Menor,12A,4:30
+2855,Caifanes,Caifanes,1988,1,Mátenme Porque Me Muero,115,57.5,230,4/4,F# Menor,11A,3:31
+2856,Caifanes,Caifanes,1988,2,La Negra Tomasa,100,50,200,4/4,G# Menor,1A,7:55
+2857,Caifanes,El Diablito,1990,1,Viento,120,60,240,4/4,C# Menor,12A,3:57
+2858,Caifanes,El Diablito,1990,2,La Célula Que Explota,108,54,216,4/4,A# Menor,3A,3:34
+2859,Caifanes,El Silencio,1992,1,No Dejes Que...,115,57.5,230,4/4,D# Menor,2A,4:40
+2860,Caifanes,El Silencio,1992,2,Nubes,120,60,240,4/4,F# Menor,11A,4:33
+2861,Caifanes,El Nervio del Volcán,1994,1,Afuera,128,64,256,4/4,G# Menor,1A,4:48
+2862,Caifanes,El Nervio del Volcán,1994,2,Aquí No Es Así,115,57.5,230,4/4,C# Menor,12A,4:54
+2863,Molotov,¿Dónde Jugarán las Niñas?,1997,1,Gimme Tha Power,92,46,184,4/4,F# Menor,11A,4:10
+2864,Molotov,¿Dónde Jugarán las Niñas?,1997,2,Voto Latino,130,65,260,4/4,G# Menor,1A,2:58
+2865,Molotov,¿Dónde Jugarán las Niñas?,1997,3,Puto,140,70,280,4/4,C# Menor,12A,2:08
+2866,Molotov,Apocalypshit,1999,1,Rastamandita,135,67.5,270,4/4,A# Menor,3A,3:48
+2867,Molotov,Dance and Dense Denso,2003,1,Frijolero,110,55,220,4/4,D# Menor,2A,3:30
+2868,Molotov,Dance and Dense Denso,2003,2,Hit Me,125,62.5,250,4/4,F# Menor,11A,4:16
+2869,Maná,¿Dónde Jugarán los Niños?,1992,1,Oye Mi Amor,125,62.5,250,4/4,G Major,9B,4:32
+2870,Maná,¿Dónde Jugarán los Niños?,1992,2,Vivir Sin Aire,78,39,156,4/4,A Major,11B,4:52
+2871,Maná,¿Dónde Jugarán los Niños?,1992,3,De Pies a Cabeza,118,59,236,4/4,C Major,8B,4:38
+2872,Maná,Cuando los Ángeles Lloran,1995,1,Rayando el Sol,75,37.5,150,4/4,D Major,10B,4:10
+2873,Maná,Cuando los Ángeles Lloran,1995,2,Como Te Deseo,80,40,160,4/4,F# Menor,11A,4:30
+2874,Maná,Sueños Líquidos,1997,1,En el Muelle de San Blas,80,40,160,4/4,G# Menor,1A,5:53
+2875,Maná,Sueños Líquidos,1997,2,Clavado en un Bar,140,70,280,4/4,C# Menor,12A,5:11
+2876,Maná,Revolución de Amor,2002,1,Mariposa Traicionera,85,42.5,170,4/4,A# Menor,3A,4:24
+2877,Maná,Amar es Combatir,2006,1,Labios Compartidos,95,47.5,190,4/4,D# Menor,2A,5:16
+2878,Maná,Amar es Combatir,2006,2,Bendita Tu Luz (con Juan Luis Guerra),100,50,200,4/4,F# Menor,11A,4:23
+2879,Héroes del Silencio,El Mar No Cesa,1988,1,Mar Adentro,130,65,260,4/4,F# Menor,11A,4:00
+2880,Héroes del Silencio,Senderos de Traición,1990,1,Entre Dos Tierras,135,67.5,270,4/4,B Minor,10A,6:05
+2881,Héroes del Silencio,Senderos de Traición,1990,2,Maldito Duende,85,42.5,170,4/4,G# Menor,1A,4:15
+2882,Héroes del Silencio,Senderos de Traición,1990,3,Con Nombre de Guerra,90,45,180,4/4,C# Menor,12A,4:14
+2883,Héroes del Silencio,El Espíritu del Vino,1993,1,La Sirena Varada,120,60,240,4/4,A# Menor,3A,4:16
+2884,Héroes del Silencio,Avalancha,1995,1,La Chispa Adecuada,80,40,160,4/4,D# Menor,2A,5:26
+2885,Héroes del Silencio,Avalancha,1995,2,Deshacer el Mundo,130,65,260,4/4,F# Menor,11A,4:47
+2886,Bunbury,Radical Sonora,1997,1,Salomé,120,60,240,4/4,F# Menor,11A,4:12
+2887,Bunbury,Pequeño,1999,1,Infinito,85,42.5,170,4/4,G# Menor,1A,4:02
+2888,Bunbury,Flamingos,2002,1,Lady Blue,115,57.5,230,4/4,C# Menor,12A,5:30
+2889,Bunbury,Flamingos,2002,2,Y Al Final,80,40,160,4/4,A# Menor,3A,4:18
+2890,Bunbury,El Viaje a Ninguna Parte,2004,1,Que Tengas Suertecita,90,45,180,4/4,D# Menor,2A,4:20
+2891,Bunbury,Hellville de Luxe,2008,1,El Hombre Delgado Que No Flaqueará Jamás,130,65,260,4/4,F# Menor,11A,6:52
+2892,Bunbury,Las Consecuencias,2010,1,Frente a Frente,85,42.5,170,4/4,G# Menor,1A,3:54
+2893,La Ley,Invisible,1995,1,El Duelo,120,60,240,4/4,F# Menor,11A,3:13
+2894,La Ley,Invisible,1995,2,Día Cero,130,65,260,4/4,G# Menor,1A,4:32
+2895,La Ley,Vértigo,1998,1,Vi,125,62.5,250,4/4,C# Menor,12A,4:18
+2896,La Ley,Uno,2000,1,Aquí,115,57.5,230,4/4,A# Menor,3A,4:44
+2897,La Ley,MTV Unplugged,2001,1,El Duelo (con Ely Guerra),110,55,220,4/4,D# Menor,2A,5:20
+2898,La Ley,Libertad,2003,1,Ámate y Sálvate,128,64,256,4/4,F# Menor,11A,4:22
+2899,Los Bunkers,Canción de Lejos,2002,1,Canción de Lejos,115,57.5,230,4/4,F# Menor,11A,4:05
+2900,Los Bunkers,Vida de Perros,2005,1,Ven Aquí,135,67.5,270,4/4,G# Menor,1A,3:38
+2901,Los Bunkers,Vida de Perros,2005,2,Llueve Sobre la Ciudad,120,60,240,4/4,C# Menor,12A,3:58
+2902,Los Bunkers,Barrio Estación,2008,1,Ahora Que No Estás,125,62.5,250,4/4,A# Menor,3A,5:50
+2903,Los Bunkers,Música Libre,2010,1,Bailando Solo,128,64,256,4/4,D# Menor,2A,4:15
+2904,La Oreja de Van Gogh,Dile al Sol,1998,1,Cuéntame al Oído,80,40,160,4/4,F# Menor,11A,3:16
+2905,La Oreja de Van Gogh,El Viaje de Copperpot,2000,1,Cuídate,120,60,240,4/4,G# Menor,1A,2:48
+2906,La Oreja de Van Gogh,El Viaje de Copperpot,2000,2,La Playa,80,40,160,4/4,C# Menor,12A,4:07
+2907,La Oreja de Van Gogh,Lo Que Te Conté Mientras Te Hacías La Dormida,2003,1,Rosas,125,62.5,250,4/4,A# Menor,3A,3:56
+2908,La Oreja de Van Gogh,Lo Que Te Conté...,2003,2,Puedes Contar Conmigo,130,65,260,4/4,D# Menor,2A,3:56
+2909,La Oreja de Van Gogh,Guapa,2006,1,Muñeca de Trapo,115,57.5,230,4/4,F# Menor,11A,3:55
+2910,La Oreja de Van Gogh,A las Cinco en el Astoria,2008,1,El Último Vals,120,60,240,4/4,G# Menor,1A,3:24
+2911,El Canto del Loco,El Canto del Loco,2000,1,Pequeñita,135,67.5,270,4/4,F# Menor,11A,2:30
+2912,El Canto del Loco,A Contracorriente,2002,1,Son Sueños,140,70,280,4/4,G# Menor,1A,3:50
+2913,El Canto del Loco,Estados de Ánimo,2003,1,La Madre de José,145,72.5,290,4/4,C# Menor,12A,3:12
+2914,El Canto del Loco,Zapatillas,2005,1,Zapatillas,150,75,300,4/4,A# Menor,3A,2:54
+2915,El Canto del Loco,Zapatillas,2005,2,Volverá,130,65,260,4/4,D# Menor,2A,3:48
+2916,El Canto del Loco,Personas,2008,1,Peter Pan,85,42.5,170,4/4,F# Menor,11A,4:20
+2917,Jarabe de Palo,La Flaca,1996,1,La Flaca,118,59,236,4/4,F# Menor,11A,4:29
+2918,Jarabe de Palo,La Flaca,1996,2,Grita,85,42.5,170,4/4,G# Menor,1A,3:30
+2919,Jarabe de Palo,Depende,1998,1,Depende,115,57.5,230,4/4,C# Menor,12A,4:22
+2920,Jarabe de Palo,Depende,1998,2,Agua,80,40,160,4/4,A# Menor,3A,4:15
+2921,Jarabe de Palo,De Vuelta y Vuelta,2001,1,Dos Días en la Vida,120,60,240,4/4,D# Menor,2A,6:20
+2922,Jarabe de Palo,Bonito,2003,1,Bonito,125,62.5,250,4/4,F# Menor,11A,4:14
+2923,Jarabe de Palo,Tragas o Escupes,2020,1,Eso Que Tú Me Das,120,60,240,4/4,G# Menor,1A,3:42
+2924,Hombres G,Hombres G,1985,1,Devuélveme a Mi Chica,140,70,280,4/4,G Major,9B,3:16
+2925,Hombres G,Hombres G,1985,2,Venezia,145,72.5,290,4/4,C Major,8B,4:32
+2926,Hombres G,La Cagaste... Burt Lancaster,1986,1,Marta Tiene un Marcapasos,150,75,300,4/4,D Major,10B,2:12
+2927,Hombres G,La Cagaste...,1986,2,El Ataque de las Chicas Cocodrilo,140,70,280,4/4,A Major,11B,3:05
+2928,Hombres G,Estamos Locos... ¿O Qué?,1987,1,Temblando,75,37.5,150,4/4,E Major,12B,3:14
+2929,Hombres G,Voy a Pasármelo Bien,1989,1,Voy a Pasármelo Bien,130,65,260,4/4,F# Menor,11A,3:55
+2930,Hombres G,Ésta Es Tu Vida,1990,1,Esta Es Tu Vida,120,60,240,4/4,G# Menor,1A,4:30
+2931,Duncan Dhu,Canciones,1986,1,Cien Gaviotas,125,62.5,250,4/4,D Major,10B,2:46
+2932,Duncan Dhu,Canciones,1986,2,Esos Ojos Negros,115,57.5,230,4/4,G Major,9B,3:35
+2933,Duncan Dhu,El Grito del Tiempo,1987,1,En Algún Lugar,135,67.5,270,4/4,A Major,11B,3:58
+2934,Duncan Dhu,Autobiografía,1989,1,Rosa Gris,110,55,220,4/4,F# Menor,11A,3:40
+2935,Los Prisioneros,La Voz de los '80,1984,1,La Voz de los '80,145,72.5,290,4/4,F# Menor,11A,4:08
+2936,Los Prisioneros,La Voz de los '80,1984,2,Paramar,130,65,260,4/4,G# Menor,1A,3:45
+2937,Los Prisioneros,Pateando Piedras,1986,1,El Baile de los Que Sobran,120,60,240,4/4,C# Menor,12A,5:22
+2938,Los Prisioneros,Pateando Piedras,1986,2,Por Qué No Se Van,135,67.5,270,4/4,A# Menor,3A,3:00
+2939,Los Prisioneros,La Cultura de la Basura,1987,1,We Are Sudamerican Rockers,140,70,280,4/4,D# Menor,2A,3:35
+2940,Los Prisioneros,Corazones,1990,1,Tren al Sur,128,64,256,4/4,F# Menor,11A,5:36
+2941,Los Prisioneros,Corazones,1990,2,Estrechez de Corazón,132,66,264,4/4,G# Menor,1A,5:01
+2942,Aterciopelados,El Dorado,1995,1,Florecita Rockera,145,72.5,290,4/4,F# Menor,11A,3:01
+2943,Aterciopelados,El Dorado,1995,2,Bolero Falaz,100,50,200,4/4,G# Menor,1A,4:48
+2944,Aterciopelados,La Pipa de la Paz,1996,1,Baracunátana,135,67.5,270,4/4,C# Menor,12A,2:32
+2945,Aterciopelados,Caribe Atómico,1998,1,Maligno,90,45,180,4/4,A# Menor,3A,4:08
+2946,Ekhymosis,Niño Gigante,1992,1,Solo,130,65,260,4/4,F# Menor,11A,4:15
+2947,Ekhymosis,Amor Celular,1995,1,La Tierra,125,62.5,250,4/4,G# Menor,1A,3:50
+2948,Ekhymosis,Ekhymosis,1997,1,La Decisión,120,60,240,4/4,C# Menor,12A,3:40
+2949,Caramelos de Cianuro,Harakiri City,1996,1,Canción Suave,130,65,260,4/4,F# Menor,11A,3:20
+2950,Caramelos de Cianuro,Cuentos para Adultos,2000,1,Verónica,135,67.5,270,4/4,G# Menor,1A,3:10
+2951,Caramelos de Cianuro,Frisbee,2002,1,Sanitarios,140,70,280,4/4,C# Menor,12A,3:28
+2952,Caramelos de Cianuro,Frisbee,2002,2,El Último Polvo,125,62.5,250,4/4,A# Menor,3A,4:50
+2953,Caramelos de Cianuro,Flor de Fuego,2006,1,Como Serpiente,130,65,260,4/4,D# Menor,2A,3:40
+2954,Caramelos de Cianuro,Caramelos de Cianuro,2010,1,Rubia Sol Morena Luna,130,65,260,4/4,F# Menor,11A,3:12
+2955,Vilma Palma,Vilma Palma e Vampiros,1991,1,La Pachanga,130,65,260,4/4,G Major,9B,4:45
+2956,Vilma Palma,Vilma Palma e Vampiros,1991,2,Bye Bye,125,62.5,250,4/4,D Major,10B,4:15
+2957,Vilma Palma,3980,1993,1,Auto Rojo,135,67.5,270,4/4,A Major,11B,4:18
+2958,Vilma Palma,3980,1993,2,Me Vuelvo Loco Por Vos,128,64,256,4/4,F# Menor,11A,3:40
+2959,Vilma Palma,Fondo Profundo,1994,1,Fondo Profundo,120,60,240,4/4,C# Menor,12A,4:10
+2960,Peso Pluma,GÉNESIS,2023,1,ROSA PASTEL (con Jasiel Nuñez),135,67.5,270,4/4,F# Menor,11A,3:24
+2961,Peso Pluma,GÉNESIS,2023,2,LUNA (con Junior H),130,65,260,4/4,G# Menor,1A,2:44
+2962,Peso Pluma,GÉNESIS,2023,3,RUBICON,130,65,260,4/4,C# Menor,12A,3:57
+2963,Peso Pluma,GÉNESIS,2023,4,PRC (con Natanael Cano),135,67.5,270,4/4,A# Menor,3A,3:04
+2964,Peso Pluma,GÉNESIS,2023,5,"LADY GAGA (con Gabito Ballesteros, Junior H)",140,70,280,4/4,D# Menor,2A,3:32
+2965,Peso Pluma,ÉXODO,2024,1,LA PATRULLA (con Neton Vega),133,66.5,266,4/4,F# Menor,11A,3:10
+2966,Peso Pluma,ÉXODO,2024,2,BELLAKEO (con Anitta),130,65,260,4/4,G# Menor,1A,3:18
+2967,Peso Pluma,ÉXODO,2024,3,HOLLYWOOD,135,67.5,270,4/4,C# Menor,12A,3:24
+2968,Peso Pluma,Singles,2023,1,Ella Baila Sola (con Eslabon Armado),148,74,296,4/4,F# Menor,11A,2:45
+2969,Natanael Cano,Corridos Tumbados,2019,1,Soy El Diablo,130,65,260,4/4,F# Menor,11A,3:12
+2970,Natanael Cano,Corridos Tumbados,2019,2,Amor Tumbado,125,62.5,250,4/4,G# Menor,1A,3:10
+2971,Natanael Cano,A Mis 20,2021,1,Porte Exuberante,135,67.5,270,4/4,C# Menor,12A,2:54
+2972,Natanael Cano,Nata Montana,2023,1,Mi Bello Ángel,130,65,260,4/4,A# Menor,3A,3:08
+2973,Natanael Cano,Nata Montana,2023,2,Pacas de Billetes,135,67.5,270,4/4,D# Menor,2A,3:10
+2974,Natanael Cano,Nata Montana,2023,3,"AMG (con Peso Pluma, Gabito)",136,68,272,4/4,F# Menor,11A,2:54
+2975,Fuerza Regida,Del Barrio Hasta Aquí,2019,1,Radicamos en South Central,130,65,260,4/4,F# Menor,11A,3:15
+2976,Fuerza Regida,Pa Que Hablen,2022,1,Ch y la Pizza (con Natanael Cano),135,67.5,270,4/4,G# Menor,1A,2:16
+2977,Fuerza Regida,Pa Que Hablen,2022,2,Igualito a Mi Apá (con Peso Pluma),135,67.5,270,4/4,C# Menor,12A,2:46
+2978,Fuerza Regida,Pa Las Baby's y Belikeada,2023,1,TQM,125,62.5,250,4/4,A# Menor,3A,2:34
+2979,Fuerza Regida,Pa Las Baby's y Belikeada,2023,2,HARLEY QUINN (con Marshmello),125,62.5,250,4/4,F Menor,4A,2:23
+2980,Fuerza Regida,Pa Las Baby's y Belikeada,2023,3,SABOR FRESA,130,65,260,4/4,D# Menor,2A,2:36
+2981,Fuerza Regida,Pero No Te Enamores,2024,1,TU SANCHO,120,60,240,4/4,A♭ Mayor,4B,2:34
+2982,Junior H,Atrapado en un Sueño,2020,1,Mente Positiva,130,65,260,4/4,F# Menor,11A,3:15
+2983,Junior H,Atrapado en un Sueño,2020,2,Atrapado en un Sueño,125,62.5,250,4/4,G# Menor,1A,3:20
+2984,Junior H,Mi Vida En Un Cigarro 2,2022,1,El Hijo Mayor,135,67.5,270,4/4,C# Menor,12A,3:10
+2985,Junior H,Contingente,2022,1,Fin de Semana (con Oscar Maydon),130,65,260,4/4,A# Menor,3A,3:40
+2986,Junior H,$AD BOYZ 4 LIFE II,2023,1,Y LLORO,125,62.5,250,4/4,D# Menor,2A,2:58
+2987,Junior H,$AD BOYZ 4 LIFE II,2023,2,EN LA PEDA (con Eslabon Armado),130,65,260,4/4,F# Menor,11A,3:45
+2988,Gabito Ballesteros,The GB,2024,1,LOU LOU (con Natanael Cano),135,67.5,270,4/4,F# Menor,11A,3:02
+2989,Gabito Ballesteros,The GB,2024,2,A Puro Dolor,130,65,260,4/4,G# Menor,1A,3:20
+2990,Gabito Ballesteros,Singles,2023,1,"Vino Tinto (con Peso Pluma, Natanael Cano)",135,67.5,270,4/4,C# Menor,12A,3:10
+2991,Xavi,My Mom's Playlist,2023,1,La Víctima,135,67.5,270,4/4,F# Menor,11A,2:54
+2992,Xavi,My Mom's Playlist,2023,2,Poco a Poco (con Los Dareyes),130,65,260,4/4,G# Menor,1A,3:12
+2993,Xavi,Singles,2023,1,La Diabla,132,66,264,4/4,B Menor,10A,2:52
+2994,Xavi,Singles,2024,1,Corazón de Piedra,130,65,260,4/4,C# Menor,12A,2:58
+2995,Tito Double P,INCÓMODO,2024,1,DOS DÍAS (con Peso Pluma),110,55,220,4/4,C# Mayor,3B,3:02
+2996,Tito Double P,INCÓMODO,2024,2,EL LOKERÓN,135,67.5,270,4/4,F# Menor,11A,2:48
+2997,Tito Double P,INCÓMODO,2024,3,LOS CUADROS (con Peso Pluma),135,67.5,270,4/4,G# Menor,1A,3:10
+2998,Luis R Conriquez,Corridos Bélicos,2021,1,El Buho,130,65,260,4/4,F# Menor,11A,3:15
+2999,Luis R Conriquez,Corridos Bélicos Vol. 2,2022,1,JGL (con La Adictiva),135,67.5,270,4/4,G# Menor,1A,3:05
+3000,Luis R Conriquez,Corridos Bélicos Vol. 4,2024,1,Pixelados (con Peso Pluma),135,67.5,270,4/4,C# Menor,12A,3:20
+3001,Grupo Frontera,El Comienzo,2023,1,No Se Va,120,60,240,4/4,C Major,8B,3:14
+3002,Grupo Frontera,El Comienzo,2023,2,un x100to (con Bad Bunny),83,41.5,166,4/4,F# Menor,11A,3:15
+3003,Grupo Frontera,El Comienzo,2023,3,Tulum (con Peso Pluma),100,50,200,4/4,G# Menor,1A,3:29
+3004,Grupo Frontera,Jugando A Que No Pasa Nada,2024,1,ÁNGEL (con Romeo Santos),128,64,256,4/4,B Mayor,1B,3:05
+3005,Grupo Frontera,Jugando A Que No Pasa Nada,2024,2,POR QUÉ SERÁ (con Maluma),152,76,304,4/4,B♭ Major,6B,3:12
+3006,Eslabon Armado,Tu Veneno Mortal,2020,1,Con Tus Besos,125,62.5,250,4/4,F# Menor,11A,3:25
+3007,Eslabon Armado,Corta Venas,2020,1,Jugaste y Sufrí (ft. DannyLux),130,65,260,4/4,G# Menor,1A,4:12
+3008,Eslabon Armado,DESVELADO,2023,1,Ella Baila Sola (con Peso Pluma),148,74,296,4/4,F# Menor,11A,2:45
+3009,Eslabon Armado,NOSTALGIA,2022,1,Si Supieras,125,62.5,250,4/4,C# Menor,12A,3:15
+3010,Christian Nodal,Me Dejé Llevar,2017,1,Adiós Amor,85,42.5,170,4/4,G Major,9B,3:20
+3011,Christian Nodal,Me Dejé Llevar,2017,2,Probablemente,88,44,176,4/4,D Major,10B,3:54
+3012,Christian Nodal,Ahora,2019,1,De Los Besos Que Te Di,85,42.5,170,4/4,A Major,11B,2:47
+3013,Christian Nodal,AYAYAY!,2020,1,Se Me Olvidó,90,45,180,4/4,F# Menor,11A,2:34
+3014,Christian Nodal,Forajido,2022,1,Ya No Somos Ni Seremos,78,39,156,4/4,C# Menor,12A,3:05
+3015,Carín León,El Tóxico,2020,1,Tú,80,40,160,4/4,G Major,9B,3:40
+3016,Carín León,Inédito,2021,1,El Tóxico (con Grupo Firme),125,62.5,250,4/4,D Major,10B,3:20
+3017,Carín León,Colmillo de Leche,2023,1,Primera Cita,158,79,316,4/4,B♭ Major,6B,3:06
+3018,Carín León,Colmillo de Leche,2023,2,Según Quién (con Maluma),125,62.5,250,4/4,F# Menor,11A,2:23
+3019,Carín León,"Boca Chueca, Vol. 1",2024,1,Despídase bien,160,80,320,4/4,B Minor,10A,3:15
+3020,Banda MS,Mi Razón de Ser,2012,1,Mi Razón de Ser,85,42.5,170,4/4,F# Menor,11A,3:45
+3021,Banda MS,No Me Pidas Perdón,2014,1,Háblame de Ti,80,40,160,4/4,G# Menor,1A,3:10
+3022,Banda MS,Que Bendición,2016,1,Solo Con Verte,85,42.5,170,4/4,C# Menor,12A,3:18
+3023,Banda MS,Que Bendición,2016,2,Tengo Que Colgar,80,40,160,4/4,A# Menor,3A,3:24
+3024,Grupo Firme,En Vivo Desde Tijuana,2018,1,Pídeme,125,62.5,250,4/4,F# Menor,11A,3:10
+3025,Grupo Firme,Nos Divertimos Logrando Lo Imposible,2020,1,Ya Supérame,80,40,160,4/4,G# Menor,1A,3:12
+3026,Grupo Firme,Nos Divertimos...,2020,2,El Tóxico (con Carín León),125,62.5,250,4/4,C# Menor,12A,3:20
+3027,Grupo Firme,Singles,2022,1,Cada Quien (con Maluma),125,62.5,250,4/4,A# Menor,3A,3:35
+3028,Calibre 50,El Buen Ejemplo,2012,1,Gente Batallosa,135,67.5,270,4/4,F# Menor,11A,2:45
+3029,Calibre 50,Historias de la Calle,2015,1,Amor del Bueno,80,40,160,4/4,G# Menor,1A,3:02
+3030,Calibre 50,Desde el Rancho,2016,1,Siempre Te Voy a Querer,85,42.5,170,4/4,C# Menor,12A,2:52
+3031,Calibre 50,Simplemente Gracias,2019,1,Simplemente Gracias,80,40,160,4/4,A# Menor,3A,2:46
+3032,Los Dos Carnales,Somos Arrieros,2019,1,Vida Ventajosa,130,65,260,4/4,F# Menor,11A,3:10
+3033,Los Dos Carnales,El Borracho,2020,1,El Envidioso,135,67.5,270,4/4,G# Menor,1A,3:05
+3034,Los Dos Carnales,Boleros de Hoy,2021,1,Cabrón y Vago (con El Fantasma),125,62.5,250,4/4,C# Menor,12A,3:20
+3035,Gerardo Ortiz,Ni Hoy Ni Mañana,2010,1,En Preparación,135,67.5,270,4/4,F# Menor,11A,3:10
+3036,Gerardo Ortiz,El Primer Ministro,2012,1,Dámaso,140,70,280,4/4,G# Menor,1A,2:48
+3037,Gerardo Ortiz,Archivos de Mi Vida,2013,1,Mujer de Piedra,85,42.5,170,4/4,C# Menor,12A,3:24
+3038,Alfredo Olivas,El Patroncito,2011,1,El Patroncito,135,67.5,270,4/4,F# Menor,11A,3:15
+3039,Alfredo Olivas,Privilegio,2015,1,El Paciente,85,42.5,170,4/4,G# Menor,1A,3:40
+3040,Alfredo Olivas,La Rueda de la Fortuna,2017,1,En Definitiva,88,44,176,4/4,C# Menor,12A,3:30
+3041,Julión Álvarez,Corazón Mágico,2008,1,Las Mulas de Moreno,130,65,260,4/4,F# Menor,11A,3:10
+3042,Julión Álvarez,Tu Amigo Nada Más,2013,1,La Fory Fay,135,67.5,270,4/4,G# Menor,1A,2:55
+3043,Julión Álvarez,Soy Lo Que Quiero... Ser,2014,1,Te Hubieras Ido Antes,80,40,160,4/4,C# Menor,12A,3:45
+3044,Julión Álvarez,Ni Diablo Ni Santo,2017,1,Afuera Está Lloviendo,85,42.5,170,4/4,A# Menor,3A,3:20
+3045,Julión Álvarez,Presente,2023,1,Rey Sin Reina,170,85,340,4/4,E♭ Major,5B,3:12
+3046,Intocable,Otro Mundo,1995,1,Fuerte No Soy,80,40,160,4/4,G Major,9B,3:40
+3047,Intocable,Llévame Contigo,1996,1,Y Todo Para Qué,85,42.5,170,4/4,D Major,10B,3:10
+3048,Intocable,Contigo,1999,1,El Amigo Que Se Fue,80,40,160,4/4,A Major,11B,3:30
+3049,Intocable,Sueños,2002,1,Sueña,85,42.5,170,4/4,C Major,8B,3:25
+3050,Intocable,Nuestro Destino Estaba Escrito,2003,1,Eres Mi Droga,125,62.5,250,4/4,F# Menor,11A,3:15
+3051,Los Tigres del Norte,Contrabando y Traición,1974,1,Contrabando y Traición,125,62.5,250,4/4,F# Menor,11A,2:20
+3052,Los Tigres del Norte,La Banda del Carro Rojo,1975,1,La Banda del Carro Rojo,125,62.5,250,4/4,G# Menor,1A,3:15
+3053,Los Tigres del Norte,Jefe de Jefes,1997,1,Jefe de Jefes,130,65,260,4/4,C# Menor,12A,3:30
+3054,Los Tigres del Norte,La Puerta Negra,1986,1,La Puerta Negra,125,62.5,250,4/4,A# Menor,3A,3:24
+3055,Los Tigres del Norte,MTV Unplugged,2011,1,Golpes en el Corazón (con Paulina Rubio),85,42.5,170,4/4,D# Menor,2A,4:00
+3056,Los Tucanes de Tijuana,Me Robaste El Corazón,1994,1,La Chona,155,77.5,310,4/4,G Major,9B,3:15
+3057,Los Tucanes de Tijuana,Mundo de Amor,1995,1,El Tucanazo,145,72.5,290,4/4,D Major,10B,3:25
+3058,Los Tucanes de Tijuana,14 Tucanazos Bien Pesados,1996,1,Mis Tres Animales,130,65,260,4/4,F# Menor,11A,3:30
+3059,Vicente Fernández,El Rey,1974,1,El Rey,85,42.5,170,4/4,G Major,9B,2:25
+3060,Vicente Fernández,A Pesar de Todo,1978,1,"Volver, Volver",80,40,160,4/4,D Major,10B,3:02
+3061,Vicente Fernández,Por Tu Maldito Amor,1989,1,Por Tu Maldito Amor,75,37.5,150,4/4,A Major,11B,3:55
+3062,Vicente Fernández,Lástima Que Seas Ajena,1993,1,Lástima Que Seas Ajena,80,40,160,4/4,C Major,8B,4:15
+3063,Vicente Fernández,Para Siempre,2007,1,Estos Celos,95,47.5,190,4/4,F# Menor,11A,3:12
+3064,Vicente Fernández,Para Siempre,2007,2,Un Millón de Primaveras,80,40,160,4/4,G# Menor,1A,2:54
+3065,Alejandro Fernández,Me Estoy Enamorando,1997,1,Si Tú Supieras,80,40,160,4/4,F# Menor,11A,4:05
+3066,Alejandro Fernández,Me Estoy Enamorando,1997,2,No Sé Olvidar,85,42.5,170,4/4,G# Menor,1A,4:20
+3067,Alejandro Fernández,Mi Verdad,1999,1,Loco,90,45,180,4/4,C# Menor,12A,3:15
+3068,Alejandro Fernández,Orígenes,2001,1,Tantita Pena,125,62.5,250,4/4,A# Menor,3A,3:28
+3069,Alejandro Fernández,Hecho en México,2020,1,Caballero,85,42.5,170,4/4,D# Menor,2A,3:48
+3070,Pepe Aguilar,Por Mujeres Como Tú,1998,1,Por Mujeres Como Tú,80,40,160,4/4,F# Menor,11A,3:30
+3071,Pepe Aguilar,Por Una Mujer Bonita,1999,1,Perdóname,85,42.5,170,4/4,G# Menor,1A,3:25
+3072,Pepe Aguilar,Historias de Mi Tierra,2005,1,Miedo,80,40,160,4/4,C# Menor,12A,3:40
+3073,Pepe Aguilar,MTV Unplugged,2014,1,"Prometiste (con Ángela Aguilar, Melissa)",82,41,164,4/4,A# Menor,3A,4:15
+3074,Diomedes Díaz,Tres Canciones,1976,1,Tres Canciones (La Ventana Marroncita),115,57.5,230,4/4,F# Menor,11A,4:15
+3075,Diomedes Díaz,Todo Es Para Ti,1982,1,Todo Es Para Ti,120,60,240,4/4,G# Menor,1A,4:20
+3076,Diomedes Díaz,Título de Amor,1993,1,Mi Primera Cana,115,57.5,230,4/4,C# Menor,12A,4:45
+3077,Diomedes Díaz,26 de Mayo,1994,1,La Plata,125,62.5,250,4/4,A# Menor,3A,4:10
+3078,Diomedes Díaz,Un Canto Celestial,1995,1,Un Canto Celestial,115,57.5,230,4/4,D# Menor,2A,4:30
+3079,Silvestre Dangond,La Fama,2006,1,La Colegiala,125,62.5,250,4/4,F# Menor,11A,4:10
+3080,Silvestre Dangond,El Original,2008,1,"Me Gusta, Me Gusta",130,65,260,4/4,G# Menor,1A,3:58
+3081,Silvestre Dangond,Gente Valiente,2017,1,Ya No Me Duele Más,120,60,240,4/4,C# Menor,12A,3:40
+3082,Silvestre Dangond,Gente Valiente,2017,2,Cásate Conmigo (con Nicky Jam),95,47.5,190,4/4,A# Menor,3A,3:25
+3083,Silvestre Dangond,Esto Es Vida,2018,1,Justicia (con Natti Natasha),96,48,192,4/4,D# Menor,2A,3:42
+3084,Jorge Celedón,Romántico Como Yo,2000,1,Olvídala (con Binomio de Oro),115,57.5,230,4/4,F# Menor,11A,4:45
+3085,Jorge Celedón,Canto Vallenato,2002,1,No Podrán Separarnos,118,59,236,4/4,G# Menor,1A,4:30
+3086,Jorge Celedón,¡Juepa Je!,2004,1,Cuatro Rosas,120,60,240,4/4,C# Menor,12A,4:12
+3087,Jorge Celedón,Son Para El Mundo,2006,1,Esta Vida,125,62.5,250,4/4,A# Menor,3A,4:15
+3088,Binomio de Oro,De Fiesta con El Binomio,1990,1,Solo Para Ti,115,57.5,230,4/4,F# Menor,11A,4:20
+3089,Binomio de Oro,Todo Corazón,1993,1,Osito Dormilón,118,59,236,4/4,G# Menor,1A,4:48
+3090,Binomio de Oro,Lo Que Quieras Tú,1995,1,Quiero Volar,120,60,240,4/4,C# Menor,12A,4:30
+3091,Binomio de Oro,A Su Gusto,1996,1,Volver,115,57.5,230,4/4,A# Menor,3A,4:15
+3092,Binomio de Oro,Más Cerca de Ti,1999,1,Distintos Destinos,118,59,236,4/4,D# Menor,2A,4:35
+3093,Peter Manjarrés,Llegó El Momento,2002,1,Paseo en Concordia,120,60,240,4/4,F# Menor,11A,4:10
+3094,Peter Manjarrés,El Papá de los Amores,2007,1,El Amor de Mi Vida,118,59,236,4/4,G# Menor,1A,4:15
+3095,Peter Manjarrés,El Caballero,2009,1,Tragao de Ti,122,61,244,4/4,C# Menor,12A,4:05
+3096,Los Inquietos,Volver a Triunfar,1996,1,Quiero Saber de Ti,115,57.5,230,4/4,F# Menor,11A,4:45
+3097,Los Inquietos,Inquietos Por El Mundo,1998,1,Nunca Niegues Que Me Quieres,118,59,236,4/4,G# Menor,1A,4:30
+3098,Los Inquietos,Presente y Futuro,1999,1,Buscaré Otro Amor,115,57.5,230,4/4,C# Menor,12A,4:40
+3099,Los Chiches,Uno Se Enamora,1991,1,Ceniza Fría,115,57.5,230,4/4,F# Menor,11A,4:30
+3100,Los Chiches,Triunfadores,1993,1,Tierra Mala,118,59,236,4/4,G# Menor,1A,4:45
+3101,Jean Carlos Centeno,Inconfundible,2006,1,Un Osito Dormilón (Solo),115,57.5,230,4/4,F# Menor,11A,4:40
+3102,Jean Carlos Centeno,Siempre y Para Siempre,2008,1,Si Pudiera,118,59,236,4/4,G# Menor,1A,4:15
+3103,Hebert Vargas,Mi Pasión,2005,1,Inocente,115,57.5,230,4/4,F# Menor,11A,4:20
+3104,Hebert Vargas,Pedacitos de Mi Vida,2009,1,Aquel Amigo,118,59,236,4/4,G# Menor,1A,4:35
+3105,Los Ángeles Azules,Inolvidables,1996,1,Cómo Te Voy a Olvidar,95,47.5,190,4/4,G Major,9B,4:25
+3106,Los Ángeles Azules,Una Lluvia de Rosas,1999,1,17 Años,96,48,192,4/4,D Major,10B,3:40
+3107,Los Ángeles Azules,Una Lluvia de Rosas,1999,2,El Listón de Tu Pelo,95,47.5,190,4/4,A Major,11B,3:45
+3108,Los Ángeles Azules,Cómo Te Voy a Olvidar,2013,1,Mis Sentimientos (con Ximena Sariñana),95,47.5,190,4/4,F# Menor,11A,3:58
+3109,Los Ángeles Azules,De Buenos Aires Para el Mundo,2020,1,Otra Noche (con Nicki Nicole),95,47.5,190,4/4,C# Menor,12A,3:30
+3110,Los Ángeles Azules,Cumbia del Corazón,2022,1,Cumbia del Corazón (con Carlos Vives),96,48,192,4/4,G# Menor,1A,3:45
+3111,Los Ángeles de Charly,La Magia del Amor,1999,1,Amor Secreto,95,47.5,190,4/4,F# Menor,11A,3:40
+3112,Los Ángeles de Charly,Un Sueño,2000,1,Un Sueño,94,47,188,4/4,G# Menor,1A,3:35
+3113,Los Ángeles de Charly,Te Voy a Enamorar,2001,1,Me Volví a Acordar de Ti,95,47.5,190,4/4,C# Menor,12A,3:42
+3114,Grupo Cañaveral,Tiene Fuego,1998,1,Tiene Espinas El Rosal,96,48,192,4/4,F# Menor,11A,3:45
+3115,Grupo Cañaveral,No Te Voy a Perdonar,2000,1,No Te Voy a Perdonar,95,47.5,190,4/4,G# Menor,1A,3:30
+3116,Raymix,Oye Mujer,2018,1,Oye Mujer,95,47.5,190,4/4,F# Menor,11A,3:20
+3117,Raymix,Oye Mujer,2018,2,¿Dónde Estarás?,96,48,192,4/4,G# Menor,1A,3:15
+3118,Raymix,Te Voy a Conquistar,2022,1,Tú y Yo (con Paulina Rubio),96,48,192,4/4,C# Menor,12A,3:08
+3119,Selena,Entre a Mi Mundo,1992,1,Como la Flor,95,47.5,190,4/4,B♭ Major,6B,3:02
+3120,Selena,Entre a Mi Mundo,1992,2,La Carcacha,125,62.5,250,4/4,F# Menor,11A,4:09
+3121,Selena,Amor Prohibido,1994,1,Amor Prohibido,95,47.5,190,4/4,E Minor,9A,2:49
+3122,Selena,Amor Prohibido,1994,2,Bidi Bidi Bom Bom,90,45,180,4/4,B♭ Major,6B,3:25
+3123,Selena,Amor Prohibido,1994,3,No Me Queda Más,75,37.5,150,4/4,G Major,9B,3:17
+3124,Selena,Amor Prohibido,1994,4,Si Una Vez,130,65,260,4/4,A Minor,8A,2:42
+3125,Selena,Dreaming of You,1995,1,Dreaming of You,85,42.5,170,4/4,A♭ Major,4B,5:14
+3126,Gilda,De Corazón a Corazón,1992,1,No Me Arrepiento de Este Amor,95,47.5,190,4/4,G Major,9B,3:20
+3127,Gilda,Pasito a Pasito,1994,1,Fuiste,95,47.5,190,4/4,F# Menor,11A,3:05
+3128,Gilda,Corazón Valiente,1995,1,Corazón Valiente,96,48,192,4/4,C# Menor,12A,3:15
+3129,Gilda,Corazón Valiente,1995,2,Se Me Ha Perdido Un Corazón,95,47.5,190,4/4,A# Menor,3A,3:40
+3130,Damas Gratis,Para Los Pibes,2000,1,Se Te Ve La Tanga,95,47.5,190,4/4,F# Menor,11A,3:10
+3131,Damas Gratis,Operación Damas Gratis,2002,1,Laura Se Te Ve La Tanga,96,48,192,4/4,G# Menor,1A,3:15
+3132,Damas Gratis,100% Negro Cumbiero,2003,1,Me Vas a Extrañar,95,47.5,190,4/4,C# Menor,12A,3:30
+3133,Damas Gratis,Esquivando el Éxito,2011,1,No Te Creas Tan Importante,95,47.5,190,4/4,A# Menor,3A,3:45
+3134,Damas Gratis,Singles,2018,1,Me Vas a Extrañar (con Viru Kumbieron),95,47.5,190,4/4,D# Menor,2A,4:12
+3135,Amar Azul,Dime Tú,1996,1,Yo Me Enamoré,95,47.5,190,4/4,F# Menor,11A,3:30
+3136,Amar Azul,Cumbia Nena,1998,1,El Polvito del Amor,96,48,192,4/4,G# Menor,1A,3:25
+3137,Amar Azul,El Campeón,2000,1,Tomando Porquerías,95,47.5,190,4/4,C# Menor,12A,3:40
+3138,Ráfaga,Soplando Fuerte,1996,1,La Luna y Tú,96,48,192,4/4,F# Menor,11A,3:45
+3139,Ráfaga,Sobre Vuelo,1997,1,Ráfaga de Amor,96,48,192,4/4,G# Menor,1A,3:50
+3140,Ráfaga,Imparables,1999,1,Mentirosa,96,48,192,4/4,C# Menor,12A,3:30
+3141,Ráfaga,Vuela,2004,1,Una Cerveza,96,48,192,4/4,A# Menor,3A,3:24
+3142,Ke Personajes,Hasta la Luna,2022,1,"Un Finde (con Big One, FMK)",95,47.5,190,4/4,F# Menor,11A,2:46
+3143,Ke Personajes,Singles,2022,1,Pobre Corazón (con Onda Sabanera),95,47.5,190,4/4,G# Menor,1A,3:15
+3144,Ke Personajes,Singles,2023,1,Ojitos Rojos (con Grupo Frontera),95,47.5,190,4/4,C# Menor,12A,3:40
+3145,Ke Personajes,Singles,2023,2,Piel (con Tiago PZK),100,50,200,4/4,A# Menor,3A,3:02
+3146,La Delio Valdez,Sonido Subtropical,2018,1,Inocente,95,47.5,190,4/4,F# Menor,11A,3:50
+3147,La Delio Valdez,El Tiempo y la Serenata,2021,1,Paisaje,96,48,192,4/4,G# Menor,1A,3:40
+3148,La Delio Valdez,El Tiempo y la Serenata,2021,2,Cumbia del Olvido,95,47.5,190,4/4,C# Menor,12A,3:35
+3149,Los Palmeras,Cumbia Santafesina,1999,1,El Bombón,96,48,192,4/4,G Major,9B,3:15
+3150,Los Palmeras,Un Toque Diferente,2004,1,Olvídala,95,47.5,190,4/4,D Major,10B,3:40
+3151,Los Palmeras,Sean Eternos Los Palmeras,2019,1,Soy Sabalero,96,48,192,4/4,C Major,8B,3:10
+3152,Armonía 10,El Cervecero,1998,1,El Cervecero,96,48,192,4/4,F# Menor,11A,3:45
+3153,Armonía 10,Siempre Contigo,2002,1,Dios Mío Haz Que Me Enamore,95,47.5,190,4/4,G# Menor,1A,4:10
+3154,Armonía 10,Grandes Éxitos,2008,1,La Duda,96,48,192,4/4,C# Menor,12A,3:50
+3155,Corazón Serrano,Cielo Gris,2010,1,Díganle,95,47.5,190,4/4,F# Menor,11A,3:50
+3156,Corazón Serrano,Corazón Serrano,2013,1,Tu Ausencia,96,48,192,4/4,G# Menor,1A,3:40
+3157,Corazón Serrano,Grandes Éxitos,2018,1,Olvídame,95,47.5,190,4/4,C# Menor,12A,4:15
+3158,Grupo 5,Motor y Motivo,2005,1,Motor y Motivo,95,47.5,190,4/4,F# Menor,11A,4:12
+3159,Grupo 5,La Amante,2007,1,Te Vas,96,48,192,4/4,G# Menor,1A,3:55
+3160,Grupo 5,El Ritmo de Mi Corazón,2012,1,El Ritmo de Mi Corazón,96,48,192,4/4,C# Menor,12A,4:05
+3161,Agua Marina,Volumen 11,1998,1,Tu Traición Se Acabó,95,47.5,190,4/4,F# Menor,11A,4:15
+3162,Agua Marina,Basta Ya Mi Amor,2000,1,Paloma Ajena,96,48,192,4/4,G# Menor,1A,4:30
+3163,Agua Marina,Grandes Éxitos,2005,1,Así Es El Amor,95,47.5,190,4/4,C# Menor,12A,3:58
+3164,Los Mirlos,Cumbia Amazónica,1974,1,La Danza de Los Mirlos,100,50,200,4/4,A Minor,8A,3:10
+3165,Los Mirlos,El Milagro Verde,1976,1,Sonido Amazónico,102,51,204,4/4,E Minor,9A,3:25
+3166,Los Destellos,Los Destellos,1968,1,El Avispón,105,52.5,210,4/4,A Minor,8A,2:50
+3167,Los Destellos,Constelación,1970,1,Caminito Serrano,108,54,216,4/4,E Minor,9A,3:15
+3168,Juaneco y su Combo,El Gran Cacique,1977,1,Mujer Hilandera,105,52.5,210,4/4,A Minor,8A,3:20
+3169,Juaneco y su Combo,El Gran Cacique,1977,2,Ya Se Ha Muerto Mi Abuelo,108,54,216,4/4,E Minor,9A,3:30
+3170,Chacalón,Éxitos de Oro,1981,1,Soy Muchacho Provinciano,95,47.5,190,4/4,A Minor,8A,4:15
+3171,Chacalón,Éxitos de Oro,1981,2,Viento,96,48,192,4/4,E Minor,9A,4:00
+3172,Chicha Libre,¡Sonido Amazónico!,2008,1,Sonido Amazónico,105,52.5,210,4/4,A Minor,8A,3:40
+3173,Chicha Libre,Canibalismo,2011,1,Danza del Millonario,108,54,216,4/4,E Minor,9A,3:50
+3174,El Alfa,Disciplina,2017,1,Dema Ga Ge Gi Go Gu (con Bad Bunny),120,60,240,4/4,A♭ Mayor,4B,3:10
+3175,El Alfa,El Hombre,2018,1,Suave,120,60,240,4/4,B Minor,10A,3:02
+3176,El Alfa,El Androide,2020,1,Coronao Now (con Lil Pump),125,62.5,250,4/4,F# Menor,11A,3:15
+3177,El Alfa,El Androide,2020,2,"4K (con Darell, Noriel)",120,60,240,4/4,D# Menor,2A,3:18
+3178,El Alfa,El Androide,2020,3,Singapur,125,62.5,250,4/4,C# Menor,12A,3:05
+3179,El Alfa,Sabiduría,2022,1,Gogo Dance,118,59,236,4/4,A♭ Mayor,4B,2:54
+3180,El Alfa,El Rey del Dembow,2023,1,ESTE,103,51.5,206,4/4,D Major,10B,2:46
+3181,Tokischa,Singles,2021,1,Linda (con Rosalía),115,57.5,230,4/4,D Major,10B,2:54
+3182,Tokischa,Singles,2021,2,Perra (con J Balvin),120,60,240,4/4,F# Menor,11A,2:36
+3183,Tokischa,Singles,2022,1,"Delincuente (con Anuel AA, Ñengo Flow)",98,49,196,4/4,D Major,10B,3:24
+3184,Tokischa,Singles,2022,2,Estilazo (con Marshmello),128,64,256,4/4,C# Menor,12A,2:48
+3185,Tokischa,Singles,2023,1,"Chulo pt.2 (con Bad Gyal, Young Miko)",97,48.5,194,4/4,D# Menor,2A,3:39
+3186,Rochy RD,Singles,2020,1,Ella No Es Tuya,120,60,240,4/4,F# Menor,11A,3:10
+3187,Rochy RD,Singles,2021,1,"Ella No Es Tuya (Remix con Myke Towers, Nicki Nicole)",120,60,240,4/4,G# Menor,1A,3:38
+3188,Rochy RD,Singles,2021,2,Alta Gama,125,62.5,250,4/4,C# Menor,12A,2:48
+3189,Bulin 47,Singles,2018,1,7 Pollos,120,60,240,4/4,F# Menor,11A,2:50
+3190,Bulin 47,Singles,2021,1,Lo Que Ta Bien,125,62.5,250,4/4,G# Menor,1A,2:45
+3191,Chimbala,Singles,2018,1,Maniquí,120,60,240,4/4,F# Menor,11A,2:45
+3192,Chimbala,Singles,2021,1,"Loco (con Justin Quiles, Zion & Lennox)",125,62.5,250,4/4,A# Menor,3A,3:47
+3193,Kiko el Crazy,Llegó el Domi,2022,1,La Popi,120,60,240,4/4,F# Menor,11A,2:40
+3194,Kiko el Crazy,Llegó el Domi,2022,2,Cuchi Cuchi,125,62.5,250,4/4,G# Menor,1A,2:35
+3195,Haraca Kiko,Singles,2021,1,Tipi Tipi,125,62.5,250,4/4,C# Menor,12A,2:45
+3196,Haraca Kiko,Singles,2021,2,Los Bobos Son Míos,120,60,240,4/4,F# Menor,11A,2:30
+3197,Yomel El Meloso,Singles,2020,1,Ruleta Rusa,120,60,240,4/4,G# Menor,1A,3:10
+3198,Yomel El Meloso,Singles,2021,1,Desacato,125,62.5,250,4/4,C# Menor,12A,2:50
+3199,Angel Dior,Singles,2022,1,A I E I O U,125,62.5,250,4/4,F# Menor,11A,2:40
+3200,Angel Dior,Singles,2022,2,Piropi,120,60,240,4/4,G# Menor,1A,2:35
+3201,Yailin,Singles,2022,1,Chivirika,120,60,240,4/4,F# Menor,11A,2:10
+3202,Yailin,Singles,2023,1,Narcisista,125,62.5,250,4/4,C# Menor,12A,2:45
+3203,Yailin,Singles,2024,1,Bing Bong (con Puyalo Pantera),134,67,268,4/4,A# Menor,3A,2:15
+3204,Lomiiel,Singles,2024,1,PA QUE LO BAILES (BAILALO ROCKY),186,93,372,4/4,E♭ Major,5B,2:20
+3205,Lomiiel,Singles,2024,2,HAY LUPITA,145,72.5,290,4/4,C Major,8B,2:15
+3206,Onguito Wa,Singles,2021,1,Yamilet,120,60,240,4/4,F# Menor,11A,2:30
+3207,Onguito Wa,Singles,2022,1,Diablona,125,62.5,250,4/4,G# Menor,1A,2:25
+3208,El Cherry Scom,Singles,2020,1,"La Mamá de la Mamá (con El Alfa, CJ)",130,65,260,4/4,B Major,1B,3:10
+3209,El Cherry Scom,Singles,2021,1,Bebé Lindo,125,62.5,250,4/4,C# Menor,12A,2:40
+3210,Braulio Fogón,Singles,2021,1,Bagre,120,60,240,4/4,F# Menor,11A,2:35
+3211,Braulio Fogón,Singles,2022,1,El Niño,125,62.5,250,4/4,G# Menor,1A,2:45
+3212,El Mayor Clásico,Singles,2015,1,Dinero Fácil,120,60,240,4/4,F# Menor,11A,3:10
+3213,El Mayor Clásico,Singles,2017,1,El Calentón,125,62.5,250,4/4,C# Menor,12A,3:05
+3214,Crazy Design,Singles,2018,1,Guanguan,126,63,252,4/4,E Major,12B,3:15
+3215,Crazy Design,Singles,2020,1,El Cartel,120,60,240,4/4,F# Menor,11A,2:55
+3216,Mozart La Para,Singles,2012,1,I Wanna Get High,120,60,240,4/4,F# Menor,11A,3:30
+3217,Mozart La Para,Singles,2015,1,Llegan Los Montros,125,62.5,250,4/4,G# Menor,1A,3:20
+3218,Mozart La Para,Singles,2018,1,Bye Bye,120,60,240,4/4,C# Menor,12A,3:15
+3219,Vakero,Manuel,2010,1,Qué Mujer Tan Chula,120,60,240,4/4,F# Menor,11A,3:40
+3220,Vakero,Manuel,2010,2,Hasta Que Salga El Sol,125,62.5,250,4/4,G# Menor,1A,3:30
+3221,Secreto,Singles,2011,1,Toy Killao,120,60,240,4/4,F# Menor,11A,3:25
+3222,Secreto,Singles,2015,1,Amanecí Contento,125,62.5,250,4/4,G# Menor,1A,3:30
+3223,Secreto,Singles,2018,1,Real Guerrero,90,45,180,4/4,C# Menor,12A,3:45
+3224,Omega,El Dueño del Flow,2008,1,Si Te Vas / Qué Tengo Que Hacer,130,65,260,4/4,F# Menor,11A,3:50
+3225,Omega,El Dueño del Flow,2008,2,Chambonea,132,66,264,4/4,G# Menor,1A,3:40
+3226,Omega,El Fuerte,2011,1,Merengue Electrónico,135,67.5,270,4/4,C# Menor,12A,3:35
+3227,Beder El Musicólogo,Fusión,2022,1,Sanjuanito Trap,120,60,240,4/4,E Menor,9A,3:15
+3228,Beder El Musicólogo,Fusión,2022,2,Báilalo,125,62.5,250,4/4,A Menor,8A,3:20
+3229,Rocko y Blasty,Los Elegidos,2010,1,Besitos de Colores,95,47.5,190,4/4,F# Menor,11A,3:40
+3230,Rocko y Blasty,Los Elegidos,2010,2,Actor de Telenovela,96,48,192,4/4,G# Menor,1A,3:35
+3231,Rocko y Blasty,Singles,2016,1,Mariposa,95,47.5,190,4/4,C# Menor,12A,3:25
+3232,Daniel Páez,Otro Día Sin Ti,2010,1,Otro Día Sin Ti,85,42.5,170,4/4,F# Menor,11A,3:45
+3233,Daniel Páez,JJ a Mi Manera,2014,1,Rondando Tu Esquina (Pop),85,42.5,170,4/4,G# Menor,1A,3:30
+3234,Johann Vera,Singles,2016,1,Pretty Girl,120,60,240,4/4,F# Menor,11A,3:15
+3235,Johann Vera,Singles,2020,1,Perdón,85,42.5,170,4/4,G# Menor,1A,3:20
+3236,Dayanara,Singles,2018,1,Pobre y Triste,95,47.5,190,4/4,F# Menor,11A,3:25
+3237,Dayanara,Singles,2020,1,Adictivo,96,48,192,4/4,G# Menor,1A,3:10
+3238,Dayanara,Singles,2023,1,Quién,95,47.5,190,4/4,C# Menor,12A,3:18
+3239,Nikki Mackliff,Singles,2015,1,Quiero,120,60,240,4/4,F# Menor,11A,3:20
+3240,Nikki Mackliff,Singles,2021,1,Si Conmigo Te Quedas,95,47.5,190,4/4,G# Menor,1A,3:05
+3241,Sanyi,Niégalo,2005,1,Niégalo,128,64,256,4/4,F# Menor,11A,3:30
+3242,Sanyi,Niégalo,2005,2,La Ladrona,130,65,260,4/4,G# Menor,1A,3:25
+3243,Jazmín,Éxitos,2004,1,La Tumbadora,128,64,256,4/4,F# Menor,11A,3:30
+3244,Jazmín,Éxitos,2004,2,Amor de Pobre,130,65,260,4/4,G# Menor,1A,3:20
+3245,Proyecto Coraza,Fusión Andina,2012,1,San Juanito Electrónico,125,62.5,250,4/4,E Menor,9A,3:40
+3246,Proyecto Coraza,Fusión Andina,2012,2,Zapateo,128,64,256,4/4,A Menor,8A,3:30
+3247,Jayac,Fuerza Andina,1995,1,Zapateando Juyayay,125,62.5,250,4/4,E Menor,9A,4:15
+3248,Jayac,Fuerza Andina,1995,2,Taita Imbabura,120,60,240,4/4,A Menor,8A,3:50
+3249,Los 4 del Altiplano,Amanecer Andino,1990,1,San Juanito Tradicional,120,60,240,4/4,E Menor,9A,3:35
+3250,Los 4 del Altiplano,Amanecer Andino,1990,2,Chaspishka,122,61,244,4/4,A Menor,8A,3:40
+3251,Sendero Andino,Vientos,2005,1,Vientos del Alma,115,57.5,230,4/4,E Menor,9A,3:50
+3252,Sendero Andino,Vientos,2005,2,Pachamama,118,59,236,4/4,A Menor,8A,3:35
+3253,Curare,Radical,2004,1,Taita Imbabura (Metal Andino),135,67.5,270,4/4,E Menor,9A,4:10
+3254,Curare,Radical,2004,2,La Danza del Sol,140,70,280,4/4,A Menor,8A,3:45
+3255,Anima Tempo,Raíces,2010,1,Sanjuanito Fusión,125,62.5,250,4/4,E Menor,9A,3:40
+3256,Banda 24 de Mayo,Fiesta Ecuatoriana,2000,1,Mosaico de Sanjuanitos,125,62.5,250,4/4,E Menor,9A,5:20
+3257,Banda 24 de Mayo,Fiesta Ecuatoriana,2000,2,Albazos Ecuatorianos,120,60,240,6/8,A Menor,8A,4:45
+3258,Djavan,Alumbramiento,1980,1,Meu Bem-Querer,80,40,160,4/4,D Major,10B,3:25
+3259,Djavan,Luz,1982,1,Sina,118,59,236,4/4,F# Minor,11A,4:35
+3260,Djavan,Luz,1982,2,Samurai (con Stevie Wonder),115,57.5,230,4/4,G# Minor,1A,4:45
+3261,Djavan,Coisa de Acender,1992,1,Se...,80,40,160,4/4,C# Minor,12A,4:50
+3262,Tim Maia,Tim Maia,1970,1,Azul da Cor do Mar,75,37.5,150,4/4,A Major,11B,3:20
+3263,Tim Maia,Tim Maia,1971,1,Não Quero Dinheiro (Só Quero Amar),125,62.5,250,4/4,G Major,9B,2:34
+3264,Tim Maia,Racional Vol. 1,1975,1,O Descobridor dos Sete Mares,120,60,240,4/4,D Major,10B,4:20
+3265,Jorge Ben Jor,Samba Esquema Novo,1963,1,Mas Que Nada,125,62.5,250,4/4,F Minor,4A,3:02
+3266,Jorge Ben Jor,Samba Esquema Novo,1963,2,Chove Chuva,120,60,240,4/4,A Minor,8A,3:05
+3267,Jorge Ben Jor,A Tábua de Esmeralda,1974,1,Taj Mahal,128,64,256,4/4,G Major,9B,3:08
+3268,Jorge Ben Jor,África Brasil,1976,1,Taj Mahal / Fio Maravilha,125,62.5,250,4/4,D Major,10B,4:15
+3269,Milton Nascimento,Clube da Esquina,1972,1,Tudo o Que Você Podia Ser,120,60,240,4/4,A Minor,8A,2:56
+3270,Milton Nascimento,Clube da Esquina,1972,2,Cravo e Canela,125,62.5,250,4/4,E Minor,9A,2:30
+3271,Milton Nascimento,Milagre dos Peixes,1973,1,"Maria, Maria",80,40,160,4/4,D Minor,7A,3:00
+3272,Milton Nascimento,Geraes,1976,1,Cálix Bento,85,42.5,170,4/4,G Major,9B,3:30
+3273,Gal Costa,Gal Costa,1969,1,Baby (con Caetano Veloso),85,42.5,170,4/4,D Major,10B,3:35
+3274,Gal Costa,Fa-Tal,1971,1,Vapor Barato,80,40,160,4/4,A Minor,8A,4:10
+3275,Gal Costa,Água Viva,1978,1,Folhetim,80,40,160,3/4,F# Minor,11A,3:30
+3276,Gal Costa,Fantasia,1981,1,Festa do Interior,135,67.5,270,4/4,G Major,9B,3:15
+3277,Maria Bethânia,Drama,1972,1,Rosa dos Ventos,80,40,160,4/4,A Minor,8A,3:10
+3278,Maria Bethânia,Álibi,1978,1,Brincar de Viver,85,42.5,170,4/4,E Minor,9A,4:15
+3279,Maria Bethânia,Álibi,1978,2,Explode Coração,80,40,160,4/4,D Minor,7A,2:40
+3280,Ney Matogrosso,Secos & Molhados,1973,1,Sangue Latino,120,60,240,4/4,A Minor,8A,2:08
+3281,Ney Matogrosso,Secos & Molhados,1973,2,O Vira,135,67.5,270,4/4,E Minor,9A,2:12
+3282,Ney Matogrosso,Bandido,1976,1,Bandido Corazón,85,42.5,170,4/4,D Minor,7A,3:25
+3283,MC Kevin o Chris,Evoluiu,2019,1,Evoluiu,150,75,300,4/4,F# Minor,11A,2:30
+3284,MC Kevin o Chris,Evoluiu,2019,2,Vamos Pra Gaiola,150,75,300,4/4,G# Minor,1A,2:20
+3285,MC Kevin o Chris,Singles,2023,1,"Tá OK (con Dennis DJ, Maluma, Karol G)",130,65,260,4/4,C# Minor,12A,3:10
+3286,MC Cabelinho,Ainda,2020,1,Essência de Cria,140,70,280,4/4,F# Minor,11A,3:05
+3287,MC Cabelinho,LITTLE LOVE,2022,1,Fogo e Gasolina,130,65,260,4/4,G# Minor,1A,2:50
+3288,MC Cabelinho,LITTLE LOVE,2022,2,Minha Cura,125,62.5,250,4/4,C# Minor,12A,3:15
+3289,Matuê,Máquina do Tempo,2020,1,Máquina do Tempo,140,70,280,4/4,F# Minor,11A,3:30
+3290,Matuê,Máquina do Tempo,2020,2,777-666,140,70,280,4/4,G# Minor,1A,2:45
+3291,Matuê,Máquina do Tempo,2020,3,Kenny G,140,70,280,4/4,C# Minor,12A,2:42
+3292,Matuê,333,2024,1,Crack com Mussarela,140,70,280,4/4,A# Minor,3A,3:10

@@ -59,24 +59,37 @@ def main():
             except Exception as e:
                 print(f"Error parseando fila: {e}")
 
-    print(f"Total a insertar: {len(rows)} canciones.")
+    # Deduplicate rows by track_id
+    unique_rows = {}
+    for r in rows:
+        unique_rows[r["track_id"]] = r
+    
+    final_rows = list(unique_rows.values())
+    print(f"Total a insertar (sin duplicados locales): {len(final_rows)} canciones.")
     
     headers = {
         "apikey": SUPABASE_KEY,
         "Authorization": f"Bearer {SUPABASE_KEY}",
         "Content-Type": "application/json",
-        "Prefer": "resolution=merge-duplicates"
+        "Prefer": "return=minimal"
     }
 
-    # Batch insert in chunks of 500
-    batch_size = 500
-    for i in range(0, len(rows), batch_size):
-        batch = rows[i:i+batch_size]
+    # Batch insert in chunks of 200
+    batch_size = 200
+    for i in range(0, len(final_rows), batch_size):
+        batch = final_rows[i:i+batch_size]
+        track_ids = [r["track_id"] for r in batch]
+        
+        # 1. Delete existing to simulate REPLACE without hitting the updated_at trigger
+        del_url = f"{SUPABASE_URL}?track_id=in.({','.join(track_ids)})"
+        requests.delete(del_url, headers=headers)
+        
+        # 2. Insert new
         res = requests.post(SUPABASE_URL, json=batch, headers=headers)
         if res.status_code in [200, 201]:
-            print(f"✅ Lote {i} - {i+len(batch)} insertado con éxito.")
+            print(f"✅ Lote {i} - {i+len(batch)} reemplazado con éxito.")
         else:
-            print(f"❌ Error insertando lote: {res.status_code} - {res.text}")
+            print(f"❌ Error insertando lote {i}: {res.status_code} - {res.text}")
 
 if __name__ == "__main__":
     main()
