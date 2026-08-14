@@ -83,7 +83,7 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
     private var fade: Runnable? = null
 
     private val analysisDao: AutomixAnalysisDao? by lazy {
-        runCatching { KoinJavaComponent.get(AutomixAnalysisDao::class.java) }.getOrNull()
+        try { KoinJavaComponent.get(AutomixAnalysisDao::class.java) as AutomixAnalysisDao } catch (e: Exception) { null }
     }
 
     override val isInitialized: Boolean

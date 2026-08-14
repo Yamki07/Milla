@@ -10,7 +10,7 @@ import kotlin.math.abs
 /** Ordena una cola con la metadata disponible; conserva el orden original cuando faltan análisis. */
 object AutomixQueuePlanner {
     suspend fun smartDj(seed: Song, songs: List<Song>): List<Song> = withContext(Dispatchers.IO) {
-        val repository = runCatching { KoinJavaComponent.get(RoomRepository::class.java) }.getOrNull()
+        val repository = try { KoinJavaComponent.get(RoomRepository::class.java) as RoomRepository } catch (e: Exception) { null }
         val analyses = songs.associateWith { song -> repository?.getAutomixDataBySongId(song.id) }
         val remaining = songs.filter { it.id != seed.id }.toMutableList()
         val result = mutableListOf(seed)
