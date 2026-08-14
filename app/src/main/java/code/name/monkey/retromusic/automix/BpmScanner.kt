@@ -178,6 +178,55 @@ object BpmScanner {
             )
         }
 
+        // b) Si no estaba en Supabase, intentar raspar de songbpm.com
+        if (artist.isNotBlank() && title.isNotBlank()) {
+            val scrapedData = SongBpmScraper.search(artist, title)
+            if (scrapedData != null && scrapedData.bpm > 0f) {
+                val cueOutMs = if (scrapedData.durationMs > 0) Math.max(0L, scrapedData.durationMs - 5000L) else 0L
+                val newRemoteMeta = RemoteTrackMetadata(
+                    trackId = trackId,
+                    title = scrapedData.title,
+                    artist = scrapedData.artist,
+                    bpm = scrapedData.bpm,
+                    musicalKey = scrapedData.key,
+                    cueOutMs = cueOutMs,
+                    replayGain = 0f,
+                    mood = scrapedData.mood,
+                    halfTimeBpm = scrapedData.halfTimeBpm,
+                    mode = scrapedData.mode,
+                    energy = scrapedData.energy,
+                    danceability = scrapedData.danceability,
+                    timeSignature = scrapedData.timeSignature
+                )
+                // Subir a Supabase (auto-completado correcto)
+                SupabaseClientManager.uploadMetadata(newRemoteMeta)
+                
+                // Actualizar base de datos local Room
+                if (repository != null && songId != 0L) {
+                    try {
+                        repository.updateSongAutomixData(
+                            songId = songId,
+                            bpm = scrapedData.bpm,
+                            key = scrapedData.key,
+                            replayGain = 0f,
+                            cueOut = cueOutMs
+                        )
+                    } catch (e: Exception) {
+                        Log.w(TAG, "Error persistiendo datos de Scraper a Room: ${e.message}")
+                    }
+                }
+                
+                return@withContext AutomixMetadata(
+                    bpm = scrapedData.bpm,
+                    musicalKey = scrapedData.key,
+                    replayGain = 0f,
+                    cueOutMs = cueOutMs,
+                    cueInMs = 0L,
+                    isAnalyzed = true
+                )
+            }
+        }
+
         if (!file.exists() || !file.canRead()) {
             Log.w(TAG, "No se puede leer el archivo de audio: $filePath")
             val failedMeta = buildFailedMetadata()

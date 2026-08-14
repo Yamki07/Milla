@@ -238,7 +238,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                 lifecycleScope.launch {
                     binding.btnTranslate.isEnabled = false
                     try {
-                        val translated = code.name.monkey.retromusic.lyrics.AiLyricsTranslator.translate(currentLyricsList)
+                        val translated = code.name.monkey.retromusic.util.TranslationHelper.translateLyrics(requireContext(), song, currentLyricsList)
                         currentLyricsList = translated
                         lyricsAdapter.submitList(translated)
                     } catch (e: Exception) {

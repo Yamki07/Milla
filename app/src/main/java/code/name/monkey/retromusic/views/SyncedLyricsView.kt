@@ -137,8 +137,8 @@ class SyncedLyricsView @JvmOverloads constructor(context: Context, attrs: Attrib
     /** Dibuja la frase atenuada y recorta la capa brillante hasta el progreso exacto de la palabra. */
     private fun drawKaraokeLine(canvas: Canvas, line: SyncedLyricLine, centerY: Float, textSize: Float, positionMs: Long) {
         val text = line.text
-        mutedPaint.apply { color = mutedColor; textSize = textSize; alpha = 180 }
-        activePaint.apply { color = activeColor; textSize = textSize; alpha = 255 }
+        mutedPaint.apply { color = mutedColor; this.textSize = textSize; alpha = 180 }
+        activePaint.apply { color = activeColor; this.textSize = textSize; alpha = 255 }
         drawCentered(canvas, text, centerY, mutedPaint)
 
         val revealFraction = wordRevealFraction(line, positionMs)

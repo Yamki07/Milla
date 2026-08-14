@@ -129,3 +129,14 @@ val MIGRATION_26_27 = object : Migration(26, 27) {
         database.execSQL("CREATE INDEX IF NOT EXISTS index_transition_plan_to_analysis_id ON transition_plan(to_analysis_id)")
     }
 }
+
+/**
+ * Añade la columna synced_lyrics_translated para cachear traducciones offline.
+ */
+val MIGRATION_27_28 = object : Migration(27, 28) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "ALTER TABLE SongEntity ADD COLUMN synced_lyrics_translated TEXT"
+        )
+    }
+}

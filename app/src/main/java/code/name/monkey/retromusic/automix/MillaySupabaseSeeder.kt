@@ -44,10 +44,17 @@ class MillaySupabaseSeeder(context: Context, params: WorkerParameters) :
         )
 
         private val EDITORIAL_QUERIES = listOf(
-            "reggaeton 2025", "pop hits 2024 2025", "k-pop hits 2025",
-            "j-pop 2025", "hip hop 2025", "latin hits 2025",
-            "grammy 2024 nominations", "grammy 2025 winners",
-            "afrobeats 2025", "bachata 2025", "salsa 2025"
+            "top hits 2010", "top hits 2011", "top hits 2012", "top hits 2013", "top hits 2014",
+            "top hits 2015", "top hits 2016", "top hits 2017", "top hits 2018", "top hits 2019",
+            "top hits 2020", "top hits 2021", "top hits 2022", "top hits 2023", "top hits 2024",
+            "top hits 2025", "reggaeton 2020", "reggaeton 2021", "reggaeton 2022", "reggaeton 2023",
+            "reggaeton 2024", "reggaeton 2025", "pop hits 2020", "pop hits 2021", "pop hits 2022",
+            "pop hits 2023", "pop hits 2024", "pop hits 2025", "k-pop hits 2024", "k-pop hits 2025",
+            "j-pop 2025", "hip hop 2023", "hip hop 2024", "hip hop 2025", "latin hits 2024",
+            "latin hits 2025", "grammy 2024", "grammy 2025 winners", "afrobeats 2024",
+            "afrobeats 2025", "bachata 2024", "bachata 2025", "salsa 2025", "classic rock",
+            "80s pop hits", "90s pop hits", "2000s top hits", "electronic dance", "techno top 100",
+            "billboard hot 100", "spotify top 50", "viral hits", "tiktok songs 2024", "tiktok songs 2025"
         )
 
         fun enqueueOnce(context: Context) {
@@ -58,6 +65,12 @@ class MillaySupabaseSeeder(context: Context, params: WorkerParameters) :
     }
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+        val ENABLE_AUTO_FILL = false
+        if (!ENABLE_AUTO_FILL) {
+            Log.i(TAG, "Auto-fill está desactivado por petición del usuario.")
+            return@withContext Result.success()
+        }
+
         Log.i(TAG, "Iniciando seeder de Supabase Cerebro Fantasma...")
         var totalSeeded = 0
 
@@ -70,12 +83,12 @@ class MillaySupabaseSeeder(context: Context, params: WorkerParameters) :
                 for (track in tracks) {
                     if (isStopped) break
                     if (seedTrack(track)) totalSeeded++
-                    delay(200)
+                    delay((2000..5000).random().toLong())
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Error crawleando '$chartName': ${e.message}")
             }
-            delay(1000)
+            delay((5000..10000).random().toLong())
         }
 
         // FASE 2: Sembrar búsquedas editoriales (Nuevas, Recientes, etc.)
@@ -87,12 +100,12 @@ class MillaySupabaseSeeder(context: Context, params: WorkerParameters) :
                 for (track in tracks) {
                     if (isStopped) break
                     if (seedTrack(track)) totalSeeded++
-                    delay(200)
+                    delay((2000..5000).random().toLong())
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Error en busqueda '$query': ${e.message}")
             }
-            delay(1000)
+            delay((5000..10000).random().toLong())
         }
 
         // FASE 3: Sembrar la librería de música local del usuario
@@ -117,7 +130,7 @@ class MillaySupabaseSeeder(context: Context, params: WorkerParameters) :
                         }
                     }
                 }
-                delay(1000) // Pausa entre lotes
+                delay((3000..7000).random().toLong()) // Pausa entre lotes
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error crawleando local: ${e.message}")
@@ -133,7 +146,7 @@ class MillaySupabaseSeeder(context: Context, params: WorkerParameters) :
         return try {
             val trackId = BpmScanner.generateTrackId(track.artistName, track.title, track.id)
             val existing = SupabaseClientManager.fetchMetadata(trackId)
-            if (existing != null && existing.bpm > 0f) return true
+            if (existing != null && (existing.bpm ?: 0f) > 0f) return true
 
             val detail = fetchTrackDetail(track.id)
             val bpm = detail?.bpmFromApi ?: 0f
@@ -150,11 +163,22 @@ class MillaySupabaseSeeder(context: Context, params: WorkerParameters) :
             }
             val cueOutMs = (durationMs - fadeMs).coerceAtLeast(0L)
 
+            val scraped = SongBpmScraper.search(track.artistName, track.title)
+            val finalBpm = if ((scraped?.bpm ?: 0f) > 0f) scraped!!.bpm else bpm
+            val finalKey = scraped?.key ?: ""
+
             SupabaseClientManager.uploadMetadata(RemoteTrackMetadata(
                 trackId = trackId, title = track.title.trim(), artist = track.artistName.trim(),
-                bpm = bpm, musicalKey = "", cueOutMs = cueOutMs, replayGain = gain
+                bpm = finalBpm, musicalKey = finalKey, cueOutMs = cueOutMs, replayGain = gain,
+                mood = scraped?.mood,
+                halfTimeBpm = scraped?.halfTimeBpm,
+                mode = scraped?.mode,
+                energy = scraped?.energy,
+                danceability = scraped?.danceability,
+                timeSignature = scraped?.timeSignature,
+                doubleTimeBpm = scraped?.doubleTimeBpm
             ))
-            Log.d(TAG, "Seeded: ${track.artistName} - ${track.title} (BPM=$bpm)")
+            Log.d(TAG, "Seeded: ${track.artistName} - ${track.title} (BPM=$finalBpm, Mood=${scraped?.mood})")
             true
         } catch (e: Exception) { false }
     }

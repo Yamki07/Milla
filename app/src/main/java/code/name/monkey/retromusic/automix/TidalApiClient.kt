@@ -175,7 +175,7 @@ object TidalApiClient {
             ensureSession()
             if (accessToken.isEmpty()) return@withContext null
 
-            val url = "https://api.tidalhifi.com/v1/tracks/$trackId/playbackinfopostpaywall?audioquality=LOSSLESS&playbackmode=STREAM&assetpresentation=FULL&countryCode=US"
+            val url = "https://api.tidalhifi.com/v1/tracks/$trackId/playbackinfopostpaywall?audioquality=HIGH&playbackmode=STREAM&assetpresentation=FULL&countryCode=US"
             val request = Request.Builder()
                 .url(url)
                 .addHeader("Authorization", "Bearer $accessToken")
@@ -202,7 +202,7 @@ object TidalApiClient {
                     try {
                         // Fix padding for strict Android Base64 decoders
                         val paddedManifestStr = manifestStr + "=".repeat((4 - manifestStr.length % 4) % 4)
-                        val decodedBytes = android.util.Base64.decode(paddedManifestStr, android.util.Base64.DEFAULT)
+                        val decodedBytes = android.util.Base64.decode(paddedManifestStr, android.util.Base64.URL_SAFE or android.util.Base64.DEFAULT)
                         val decodedManifest = String(decodedBytes, StandardCharsets.UTF_8)
                         val manifestJson = JSONObject(decodedManifest)
                         val urls = manifestJson.optJSONArray("urls")

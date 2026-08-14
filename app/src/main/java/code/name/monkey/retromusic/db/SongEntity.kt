@@ -77,5 +77,8 @@ class SongEntity(
     val cueOutMs: Long = 0L,
     /** JSON caché con el perfil completo desde Supabase (Beats, curvas de energía, etc). */
     @ColumnInfo(name = "full_profile_json")
-    val fullProfileJson: String? = null
+    val fullProfileJson: String? = null,
+    /** Letra traducida cacheada desde Supabase/Gemini. */
+    @ColumnInfo(name = "synced_lyrics_translated")
+    val syncedLyricsTranslated: String? = null
 ) : Parcelable

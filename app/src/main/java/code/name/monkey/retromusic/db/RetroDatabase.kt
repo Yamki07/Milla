@@ -28,7 +28,7 @@ import androidx.room.RoomDatabase
         CuePointEntity::class,
         TransitionPlanEntity::class
     ],
-    version = 27,
+    version = 28,
     exportSchema = false
 )
 abstract class RetroDatabase : RoomDatabase() {

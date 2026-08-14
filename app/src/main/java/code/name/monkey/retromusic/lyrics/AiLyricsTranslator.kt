@@ -18,7 +18,7 @@ import java.net.URLEncoder
  */
 object AiLyricsTranslator {
     private const val TAG = "AiLyricsTranslator"
-    private const val GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="
+    private const val GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key="
     private const val MAX_ITEMS_PER_BATCH = 60
 
     suspend fun translate(lines: List<LyricLine>, targetLang: String = "español"): List<LyricLine> {

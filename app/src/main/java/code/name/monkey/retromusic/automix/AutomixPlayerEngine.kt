@@ -135,7 +135,8 @@ class AutomixPlayerEngine(private val context: Context) {
             }
             val tidalFactory = androidx.media3.datasource.ResolvingDataSource.Factory(upstreamFactory, resolver)
             val mediaItem = MediaItem.fromUri(Uri.parse(path))
-            val mediaSource = androidx.media3.exoplayer.source.ProgressiveMediaSource.Factory(tidalFactory)
+            val mediaSource = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(context)
+                .setDataSourceFactory(tidalFactory)
                 .createMediaSource(mediaItem)
             player.setMediaSource(mediaSource)
             true

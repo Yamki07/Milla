@@ -28,7 +28,15 @@ data class RemoteTrackMetadata(
     val replayGain: Float,
     val syncedLyrics: String? = null,
     /** JSON completo con todos los datos avanzados (Beats, Energy Curve, Onsets, etc) */
-    val fullProfileJson: String? = null
+    val fullProfileJson: String? = null,
+    val mood: String? = null,
+    val halfTimeBpm: Float? = null,
+    val mode: String? = null,
+    val energy: String? = null,
+    val danceability: String? = null,
+    val timeSignature: Int? = null,
+    val doubleTimeBpm: Float? = null,
+    val syncedLyricsTranslated: String? = null
 )
 
 /**
@@ -82,7 +90,15 @@ object SupabaseClientManager {
                         } else null,
                         fullProfileJson = if (obj.has("full_profile_json") && !obj.isNull("full_profile_json")) {
                             obj.optString("full_profile_json")
-                        } else null
+                        } else null,
+                        mood = if (obj.has("mood") && !obj.isNull("mood")) obj.optString("mood") else null,
+                        halfTimeBpm = if (obj.has("half_time_bpm") && !obj.isNull("half_time_bpm")) obj.optDouble("half_time_bpm").toFloat() else null,
+                        mode = if (obj.has("mode") && !obj.isNull("mode")) obj.optString("mode") else null,
+                        energy = if (obj.has("energy") && !obj.isNull("energy")) obj.optString("energy") else null,
+                        danceability = if (obj.has("danceability") && !obj.isNull("danceability")) obj.optString("danceability") else null,
+                        timeSignature = if (obj.has("time_signature") && !obj.isNull("time_signature")) obj.optInt("time_signature") else null,
+                        doubleTimeBpm = if (obj.has("double_time_bpm") && !obj.isNull("double_time_bpm")) obj.optDouble("double_time_bpm").toFloat() else null,
+                        syncedLyricsTranslated = if (obj.has("synced_lyrics_translated") && !obj.isNull("synced_lyrics_translated")) obj.optString("synced_lyrics_translated") else null
                     )
                 }
             } else {
@@ -129,6 +145,16 @@ object SupabaseClientManager {
                 }
                 if (metadata.fullProfileJson != null) {
                     put("full_profile_json", metadata.fullProfileJson)
+                }
+                metadata.mood?.takeIf { it.isNotBlank() }?.let { put("mood", it) }
+                metadata.halfTimeBpm?.takeIf { it > 0f }?.let { put("half_time_bpm", it.toDouble()) }
+                metadata.mode?.takeIf { it.isNotBlank() }?.let { put("mode", it) }
+                metadata.energy?.takeIf { it.isNotBlank() }?.let { put("energy", it) }
+                metadata.danceability?.takeIf { it.isNotBlank() }?.let { put("danceability", it) }
+                metadata.timeSignature?.takeIf { it > 0 }?.let { put("time_signature", it) }
+                metadata.doubleTimeBpm?.takeIf { it > 0f }?.let { put("double_time_bpm", it.toDouble()) }
+                if (metadata.syncedLyricsTranslated != null) {
+                    put("synced_lyrics_translated", metadata.syncedLyricsTranslated)
                 }
             }
 

@@ -6,7 +6,7 @@ import code.name.monkey.retromusic.views.SyncedLyricsView
 
 /** Datos de desarrollo que permiten evaluar LRC mejorado y karaoke sin fuente de audio. */
 object LyricsMockData {
-    const val ENHANCED_LRC = """
+    val ENHANCED_LRC = """
 [00:00.00] <00:00.00>Welcome <00:00.75>to <00:01.10>the <00:01.45>Milla <00:02.00>night
 [00:03.00] <00:03.00>Every <00:03.55>word <00:04.00>moves <00:04.50>with <00:04.85>the <00:05.20>beat
 [00:06.50] <00:06.50>Auto <00:07.00>Mix <00:07.40>keeps <00:07.85>the <00:08.20>floor <00:08.60>alive
