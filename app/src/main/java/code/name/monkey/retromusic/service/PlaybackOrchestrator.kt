@@ -141,8 +141,15 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         pendingPlan = null
         if (song == null) return
         if (!state().active) {
-            activePlayer.removeMediaItems(1, activePlayer.mediaItemCount)
-            activePlayer.addMediaSource(createMediaSource(song))
+            scope.launch {
+                val mediaSource = resolveTidalStreamUrlAsync(song)
+                withContext(Dispatchers.Main) {
+                    if (nextSong?.id == song.id) {
+                        activePlayer.removeMediaItems(1, activePlayer.mediaItemCount)
+                        activePlayer.addMediaSource(mediaSource)
+                    }
+                }
+            }
         } else {
             resolvePlanAsync()
             startMonitor()
@@ -154,15 +161,20 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
             completion(true)
             return
         }
-        handler.post {
-            stopTransition()
-            currentSong = song
-            pendingPrepare = completion
-            activePlayer.stop()
-            activePlayer.clearMediaItems()
-            activePlayer.setMediaSource(createMediaSource(song))
-            activePlayer.prepare()
-            if (state().active) resolvePlanAsync()
+        stopTransition()
+        currentSong = song
+        pendingPrepare = completion
+        activePlayer.stop()
+        activePlayer.clearMediaItems()
+        scope.launch {
+            val mediaSource = resolveTidalStreamUrlAsync(song)
+            withContext(Dispatchers.Main) {
+                if (currentSong?.id == song.id) {
+                    activePlayer.setMediaSource(mediaSource)
+                    activePlayer.prepare()
+                    if (state().active) resolvePlanAsync()
+                }
+            }
         }
     }
 
@@ -257,27 +269,20 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
             })
         }
 
-    private fun createMediaSource(song: Song): MediaSource {
+    private suspend fun resolveTidalStreamUrlAsync(song: Song): MediaSource {
         val path = song.data.trim()
         if (!path.startsWith("tidal://track/", true)) {
             val item = MediaItem.Builder().setMediaId(song.id.toString()).setUri(song.uri).build()
             return ProgressiveMediaSource.Factory(DefaultDataSource.Factory(context)).createMediaSource(item)
         }
         val trackId = path.removePrefix("tidal://track/").substringBefore("::")
-        val upstream = DefaultDataSource.Factory(context)
-        val resolver = ResolvingDataSource.Resolver { spec ->
-            val streamUrl = runBlocking(Dispatchers.IO) { TidalApiClient.getStreamUrl(trackId) }
-            if (!streamUrl.isNullOrEmpty()) {
-                spec.withUri(Uri.parse(streamUrl))
-            } else {
-                spec
-            }
-        }
+        val streamUrl = withContext(Dispatchers.IO) { TidalApiClient.getStreamUrl(trackId) }
+        val finalUri = if (!streamUrl.isNullOrEmpty()) Uri.parse(streamUrl) else Uri.parse("https://tidal.com/stream/$trackId")
         val item = MediaItem.Builder()
             .setMediaId(song.id.toString())
-            .setUri(Uri.parse("https://tidal.com/stream/$trackId"))
+            .setUri(finalUri)
             .build()
-        return ProgressiveMediaSource.Factory(ResolvingDataSource.Factory(upstream, resolver)).createMediaSource(item)
+        return ProgressiveMediaSource.Factory(DefaultDataSource.Factory(context)).createMediaSource(item)
     }
 
     private fun resolvePlanAsync() {
@@ -396,26 +401,35 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         preloadPlayer.stop()
         preloadPlayer.clearMediaItems()
         preloadPlayer.volume = 0f
-        preloadPlayer.setMediaSource(createMediaSource(incoming))
-        val initialTempoRatio = if (beatmatchEnabled && !spec.safeFallback) spec.tempoRatio else 1f
-        preloadPlayer.playbackParameters = PlaybackParameters(initialTempoRatio, 1f)
-        preloadPlayer.prepare()
-        preloadPlayer.playWhenReady = true
-        if (spec.targetStartMs > 0L) preloadPlayer.seekTo(spec.targetStartMs)
-        val startedAt = System.currentTimeMillis()
-        fade = object : Runnable {
-            override fun run() {
-                val progress = ((System.currentTimeMillis() - startedAt).toFloat() / spec.durationMs).coerceIn(0f, 1f)
-                val (outFactor, inFactor) = volumeFactors(progress, spec.safeFallback)
-                activePlayer.volume = outFactor
-                preloadPlayer.volume = inFactor
-                _automixTransitionState.value = AutoMixTransitionState(true, progress, currentSong, incoming)
-                val currentTempo = initialTempoRatio + (1f - initialTempoRatio) * progress
-                preloadPlayer.playbackParameters = PlaybackParameters(currentTempo, 1f)
-                if (progress >= 1f) completeTransition(incoming) else handler.postDelayed(this, 50L)
+        
+        scope.launch {
+            val mediaSource = resolveTidalStreamUrlAsync(incoming)
+            withContext(Dispatchers.Main) {
+                if (nextSong?.id != incoming.id) return@withContext
+                preloadPlayer.setMediaSource(mediaSource)
+                
+                val initialTempoRatio = if (beatmatchEnabled && !spec.safeFallback) spec.tempoRatio else 1f
+                preloadPlayer.playbackParameters = PlaybackParameters(initialTempoRatio, 1f)
+                preloadPlayer.prepare()
+                preloadPlayer.playWhenReady = true
+                if (spec.targetStartMs > 0L) preloadPlayer.seekTo(spec.targetStartMs)
+                
+                val startedAt = System.currentTimeMillis()
+                fade = object : Runnable {
+                    override fun run() {
+                        val progress = ((System.currentTimeMillis() - startedAt).toFloat() / spec.durationMs).coerceIn(0f, 1f)
+                        val (outFactor, inFactor) = volumeFactors(progress, spec.safeFallback)
+                        activePlayer.volume = outFactor
+                        preloadPlayer.volume = inFactor
+                        _automixTransitionState.value = AutoMixTransitionState(true, progress, currentSong, incoming)
+                        val currentTempo = initialTempoRatio + (1f - initialTempoRatio) * progress
+                        preloadPlayer.playbackParameters = PlaybackParameters(currentTempo, 1f)
+                        if (progress >= 1f) completeTransition(incoming) else handler.postDelayed(this, 50L)
+                    }
+                }
+                handler.post(fade!!)
             }
         }
-        handler.post(fade!!)
     }
 
     private fun completeTransition(incoming: Song) {

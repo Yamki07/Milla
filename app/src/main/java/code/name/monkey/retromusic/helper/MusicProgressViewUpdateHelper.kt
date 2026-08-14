@@ -85,8 +85,8 @@ class MusicProgressViewUpdateHelper : Handler {
 
     companion object {
         private const val CMD_REFRESH_PROGRESS_VIEWS = 1
-        private const val MIN_INTERVAL = 20
-        private const val UPDATE_INTERVAL_PLAYING = 500
+        private const val MIN_INTERVAL = 10
+        private const val UPDATE_INTERVAL_PLAYING = 16
         private const val UPDATE_INTERVAL_PAUSED = 500
     }
 }

@@ -252,6 +252,8 @@ class CoverLrcView @JvmOverloads constructor(
             viewScope.launch(Dispatchers.IO) {
                 val lines = LrcParser.parseSuspending(lrcFile)
                 withContext(Dispatchers.Main) { onLrcLoaded(lines) }
+                val translated = code.name.monkey.retromusic.lyrics.AiLyricsTranslator.translate(lines)
+                withContext(Dispatchers.Main) { onLrcLoaded(translated) }
             }
         }
     }
@@ -266,6 +268,8 @@ class CoverLrcView @JvmOverloads constructor(
             viewScope.launch(Dispatchers.IO) {
                 val lines = LrcParser.parseSuspending(lrcText)
                 withContext(Dispatchers.Main) { onLrcLoaded(lines) }
+                val translated = code.name.monkey.retromusic.lyrics.AiLyricsTranslator.translate(lines)
+                withContext(Dispatchers.Main) { onLrcLoaded(translated) }
             }
         }
     }

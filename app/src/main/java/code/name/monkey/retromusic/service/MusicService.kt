@@ -899,9 +899,8 @@ class MusicService : MediaBrowserServiceCompat(),
 
     fun playSongAt(position: Int) {
         // Every chromecast method needs to run on main thread or you are greeted with IllegalStateException
-        // So it will use Main dispatcher
-        // And by using Default dispatcher for local playback we are reduce the burden of main thread
-        serviceScope.launch(if (playbackManager.isLocalPlayback) Default else Main) {
+        // Media3 ExoPlayer also strictly requires being accessed on the main thread.
+        serviceScope.launch(Main) {
             openTrackAndPrepareNextAt(position) { success ->
                 if (success) {
                     play()

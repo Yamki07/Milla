@@ -80,12 +80,23 @@ object TidalDownloadManager {
                 _downloadState.value = DownloadState.Downloading(trackId, 0)
                 Log.d(TAG, "Iniciando descarga de Tidal para: ${song.title} ($trackId)")
 
-                // El trackId en Tidal es la URL interna "tidal://track/12345::cover" en la clase Song
-                // Extraemos el ID real si viene formateado así:
-                val realTrackId = if (song.data.startsWith("tidal://track/")) {
-                    song.data.removePrefix("tidal://track/").substringBefore("::")
+                var realTrackId = ""
+                if (song.data.startsWith("tidal://track/")) {
+                    realTrackId = song.data.removePrefix("tidal://track/").substringBefore("::")
+                } else if (song.data.startsWith("deezer://track/") || song.data.startsWith("deezer")) {
+                    withContext(Dispatchers.Main) {
+                        android.widget.Toast.makeText(context, "Buscando en Tidal: ${song.title}...", android.widget.Toast.LENGTH_SHORT).show()
+                    }
+                    val query = "${song.artistName} ${song.title}"
+                    val searchResults = TidalApiClient.search(query)
+                    if (searchResults.isNotEmpty()) {
+                        realTrackId = searchResults[0].id
+                        Log.d(TAG, "Deezer to Tidal map: $query -> Tidal ID $realTrackId")
+                    } else {
+                        realTrackId = trackId
+                    }
                 } else {
-                    trackId
+                    realTrackId = trackId
                 }
 
                 val coverId = if (song.data.contains("::")) {

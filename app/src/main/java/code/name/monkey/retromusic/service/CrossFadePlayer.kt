@@ -627,7 +627,7 @@ class CrossFadePlayer(context: Context) : AudioManagerPlayback(context),
     }
 }
 
-internal fun crossFadeScope(): CoroutineScope = CoroutineScope(Job() + Dispatchers.Default)
+internal fun crossFadeScope(): CoroutineScope = CoroutineScope(Job() + Dispatchers.Main)
 
 fun MediaPlayer.setPlaybackSpeedPitch(speed: Float, pitch: Float) {
     val wasPlaying = isPlaying

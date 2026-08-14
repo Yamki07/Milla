@@ -303,20 +303,27 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
     // ─────────── Mini Player Controls ───────────
     private fun setupMiniPlayerControls() {
         miniPlayPause.setOnClickListener {
-            val mp = mediaPlayer ?: return@setOnClickListener
-            if (isPlaying) {
-                mp.pause()
-                isPlaying = false
+            if (MusicPlayerRemote.isPlaying) {
+                MusicPlayerRemote.pauseSong()
                 miniPlayPause.setImageResource(R.drawable.ic_play_arrow_white_32dp)
             } else {
-                mp.start()
-                isPlaying = true
+                MusicPlayerRemote.resumeSong()
                 miniPlayPause.setImageResource(R.drawable.ic_pause_white_48dp)
             }
         }
 
+        miniNext.setOnClickListener {
+            MusicPlayerRemote.playNextSong()
+        }
+
         miniDownload.setOnClickListener {
             currentTrack?.let { showQualityDialog(it) }
+        }
+
+        miniPlayer.setOnClickListener {
+            // Usually we can expand the sliding panel here if needed
+            val activity = requireActivity() as? code.name.monkey.retromusic.activities.MainActivity
+            activity?.expandPanel()
         }
     }
 
