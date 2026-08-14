@@ -71,25 +71,34 @@ def main():
         "apikey": SUPABASE_KEY,
         "Authorization": f"Bearer {SUPABASE_KEY}",
         "Content-Type": "application/json",
-        "Prefer": "return=minimal"
+        "Prefer": "resolution=ignore-duplicates"
     }
 
+    import time
+    
     # Batch insert in chunks of 200
     batch_size = 200
     for i in range(0, len(final_rows), batch_size):
         batch = final_rows[i:i+batch_size]
-        track_ids = [r["track_id"] for r in batch]
         
-        # 1. Delete existing to simulate REPLACE without hitting the updated_at trigger
-        del_url = f"{SUPABASE_URL}?track_id=in.({','.join(track_ids)})"
-        requests.delete(del_url, headers=headers)
-        
-        # 2. Insert new
-        res = requests.post(SUPABASE_URL, json=batch, headers=headers)
-        if res.status_code in [200, 201]:
-            print(f"✅ Lote {i} - {i+len(batch)} reemplazado con éxito.")
-        else:
-            print(f"❌ Error insertando lote {i}: {res.status_code} - {res.text}")
+        # 2. Insert new with retry logic
+        success = False
+        for attempt in range(3):
+            try:
+                res = requests.post(SUPABASE_URL, json=batch, headers=headers, timeout=15)
+                if res.status_code in [200, 201]:
+                    print(f"✅ Lote {i} - {i+len(batch)} insertado/ignorado con éxito.")
+                    success = True
+                    break
+                else:
+                    print(f"❌ Error insertando lote {i}: {res.status_code} - {res.text}")
+                    break
+            except requests.exceptions.RequestException as e:
+                print(f"Network error on batch {i}, retrying... ({attempt+1}/3)")
+                time.sleep(2)
+                
+        if not success:
+            print(f"Failed to insert batch {i} after 3 attempts.")
 
 if __name__ == "__main__":
     main()

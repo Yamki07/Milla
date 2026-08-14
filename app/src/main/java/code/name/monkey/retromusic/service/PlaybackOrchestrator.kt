@@ -154,14 +154,16 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
             completion(true)
             return
         }
-        stopTransition()
-        currentSong = song
-        pendingPrepare = completion
-        activePlayer.stop()
-        activePlayer.clearMediaItems()
-        activePlayer.setMediaSource(createMediaSource(song))
-        activePlayer.prepare()
-        if (state().active) resolvePlanAsync()
+        handler.post {
+            stopTransition()
+            currentSong = song
+            pendingPrepare = completion
+            activePlayer.stop()
+            activePlayer.clearMediaItems()
+            activePlayer.setMediaSource(createMediaSource(song))
+            activePlayer.prepare()
+            if (state().active) resolvePlanAsync()
+        }
     }
 
     override fun setNextDataSource(path: Uri?) {
@@ -432,8 +434,10 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         fade = null
         transitionRunning = false
         _automixTransitionState.value = AutoMixTransitionState()
-        preloadPlayer.pause()
-        preloadPlayer.volume = 1f
+        handler.post {
+            preloadPlayer.pause()
+            preloadPlayer.volume = 1f
+        }
     }
 
     private fun volumeFactors(progress: Float, safeFallback: Boolean): Pair<Float, Float> {
