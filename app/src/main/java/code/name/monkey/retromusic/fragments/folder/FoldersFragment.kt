@@ -370,6 +370,8 @@ class FoldersFragment : AbsMainActivityFragment(R.layout.fragment_folder),
             .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
         menu.add(0, R.id.action_settings, 2, R.string.action_settings)
             .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
+        menu.add(0, R.id.action_smart_dj, 3, R.string.action_smart_dj)
+            .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER)
         menu.removeItem(R.id.action_grid_size)
         menu.removeItem(R.id.action_layout_type)
         menu.removeItem(R.id.action_sort_order)
@@ -397,6 +399,20 @@ class FoldersFragment : AbsMainActivityFragment(R.layout.fragment_folder),
                 if (crumb != null) {
                     showScanDialogSheet(crumb.file)
 
+                }
+                return true
+            }
+
+            R.id.action_smart_dj -> {
+                val crumb = activeCrumb ?: return false
+                lifecycleScope.launch(Dispatchers.IO) {
+                    listSongs(requireContext(), listOf(crumb.file), AUDIO_FILE_FILTER, fileComparator) { songs ->
+                        if (songs.isNotEmpty()) {
+                            requireActivity().runOnUiThread {
+                                code.name.monkey.retromusic.helper.MusicPlayerRemote.startSmartDj(songs)
+                            }
+                        }
+                    }
                 }
                 return true
             }

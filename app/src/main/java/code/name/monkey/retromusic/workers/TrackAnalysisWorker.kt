@@ -27,12 +27,14 @@ class TrackAnalysisWorker(
 ) : CoroutineWorker(appContext, params) {
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        val sourceUri = inputData.getString(KEY_SOURCE_URI).orEmpty()
+        val rawSourceUri = inputData.getString(KEY_SOURCE_URI).orEmpty()
+        if (rawSourceUri.isBlank()) return@withContext Result.failure()
+        val sourceUri = normalizedSourceUri(rawSourceUri)
         val title = inputData.getString(KEY_TITLE).orEmpty()
         val artist = inputData.getString(KEY_ARTIST).orEmpty()
         val sourceType = inputData.getString(KEY_SOURCE_TYPE).orEmpty().ifBlank { SOURCE_LOCAL }
         val legacySongId = inputData.getLong(KEY_LEGACY_SONG_ID, 0L)
-        if (sourceUri.isBlank() || !canRead(sourceUri)) return@withContext Result.failure()
+        if (!canRead(sourceUri)) return@withContext Result.failure()
 
         val dao: AutomixAnalysisDao = try {
             KoinJavaComponent.get(AutomixAnalysisDao::class.java)
@@ -115,6 +117,9 @@ class TrackAnalysisWorker(
         private const val SOURCE_LOCAL = "local_library"
         private const val SOURCE_MEDIACODEC = "mediacodec_pcm_v1"
 
+        fun normalizedSourceUri(source: String): String =
+            if (source.contains("://")) source else Uri.fromFile(java.io.File(source)).toString()
+
         fun enqueue(
             context: Context,
             sourceUri: String,
@@ -124,8 +129,9 @@ class TrackAnalysisWorker(
             legacySongId: Long = 0L
         ) {
             if (sourceUri.isBlank() || sourceUri.startsWith("tidal://")) return
+            val normalizedSource = normalizedSourceUri(sourceUri)
             val input = Data.Builder()
-                .putString(KEY_SOURCE_URI, sourceUri)
+                .putString(KEY_SOURCE_URI, normalizedSource)
                 .putString(KEY_TITLE, title)
                 .putString(KEY_ARTIST, artist)
                 .putString(KEY_SOURCE_TYPE, sourceType)
@@ -138,10 +144,10 @@ class TrackAnalysisWorker(
                         .setRequiresBatteryNotLow(true)
                         .build()
                 )
-                .addTag(WORK_PREFIX + sourceUri.hashCode())
+                .addTag(WORK_PREFIX + normalizedSource.hashCode())
                 .build()
             WorkManager.getInstance(context).enqueueUniqueWork(
-                WORK_PREFIX + sourceUri.hashCode(),
+                WORK_PREFIX + normalizedSource.hashCode(),
                 ExistingWorkPolicy.KEEP,
                 request
             )

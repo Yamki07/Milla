@@ -121,6 +121,12 @@ class PlaylistDetailsFragment : AbsMainActivityFragment(R.layout.fragment_playli
             }
             elevatedAccentColor()
         }
+        binding.smartDjButton.apply {
+            setOnClickListener {
+                MusicPlayerRemote.startSmartDj(playlistSongAdapter.dataSet)
+            }
+            elevatedAccentColor()
+        }
     }
 
     private fun setUpSearch() {

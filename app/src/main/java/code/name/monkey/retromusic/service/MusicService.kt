@@ -64,6 +64,7 @@ import code.name.monkey.retromusic.CROSS_FADE_DURATION
 import code.name.monkey.retromusic.PLAYBACK_PITCH
 import code.name.monkey.retromusic.PLAYBACK_SPEED
 import code.name.monkey.retromusic.R
+import code.name.monkey.retromusic.AUTOMIX_KEY
 import code.name.monkey.retromusic.TOGGLE_HEADSET
 import code.name.monkey.retromusic.activities.LockScreenActivity
 import code.name.monkey.retromusic.appwidgets.AppWidgetBig
@@ -316,6 +317,7 @@ class MusicService : MediaBrowserServiceCompat(),
 
         playbackManager = PlaybackManager(this)
         playbackManager.setCallbacks(this)
+        playbackManager.setAutomixGlobalEnabled(isAutomixEnabled)
         setupMediaSession()
 
         uiThreadHandler = Handler(Looper.getMainLooper())
@@ -690,6 +692,11 @@ class MusicService : MediaBrowserServiceCompat(),
                 }
             }
 
+            AUTOMIX_KEY -> {
+                playbackManager.setAutomixGlobalEnabled(isAutomixEnabled)
+                notifyChange(PLAY_STATE_CHANGED)
+            }
+
             ALBUM_ART_ON_LOCK_SCREEN, BLURRED_ALBUM_ART -> updateMediaSessionMetaData(::updateMediaSessionPlaybackState)
 
             TOGGLE_HEADSET -> registerHeadsetEvents()
@@ -803,6 +810,43 @@ class MusicService : MediaBrowserServiceCompat(),
         }
     }
 
+    fun startInfiniteRadio(seed: Song, candidates: List<Song>) {
+        serviceScope.launch {
+            val ordered = withContext(IO) {
+                code.name.monkey.retromusic.automix.AutomixQueuePlanner.smartDj(seed, candidates)
+            }
+            playbackManager.activateAutomixForSession(PlaybackOrchestrator.SessionReason.INFINITE_RADIO)
+            openQueue(ordered, 0, true)
+        }
+    }
+
+    fun startSmartDj(songs: List<Song>) {
+        val seed = songs.firstOrNull() ?: return
+        serviceScope.launch {
+            val ordered = withContext(IO) {
+                code.name.monkey.retromusic.automix.AutomixQueuePlanner.smartDj(seed, songs)
+            }
+            playbackManager.activateAutomixForSession(PlaybackOrchestrator.SessionReason.SMART_DJ)
+            openQueue(ordered, 0, true)
+        }
+    }
+
+    fun toggleClubMode(): Boolean = playbackManager.toggleClubMode()
+
+    fun isAutomixActive(): Boolean = playbackManager.isAutomixActive()
+
+    fun playbackManagerSetAutomixGlobalEnabled(enabled: Boolean) {
+        playbackManager.setAutomixGlobalEnabled(enabled)
+    }
+
+    fun setAutomixCrossfadeDuration(seconds: Int) {
+        playbackManager.setCrossFadeDuration(seconds)
+    }
+
+    fun setAutomixTransitionSettings(seconds: Int, curveMode: String, enableBeatmatch: Boolean) {
+        playbackManager.setAutomixTransitionSettings(seconds, curveMode, enableBeatmatch)
+    }
+
     @Synchronized
     fun openTrackAndPrepareNextAt(position: Int, completion: (success: Boolean) -> Unit) {
         this.position = position
@@ -861,7 +905,9 @@ class MusicService : MediaBrowserServiceCompat(),
     fun prepareNextImpl() {
         try {
             val nextPosition = getNextPosition(false)
-            playbackManager.setNextDataSource(getSongAt(nextPosition).uri)
+            val nextSong = getSongAt(nextPosition)
+            playbackManager.setNextDataSource(nextSong.uri)
+            playbackManager.setAutomixNextSong(nextSong)
             this.nextPosition = nextPosition
         } catch (ignored: Exception) {
         }
@@ -1230,15 +1276,11 @@ class MusicService : MediaBrowserServiceCompat(),
 
     @Synchronized
     private fun openCurrent(completion: (success: Boolean) -> Unit) {
-        val force = if (!trackEndedByCrossfade) {
-            true
-        } else {
-            trackEndedByCrossfade = false
-            false
-        }
+        val reuseLoadedSong = playbackManager.isCurrentSongLoaded(currentSong)
+        val force = !trackEndedByCrossfade && !reuseLoadedSong
+        trackEndedByCrossfade = false
         playbackManager.setDataSource(currentSong, force) { success ->
             if (success) {
-                // Offline-First: cargar cueOutMs / outro_silence antes de monitorear el crossfade
                 refreshAutomixCueFromRoom()
             }
             completion(success)
@@ -1250,10 +1292,7 @@ class MusicService : MediaBrowserServiceCompat(),
      * Solo aplica si Auto Mix está activo y el motor es CrossFadePlayer.
      */
     private fun refreshAutomixCueFromRoom() {
-        if (!isAutomixEnabled) return
-        val songId = currentSong.id
-        if (songId <= 0L) return
-        (playbackManager.playback as? CrossFadePlayer)?.updateAutomixCueOut(songId)
+        // PlaybackOrchestrator consulta TrackAnalysis y TransitionPlan al preparar la siguiente pista.
     }
 
     fun switchToLocalPlayback() {

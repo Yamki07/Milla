@@ -46,7 +46,6 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import java.io.File
-import code.name.monkey.retromusic.automix.toSongEntity
 
 object SongMenuHelper : KoinComponent {
     val MENU_RES
@@ -60,10 +59,8 @@ object SongMenuHelper : KoinComponent {
                 CoroutineScope(Dispatchers.IO).launch {
                     try {
                         val allSongsList = get<RealRepository>().allSongs()
-                        val allEntities = allSongsList.map { it.toSongEntity() }
                         withContext(Dispatchers.Main) {
-                            code.name.monkey.retromusic.automix.AutomixRadioEngine.getInstance(activity)
-                                .startUniversalDjSet(song.toSongEntity(), allEntities)
+                            MusicPlayerRemote.startInfiniteRadio(song, allSongsList)
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()

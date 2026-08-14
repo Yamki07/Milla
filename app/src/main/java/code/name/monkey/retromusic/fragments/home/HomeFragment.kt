@@ -34,9 +34,8 @@ import code.name.monkey.retromusic.*
 import code.name.monkey.retromusic.adapter.FlowBubblesAdapter
 import code.name.monkey.retromusic.adapter.HomeAdapter
 import code.name.monkey.retromusic.automix.AutomixBottomSheet
-import code.name.monkey.retromusic.automix.AutomixRadioEngine
 import code.name.monkey.retromusic.databinding.FragmentHomeBinding
-import code.name.monkey.retromusic.adapter.FlowBubblesAdapter.Companion.toAutomixSongEntity
+import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.repository.SongRepository
 import android.widget.Toast
 import kotlinx.coroutines.CoroutineScope
@@ -136,9 +135,11 @@ class HomeFragment :
                     Toast.makeText(requireContext(), "Iniciando Modo DJ Set Universal 🔮", Toast.LENGTH_SHORT).show()
                     CoroutineScope(Dispatchers.IO).launch {
                         val songRepo = GlobalContext.get().get<SongRepository>()
-                        val songs = songRepo.songs().map { it.toAutomixSongEntity() }
+                        val songs = songRepo.songs()
                         if (songs.isNotEmpty()) {
-                            AutomixRadioEngine.getInstance(requireContext()).startUniversalDjSet(songs.first(), songs)
+                            requireActivity().runOnUiThread {
+                                MusicPlayerRemote.startInfiniteRadio(songs.first(), songs)
+                            }
                         }
                     }
                 }

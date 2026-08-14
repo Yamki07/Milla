@@ -29,6 +29,7 @@ import code.name.monkey.retromusic.BLUETOOTH_PLAYBACK
 import code.name.monkey.retromusic.EQUALIZER
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.activities.base.AbsBaseActivity.Companion.BLUETOOTH_PERMISSION_REQUEST
+import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.util.NavigationUtil
 import code.name.monkey.retromusic.util.LocalMetadataScanner
 import kotlinx.coroutines.GlobalScope
@@ -63,6 +64,7 @@ class AudioSettings : AbsSettingsFragment() {
                     Toast.LENGTH_SHORT
                 ).show()
             }
+            MusicPlayerRemote.musicService?.playbackManagerSetAutomixGlobalEnabled(isEnabled)
             // Persist via SharedPreferences (handled automatically by the preference framework)
             true
         }
@@ -112,4 +114,3 @@ class AudioSettings : AbsSettingsFragment() {
         addPreferencesFromResource(R.xml.pref_audio)
     }
 }
-

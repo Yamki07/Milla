@@ -229,6 +229,19 @@ object MusicPlayerRemote : KoinComponent {
         doOpenQueue(queue, startPosition, startPlaying, shuffleMode)
     }
 
+    fun startInfiniteRadio(seed: Song, candidates: List<Song>) {
+        musicService?.startInfiniteRadio(seed, candidates)
+    }
+
+    fun startSmartDj(songs: List<Song>) {
+        musicService?.startSmartDj(songs)
+    }
+
+    fun toggleClubMode(): Boolean = musicService?.toggleClubMode() ?: false
+
+    val isAutomixActive: Boolean
+        get() = musicService?.isAutomixActive() ?: false
+
     private fun doOpenQueue(queue: List<Song>, startPosition: Int, startPlaying: Boolean, shuffleMode: Int) {
         if (!tryToHandleOpenPlayingQueue(
                 queue,

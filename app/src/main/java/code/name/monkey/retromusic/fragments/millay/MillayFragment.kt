@@ -32,8 +32,10 @@ import code.name.monkey.retromusic.automix.DeezerTrack
 import code.name.monkey.retromusic.automix.MillayTrackAdapter
 import code.name.monkey.retromusic.automix.MillayAlbumAdapter
 import code.name.monkey.retromusic.automix.MillayGenreAdapter
+import code.name.monkey.retromusic.db.toSong
 import code.name.monkey.retromusic.fragments.base.AbsMainActivityFragment
 import code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment
+import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.network.SupabaseClientManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -274,8 +276,7 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
                 bpm = 120f
             )
 
-            // Streaming directo y desencriptado al vuelo
-            code.name.monkey.retromusic.automix.AutomixPlayerEngine.getInstance(ctx).loadAndPlay(songEntity)
+            MusicPlayerRemote.openQueue(listOf(songEntity.toSong()), 0, true)
             
             currentTrack = track
             isPlaying = true

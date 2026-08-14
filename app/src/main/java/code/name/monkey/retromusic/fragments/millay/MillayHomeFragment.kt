@@ -15,44 +15,33 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
-import code.name.monkey.retromusic.automix.AutomixPlayerEngine
 import code.name.monkey.retromusic.automix.TidalApiClient
 import code.name.monkey.retromusic.automix.toSongEntity
+import code.name.monkey.retromusic.db.toSong
+import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
 
-/**
- * Pantalla principal de Inicio Millay (Réplica 1:1 ReFreezer).
- */
+/** Pantalla principal de Inicio Millay. */
 class MillayHomeFragment : Fragment() {
-
     private lateinit var flowRecycler: RecyclerView
     private lateinit var continueStreamingRecycler: RecyclerView
     private lateinit var discoverRecycler: RecyclerView
     private lateinit var topChartsRecycler: RecyclerView
-
     private lateinit var btnHomeDownloads: ShapeableImageView
     private lateinit var btnHomeSettings: ShapeableImageView
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_millay_home, container, false)
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        inflater.inflate(R.layout.fragment_millay_home, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         flowRecycler = view.findViewById(R.id.flowRecycler)
         continueStreamingRecycler = view.findViewById(R.id.continueStreamingRecycler)
         discoverRecycler = view.findViewById(R.id.discoverRecycler)
         topChartsRecycler = view.findViewById(R.id.topChartsRecycler)
-
         btnHomeDownloads = view.findViewById(R.id.btnHomeDownloads)
         btnHomeSettings = view.findViewById(R.id.btnHomeSettings)
-
         setupButtons()
         setupFlowBubbles()
         setupContinueStreaming()
@@ -62,20 +51,11 @@ class MillayHomeFragment : Fragment() {
 
     private fun setupButtons() {
         btnHomeDownloads.setOnClickListener {
-            // Navigate to downloads tab
-            val parent = parentFragment
-            if (parent is code.name.monkey.retromusic.fragments.millay.MillayFragment) {
-                Toast.makeText(context, "Gestor de Descargas Millay", Toast.LENGTH_SHORT).show()
-            }
+            if (parentFragment is MillayFragment) Toast.makeText(context, "Gestor de Descargas Millay", Toast.LENGTH_SHORT).show()
         }
-
         btnHomeSettings.setOnClickListener {
-            // Open Millay Settings without destroying the NavHost
             requireActivity().supportFragmentManager.beginTransaction()
-                .add(
-                    android.R.id.content,
-                    code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment()
-                )
+                .add(android.R.id.content, code.name.monkey.retromusic.fragments.settings.MillaySettingsFragment())
                 .addToBackStack("millay_settings")
                 .commit()
         }
@@ -91,9 +71,7 @@ class MillayHomeFragment : Fragment() {
             FlowBubble("Focus", "🧠 Deep Tech", "#3F51B5", "🧠"),
             FlowBubble("Sad", "🌧️ Melancholy", "#607D8B", "🌧️")
         )
-        flowRecycler.adapter = FlowBubbleAdapter(bubbles) { bubble ->
-            playFlowMix(bubble.name)
-        }
+        flowRecycler.adapter = FlowBubbleAdapter(bubbles) { bubble -> playFlowMix(bubble.name) }
     }
 
     private fun setupContinueStreaming() {
@@ -105,107 +83,74 @@ class MillayHomeFragment : Fragment() {
             ArtistItem("Tiësto", "https://e-cdns-images.dzcdn.net/images/artist/a8947b01d368eb1e27a6f20b8f106f23/500x500.jpg"),
             ArtistItem("Daft Punk", "https://e-cdns-images.dzcdn.net/images/artist/f7e02b7405105eb0ef9a3c80bf61b9b1/500x500.jpg")
         )
-        continueStreamingRecycler.adapter = ContinueStreamingAdapter(artists) { artist ->
-            searchAndPlay(artist.name)
-        }
+        continueStreamingRecycler.adapter = ContinueStreamingAdapter(artists) { artist -> searchAndPlay(artist.name) }
     }
 
     private fun setupDiscover() {
         discoverRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         val mixes = listOf(
             DiscoverMix("daily", "Featuring Tiësto, Dimitri Vegas & Like Mike...", "https://e-cdns-images.dzcdn.net/images/cover/9812dd6ff8b813ed946e3ee9e5590924/500x500.jpg"),
-            DiscoverMix("daily", "Featuring Psyko Punkz, D-block & S-te-fan...", "https://e-cdns-images.dzcdn.net/images/cover/77b8b4033ce2a10bebb3288ec7b09bf9/500x500.jpg"),
-            DiscoverMix("daily", "Featuring Exodus, Angels...", "https://e-cdns-images.dzcdn.net/images/cover/11833d7b87c7161e1fa4e0e5a639b7ef/500x500.jpg")
+            DiscoverMix("daily", "Featuring Psyko Punkz, D-block & S-te-fan...", "https://e-cdns-images.dzcdn.net/images/cover/11833d7b87c7161e1fa4e0e5a639b7ef/500x500.jpg"),
+            DiscoverMix("daily", "Featuring Exodus, Angels...", "https://e-cdns-images.dzcdn.net/images/cover/77b8c4033ce2a10bebb3288ec7b09bf9/500x500.jpg")
         )
-        discoverRecycler.adapter = MillaySongCardAdapter(mixes) { mix ->
-            searchAndPlay(mix.title)
-        }
+        discoverRecycler.adapter = MillaySongCardAdapter(mixes) { mix -> searchAndPlay(mix.title) }
     }
 
     private fun setupTopCharts() {
         topChartsRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         TidalApiClient.searchTracks("Top 50 Global", onResult = { songs ->
-            if (songs.isNotEmpty()) {
-                val act = activity ?: return@searchTracks
-                act.runOnUiThread {
-                    if (isAdded && view != null) {
-                        val mixes = songs.take(10).map { song ->
-                            val split = song.data.removePrefix("tidal://track/").split("::")
-                            val coverUrl = if (split.size > 1 && split[1].isNotEmpty()) "https://resources.tidal.com/images/${split[1].replace("-", "/")}/500x500.jpg" else ""
-                            DiscoverMix("TOP", "${song.title} - ${song.artistName}", coverUrl)
-                        }
-                        topChartsRecycler.adapter = MillaySongCardAdapter(mixes) { mix ->
-                            searchAndPlay(mix.title)
-                        }
+            val act = activity ?: return@searchTracks
+            if (songs.isNotEmpty()) act.runOnUiThread {
+                if (isAdded && view != null) {
+                    val mixes = songs.take(10).map { song ->
+                        val split = song.data.removePrefix("tidal://track/").split("::")
+                        val coverUrl = split.getOrNull(1)?.takeIf { it.isNotEmpty() }
+                            ?.let { "https://resources.tidal.com/images/${it.replace("-", "/")}/500x500.jpg" }.orEmpty()
+                        DiscoverMix("TOP", "${song.title} - ${song.artistName}", coverUrl)
                     }
+                    topChartsRecycler.adapter = MillaySongCardAdapter(mixes) { mix -> searchAndPlay(mix.title) }
                 }
             }
         })
     }
 
     private fun playFlowMix(mood: String) {
-        val ctx = context
-        if (ctx != null) {
-            Toast.makeText(ctx, "Iniciando Flow ReFreezer ($mood)...", Toast.LENGTH_SHORT).show()
-        }
-        TidalApiClient.searchTracks(mood, onResult = { songs ->
-            if (songs.isNotEmpty()) {
-                val songEntity = songs.first().toSongEntity()
-                val act = activity ?: return@searchTracks
-                act.runOnUiThread {
-                    if (isAdded && context != null) {
-                        AutomixPlayerEngine.getInstance(act).loadAndPlay(songEntity)
-                    }
-                }
+        context?.let { Toast.makeText(it, "Iniciando Flow ($mood)...", Toast.LENGTH_SHORT).show() }
+        TidalApiClient.searchTracks(mood, onResult = { tracks ->
+            val first = tracks.firstOrNull() ?: return@searchTracks
+            activity?.runOnUiThread {
+                if (isAdded) MusicPlayerRemote.openQueue(listOf(first.toSongEntity().toSong()), 0, true)
             }
         })
     }
 
     private fun searchAndPlay(query: String) {
-        TidalApiClient.searchTracks(query, onResult = { songs ->
-            if (songs.isNotEmpty()) {
-                val songEntity = songs.first().toSongEntity()
-                val act = activity ?: return@searchTracks
-                act.runOnUiThread {
-                    if (isAdded && context != null) {
-                        AutomixPlayerEngine.getInstance(act).loadAndPlay(songEntity)
-                    }
-                }
+        TidalApiClient.searchTracks(query, onResult = { tracks ->
+            val first = tracks.firstOrNull() ?: return@searchTracks
+            activity?.runOnUiThread {
+                if (isAdded) MusicPlayerRemote.openQueue(listOf(first.toSongEntity().toSong()), 0, true)
             }
         })
     }
 
-    // ---------------------------------------------------------------------------
-    // Adaptadores ReFreezer
-    // ---------------------------------------------------------------------------
     data class ArtistItem(val name: String, val imageUrl: String)
 
     private inner class ContinueStreamingAdapter(
         private val list: List<ArtistItem>,
         private val onClick: (ArtistItem) -> Unit
     ) : RecyclerView.Adapter<ContinueStreamingAdapter.ViewHolder>() {
-
         inner class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
             val image: ShapeableImageView = v.findViewById(R.id.artistImage)
             val name: TextView = v.findViewById(R.id.artistName)
         }
-
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            val v = LayoutInflater.from(parent.context).inflate(R.layout.item_millay_continue_streaming, parent, false)
-            return ViewHolder(v)
-        }
-
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+            ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_millay_continue_streaming, parent, false))
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = list[position]
             holder.name.text = item.name
-            Glide.with(holder.itemView)
-                .load(item.imageUrl)
-                .placeholder(R.drawable.ic_artist)
-                .into(holder.image)
-
+            Glide.with(holder.itemView).load(item.imageUrl).placeholder(R.drawable.ic_artist).into(holder.image)
             holder.itemView.setOnClickListener { onClick(item) }
         }
-
         override fun getItemCount(): Int = list.size
     }
 }

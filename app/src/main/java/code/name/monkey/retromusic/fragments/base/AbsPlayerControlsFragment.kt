@@ -25,6 +25,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.core.view.isVisible
 import androidx.fragment.app.commit
@@ -218,9 +219,16 @@ abstract class AbsPlayerControlsFragment(@LayoutRes layout: Int) : AbsMusicServi
     }
 
     private fun setUpAutomixButton() {
+        automixButton?.isActivated = MusicPlayerRemote.isAutomixActive
         automixButton?.setOnClickListener {
+            val active = MusicPlayerRemote.toggleClubMode()
+            it.isActivated = active
+            Toast.makeText(requireContext(), if (active) "Modo Club activado" else "Modo Club desactivado", Toast.LENGTH_SHORT).show()
+        }
+        automixButton?.setOnLongClickListener {
             code.name.monkey.retromusic.automix.AutomixBottomSheet.newInstance()
                 .show(parentFragmentManager, "AUTOMIX_BOTTOM_SHEET")
+            true
         }
     }
 

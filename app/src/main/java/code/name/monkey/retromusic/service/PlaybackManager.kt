@@ -103,8 +103,31 @@ class PlaybackManager(val context: Context) {
         playback?.setNextDataSource(trackUri)
     }
 
+    fun setAutomixNextSong(song: code.name.monkey.retromusic.model.Song?) {
+        (playback as? PlaybackOrchestrator)?.setNextSong(song)
+    }
+
+    fun isCurrentSongLoaded(song: code.name.monkey.retromusic.model.Song): Boolean =
+        (playback as? PlaybackOrchestrator)?.isCurrentSongLoaded(song) == true
+
+    fun setAutomixGlobalEnabled(enabled: Boolean) {
+        (playback as? PlaybackOrchestrator)?.setGlobalAutomixEnabled(enabled)
+    }
+
+    fun toggleClubMode(): Boolean = (playback as? PlaybackOrchestrator)?.toggleClubMode() ?: false
+
+    fun activateAutomixForSession(reason: PlaybackOrchestrator.SessionReason) {
+        (playback as? PlaybackOrchestrator)?.activateForSession(reason)
+    }
+
+    fun isAutomixActive(): Boolean = (playback as? PlaybackOrchestrator)?.state()?.active ?: false
+
     fun setCrossFadeDuration(duration: Int) {
         playback?.setCrossFadeDuration(duration)
+    }
+
+    fun setAutomixTransitionSettings(durationSeconds: Int, curveMode: String, enableBeatmatch: Boolean) {
+        (playback as? PlaybackOrchestrator)?.setTransitionSettings(durationSeconds, curveMode, enableBeatmatch)
     }
 
     /**
@@ -112,6 +135,10 @@ class PlaybackManager(val context: Context) {
      * @return Whether switched playback
      */
     fun maybeSwitchToCrossFade(crossFadeDuration: Int): Boolean {
+        if (playback is PlaybackOrchestrator) {
+            playback?.setCrossFadeDuration(crossFadeDuration)
+            return false
+        }
         /* Switch to RetroExoPlayer if CrossFade duration is 0 and
                 Playback is not an instance of RetroExoPlayer */
         if (playback !is RetroExoPlayer && crossFadeDuration == 0) {
@@ -182,12 +209,7 @@ class PlaybackManager(val context: Context) {
     }
 
     private fun createLocalPlayback(): Playback {
-        // Set RetroExoPlayer when crossfade duration is 0 i.e. off
-        return if (PreferenceUtil.crossFadeDuration == 0) {
-            RetroExoPlayer(context)
-        } else {
-            CrossFadePlayer(context)
-        }
+        return PlaybackOrchestrator(context)
     }
 
     fun setPlaybackSpeedPitch(playbackSpeed: Float, playbackPitch: Float) {

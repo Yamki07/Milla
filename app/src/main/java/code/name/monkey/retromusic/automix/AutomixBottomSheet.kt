@@ -13,6 +13,8 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import code.name.monkey.retromusic.R
+import code.name.monkey.retromusic.helper.MusicPlayerRemote
+import code.name.monkey.retromusic.util.PreferenceUtil
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.slider.Slider
@@ -42,17 +44,11 @@ class AutomixBottomSheet : BottomSheetDialogFragment() {
         val beatmatchSwitch = view.findViewById<SwitchMaterial>(R.id.beatmatchSwitch)
         val applyButton = view.findViewById<MaterialButton>(R.id.applyButton)
 
-        val engine = AutomixPlayerEngine.getInstance(requireContext())
-        slider.value = (engine.manualCrossfadeDurationMs / 1000L).toFloat()
+        slider.value = PreferenceUtil.crossFadeDuration.coerceIn(3, 12).toFloat()
         valueText.text = "${slider.value.toInt()} segundos"
-        beatmatchSwitch.isChecked = engine.isBeatmatchEnabled
+        beatmatchSwitch.isChecked = true
 
-        when (engine.transitionCurveMode) {
-            "HIGH_ENERGY" -> radioGroup.check(R.id.radioHighEnergy)
-            "HARMONIC" -> radioGroup.check(R.id.radioHarmonic)
-            "EQUAL_POWER" -> radioGroup.check(R.id.radioEqualPower)
-            else -> radioGroup.check(R.id.radioAuto)
-        }
+        radioGroup.check(R.id.radioAuto)
 
         slider.addOnChangeListener { _, value, _ ->
             valueText.text = "${value.toInt()} segundos"
@@ -66,11 +62,13 @@ class AutomixBottomSheet : BottomSheetDialogFragment() {
                 else -> "AUTO_IA"
             }
 
-            engine.manualCrossfadeDurationMs = (slider.value.toLong() * 1000L)
-            engine.transitionCurveMode = selectedCurve
-            engine.isBeatmatchEnabled = beatmatchSwitch.isChecked
+            MusicPlayerRemote.musicService?.setAutomixTransitionSettings(
+                seconds = slider.value.toInt(),
+                curveMode = selectedCurve,
+                enableBeatmatch = beatmatchSwitch.isChecked
+            )
 
-            Toast.makeText(requireContext(), "Parámetros DJ aplicados", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Duración de transición aplicada: $selectedCurve", Toast.LENGTH_SHORT).show()
             dismiss()
         }
     }

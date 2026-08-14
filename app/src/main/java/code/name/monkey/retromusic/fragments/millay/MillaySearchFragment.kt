@@ -17,8 +17,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
-import code.name.monkey.retromusic.automix.AutomixPlayerEngine
 import code.name.monkey.retromusic.automix.BpmScanner
+import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.automix.TidalApiClient
 import code.name.monkey.retromusic.automix.TidalDownloadManager
 import code.name.monkey.retromusic.db.SongEntity
@@ -32,7 +32,7 @@ import kotlinx.coroutines.withContext
 
 /**
  * Tab 2 de Millay — Búsqueda en Alta Calidad con filtros de formato (FLAC / MP3 320).
- * Conectada directamente con AutomixPlayerEngine y TidalDownloadManager.
+ * Conectada con el PlaybackOrchestrator mediante MusicPlayerRemote y TidalDownloadManager.
  */
 class MillaySearchFragment : Fragment(R.layout.fragment_millay_search) {
 
@@ -147,12 +147,8 @@ class MillaySearchFragment : Fragment(R.layout.fragment_millay_search) {
     private fun onSongClicked(song: Song, dataSet: List<Song>) {
         val position = dataSet.indexOf(song)
         CoroutineScope(Dispatchers.Main).launch {
-            val current = withContext(Dispatchers.IO) { BpmScanner.scanSongEntity(song.toSongEntity()) }
-            val next = if (position + 1 < dataSet.size) {
-                withContext(Dispatchers.IO) { BpmScanner.scanSongEntity(dataSet[position + 1].toSongEntity()) }
-            } else null
-
-            AutomixPlayerEngine.getInstance(requireContext()).loadAndPlay(current, next)
+            withContext(Dispatchers.IO) { BpmScanner.scanSongEntity(song.toSongEntity()) }
+            MusicPlayerRemote.startInfiniteRadio(song, dataSet.drop(position))
             Toast.makeText(
                 requireContext(),
                 "▶️ ${song.title} · ${song.artistName}",
