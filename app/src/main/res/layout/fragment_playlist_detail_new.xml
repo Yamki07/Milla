@@ -5,8 +5,10 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/millay_bg_primary"
     android:fitsSystemWindows="true"
-    android:transitionGroup="true">
+    android:transitionGroup="true"
+    tools:context=".fragments.playlists.PlaylistDetailsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -105,17 +107,20 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/smart_dj_button"
-                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                    style="@style/Millay.PrimaryButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginHorizontal="8dp"
                     android:contentDescription="Smart DJ"
                     android:padding="16dp"
+                    android:text="Smart DJ"
+                    android:textAllCaps="false"
                     app:icon="@drawable/ic_shuffle"
                     app:layout_constraintBottom_toBottomOf="@+id/play_button"
                     app:layout_constraintEnd_toStartOf="@+id/shuffle_button"
                     app:layout_constraintStart_toEndOf="@+id/play_button"
-                    app:layout_constraintTop_toTopOf="@+id/play_button" />
+                    app:layout_constraintTop_toTopOf="@+id/play_button"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/shuffle_button"
@@ -153,7 +158,9 @@
         android:paddingBottom="@dimen/mini_player_height"
         android:scrollbars="none"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        tools:listitem="@layout/item_song" />
+        tools:itemCount="6"
+        tools:listitem="@layout/item_song"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@android:id/empty"

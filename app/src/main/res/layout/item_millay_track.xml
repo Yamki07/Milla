@@ -3,9 +3,12 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground"
+    android:layout_marginHorizontal="8dp"
+    android:layout_marginVertical="3dp"
+    android:background="@drawable/millay_glass_surface"
     android:gravity="center_vertical"
     android:minHeight="68dp"
     android:orientation="horizontal"
@@ -25,7 +28,8 @@
             android:layout_height="56dp"
             android:background="@drawable/millay_art_placeholder"
             android:contentDescription="Portada"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            tools:src="@drawable/millay_art_placeholder" />
 
         <!-- Quality Badge — bottom-end corner -->
         <TextView
@@ -43,7 +47,8 @@
             android:textColor="@android:color/white"
             android:textSize="7sp"
             android:letterSpacing="0.06"
-            android:visibility="visible" />
+            android:visibility="visible"
+            tools:text="FLAC" />
 
     </FrameLayout>
 
@@ -63,7 +68,9 @@
             style="@style/Millay.QualityBadge"
             android:layout_marginBottom="3dp"
             android:text="HD FLAC"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:text="HI-RES"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/millayTrackTitle"
@@ -72,7 +79,8 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:text="Track Title"
-            style="@style/Millay.TrackTitle" />
+            style="@style/Millay.TrackTitle"
+            tools:text="Midnight Resonance" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,7 +97,8 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="Artist"
-                style="@style/Millay.TrackSubtitle" />
+            style="@style/Millay.TrackSubtitle"
+            tools:text="Milla Ensemble" />
 
             <TextView
                 android:id="@+id/millayTrackAlbum"
@@ -100,7 +109,8 @@
                 android:maxWidth="100dp"
                 android:singleLine="true"
                 android:text="Album"
-                style="@style/Millay.MetaText" />
+            style="@style/Millay.MetaText"
+            tools:text="After Hours" />
 
             <TextView
                 android:id="@+id/millayTrackDuration"
@@ -110,7 +120,8 @@
                 android:text="3:30"
                 android:textColor="@color/millay_badge_flac"
                 android:fontFamily="@font/manrope"
-                android:textSize="11sp" />
+            android:textSize="11sp"
+            tools:text="4:12" />
 
         </LinearLayout>
 

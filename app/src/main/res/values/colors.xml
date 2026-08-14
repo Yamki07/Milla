@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="window_color">@color/md_white_1000</color>
-    <color name="window_color_light">@color/md_white_1000</color>
-    <color name="window_color_dark">@android:color/black</color>
+    <color name="window_color">@color/millay_bg_primary</color>
+    <color name="window_color_light">@color/millay_bg_primary</color>
+    <color name="window_color_dark">@color/millay_bg_primary</color>
 
     <color name="twenty_percent_black_overlay">#34000000</color>
     <color name="app_shortcut_default_foreground">#607d8b</color>
@@ -69,6 +69,9 @@
     <color name="millay_border_subtle">#0DFFFFFF</color>
     <color name="millay_glass">#12FFFFFF</color>
     <color name="millay_glass_strong">#1EFFFFFF</color>
+    <color name="millay_glass_surface">#D916202B</color>
+    <color name="millay_on_accent">#FF0A0F16</color>
+    <color name="millay_switch_track">#4DFFD700</color>
     <color name="millay_overlay_dark">#CC101820</color>
 
     <!-- Gradient blob (ambient glow) -->

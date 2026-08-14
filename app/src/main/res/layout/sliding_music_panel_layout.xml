@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainContent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/millay_bg_primary"
+    tools:context=".activities.MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
+        android:background="@color/millay_bg_primary"
         app:defaultNavHost="true"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:layout="@layout/fragment_home" />
@@ -49,6 +51,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:minHeight="@dimen/bottom_nav_height"
+        android:background="@color/millay_bg_elevated"
+        app:itemIconTint="@color/millay_bottom_navigation_tint"
+        app:itemTextColor="@color/millay_bottom_navigation_tint"
         app:itemHorizontalTranslationEnabled="false"
         app:menu="@menu/bottom_navigation_main"
         tools:viewBindingType="com.google.android.material.navigation.NavigationBarView"/>

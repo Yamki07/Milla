@@ -17,6 +17,22 @@
         <item name="materialButtonStyle">@style/MaterialButtonTheme</item>
     </style>
 
+    <!-- Cascarón visual Milla: oscuro por defecto para que XML y runtime compartan la misma jerarquía. -->
+    <style name="Theme.RetroMusic.Millay" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="android:fontFamily">@font/manrope</item>
+        <item name="fontFamily">@font/manrope</item>
+        <item name="android:windowBackground">@color/millay_bg_primary</item>
+        <item name="colorSurface">@color/millay_bg_primary</item>
+        <item name="colorSurfaceVariant">@color/millay_bg_elevated</item>
+        <item name="colorOnSurface">@color/millay_text_primary</item>
+        <item name="colorPrimary">@color/millay_accent</item>
+        <item name="colorOnPrimary">@color/millay_on_accent</item>
+        <item name="colorSecondary">@color/millay_accent</item>
+        <item name="colorOutline">@color/millay_border</item>
+        <item name="materialButtonStyle">@style/Millay.PrimaryButton</item>
+        <item name="materialCardViewStyle">@style/Millay.GlassCard</item>
+    </style>
+
     <style name="Theme.RetroMusic.Notification" parent="@android:style/TextAppearance.StatusBar.EventContent" />
 
     <style name="Theme.RetroMusic.Notification.Title" parent="@android:style/TextAppearance.StatusBar.EventContent.Title" />
@@ -366,6 +382,22 @@
         <item name="android:paddingBottom">12dp</item>
     </style>
 
+    <style name="Millay.PrimaryButton" parent="Widget.Material3.Button">
+        <item name="android:fontFamily">@font/manrope_bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/millay_on_accent</item>
+        <item name="backgroundTint">@color/millay_accent</item>
+        <item name="cornerRadius">24dp</item>
+    </style>
+
+    <style name="Millay.GlassCard" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardBackgroundColor">@color/millay_glass_surface</item>
+        <item name="cardCornerRadius">16dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/millay_border</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
     <!-- Tab Layout style for Millay horizontal tabs -->
     <style name="Millay.TabLayout" parent="">
         <item name="tabTextColor">@color/millay_text_tertiary</item>
@@ -400,4 +432,3 @@
     </style>
 
 </resources>
-

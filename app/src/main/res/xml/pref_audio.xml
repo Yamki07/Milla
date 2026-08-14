@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.preference.PreferenceCategory
+        android:layout="@layout/preference_category_title"
+        android:title="Audio y AutoMix"
+        tools:title="AUDIO · MEZCLA INTELIGENTE">
 
     <code.name.monkey.appthemehelper.common.prefs.supportv7.ATESwitchPreference
         android:defaultValue="false"
@@ -8,7 +14,8 @@
         android:layout="@layout/list_item_view_switch"
         android:summary="@string/pref_summary_automix"
         android:title="@string/pref_title_automix"
-        app:icon="@drawable/ic_album" />
+        app:icon="@drawable/ic_album"
+        tools:summary="Activa transiciones armónicas y reproducción continua" />
 
     <code.name.monkey.appthemehelper.common.prefs.supportv7.ATEPreference
         android:key="scan_local_metadata"
@@ -71,5 +78,7 @@
         android:summary="@string/pref_summary_disable_speaker"
         android:title="@string/pref_title_disable_speaker"
         app:icon="@drawable/ic_volume_off" />
+
+    </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

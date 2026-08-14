@@ -9,7 +9,8 @@
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="@integer/overScrollMode">
+        android:overScrollMode="@integer/overScrollMode"
+        tools:background="@drawable/millay_art_placeholder">
 
     </androidx.viewpager.widget.ViewPager>
 
@@ -19,5 +20,18 @@
         android:layout_height="match_parent"
         android:layout_margin="16dp"
         android:visibility="gone"
+        tools:visibility="gone" />
+
+    <!-- Solo para Design/Split: representa líneas LRC sin iniciar el motor real. -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="28dp"
+        android:visibility="gone"
+        android:clipToPadding="false"
+        android:paddingTop="76dp"
+        android:paddingBottom="76dp"
+        tools:itemCount="5"
+        tools:listitem="@layout/item_lyric_line"
         tools:visibility="visible" />
 </FrameLayout>

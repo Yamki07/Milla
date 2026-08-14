@@ -7,6 +7,7 @@
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:background="@color/millay_bg_primary"
+    tools:context=".fragments.player.normal.PlayerPlaybackControlsFragment"
     tools:ignore="MissingPrefix">
 
     <com.google.android.material.textview.MaterialTextView
@@ -118,7 +119,7 @@
         android:id="@+id/automixButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackgroundBorderless"
+        android:background="@drawable/millay_glass_surface"
         android:padding="12dp"
         android:scaleType="fitCenter"
         android:contentDescription="Mesa de mezclas Automix"
@@ -127,7 +128,53 @@
         app:layout_constraintTop_toBottomOf="@+id/songTotalTime"
         app:srcCompat="@drawable/ic_equalizer"
         tools:ignore="MissingPrefix"
-        app:tint="@color/millay_text_secondary" />
+        app:tint="@color/millay_accent"
+        tools:tint="@color/millay_accent" />
+
+    <!-- Píldoras solo de previsualización: el control funcional continúa siendo automixButton. -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/automixPreviewCard"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        app:cardBackgroundColor="@color/millay_glass_surface"
+        app:cardCornerRadius="16dp"
+        app:strokeColor="@color/millay_border"
+        app:strokeWidth="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/songInfo"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/manrope_bold"
+                android:textColor="@color/millay_text_primary"
+                android:textSize="14sp"
+                tools:text="Modo Club · AutoMix activo" />
+
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/millay_accent"
+                android:fontFamily="@font/manrope_bold"
+                android:text="Start Infinite Radio"
+                android:textAllCaps="false"
+                android:textColor="@color/millay_on_accent"
+                tools:ignore="HardcodedText" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/repeatButton"
@@ -173,6 +220,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/previousButton"
         app:layout_constraintTop_toBottomOf="@+id/songInfo"
+        tools:layout_constraintTop_toBottomOf="@id/automixPreviewCard"
         app:srcCompat="@drawable/ic_pause" />
 
     <androidx.appcompat.widget.AppCompatImageButton

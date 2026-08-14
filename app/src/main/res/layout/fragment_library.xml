@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainContent"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/millay_bg_primary"
+    tools:context=".fragments.LibraryFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
@@ -32,8 +34,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:fontFamily="@font/manrope_bold"
                     android:textAppearance="@style/TextViewHeadline6"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:text="Tu biblioteca" />
             </androidx.appcompat.widget.Toolbar>
 
             <ViewStub
@@ -48,5 +52,19 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        tools:visibility="gone" />
+
+    <!-- Fuente de datos visual para Android Studio; no se instancia durante la ejecución. -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:paddingTop="72dp"
+        android:paddingBottom="24dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        tools:itemCount="7"
+        tools:listitem="@layout/item_millay_track"
+        tools:visibility="visible"
+        android:visibility="gone" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
