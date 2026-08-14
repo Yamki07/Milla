@@ -24,6 +24,7 @@ import code.name.monkey.retromusic.activities.MainActivity
 import code.name.monkey.retromusic.appshortcuts.DynamicShortcutManager
 import code.name.monkey.retromusic.billing.BillingManager
 import code.name.monkey.retromusic.helper.WallpaperAccentManager
+import code.name.monkey.retromusic.helper.CacheCleanupManager
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -64,6 +65,7 @@ class App : Application() {
 
         // Inicializar el Crawler/Seeder de Supabase (FASE 3 - AutoMix Perfecto)
         code.name.monkey.retromusic.automix.MillaySupabaseSeeder.enqueueOnce(this)
+        CacheCleanupManager.cleanupOnStartup(this)
     }
 
     override fun onTerminate() {

@@ -56,7 +56,8 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         val targetStartMs: Long,
         val durationMs: Long,
         val tempoRatio: Float,
-        val confidence: Float
+        val confidence: Float,
+        val safeFallback: Boolean = false
     )
 
     override var callbacks: Playback.PlaybackCallbacks? = null
@@ -263,16 +264,61 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
                 val plan = if (fromAnalysis != null && toAnalysis != null) {
                     analysisDao?.getLatestTransitionPlan(fromAnalysis.analysisId, toAnalysis.analysisId)
                 } else null
-                plan.toSpec(fromAnalysis, toAnalysis)
+                prepareNextTransition(fromAnalysis, toAnalysis, plan)
             }
             pendingPlan = spec
         }
     }
 
+    /**
+     * Nunca habilita beatmatching si la pista entrante carece de BPM fiable. Registra un
+     * plan de contingencia en Room cuando existen ambas entidades para que el estado sea auditable.
+     */
+    private suspend fun prepareNextTransition(
+        from: TrackAnalysisEntity?,
+        nextTrack: TrackAnalysisEntity?,
+        storedPlan: TransitionPlanEntity?
+    ): TransitionSpec {
+        if (!hasTrustedTempo(from) || !hasTrustedTempo(nextTrack)) {
+            if (storedPlan?.strategy == STRATEGY_SAFE_FALLBACK) {
+                return storedPlan.toSpec(from, nextTrack)
+            }
+            val fallback = TransitionPlanEntity(
+                fromAnalysisId = from?.analysisId ?: 0L,
+                toAnalysisId = nextTrack?.analysisId ?: 0L,
+                strategy = STRATEGY_SAFE_FALLBACK,
+                transitionStartMs = 0L,
+                targetStartMs = nextTrack?.cueInMs.orZero(),
+                beatCount = 0,
+                tempoRatio = 1f,
+                confidence = 0f,
+                explanation = "BPM ausente, cero o sin confianza suficiente: crossfade lineal seguro."
+            )
+            if (fallback.fromAnalysisId > 0L && fallback.toAnalysisId > 0L) {
+                analysisDao?.upsertTransitionPlan(fallback)
+            }
+            return fallback.toSpec(from, nextTrack)
+        }
+        return storedPlan.toSpec(from, nextTrack)
+    }
+
+    private fun hasTrustedTempo(analysis: TrackAnalysisEntity?): Boolean =
+        analysis != null && analysis.bpm > 0f && analysis.bpmConfidence >= MIN_TRUSTED_BPM_CONFIDENCE
+
     private fun TransitionPlanEntity?.toSpec(
         from: TrackAnalysisEntity?,
         to: TrackAnalysisEntity?
     ): TransitionSpec {
+        if (this?.strategy == STRATEGY_SAFE_FALLBACK) {
+            return TransitionSpec(
+                startMs = 0L,
+                targetStartMs = to?.cueInMs.orZero(),
+                durationMs = SAFE_FALLBACK_CROSSFADE_MS,
+                tempoRatio = 1f,
+                confidence = 0f,
+                safeFallback = true
+            )
+        }
         val ratio = this?.tempoRatio ?: run {
             if ((from?.bpm ?: 0f) > 0f && (to?.bpm ?: 0f) > 0f) {
                 (from!!.bpm / to!!.bpm).coerceIn(0.92f, 1.08f)
@@ -285,7 +331,8 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
             targetStartMs = this?.targetStartMs ?: to?.cueInMs.orZero(),
             durationMs = (this?.beatCount?.times(500L) ?: manualCrossfadeMs).coerceIn(3_000L, 12_000L),
             tempoRatio = ratio,
-            confidence = this?.confidence ?: from?.bpmConfidence.orZero()
+            confidence = this?.confidence ?: from?.bpmConfidence.orZero(),
+            safeFallback = false
         )
     }
 
@@ -307,9 +354,10 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         val spec = pendingPlan ?: TransitionSpec(
             startMs = (duration - manualCrossfadeMs).coerceAtLeast(0L),
             targetStartMs = 0L,
-            durationMs = manualCrossfadeMs,
+            durationMs = SAFE_FALLBACK_CROSSFADE_MS,
             tempoRatio = 1f,
-            confidence = 0f
+            confidence = 0f,
+            safeFallback = true
         )
         val trigger = if (spec.startMs in 1 until duration) spec.startMs else (duration - spec.durationMs).coerceAtLeast(0L)
         if (activePlayer.currentPosition >= trigger) startTransition(spec)
@@ -322,7 +370,7 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         preloadPlayer.clearMediaItems()
         preloadPlayer.volume = 0f
         preloadPlayer.setMediaSource(createMediaSource(incoming))
-        val initialTempoRatio = if (beatmatchEnabled) spec.tempoRatio else 1f
+        val initialTempoRatio = if (beatmatchEnabled && !spec.safeFallback) spec.tempoRatio else 1f
         preloadPlayer.playbackParameters = PlaybackParameters(initialTempoRatio, 1f)
         preloadPlayer.prepare()
         preloadPlayer.playWhenReady = true
@@ -331,7 +379,7 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         fade = object : Runnable {
             override fun run() {
                 val progress = ((System.currentTimeMillis() - startedAt).toFloat() / spec.durationMs).coerceIn(0f, 1f)
-                val (outFactor, inFactor) = volumeFactors(progress)
+                val (outFactor, inFactor) = volumeFactors(progress, spec.safeFallback)
                 activePlayer.volume = outFactor
                 preloadPlayer.volume = inFactor
                 val currentTempo = initialTempoRatio + (1f - initialTempoRatio) * progress
@@ -368,15 +416,24 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         preloadPlayer.volume = 1f
     }
 
-    private fun volumeFactors(progress: Float): Pair<Float, Float> = when (transitionCurveMode) {
+    private fun volumeFactors(progress: Float, safeFallback: Boolean): Pair<Float, Float> {
+        if (safeFallback) return (1f - progress) to progress
+        return when (transitionCurveMode) {
         "HIGH_ENERGY" -> (1f - progress * progress).coerceIn(0f, 1f) to kotlin.math.sqrt(progress)
         "HARMONIC" -> (1f - progress) to progress
         "EQUAL_POWER", "AUTO_IA" -> {
             cos(progress * Math.PI.toFloat() / 2f) to sin(progress * Math.PI.toFloat() / 2f)
         }
         else -> (1f - progress) to progress
+        }
     }
 
     private fun Long?.orZero(): Long = this ?: 0L
     private fun Float?.orZero(): Float = this ?: 0f
+
+    private companion object {
+        const val MIN_TRUSTED_BPM_CONFIDENCE = 0.80f
+        const val SAFE_FALLBACK_CROSSFADE_MS = 3_500L
+        const val STRATEGY_SAFE_FALLBACK = "SAFE_FALLBACK_LINEAR"
+    }
 }

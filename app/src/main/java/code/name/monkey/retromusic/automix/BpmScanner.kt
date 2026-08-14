@@ -153,13 +153,14 @@ object BpmScanner {
             SupabaseClientManager.fetchMetadata(trackId)
         } else null
 
-        if (remoteMeta != null && remoteMeta.bpm > 0f) {
+        val remoteBpm = remoteMeta?.bpm ?: DEFAULT_UNKNOWN_BPM
+        if (remoteMeta != null && remoteBpm > 0f) {
             if (repository != null && songId != 0L) {
                 try {
                     repository.updateSongAutomixData(
                         songId = songId,
-                        bpm = remoteMeta.bpm,
-                        key = remoteMeta.musicalKey,
+                        bpm = remoteBpm,
+                        key = remoteMeta.musicalKey.orEmpty(),
                         replayGain = remoteMeta.replayGain,
                         cueOut = remoteMeta.cueOutMs
                     )
@@ -168,8 +169,8 @@ object BpmScanner {
                 }
             }
             return@withContext AutomixMetadata(
-                bpm = remoteMeta.bpm,
-                musicalKey = remoteMeta.musicalKey,
+                bpm = remoteBpm,
+                musicalKey = remoteMeta.musicalKey.orEmpty(),
                 replayGain = remoteMeta.replayGain,
                 cueOutMs = remoteMeta.cueOutMs,
                 cueInMs = 0L,

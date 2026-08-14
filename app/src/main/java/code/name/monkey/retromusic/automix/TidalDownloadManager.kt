@@ -301,7 +301,7 @@ object TidalDownloadManager {
                 Log.e(TAG, "Error etiquetando archivo ID3: $e")
             }
 
-            // 3. Enriquecimiento BPM / Camelot Key
+            // 3. Registrar y encolar análisis PCM ultra-lite. No se infieren BPM ni tonalidad localmente.
             try {
                 val entity = SongEntity(
                     playlistCreatorId = 0L,
@@ -324,9 +324,8 @@ object TidalDownloadManager {
                     org.koin.java.KoinJavaComponent.get(RoomRepository::class.java)
                 } catch (e: Exception) { null }
 
-                val scannedEntity = code.name.monkey.retromusic.automix.BpmScanner.scanSongEntity(entity, repository)
                 if (repository != null) {
-                    try { repository.insertSongs(listOf(scannedEntity)) } catch (e: Exception) { }
+                    try { repository.insertSongs(listOf(entity)) } catch (e: Exception) { }
                 }
                 code.name.monkey.retromusic.workers.TrackAnalysisWorker.enqueue(
                     context = context,
@@ -334,23 +333,8 @@ object TidalDownloadManager {
                     title = song.title,
                     artist = song.artistName,
                     sourceType = "tidal_download",
-                    legacySongId = scannedEntity.id
+                    legacySongId = entity.id
                 )
-
-                if (scannedEntity.bpm > 0f || scannedEntity.musicalKey.isNotEmpty()) {
-                    try {
-                        val af = AudioFileIO.read(outputFile)
-                        val t = if (af is org.jaudiotagger.audio.mp3.MP3File) {
-                            var t2 = af.tag as? org.jaudiotagger.tag.id3.AbstractID3v2Tag
-                            if (t2 == null) { t2 = org.jaudiotagger.tag.id3.ID3v23Tag(); af.tag = t2 }
-                            t2
-                        } else af.tagOrCreateAndSetDefault
-                        if (scannedEntity.bpm > 0f) t.setField(FieldKey.BPM, scannedEntity.bpm.toInt().toString())
-                        if (scannedEntity.musicalKey.isNotEmpty()) t.setField(FieldKey.KEY, scannedEntity.musicalKey)
-                        try { t.setField(FieldKey.COMMENT, "REPLAYGAIN_TRACK_GAIN=${scannedEntity.replayGain} dB") } catch (ignore: Exception) {}
-                        af.commit()
-                    } catch (e: Exception) { }
-                }
             } catch (e: Exception) {
                 Log.e(TAG, "Error en enriquecimiento Room DB: $e")
             }

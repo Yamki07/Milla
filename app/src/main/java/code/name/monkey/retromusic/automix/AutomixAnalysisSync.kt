@@ -16,7 +16,7 @@ object AutomixAnalysisSync {
         artist: String
     ) {
         if (!MillaySettingsFragment.isContributeMetadata(context)) return
-        if (analysis.analysisStatus != TrackAnalysisEntity.STATUS_READY || analysis.bpm <= 0f) return
+        if (analysis.analysisStatus != TrackAnalysisEntity.STATUS_READY) return
 
         val trackId = BpmScanner.generateTrackId(artist, title, analysis.legacySongId)
         val profile = JSONObject().apply {
@@ -35,8 +35,8 @@ object AutomixAnalysisSync {
                 trackId = trackId,
                 title = title,
                 artist = artist,
-                bpm = analysis.bpm,
-                musicalKey = analysis.camelotKey.ifBlank { analysis.musicalKey },
+                bpm = analysis.bpm.takeIf { it > 0f },
+                musicalKey = analysis.camelotKey.ifBlank { analysis.musicalKey }.ifBlank { null },
                 cueOutMs = analysis.cueOutMs,
                 replayGain = analysis.integratedLufs,
                 fullProfileJson = profile.toString()

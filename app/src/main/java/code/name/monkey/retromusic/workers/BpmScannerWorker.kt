@@ -13,7 +13,6 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
-import code.name.monkey.retromusic.automix.BpmScanner
 import code.name.monkey.retromusic.repository.RoomRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -40,7 +39,6 @@ class BpmScannerWorker(
                 Log.e(TAG, "No se pudo inyectar RoomRepository en BpmScannerWorker: ${e.message}")
                 return@withContext Result.failure()
             }
-
             val unscannedSongs = repository.getUnscannedSongs()
             if (unscannedSongs.isEmpty()) {
                 Log.i(TAG, "No hay canciones pendientes por escaneo BPM/Key.")
@@ -59,21 +57,13 @@ class BpmScannerWorker(
 
                 for (song in batch) {
                     try {
-                        val scanned = BpmScanner.scanSongEntity(song, repository)
-                        repository.updateSongAutomixData(
-                            scanned.id,
-                            scanned.bpm,
-                            scanned.musicalKey,
-                            scanned.replayGain,
-                            scanned.cueOutMs
-                        )
                         TrackAnalysisWorker.enqueue(
                             context = applicationContext,
-                            sourceUri = scanned.data,
-                            title = scanned.title,
-                            artist = scanned.artistName,
+                            sourceUri = song.data,
+                            title = song.title,
+                            artist = song.artistName,
                             sourceType = "local_library",
-                            legacySongId = scanned.id
+                            legacySongId = song.id
                         )
                     } catch (e: Exception) {
                         Log.e(TAG, "Error escaneando canción ${song.id} (${song.title}): ${e.message}")

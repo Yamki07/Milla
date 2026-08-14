@@ -22,8 +22,8 @@ data class RemoteTrackMetadata(
     val trackId: String,
     val title: String,
     val artist: String,
-    val bpm: Float,
-    val musicalKey: String,
+    val bpm: Float? = null,
+    val musicalKey: String? = null,
     val cueOutMs: Long,
     val replayGain: Float,
     val syncedLyrics: String? = null,
@@ -73,8 +73,8 @@ object SupabaseClientManager {
                         trackId = obj.optString("track_id", trackId),
                         title = obj.optString("title", ""),
                         artist = obj.optString("artist", ""),
-                        bpm = obj.optDouble("bpm", 0.0).toFloat(),
-                        musicalKey = obj.optString("musical_key", ""),
+                        bpm = if (obj.has("bpm") && !obj.isNull("bpm")) obj.optDouble("bpm").toFloat() else null,
+                        musicalKey = if (obj.has("musical_key") && !obj.isNull("musical_key")) obj.optString("musical_key") else null,
                         cueOutMs = obj.optLong("cue_out_ms", 0L),
                         replayGain = obj.optDouble("replay_gain", 0.0).toFloat(),
                         syncedLyrics = if (obj.has("synced_lyrics") && !obj.isNull("synced_lyrics")) {
@@ -118,8 +118,8 @@ object SupabaseClientManager {
                 put("track_id", metadata.trackId)
                 put("title", metadata.title)
                 put("artist", metadata.artist)
-                put("bpm", metadata.bpm.toDouble())
-                put("musical_key", metadata.musicalKey)
+                metadata.bpm?.takeIf { it > 0f }?.let { put("bpm", it.toDouble()) }
+                metadata.musicalKey?.takeIf { it.isNotBlank() }?.let { put("musical_key", it) }
                 put("cue_out_ms", metadata.cueOutMs)
                 put("replay_gain", metadata.replayGain.toDouble())
                 if (metadata.syncedLyrics != null) {

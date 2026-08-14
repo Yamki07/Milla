@@ -13,7 +13,6 @@ import code.name.monkey.retromusic.automix.AutomixAnalysisSync
 import code.name.monkey.retromusic.automix.BpmScanner
 import code.name.monkey.retromusic.automix.PcmAudioAnalyzer
 import code.name.monkey.retromusic.db.AutomixAnalysisDao
-import code.name.monkey.retromusic.db.BeatGridEntity
 import code.name.monkey.retromusic.db.CuePointEntity
 import code.name.monkey.retromusic.db.TrackAnalysisEntity
 import kotlinx.coroutines.CancellationException
@@ -49,10 +48,10 @@ class TrackAnalysisWorker(
             sourceUri = sourceUri,
             trackIdentity = identity,
             sourceType = sourceType,
-            bpm = existing?.bpm ?: 0f,
-            bpmConfidence = existing?.bpmConfidence ?: 0f,
-            musicalKey = existing?.musicalKey ?: "",
-            camelotKey = existing?.camelotKey ?: "",
+            bpm = 0f,
+            bpmConfidence = 0f,
+            musicalKey = "",
+            camelotKey = "",
             analysisStatus = TrackAnalysisEntity.STATUS_ANALYZING,
             analysisVersion = TrackAnalysisEntity.CURRENT_ANALYSIS_VERSION,
             contentHash = existing?.contentHash ?: "",
@@ -66,6 +65,8 @@ class TrackAnalysisWorker(
                 analysisId = analysisId,
                 bpm = result.bpm,
                 bpmConfidence = result.bpmConfidence,
+                musicalKey = result.musicalKey,
+                camelotKey = result.camelotKey,
                 cueInMs = result.cueInMs,
                 cueOutMs = result.cueOutMs,
                 introSilenceMs = result.introSilenceMs,
@@ -77,16 +78,13 @@ class TrackAnalysisWorker(
                 updatedAt = System.currentTimeMillis()
             )
             dao.upsertAnalysis(completed)
-            val beats = result.beatPositionsMs.mapIndexed { index, position ->
-                BeatGridEntity(analysisId, index, position, isDownbeat = index % 4 == 0, confidence = result.bpmConfidence)
-            }
             val cues = listOf(
-                CuePointEntity(analysisId = analysisId, cueType = CuePointEntity.INTRO, positionMs = result.cueInMs, confidence = result.bpmConfidence, source = SOURCE_MEDIACODEC),
-                CuePointEntity(analysisId = analysisId, cueType = CuePointEntity.MIX_IN, positionMs = result.cueInMs, confidence = result.bpmConfidence, source = SOURCE_MEDIACODEC),
-                CuePointEntity(analysisId = analysisId, cueType = CuePointEntity.MIX_OUT, positionMs = result.cueOutMs, confidence = result.bpmConfidence, source = SOURCE_MEDIACODEC),
-                CuePointEntity(analysisId = analysisId, cueType = CuePointEntity.OUTRO, positionMs = result.cueOutMs, confidence = result.bpmConfidence, source = SOURCE_MEDIACODEC)
+                CuePointEntity(analysisId = analysisId, cueType = CuePointEntity.INTRO, positionMs = result.cueInMs, confidence = CUE_CONFIDENCE, source = SOURCE_MEDIACODEC),
+                CuePointEntity(analysisId = analysisId, cueType = CuePointEntity.MIX_IN, positionMs = result.cueInMs, confidence = CUE_CONFIDENCE, source = SOURCE_MEDIACODEC),
+                CuePointEntity(analysisId = analysisId, cueType = CuePointEntity.MIX_OUT, positionMs = result.cueOutMs, confidence = CUE_CONFIDENCE, source = SOURCE_MEDIACODEC),
+                CuePointEntity(analysisId = analysisId, cueType = CuePointEntity.OUTRO, positionMs = result.cueOutMs, confidence = CUE_CONFIDENCE, source = SOURCE_MEDIACODEC)
             )
-            dao.replaceGeneratedDetails(analysisId, beats, cues)
+            dao.replaceGeneratedDetails(analysisId, emptyList(), cues)
             AutomixAnalysisSync.syncIfEnabled(applicationContext, completed, title, artist)
             Result.success()
         } catch (_: CancellationException) {
@@ -115,7 +113,8 @@ class TrackAnalysisWorker(
         private const val KEY_SOURCE_TYPE = "source_type"
         private const val KEY_LEGACY_SONG_ID = "legacy_song_id"
         private const val SOURCE_LOCAL = "local_library"
-        private const val SOURCE_MEDIACODEC = "mediacodec_pcm_v1"
+        private const val SOURCE_MEDIACODEC = "mediacodec_pcm_ultralite_v2"
+        private const val CUE_CONFIDENCE = 0.85f
 
         fun normalizedSourceUri(source: String): String =
             if (source.contains("://")) source else Uri.fromFile(java.io.File(source)).toString()
@@ -142,6 +141,7 @@ class TrackAnalysisWorker(
                 .setConstraints(
                     Constraints.Builder()
                         .setRequiresBatteryNotLow(true)
+                        .setRequiresDeviceIdle(true)
                         .build()
                 )
                 .addTag(WORK_PREFIX + normalizedSource.hashCode())
