@@ -170,7 +170,7 @@ object TidalApiClient {
         }
     }
     
-    suspend fun getStreamUrl(trackId: String, retryCount: Int = 1, quality: String = "HIGH"): String? = withContext(Dispatchers.IO) {
+    suspend fun getStreamUrl(trackId: String, retryCount: Int = 1, quality: String = "LOSSLESS"): String? = withContext(Dispatchers.IO) {
         try {
             ensureSession()
             if (accessToken.isEmpty()) return@withContext null
@@ -193,10 +193,19 @@ object TidalApiClient {
                 if (!response.isSuccessful) {
                     lastError = "Stream URL Failed HTTP ${response.code}: $resBody"
                     Log.e(TAG, "getStreamUrl Failed HTTP ${response.code}: $resBody")
-                    if (response.code == 403 && quality == "HIGH") {
-                        // Attempt fallback to LOW if HIGH is forbidden (common for free/standard tiers)
-                        Log.d(TAG, "Fallback to LOW quality")
-                        return@withContext getStreamUrl(trackId, retryCount, "LOW")
+                    
+                    // Fallback waterfall: LOSSLESS -> HIGH -> LOW
+                    if (response.code == 403 || response.code == 401) {
+                        when (quality) {
+                            "LOSSLESS" -> {
+                                Log.d(TAG, "LOSSLESS forbidden, fallback to HIGH")
+                                return@withContext getStreamUrl(trackId, retryCount, "HIGH")
+                            }
+                            "HIGH" -> {
+                                Log.d(TAG, "HIGH forbidden, fallback to LOW")
+                                return@withContext getStreamUrl(trackId, retryCount, "LOW")
+                            }
+                        }
                     }
                     return@withContext null
                 }
@@ -222,9 +231,11 @@ object TidalApiClient {
                         Log.e(TAG, "Failed to parse manifest: $e")
                     }
                 } else {
-                    lastError = "Empty manifest returned by Tidal (Account tier limitation?)"
-                    if (quality == "HIGH") {
-                        return@withContext getStreamUrl(trackId, retryCount, "LOW")
+                    lastError = "Empty manifest returned by Tidal"
+                    // Fallback waterfall: LOSSLESS -> HIGH -> LOW
+                    when (quality) {
+                        "LOSSLESS" -> return@withContext getStreamUrl(trackId, retryCount, "HIGH")
+                        "HIGH" -> return@withContext getStreamUrl(trackId, retryCount, "LOW")
                     }
                 }
                 return@withContext null
