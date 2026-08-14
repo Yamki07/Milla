@@ -35,6 +35,10 @@ class PlaybackManager(val context: Context) {
             playback!!.position()
         } else -1
 
+    val currentPositionMs: Long
+        get() = (playback as? PlaybackOrchestrator)?.currentPositionMs
+            ?: songProgressMillis.coerceAtLeast(0).toLong()
+
     val isPlaying: Boolean
         get() = playback != null && playback!!.isPlaying
 

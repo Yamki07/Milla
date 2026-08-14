@@ -584,6 +584,9 @@ class MusicService : MediaBrowserServiceCompat(),
     val songProgressMillis: Int
         get() = playbackManager.songProgressMillis
 
+    val currentPlaybackPositionMs: Long
+        get() = playbackManager.currentPositionMs
+
     fun handleAndSendChangeInternal(what: String) {
         handleChangeInternal(what)
         sendChangeInternal(what)

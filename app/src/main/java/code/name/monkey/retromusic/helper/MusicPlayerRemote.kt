@@ -86,6 +86,10 @@ object MusicPlayerRemote : KoinComponent {
             musicService!!.songProgressMillis
         } else -1
 
+    /** Ruta pública hacia la posición de Media3/PlaybackOrchestrator para vistas de alta fluidez. */
+    val currentPlaybackPositionMs: Long
+        get() = musicService?.currentPlaybackPositionMs ?: 0L
+
     val songDurationMillis: Int
         get() = if (musicService != null) {
             musicService!!.songDurationMillis

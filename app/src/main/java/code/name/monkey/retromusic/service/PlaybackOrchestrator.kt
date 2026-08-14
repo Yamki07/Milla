@@ -93,6 +93,9 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         get() = activePlayer.isPlaying || preloadPlayer.isPlaying
     override val audioSessionId: Int
         get() = activePlayer.audioSessionId
+    /** Posición de Media3 expuesta para consumidores visuales como letras sincronizadas. */
+    val currentPositionMs: Long
+        get() = activePlayer.currentPosition.coerceAtLeast(0L)
 
     fun state(): AutomixState = AutomixState(PreferenceUtil.isAutomixEnabled, sessionReason, transitionRunning)
 

@@ -40,11 +40,12 @@ import code.name.monkey.retromusic.extensions.isColorLight
 import code.name.monkey.retromusic.extensions.surfaceColor
 import code.name.monkey.retromusic.fragments.NowPlayingScreen.*
 import code.name.monkey.retromusic.fragments.base.AbsMusicServiceFragment
-import code.name.monkey.retromusic.fragments.base.goToLyrics
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.helper.MusicProgressViewUpdateHelper
-import code.name.monkey.retromusic.lyrics.CoverLrcView
-import code.name.monkey.retromusic.model.lyrics.Lyrics
+import code.name.monkey.retromusic.automix.BpmScanner
+import code.name.monkey.retromusic.lyrics.SyncedLyricsParser
+import code.name.monkey.retromusic.network.SupabaseClientManager
+import code.name.monkey.retromusic.views.SyncedLyricsView
 import code.name.monkey.retromusic.transform.CarousalPagerTransformer
 import code.name.monkey.retromusic.transform.ParallaxPagerTransformer
 import code.name.monkey.retromusic.util.CoverLyricsType
@@ -74,9 +75,7 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
     }
     private var progressViewUpdateHelper: MusicProgressViewUpdateHelper? = null
 
-    private val lrcView: CoverLrcView get() = binding.lyricsView
-
-    var lyrics: Lyrics? = null
+    private val lrcView: SyncedLyricsView get() = binding.lyricsView
 
     fun removeSlideEffect() {
         val transformer = ParallaxPagerTransformer(R.id.player_image)
@@ -91,26 +90,26 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
     private fun updateLyrics() {
         val song = MusicPlayerRemote.currentSong
         lifecycleScope.launch(Dispatchers.IO) {
-            val lrcFile = LyricUtil.getSyncedLyricsFile(song)
-            if (lrcFile != null) {
-                binding.lyricsView.loadLrc(lrcFile)
-            } else {
-                val embeddedLyrics = LyricUtil.getEmbeddedSyncedLyrics(song.data)
-                if (embeddedLyrics != null) {
-                    binding.lyricsView.loadLrc(embeddedLyrics)
-                } else {
-                    withContext(Dispatchers.Main) {
-                        binding.lyricsView.reset()
-                        binding.lyricsView.setLabel(context?.getString(R.string.no_lyrics_found))
-                    }
-                }
+            val localSource = runCatching {
+                LyricUtil.getSyncedLyricsFile(song)?.takeIf { it.exists() }?.readText()
+            }.getOrNull() ?: LyricUtil.getEmbeddedSyncedLyrics(song.data)
+            val remoteSource = if (localSource.isNullOrBlank()) {
+                SupabaseClientManager.fetchMetadata(BpmScanner.generateTrackId(song.artistName, song.title, song.id))
+                    ?.let { metadata -> metadata.syncedLyrics?.takeIf { it.isNotBlank() } ?: metadata.fullProfileJson }
+            } else null
+            val lines = SyncedLyricsParser.parse(localSource ?: remoteSource)
+            withContext(Dispatchers.Main) {
+                if (_binding == null) return@withContext
+                lrcView.submitLines(lines)
+                lrcView.setEmptyLabel(getString(R.string.no_lyrics_found))
             }
         }
 
     }
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
-        binding.lyricsView.updateTime(progress.toLong())
+        // Reactiva la animación; la vista consulta Media3 vía PlaybackOrchestrator a 60 FPS.
+        lrcView.refreshPlayback()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -121,13 +120,13 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
         progressViewUpdateHelper = MusicProgressViewUpdateHelper(this, 500, 1000)
         maybeInitLyrics()
         lrcView.apply {
-            setDraggable(true) { time ->
+            setPositionSource(
+                position = { MusicPlayerRemote.currentPlaybackPositionMs },
+                isPlaying = { MusicPlayerRemote.isPlaying }
+            )
+            setOnLineClickListener { time ->
                 MusicPlayerRemote.seekTo(time.toInt())
                 MusicPlayerRemote.resumePlaying()
-                true
-            }
-            setOnClickListener {
-                goToLyrics(requireActivity())
             }
         }
     }
@@ -209,29 +208,22 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
     }
 
     private fun setLRCViewColors(@ColorInt primaryColor: Int, @ColorInt secondaryColor: Int) {
-        lrcView.apply {
-            setCurrentColor(primaryColor)
-            setTimeTextColor(primaryColor)
-            setTimelineColor(primaryColor)
-            setNormalColor(secondaryColor)
-            setTimelineTextColor(primaryColor)
-        }
+        lrcView.setPalette(primaryColor, secondaryColor)
     }
 
     private fun showLyrics(visible: Boolean) {
-        binding.coverLyrics.isVisible = false
         binding.lyricsView.isVisible = false
         binding.viewPager.isVisible = true
-        val lyrics: View = if (PreferenceUtil.lyricsType == CoverLyricsType.REPLACE_COVER) {
+        val replaceCover = PreferenceUtil.lyricsType == CoverLyricsType.REPLACE_COVER
+        if (replaceCover) {
             ObjectAnimator.ofFloat(viewPager, View.ALPHA, if (visible) 0F else 1F).start()
-            lrcView
         } else {
+            // Mantiene la carátula como fondo sin volver a la capa heredada de dos líneas.
             ObjectAnimator.ofFloat(viewPager, View.ALPHA, 1F).start()
-            binding.coverLyrics
         }
-        ObjectAnimator.ofFloat(lyrics, View.ALPHA, if (visible) 1F else 0F).apply {
+        ObjectAnimator.ofFloat(lrcView, View.ALPHA, if (visible) 1F else 0F).apply {
             doOnEnd {
-                lyrics.isVisible = visible
+                lrcView.isVisible = visible
             }
             start()
         }
@@ -242,9 +234,7 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
         // Don't show lyrics container for below conditions
         if (lyricViewNpsList.contains(nps) && PreferenceUtil.showLyrics) {
             showLyrics(true)
-            if (PreferenceUtil.lyricsType == CoverLyricsType.REPLACE_COVER) {
-                progressViewUpdateHelper?.start()
-            }
+            progressViewUpdateHelper?.start()
         } else {
             showLyrics(false)
             progressViewUpdateHelper?.stop()
