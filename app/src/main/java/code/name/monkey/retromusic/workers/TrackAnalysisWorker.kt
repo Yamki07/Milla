@@ -60,6 +60,30 @@ class TrackAnalysisWorker(
         val analysisId = dao.upsertAnalysis(pending)
 
         try {
+            val remoteMeta = code.name.monkey.retromusic.network.SupabaseClientManager.fetchMetadata(identity)
+            if (remoteMeta != null && remoteMeta.bpm != null && remoteMeta.bpm > 0f) {
+                // Ya existe en Supabase, lo guardamos localmente y saltamos el análisis pesado
+                val completed = pending.copy(
+                    analysisId = analysisId,
+                    bpm = remoteMeta.bpm,
+                    bpmConfidence = 1.0f,
+                    musicalKey = remoteMeta.musicalKey ?: "",
+                    camelotKey = remoteMeta.musicalKey ?: "",
+                    cueInMs = 0L,
+                    cueOutMs = remoteMeta.cueOutMs,
+                    introSilenceMs = 0L,
+                    outroSilenceMs = 0L,
+                    integratedLufs = remoteMeta.replayGain,
+                    truePeak = 0f,
+                    analysisStatus = TrackAnalysisEntity.STATUS_READY,
+                    lastError = null,
+                    updatedAt = System.currentTimeMillis()
+                )
+                dao.upsertAnalysis(completed)
+                return@withContext Result.success()
+            }
+
+            // No existe en Supabase, realizar análisis local
             val result = PcmAudioAnalyzer.analyze(applicationContext, sourceUri) { isStopped }
             val completed = pending.copy(
                 analysisId = analysisId,

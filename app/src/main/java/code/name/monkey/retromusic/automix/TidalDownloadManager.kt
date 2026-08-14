@@ -81,8 +81,11 @@ object TidalDownloadManager {
                 Log.d(TAG, "Iniciando descarga de Tidal para: ${song.title} ($trackId)")
 
                 var realTrackId = ""
+                var coverId = ""
+
                 if (song.data.startsWith("tidal://track/")) {
                     realTrackId = song.data.removePrefix("tidal://track/").substringBefore("::")
+                    coverId = if (song.data.contains("::")) song.data.substringAfter("::") else ""
                 } else if (song.data.startsWith("deezer://track/") || song.data.startsWith("deezer")) {
                     withContext(Dispatchers.Main) {
                         android.widget.Toast.makeText(context, "Buscando en Tidal: ${song.title}...", android.widget.Toast.LENGTH_SHORT).show()
@@ -91,18 +94,13 @@ object TidalDownloadManager {
                     val searchResults = TidalApiClient.search(query)
                     if (searchResults.isNotEmpty()) {
                         realTrackId = searchResults[0].id
-                        Log.d(TAG, "Deezer to Tidal map: $query -> Tidal ID $realTrackId")
+                        coverId = searchResults[0].albumCoverId
+                        Log.d(TAG, "Deezer to Tidal map: $query -> Tidal ID $realTrackId, Cover $coverId")
                     } else {
                         realTrackId = trackId
                     }
                 } else {
                     realTrackId = trackId
-                }
-
-                val coverId = if (song.data.contains("::")) {
-                    song.data.substringAfter("::")
-                } else {
-                    ""
                 }
 
                 val streamUrl = TidalApiClient.getStreamUrl(realTrackId)
