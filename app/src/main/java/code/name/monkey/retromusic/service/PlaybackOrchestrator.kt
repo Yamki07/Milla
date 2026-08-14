@@ -30,6 +30,9 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import org.koin.java.KoinJavaComponent
 import kotlin.math.cos
 import kotlin.math.sin
@@ -50,6 +53,14 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
     ) {
         val active: Boolean get() = globalEnabled || sessionReason != SessionReason.NONE
     }
+
+    /** Estado emitido por el mismo ciclo que modifica los volúmenes del crossfade real. */
+    data class AutoMixTransitionState(
+        val isRunning: Boolean = false,
+        val progress: Float = 0f,
+        val outgoing: Song? = null,
+        val incoming: Song? = null,
+    )
 
     private data class TransitionSpec(
         val startMs: Long,
@@ -82,6 +93,8 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
     private var pendingPrepare: ((Boolean) -> Unit)? = null
     private var monitor: Runnable? = null
     private var fade: Runnable? = null
+    private val _automixTransitionState = MutableStateFlow(AutoMixTransitionState())
+    val automixTransitionState: StateFlow<AutoMixTransitionState> = _automixTransitionState.asStateFlow()
 
     private val analysisDao: AutomixAnalysisDao? by lazy {
         try { KoinJavaComponent.get(AutomixAnalysisDao::class.java) as AutomixAnalysisDao } catch (e: Exception) { null }
@@ -369,6 +382,7 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
     private fun startTransition(spec: TransitionSpec) {
         val incoming = nextSong ?: return
         transitionRunning = true
+        _automixTransitionState.value = AutoMixTransitionState(true, 0f, currentSong, incoming)
         preloadPlayer.stop()
         preloadPlayer.clearMediaItems()
         preloadPlayer.volume = 0f
@@ -385,6 +399,7 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
                 val (outFactor, inFactor) = volumeFactors(progress, spec.safeFallback)
                 activePlayer.volume = outFactor
                 preloadPlayer.volume = inFactor
+                _automixTransitionState.value = AutoMixTransitionState(true, progress, currentSong, incoming)
                 val currentTempo = initialTempoRatio + (1f - initialTempoRatio) * progress
                 preloadPlayer.playbackParameters = PlaybackParameters(currentTempo, 1f)
                 if (progress >= 1f) completeTransition(incoming) else handler.postDelayed(this, 50L)
@@ -406,6 +421,7 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         pendingPlan = null
         transitionRunning = false
         fade = null
+        _automixTransitionState.value = AutoMixTransitionState()
         callbacks?.onTrackEndedWithCrossfade()
     }
 
@@ -415,6 +431,7 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         monitor = null
         fade = null
         transitionRunning = false
+        _automixTransitionState.value = AutoMixTransitionState()
         preloadPlayer.pause()
         preloadPlayer.volume = 1f
     }

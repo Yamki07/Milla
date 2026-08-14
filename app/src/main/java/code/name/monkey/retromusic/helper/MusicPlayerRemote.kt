@@ -29,12 +29,18 @@ import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.repository.SongRepository
 import code.name.monkey.retromusic.service.CastPlayer
 import code.name.monkey.retromusic.service.MusicService
+import code.name.monkey.retromusic.service.PlaybackOrchestrator
 import code.name.monkey.retromusic.util.getExternalStorageDirectory
 import code.name.monkey.retromusic.util.logE
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.io.File
 import java.util.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.collections.set
 
 
@@ -44,6 +50,7 @@ object MusicPlayerRemote : KoinComponent {
     var musicService: MusicService? = null
 
     private val songRepository by inject<SongRepository>()
+    private val radioScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     @JvmStatic
     val isPlaying: Boolean
@@ -237,6 +244,20 @@ object MusicPlayerRemote : KoinComponent {
         musicService?.startInfiniteRadio(seed, candidates)
     }
 
+    /** Genera candidatos fuera del hilo principal y activa la sesión AutoMix al iniciar la nueva cola. */
+    fun startInfiniteRadioFromCurrentSong() {
+        val seed = currentSong
+        if (seed.id < 0L) return
+        radioScope.launch {
+            val candidates = (playingQueue + songRepository.songs())
+                .distinctBy { it.id }
+                .filter { it.id != seed.id }
+            withContext(Dispatchers.Main) {
+                musicService?.startInfiniteRadioFromCurrentSong(candidates)
+            }
+        }
+    }
+
     fun startSmartDj(songs: List<Song>) {
         musicService?.startSmartDj(songs)
     }
@@ -245,6 +266,10 @@ object MusicPlayerRemote : KoinComponent {
 
     val isAutomixActive: Boolean
         get() = musicService?.isAutomixActive() ?: false
+
+    val automixTransitionState
+        get() = musicService?.automixTransitionState
+            ?: kotlinx.coroutines.flow.MutableStateFlow(PlaybackOrchestrator.AutoMixTransitionState())
 
     private fun doOpenQueue(queue: List<Song>, startPosition: Int, startPlaying: Boolean, shuffleMode: Int) {
         if (!tryToHandleOpenPlayingQueue(

@@ -14,6 +14,36 @@
 
     </androidx.viewpager.widget.ViewPager>
 
+    <View
+        android:id="@+id/automixTransitionBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:background="@color/millay_accent"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/automixOutgoingCover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="24dp"
+        android:alpha="1"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        tools:src="@drawable/millay_art_placeholder"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/automixIncomingCover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="24dp"
+        android:alpha="0"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        tools:src="@drawable/millay_art_placeholder"
+        tools:visibility="visible" />
+
     <code.name.monkey.retromusic.views.SyncedLyricsView
         android:id="@+id/lyricsView"
         android:layout_width="match_parent"
@@ -21,6 +51,58 @@
         android:layout_margin="16dp"
         android:visibility="gone"
         tools:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/lyricsSyncControls"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="18dp"
+        android:background="@drawable/millay_glass_surface"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="6dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/lyricsOffsetMinus"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:minWidth="0dp"
+            android:text="−500 ms"
+            android:textAllCaps="false"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/lyricsOffsetValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:fontFamily="@font/manrope_bold"
+            android:textColor="@color/millay_text_primary"
+            android:textSize="12sp"
+            tools:text="SYNC 0 ms" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/lyricsOffsetPlus"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:minWidth="0dp"
+            android:text="+500 ms"
+            android:textAllCaps="false"
+            tools:ignore="HardcodedText" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/lyricsMockButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="2dp"
+            android:minWidth="0dp"
+            android:text="Probar"
+            android:textAllCaps="false"
+            tools:ignore="HardcodedText" />
+    </LinearLayout>
 
     <!-- Solo para Design/Split: representa líneas LRC sin iniciar el motor real. -->
     <androidx.recyclerview.widget.RecyclerView

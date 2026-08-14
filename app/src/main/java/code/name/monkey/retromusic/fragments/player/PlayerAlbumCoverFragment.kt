@@ -15,6 +15,7 @@
 package code.name.monkey.retromusic.fragments.player
 
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -43,9 +44,11 @@ import code.name.monkey.retromusic.fragments.base.AbsMusicServiceFragment
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.helper.MusicProgressViewUpdateHelper
 import code.name.monkey.retromusic.automix.BpmScanner
+import code.name.monkey.retromusic.lyrics.LyricsMockData
 import code.name.monkey.retromusic.lyrics.SyncedLyricsParser
 import code.name.monkey.retromusic.network.SupabaseClientManager
 import code.name.monkey.retromusic.views.SyncedLyricsView
+import code.name.monkey.retromusic.views.AutoMixTransitionAnimator
 import code.name.monkey.retromusic.transform.CarousalPagerTransformer
 import code.name.monkey.retromusic.transform.ParallaxPagerTransformer
 import code.name.monkey.retromusic.util.CoverLyricsType
@@ -53,6 +56,8 @@ import code.name.monkey.retromusic.util.LyricUtil
 import code.name.monkey.retromusic.util.PreferenceUtil
 import code.name.monkey.retromusic.util.color.MediaNotificationProcessor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -74,6 +79,9 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
         }
     }
     private var progressViewUpdateHelper: MusicProgressViewUpdateHelper? = null
+    private var mockLyricsAnimator: ValueAnimator? = null
+    private var transitionObserver: Job? = null
+    private var transitionAnimator: AutoMixTransitionAnimator? = null
 
     private val lrcView: SyncedLyricsView get() = binding.lyricsView
 
@@ -88,6 +96,9 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
     }
 
     private fun updateLyrics() {
+        mockLyricsAnimator?.cancel()
+        mockLyricsAnimator = null
+        lrcView.setPreviewPosition(null)
         val song = MusicPlayerRemote.currentSong
         lifecycleScope.launch(Dispatchers.IO) {
             val localSource = runCatching {
@@ -116,6 +127,11 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentPlayerAlbumCoverBinding.bind(view)
+        transitionAnimator = AutoMixTransitionAnimator(
+            binding.automixTransitionBackground,
+            binding.automixOutgoingCover,
+            binding.automixIncomingCover,
+        )
         setupViewPager()
         progressViewUpdateHelper = MusicProgressViewUpdateHelper(this, 500, 1000)
         maybeInitLyrics()
@@ -124,11 +140,38 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
                 position = { MusicPlayerRemote.currentPlaybackPositionMs },
                 isPlaying = { MusicPlayerRemote.isPlaying }
             )
+            setLyricsOffsetMs(PreferenceUtil.lyricsSyncOffsetMs)
             setOnLineClickListener { time ->
                 MusicPlayerRemote.seekTo(time.toInt())
                 MusicPlayerRemote.resumePlaying()
             }
         }
+        bindLyricsSyncControls()
+    }
+
+    private fun bindLyricsSyncControls() {
+        fun renderOffset() {
+            val offset = PreferenceUtil.lyricsSyncOffsetMs
+            binding.lyricsOffsetValue.text = getString(R.string.lyrics_sync_offset_format, offset)
+            lrcView.setLyricsOffsetMs(offset)
+        }
+        binding.lyricsOffsetMinus.setOnClickListener {
+            PreferenceUtil.lyricsSyncOffsetMs -= LYRICS_OFFSET_STEP_MS
+            renderOffset()
+        }
+        binding.lyricsOffsetPlus.setOnClickListener {
+            PreferenceUtil.lyricsSyncOffsetMs += LYRICS_OFFSET_STEP_MS
+            renderOffset()
+        }
+        binding.lyricsMockButton.setOnClickListener {
+            mockLyricsAnimator?.cancel()
+            lrcView.submitLines(SyncedLyricsParser.parse(LyricsMockData.ENHANCED_LRC))
+            lrcView.setPreviewPosition(0L)
+            showLyrics(true)
+            binding.lyricsSyncControls.isVisible = true
+            mockLyricsAnimator = LyricsMockData.startPreview(lrcView)
+        }
+        renderOffset()
     }
 
     private fun setupViewPager() {
@@ -172,12 +215,29 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
             .unregisterOnSharedPreferenceChangeListener(this)
         binding.viewPager.removeOnPageChangeListener(this)
         progressViewUpdateHelper?.stop()
+        mockLyricsAnimator?.cancel()
+        lrcView.setPreviewPosition(null)
+        transitionObserver?.cancel()
+        transitionObserver = null
+        transitionAnimator = null
         _binding = null
     }
 
     override fun onServiceConnected() {
         updatePlayingQueue()
         updateLyrics()
+        observeAutomixTransition()
+    }
+
+    private fun observeAutomixTransition() {
+        transitionObserver?.cancel()
+        transitionObserver = lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                MusicPlayerRemote.automixTransitionState.collectLatest { state ->
+                    transitionAnimator?.render(state)
+                }
+            }
+        }
     }
 
     override fun onPlayingMetaChanged() {
@@ -224,6 +284,7 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
         ObjectAnimator.ofFloat(lrcView, View.ALPHA, if (visible) 1F else 0F).apply {
             doOnEnd {
                 lrcView.isVisible = visible
+                binding.lyricsSyncControls.isVisible = visible
             }
             start()
         }
@@ -311,6 +372,7 @@ class PlayerAlbumCoverFragment : AbsMusicServiceFragment(R.layout.fragment_playe
 
     companion object {
         val TAG: String = PlayerAlbumCoverFragment::class.java.simpleName
+        private const val LYRICS_OFFSET_STEP_MS = 500L
     }
 
     private val lyricViewNpsList =

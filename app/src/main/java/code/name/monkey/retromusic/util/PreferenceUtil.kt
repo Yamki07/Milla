@@ -138,6 +138,11 @@ import java.io.File
 object PreferenceUtil {
     private val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(App.getContext())
 
+    /** Desfase global de letras, limitado para evitar corregir una fuente defectuosa con valores extremos. */
+    var lyricsSyncOffsetMs: Long
+        get() = sharedPreferences.getLong("lyrics_sync_offset_ms", 0L)
+        set(value) = sharedPreferences.edit { putLong("lyrics_sync_offset_ms", value.coerceIn(-10_000L, 10_000L)) }
+
     val defaultCategories = listOf(
         CategoryInfo(CategoryInfo.Category.Home, true),
         CategoryInfo(CategoryInfo.Category.Songs, true),

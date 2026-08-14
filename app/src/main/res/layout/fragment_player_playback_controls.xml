@@ -131,14 +131,14 @@
         app:tint="@color/millay_accent"
         tools:tint="@color/millay_accent" />
 
-    <!-- Píldoras solo de previsualización: el control funcional continúa siendo automixButton. -->
+    <!-- Acciones reales de AutoMix para la sesión actual. -->
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/automixPreviewCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginTop="10dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:cardBackgroundColor="@color/millay_glass_surface"
         app:cardCornerRadius="16dp"
         app:strokeColor="@color/millay_border"
@@ -165,6 +165,7 @@
                 tools:text="Modo Club · AutoMix activo" />
 
             <com.google.android.material.button.MaterialButton
+                android:id="@+id/infiniteRadioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:backgroundTint="@color/millay_accent"
@@ -219,8 +220,7 @@
         app:layout_constraintEnd_toStartOf="@+id/nextButton"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/previousButton"
-        app:layout_constraintTop_toBottomOf="@+id/songInfo"
-        tools:layout_constraintTop_toBottomOf="@id/automixPreviewCard"
+        app:layout_constraintTop_toBottomOf="@id/automixPreviewCard"
         app:srcCompat="@drawable/ic_pause" />
 
     <androidx.appcompat.widget.AppCompatImageButton

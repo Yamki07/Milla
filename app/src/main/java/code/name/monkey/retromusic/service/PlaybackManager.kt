@@ -11,6 +11,8 @@ import code.name.monkey.retromusic.extensions.showToast
 import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.service.playback.Playback
 import code.name.monkey.retromusic.util.PreferenceUtil
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 
 class PlaybackManager(val context: Context) {
@@ -38,6 +40,9 @@ class PlaybackManager(val context: Context) {
     val currentPositionMs: Long
         get() = (playback as? PlaybackOrchestrator)?.currentPositionMs
             ?: songProgressMillis.coerceAtLeast(0).toLong()
+
+    val automixTransitionState: StateFlow<PlaybackOrchestrator.AutoMixTransitionState>
+        get() = (playback as? PlaybackOrchestrator)?.automixTransitionState ?: NO_AUTOMIX_TRANSITION
 
     val isPlaying: Boolean
         get() = playback != null && playback!!.isPlaying
@@ -214,6 +219,10 @@ class PlaybackManager(val context: Context) {
 
     private fun createLocalPlayback(): Playback {
         return PlaybackOrchestrator(context)
+    }
+
+    private companion object {
+        val NO_AUTOMIX_TRANSITION = MutableStateFlow(PlaybackOrchestrator.AutoMixTransitionState())
     }
 
     fun setPlaybackSpeedPitch(playbackSpeed: Float, playbackPitch: Float) {

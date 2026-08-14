@@ -823,6 +823,12 @@ class MusicService : MediaBrowserServiceCompat(),
         }
     }
 
+    /** Ruta de reproductor: conserva el mismo auto-override y planificador de Radio Infinita. */
+    fun startInfiniteRadioFromCurrentSong(candidates: List<Song>) {
+        val seed = currentSong
+        if (seed.id >= 0L) startInfiniteRadio(seed, candidates)
+    }
+
     fun startSmartDj(songs: List<Song>) {
         val seed = songs.firstOrNull() ?: return
         serviceScope.launch {
@@ -837,6 +843,9 @@ class MusicService : MediaBrowserServiceCompat(),
     fun toggleClubMode(): Boolean = playbackManager.toggleClubMode()
 
     fun isAutomixActive(): Boolean = playbackManager.isAutomixActive()
+
+    val automixTransitionState
+        get() = playbackManager.automixTransitionState
 
     fun playbackManagerSetAutomixGlobalEnabled(enabled: Boolean) {
         playbackManager.setAutomixGlobalEnabled(enabled)
