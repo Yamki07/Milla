@@ -307,7 +307,7 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
                 MusicPlayerRemote.pauseSong()
                 miniPlayPause.setImageResource(R.drawable.ic_play_arrow_white_32dp)
             } else {
-                MusicPlayerRemote.resumeSong()
+                MusicPlayerRemote.resumePlaying()
                 miniPlayPause.setImageResource(R.drawable.ic_pause_white_48dp)
             }
         }
