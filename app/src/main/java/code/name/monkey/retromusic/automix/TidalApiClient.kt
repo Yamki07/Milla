@@ -170,12 +170,12 @@ object TidalApiClient {
         }
     }
     
-    suspend fun getStreamUrl(trackId: String, retryCount: Int = 1): String? = withContext(Dispatchers.IO) {
+    suspend fun getStreamUrl(trackId: String, retryCount: Int = 1, quality: String = "HIGH"): String? = withContext(Dispatchers.IO) {
         try {
             ensureSession()
             if (accessToken.isEmpty()) return@withContext null
 
-            val url = "https://api.tidalhifi.com/v1/tracks/$trackId/playbackinfopostpaywall?audioquality=HIGH&playbackmode=STREAM&assetpresentation=FULL&countryCode=US"
+            val url = "https://api.tidalhifi.com/v1/tracks/$trackId/playbackinfopostpaywall?audioquality=$quality&playbackmode=STREAM&assetpresentation=FULL&countryCode=US"
             val request = Request.Builder()
                 .url(url)
                 .addHeader("Authorization", "Bearer $accessToken")
@@ -188,11 +188,16 @@ object TidalApiClient {
                 if (response.code == 401 && retryCount > 0) {
                     Log.d(TAG, "Token expired, refreshing...")
                     ensureSession(forceRefresh = true)
-                    return@withContext getStreamUrl(trackId, retryCount - 1)
+                    return@withContext getStreamUrl(trackId, retryCount - 1, quality)
                 }
                 if (!response.isSuccessful) {
                     lastError = "Stream URL Failed HTTP ${response.code}: $resBody"
                     Log.e(TAG, "getStreamUrl Failed HTTP ${response.code}: $resBody")
+                    if (response.code == 403 && quality == "HIGH") {
+                        // Attempt fallback to LOW if HIGH is forbidden (common for free/standard tiers)
+                        Log.d(TAG, "Fallback to LOW quality")
+                        return@withContext getStreamUrl(trackId, retryCount, "LOW")
+                    }
                     return@withContext null
                 }
                 
@@ -218,6 +223,9 @@ object TidalApiClient {
                     }
                 } else {
                     lastError = "Empty manifest returned by Tidal (Account tier limitation?)"
+                    if (quality == "HIGH") {
+                        return@withContext getStreamUrl(trackId, retryCount, "LOW")
+                    }
                 }
                 return@withContext null
             }

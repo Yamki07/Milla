@@ -77,10 +77,6 @@ class PlayerPlaybackControlsFragment :
         binding.text.setOnClickListener {
             goToArtist(requireActivity())
         }
-        binding.infiniteRadioButton.setOnClickListener {
-            MusicPlayerRemote.startInfiniteRadioFromCurrentSong()
-            it.showBounceAnimation()
-        }
     }
 
     override fun setColor(color: MediaNotificationProcessor) {
