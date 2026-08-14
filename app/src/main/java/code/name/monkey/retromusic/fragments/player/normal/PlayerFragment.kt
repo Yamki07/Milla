@@ -30,9 +30,7 @@ import code.name.monkey.retromusic.SNOWFALL
 import code.name.monkey.retromusic.databinding.FragmentPlayerBinding
 import code.name.monkey.retromusic.extensions.*
 import code.name.monkey.retromusic.fragments.base.AbsPlayerFragment
-import androidx.fragment.app.viewModels
-import code.name.monkey.retromusic.fragments.player.PlayerViewModel
-import code.name.monkey.retromusic.fragments.player.compose.PlayerScreen
+import code.name.monkey.retromusic.fragments.player.PlayerAlbumCoverFragment
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.util.PreferenceUtil
@@ -47,7 +45,7 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
     override val paletteColor: Int
         get() = lastColor
 
-    private val viewModel: PlayerViewModel by viewModels()
+    private lateinit var controlsFragment: PlayerPlaybackControlsFragment
     private var valueAnimator: ValueAnimator? = null
 
     private var _binding: FragmentPlayerBinding? = null
@@ -82,16 +80,17 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
     }
 
     override fun onShow() {
-        // Compose handles its own visibility, but we can do any animations here
+        controlsFragment.show()
     }
 
     override fun onHide() {
-        // Similar to onShow
+        controlsFragment.hide()
     }
 
     override fun toolbarIconColor() = colorControlNormal()
 
     override fun onColorChanged(color: MediaNotificationProcessor) {
+        controlsFragment.setColor(color)
         lastColor = color.backgroundColor
         libraryViewModel.updateColor(color.backgroundColor)
 
@@ -119,9 +118,7 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentPlayerBinding.bind(view)
-        binding.composeView?.setContent {
-            PlayerScreen(viewModel = viewModel)
-        }
+        setUpSubFragments()
         setUpPlayerToolbar()
         startOrStopSnow(PreferenceUtil.isSnowFalling)
 
@@ -138,7 +135,10 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
     }
 
     private fun setUpSubFragments() {
-        // Replaced by ComposeView
+        controlsFragment = whichFragment(R.id.playbackControlsFragment)
+        val playerAlbumCoverFragment: PlayerAlbumCoverFragment =
+            whichFragment(R.id.playerAlbumCoverFragment)
+        playerAlbumCoverFragment.setCallbacks(this)
     }
 
     private fun setUpPlayerToolbar() {
