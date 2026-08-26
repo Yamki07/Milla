@@ -14,16 +14,10 @@
  */
 package code.name.monkey.retromusic.fragments.player.normal
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.content.SharedPreferences
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.isVisible
-import androidx.preference.PreferenceManager
-import code.name.monkey.appthemehelper.util.ColorUtil
 import code.name.monkey.appthemehelper.util.ToolbarContentTintHelper
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.SNOWFALL
@@ -34,12 +28,18 @@ import code.name.monkey.retromusic.fragments.player.PlayerAlbumCoverFragment
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.util.PreferenceUtil
-import code.name.monkey.retromusic.util.ViewUtil
 import code.name.monkey.retromusic.util.color.MediaNotificationProcessor
-import code.name.monkey.retromusic.views.DrawableGradient
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import code.name.monkey.retromusic.compose.player.PlayerScreen
+import code.name.monkey.retromusic.util.MusicUtil
 
 class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
     SharedPreferences.OnSharedPreferenceChangeListener {
+
+    // Compose State
+    private var currentSong by mutableStateOf<Song?>(null)
 
     private var lastColor: Int = 0
     override val paletteColor: Int
@@ -53,30 +53,7 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
 
 
     private fun colorize(i: Int) {
-        if (valueAnimator != null) {
-            valueAnimator?.cancel()
-        }
-
-        valueAnimator = ValueAnimator.ofObject(
-            ArgbEvaluator(),
-            surfaceColor(),
-            i
-        )
-        valueAnimator?.addUpdateListener { animation ->
-            if (isAdded) {
-                val animValue = animation.animatedValue as Int
-                val drawable = DrawableGradient(
-                    GradientDrawable.Orientation.TOP_BOTTOM,
-                    intArrayOf(
-                        animValue,
-                        ColorUtil.withAlpha(animValue, 0.55f),
-                        surfaceColor()
-                    ), 0
-                )
-                binding.colorGradientBackground.background = drawable
-            }
-        }
-        valueAnimator?.setDuration(ViewUtil.RETRO_MUSIC_ANIM_TIME.toLong())?.start()
+        // No longer needed, Compose handles the background blur
     }
 
     override fun onShow() {
@@ -118,6 +95,24 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentPlayerBinding.bind(view)
+        
+        // Init Compose View
+        currentSong = MusicPlayerRemote.currentSong
+        binding.composePlayerView.setContent {
+            val song = currentSong
+            if (song != null) {
+                PlayerScreen(
+                    coverUri = MusicUtil.getMediaStoreAlbumCoverUri(song.albumId),
+                    songTitle = song.title,
+                    artistName = song.artistName,
+                    onDominantColorExtracted = { color ->
+                        lastColor = color
+                        libraryViewModel.updateColor(color)
+                    }
+                )
+            }
+        }
+
         setUpSubFragments()
         setUpPlayerToolbar()
         startOrStopSnow(PreferenceUtil.isSnowFalling)
@@ -136,9 +131,6 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
 
     private fun setUpSubFragments() {
         controlsFragment = whichFragment(R.id.playbackControlsFragment)
-        val playerAlbumCoverFragment: PlayerAlbumCoverFragment =
-            whichFragment(R.id.playerAlbumCoverFragment)
-        playerAlbumCoverFragment.setCallbacks(this)
     }
 
     private fun setUpPlayerToolbar() {
@@ -161,22 +153,17 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
     }
 
     private fun startOrStopSnow(isSnowFalling: Boolean) {
-        if (_binding == null) return
-        if (isSnowFalling && !surfaceColor().isColorLight) {
-            binding.snowfallView.isVisible = true
-            binding.snowfallView.restartFalling()
-        } else {
-            binding.snowfallView.isVisible = false
-            binding.snowfallView.stopFalling()
-        }
+        // Compose handles UI now
     }
 
     override fun onServiceConnected() {
         updateIsFavorite()
+        currentSong = MusicPlayerRemote.currentSong
     }
 
     override fun onPlayingMetaChanged() {
         updateIsFavorite()
+        currentSong = MusicPlayerRemote.currentSong
     }
 
     override fun playerToolbar(): Toolbar {

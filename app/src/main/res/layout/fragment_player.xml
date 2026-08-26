@@ -8,22 +8,15 @@
     android:clickable="true"
     android:focusable="true">
 
-    <View
-        android:id="@+id/colorGradientBackground"
+    <!-- ComposeView for Glassmorphism Background and Cover Art -->
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composePlayerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/playbackControlsFragment"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <com.jetradarmobile.snowfall.SnowfallView
-        android:id="@+id/snowfall_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:snowflakeSpeedMax="6"
-        app:snowflakeSpeedMin="2"
-        app:snowflakesNum="75" />
 
     <include layout="@layout/shadow_statusbar_toolbar" />
 
@@ -39,15 +32,7 @@
     </FrameLayout>
 
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/playerAlbumCoverFragment"
-        android:name="code.name.monkey.retromusic.fragments.player.PlayerAlbumCoverFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/statusBarContainer" />
+    <!-- Replaced by ComposeView above -->
 
 
     <androidx.fragment.app.FragmentContainerView
@@ -58,7 +43,7 @@
         app:layout_constraintBottom_toTopOf="@id/playerToolbar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playerAlbumCoverFragment"
+        app:layout_constraintTop_toBottomOf="@id/composePlayerView"
         tools:layout="@layout/fragment_player_playback_controls" />
 
 

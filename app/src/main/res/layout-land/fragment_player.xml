@@ -8,18 +8,11 @@
     android:clickable="true"
     android:focusable="true">
 
-    <View
-        android:id="@+id/colorGradientBackground"
+    <!-- ComposeView for Glassmorphism Background and Cover Art -->
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composePlayerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <com.jetradarmobile.snowfall.SnowfallView
-        android:id="@+id/snowfall_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:snowflakeSpeedMax="6"
-        app:snowflakeSpeedMin="2"
-        app:snowflakesNum="75" />
 
     <include layout="@layout/shadow_statusbar_toolbar" />
 
@@ -40,17 +33,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <code.name.monkey.retromusic.views.HeightFitSquareLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/playerAlbumCoverFragment"
-                    android:name="code.name.monkey.retromusic.fragments.player.PlayerAlbumCoverFragment"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    tools:layout="@layout/fragment_album_cover" />
-            </code.name.monkey.retromusic.views.HeightFitSquareLayout>
+            <!-- Cover Art handled by ComposeView -->
 
             <LinearLayout
                 android:id="@+id/controlsContainer"
