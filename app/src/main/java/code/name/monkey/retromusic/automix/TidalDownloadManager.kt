@@ -91,10 +91,10 @@ object TidalDownloadManager {
                         android.widget.Toast.makeText(context, "Buscando en Tidal: ${song.title}...", android.widget.Toast.LENGTH_SHORT).show()
                     }
                     val query = "${song.artistName} ${song.title}"
-                    val searchResults = TidalApiClient.search(query)
+                    val searchResults = TidalHifiApiClient.searchTracks(query)
                     if (searchResults.isNotEmpty()) {
-                        realTrackId = searchResults[0].id
-                        coverId = searchResults[0].albumCoverId
+                        realTrackId = searchResults[0].id.toString()
+                        coverId = ""
                         Log.d(TAG, "Deezer to Tidal map: $query -> Tidal ID $realTrackId, Cover $coverId")
                     } else {
                         realTrackId = trackId
@@ -103,12 +103,12 @@ object TidalDownloadManager {
                     realTrackId = trackId
                 }
 
-                val streamUrl = TidalApiClient.getStreamUrl(realTrackId)
+                val streamUrl = TidalHifiApiClient.getStreamUrl(realTrackId.toLongOrNull() ?: 0L)
 
                 if (streamUrl.isNullOrEmpty()) {
-                    _downloadState.value = DownloadState.Error(trackId, "No se pudo obtener el enlace de Tidal")
+                    _downloadState.value = DownloadState.Error(trackId, "No se pudo obtener el enlace del proxy Tidal")
                     withContext(Dispatchers.Main) {
-                        val errorMsg = TidalApiClient.lastError ?: "Token expirado o URL no encontrada"
+                        val errorMsg = "Manifest URL no encontrada"
                         android.widget.Toast.makeText(context, "Error: $errorMsg", android.widget.Toast.LENGTH_LONG).show()
                     }
                     return@launch
@@ -221,96 +221,70 @@ object TidalDownloadManager {
 
     private suspend fun tagAndEnrichDownloadedFile(context: Context, outputFile: File, song: Song, realTrackId: String, coverId: String) =
         withContext(Dispatchers.IO) {
-            // 1. Obtener letras (Tidal) o Fallback
-            var lyricsToSave = ""
-            try {
-                lyricsToSave = TidalApiClient.getLyrics(realTrackId)
-                if (lyricsToSave.isEmpty()) {
-                    val lrcFromAmll = code.name.monkey.retromusic.util.AmllLyricsFetcher.fetchLyrics(song.title, song.artistName) ?: ""
-                    val lrcFromMusixmatch = if (lrcFromAmll.isEmpty()) {
-                        code.name.monkey.retromusic.util.MusixmatchFetcher.getEnhancedLrc(song.title, song.artistName) ?: ""
-                    } else ""
-                    val lrcFromLib = if (lrcFromAmll.isEmpty() && lrcFromMusixmatch.isEmpty()) {
-                        code.name.monkey.retromusic.util.LRCLibFetcher.fetchLyrics(song) ?: ""
-                    } else ""
-                    lyricsToSave = lrcFromAmll.ifEmpty { lrcFromMusixmatch.ifEmpty { lrcFromLib } }
-                }
-            } catch (e: Exception) {
-                Log.w(TAG, "Error obteniendo letras: ${e.message}")
-            }
-
-            // 2. Etiquetado ID3 con JAudioTagger
-            try {
-                org.jaudiotagger.tag.TagOptionSingleton.getInstance().isAndroid = true
-
-                var audioFile: org.jaudiotagger.audio.AudioFile? = null
+            // ── 1. Fetch synced lyrics — Amll fallback ─────────
+            var rawLyricsText = ""
+            if (rawLyricsText.isEmpty()) {
                 try {
-                    audioFile = AudioFileIO.read(outputFile)
+                    val lrcFromAmll = code.name.monkey.retromusic.util.AmllLyricsFetcher
+                        .fetchLyrics(song.title, song.artistName) ?: ""
+                    val lrcFromMusixmatch = if (lrcFromAmll.isEmpty())
+                        code.name.monkey.retromusic.util.MusixmatchFetcher
+                            .getEnhancedLrc(song.title, song.artistName) ?: ""
+                    else ""
+                    val lrcFromLib = if (lrcFromAmll.isEmpty() && lrcFromMusixmatch.isEmpty())
+                        code.name.monkey.retromusic.util.LRCLibFetcher.fetchLyrics(song) ?: ""
+                    else ""
+                    rawLyricsText = lrcFromAmll.ifEmpty { lrcFromMusixmatch.ifEmpty { lrcFromLib } }
                 } catch (e: Exception) {
-                    try {
-                        if (outputFile.name.endsWith(".mp3", ignoreCase = true)) {
-                            audioFile = org.jaudiotagger.audio.mp3.MP3File(outputFile)
-                        } else if (outputFile.name.endsWith(".flac", ignoreCase = true)) {
-                            audioFile = org.jaudiotagger.audio.flac.FlacFileReader().read(outputFile)
-                        }
-                    } catch (e2: Exception) {}
+                    Log.w(TAG, "Fallback lyrics fetch failed: ${e.message}")
                 }
-
-                if (audioFile == null) return@withContext
-
-                var tag = audioFile.tag
-                if (tag == null || (audioFile is org.jaudiotagger.audio.mp3.MP3File && tag is org.jaudiotagger.tag.id3.ID3v24Tag)) {
-                    if (audioFile is org.jaudiotagger.audio.mp3.MP3File) {
-                        tag = org.jaudiotagger.tag.id3.ID3v23Tag()
-                        audioFile.tag = tag
-                    } else {
-                        tag = audioFile.createDefaultTag()
-                        audioFile.tag = tag
-                    }
-                }
-
-                tag.setField(FieldKey.TITLE, song.title)
-                tag.setField(FieldKey.ARTIST, song.artistName)
-                tag.setField(FieldKey.ALBUM, song.albumName)
-                
-                if (lyricsToSave.isNotEmpty()) {
-                    try {
-                        tag.setField(FieldKey.LYRICS, lyricsToSave)
-                    } catch (e: Exception) { }
-                }
-
-                // Portada HD
-                if (coverId.isNotEmpty()) {
-                    try {
-                        val coverUrl = "https://resources.tidal.com/images/${coverId.replace("-", "/")}/1280x1280.jpg"
-                        val coverReq = okhttp3.Request.Builder().url(coverUrl).get().build()
-                        val coverResp = httpClient.newCall(coverReq).execute()
-                        if (coverResp.isSuccessful) {
-                            val coverBytes = coverResp.body?.bytes()
-                            if (coverBytes != null && coverBytes.isNotEmpty()) {
-                                val tempCover = File(outputFile.parentFile, ".cover_${realTrackId}.jpg")
-                                FileOutputStream(tempCover).use { it.write(coverBytes) }
-                                try {
-                                    val artwork = org.jaudiotagger.tag.images.ArtworkFactory.createArtworkFromFile(tempCover)
-                                    tag.deleteArtworkField()
-                                    tag.setField(artwork)
-                                } finally {
-                                    tempCover.delete()
-                                }
-                            }
-                        }
-                        coverResp.close()
-                    } catch (e: Exception) {
-                        Log.w(TAG, "No se pudo incrustar portada: ${e.message}")
-                    }
-                }
-
-                audioFile.commit()
-            } catch (e: Exception) {
-                Log.e(TAG, "Error etiquetando archivo ID3: $e")
             }
 
-            // 3. Registrar y encolar análisis PCM ultra-lite. No se infieren BPM ni tonalidad localmente.
+            // Normalise raw LRC text → canonical [{"time":ms,"text":"…"}] JSON
+            // SyllableLyricsReader will parse this back at playback time — no network needed.
+            val syllableLyricsJson: String? = if (rawLyricsText.isNotEmpty()) {
+                AudioMetadataInjector.normalizeTidalLyricsJson(rawLyricsText)
+                    .takeIf { it.length > 2 }   // "[]" = empty array, skip
+                    ?: rawLyricsText             // keep raw as plain fallback
+            } else null
+
+            // ── 2. Download cover art directly into memory (no temp file) ─────────
+            var coverBytes: ByteArray? = null
+            if (coverId.isNotEmpty()) {
+                try {
+                    val coverUrl = "https://resources.tidal.com/images/${coverId.replace("-", "/")}/1280x1280.jpg"
+                    val coverReq = okhttp3.Request.Builder().url(coverUrl).get().build()
+                    val coverResp = httpClient.newCall(coverReq).execute()
+                    if (coverResp.isSuccessful) {
+                        coverBytes = coverResp.body?.bytes()
+                        Log.d(TAG, "Cover downloaded: ${coverBytes?.size ?: 0} bytes")
+                    }
+                    coverResp.close()
+                } catch (e: Exception) {
+                    Log.w(TAG, "Cover download failed: ${e.message}")
+                }
+            }
+
+            // ── 3. Inject all metadata via AudioMetadataInjector ─────────────────
+            //   Writes to the file: Title, Artist, Album, Cover (JPEG),
+            //   LYRICS (plain) + SYLLABLE_LYRICS (canonical JSON) for offline use.
+            val injected = AudioMetadataInjector.inject(
+                audioFile = outputFile,
+                metadata  = AudioMetadataInjector.TrackMetadata(
+                    title              = song.title,
+                    artist             = song.artistName,
+                    album              = song.albumName.orEmpty(),
+                    bpm                = 0,   // set later by TrackAnalysisWorker
+                    coverBytes         = coverBytes,
+                    syllableLyricsJson = syllableLyricsJson,
+                )
+            )
+            if (!injected) {
+                Log.w(TAG, "AudioMetadataInjector reported a failure for ${outputFile.name}")
+            }
+
+            // ── 4. Room DB registration + async analysis worker ───────────────────
+            // (formerly step 3)
             try {
                 val entity = SongEntity(
                     playlistCreatorId = 0L,

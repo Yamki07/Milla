@@ -18,6 +18,8 @@ import androidx.media3.common.Player
 import androidx.media3.datasource.DataSource
 import androidx.media3.exoplayer.ExoPlayer
 import code.name.monkey.retromusic.db.SongEntity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
 import java.io.File
 import java.util.Locale
@@ -120,48 +122,46 @@ class AutomixPlayerEngine(private val context: Context) {
      * Prepara el [ExoPlayer] suministrado para reproducir una pista local o stream Deezer al vuelo.
      */
     private fun preparePlayerForSong(player: ExoPlayer, song: SongEntity): Boolean {
-        val path = song.data.trim()
         player.stop()
         player.clearMediaItems()
-        return if (path.startsWith("tidal://track/", true)) {
-            val split = path.removePrefix("tidal://track/").split("::")
-            val trackId = split[0]
-            val upstreamFactory = androidx.media3.datasource.DefaultDataSource.Factory(context)
-            val resolver = androidx.media3.datasource.ResolvingDataSource.Resolver { dataSpec ->
-                val streamUrl = kotlinx.coroutines.runBlocking {
-                    TidalApiClient.getStreamUrl(trackId)
-                }
-                if (streamUrl != null) dataSpec.withUri(Uri.parse(streamUrl)) else dataSpec
-            }
-            val tidalFactory = androidx.media3.datasource.ResolvingDataSource.Factory(upstreamFactory, resolver)
-            val mediaItem = MediaItem.fromUri(Uri.parse(path))
-            val mediaSource = androidx.media3.exoplayer.source.DefaultMediaSourceFactory(context)
-                .setDataSourceFactory(tidalFactory)
-                .createMediaSource(mediaItem)
-            player.setMediaSource(mediaSource)
-            true
-        } else {
-            val mediaItem = buildMediaItem(song)
-            if (mediaItem != null) {
-                player.setMediaItem(mediaItem)
-                true
-            } else {
-                false
-            }
+        val mediaItem = buildMediaItem(song)
+        if (mediaItem != null) {
+            player.setMediaItem(mediaItem)
+            return true
         }
+        return false
     }
 
     /**
-     * Crea un [MediaItem] compatible con archivos locales y streams HTTP/HTTPS/Deezer.
+     * Crea un [MediaItem] compatible con archivos locales y streams HTTP/HTTPS/Tidal.
+     * Para URIs `tidal://track/{id}`, resuelve la URL real de streaming a través de la API.
      */
     private fun buildMediaItem(song: SongEntity): MediaItem? {
         val path = song.data.trim()
-        return if (path.startsWith("http://", true) || path.startsWith("https://", true) || path.startsWith("deezer://", true) || path.startsWith("tidal://", true)) {
-            MediaItem.fromUri(Uri.parse(path))
-        } else {
-            val file = File(path)
-            if (!file.exists()) return null
-            MediaItem.fromUri(Uri.fromFile(file))
+        return when {
+            path.startsWith("tidal://track/", true) -> {
+                // Resolve the actual streaming URL from Tidal API
+                val trackId = path.removePrefix("tidal://track/")
+                    .substringBefore("::")
+                    .toLongOrNull() ?: 0L
+                val streamUrl = runBlocking(Dispatchers.IO) {
+                    TidalHifiApiClient.getStreamUrl(trackId)
+                }
+                if (!streamUrl.isNullOrEmpty()) {
+                    MediaItem.fromUri(Uri.parse(streamUrl))
+                } else {
+                    Log.w(TAG, "Could not resolve Tidal stream URL for trackId=$trackId")
+                    null
+                }
+            }
+            path.startsWith("http://", true) || path.startsWith("https://", true) -> {
+                MediaItem.fromUri(Uri.parse(path))
+            }
+            else -> {
+                val file = File(path)
+                if (!file.exists()) return null
+                MediaItem.fromUri(Uri.fromFile(file))
+            }
         }
     }
 

@@ -5,6 +5,9 @@ import code.name.monkey.retromusic.network.SpotifyClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+import code.name.monkey.retromusic.model.Song
+import code.name.monkey.retromusic.automix.TidalHifiApiClient
+
 /**
  * Automix Recommendation Engine
  * Bridges Spotify's powerful recommendation API with ReFreezer's (Deezer) audio streams.
@@ -14,9 +17,9 @@ object RecommendationEngine {
 
     /**
      * Gets similar tracks (Automix/Infinite Radio) for a given track name/artist.
-     * Uses Spotify to find recommendations, then matches them to ReFreezer (Deezer) tracks.
+     * Uses Spotify to find recommendations, then matches them to Tidal tracks.
      */
-    suspend fun getSimilarTracksForAutomix(seedTrackName: String, seedArtistName: String, limit: Int = 10): List<DeezerTrack> {
+    suspend fun getSimilarTracksForAutomix(seedTrackName: String, seedArtistName: String, limit: Int = 10): List<Song> {
         return withContext(Dispatchers.IO) {
             try {
                 // 1. Get Spotify Token
@@ -52,28 +55,28 @@ object RecommendationEngine {
                     return@withContext emptyList()
                 }
 
-                // 4. Resolve Spotify tracks to ReFreezer (Deezer) tracks for streaming/download
-                val matchedDeezerTracks = mutableListOf<DeezerTrack>()
+                // 4. Resolve Spotify tracks to Tidal tracks for streaming/download
+                val matchedTidalTracks = mutableListOf<Song>()
                 for (spotifyTrack in recommendedSpotifyTracks) {
-                    if (matchedDeezerTracks.size >= limit) break
+                    if (matchedTidalTracks.size >= limit) break
 
                     val query = "${spotifyTrack.name} ${spotifyTrack.artists.firstOrNull()?.name ?: ""}"
                     try {
-                        val deezerResults = DeezerApiClient.search(query)
-                        val bestMatch = deezerResults.firstOrNull {
+                        val tidalResults = TidalHifiApiClient.searchTracks(query)
+                        val bestMatch = tidalResults.firstOrNull {
                             it.title.contains(spotifyTrack.name, ignoreCase = true) ||
                             spotifyTrack.name.contains(it.title, ignoreCase = true)
-                        } ?: deezerResults.firstOrNull()
+                        } ?: tidalResults.firstOrNull()
 
                         if (bestMatch != null) {
-                            matchedDeezerTracks.add(bestMatch)
+                            matchedTidalTracks.add(bestMatch)
                         }
                     } catch (e: Exception) {
-                        Log.e(TAG, "Failed to resolve track on ReFreezer: $query", e)
+                        Log.e(TAG, "Failed to resolve track on Tidal: $query", e)
                     }
                 }
 
-                matchedDeezerTracks
+                matchedTidalTracks
             } catch (e: Exception) {
                 Log.e(TAG, "Error generating Automix recommendations", e)
                 emptyList()

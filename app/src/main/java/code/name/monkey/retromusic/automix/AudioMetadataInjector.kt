@@ -44,7 +44,7 @@ import org.jaudiotagger.tag.FieldKey
 import org.jaudiotagger.tag.Tag
 import org.jaudiotagger.tag.flac.FlacTag
 import org.jaudiotagger.tag.images.AndroidArtwork
-import org.jaudiotagger.tag.images.PictureTypes
+import org.jaudiotagger.tag.reference.PictureTypes
 import org.jaudiotagger.tag.mp4.Mp4Tag
 import org.jaudiotagger.tag.mp4.field.Mp4TagReverseDnsField
 import org.json.JSONArray

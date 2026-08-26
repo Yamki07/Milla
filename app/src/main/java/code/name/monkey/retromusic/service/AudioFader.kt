@@ -11,37 +11,6 @@ import code.name.monkey.retromusic.util.PreferenceUtil
 
 class AudioFader {
     companion object {
-        fun createFadeAnimator(
-            context: Context,
-            fadeInMp: MediaPlayer,
-            fadeOutMp: MediaPlayer,
-            durationMs: Long? = null,
-            endAction: (animator: Animator) -> Unit, /* Code to run when Animator Ends*/
-        ): Animator? {
-            // Get Global animator scale
-            val animScale = Settings.Global.getFloat(context.contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1f)
-
-            // Set duration according to the global animation scale, so cross-fade actually lasts for the duration set by the user
-            val baseDuration = durationMs?.toFloat() ?: (PreferenceUtil.crossFadeDuration * 1000f)
-            val duration = baseDuration / animScale
-            if (duration == 0F) {
-                return null
-            }
-            return ValueAnimator.ofFloat(0f, 1f).apply {
-                this.duration = duration.toLong()
-                addUpdateListener { animation: ValueAnimator ->
-                    fadeInMp.setVolume(
-                        animation.animatedValue as Float, animation.animatedValue as Float
-                    )
-                    fadeOutMp.setVolume(1 - animation.animatedValue as Float,
-                        1 - animation.animatedValue as Float)
-                }
-                doOnEnd {
-                    endAction(it)
-                }
-            }
-        }
-
         fun startFadeAnimator(
             playback: Playback,
             fadeIn: Boolean, /* fadeIn -> true  fadeOut -> false*/
@@ -63,6 +32,51 @@ class AudioFader {
                 callback?.run()
             }
             animator.start()
+        }
+
+        fun createFadeAnimator(
+            player: MediaPlayer,
+            fadeIn: Boolean,
+            duration: Long,
+            onEnd: (() -> Unit)? = null
+        ): Animator {
+            val startValue = if (fadeIn) 0f else 1.0f
+            val endValue = if (fadeIn) 1.0f else 0f
+            val animator = ValueAnimator.ofFloat(startValue, endValue)
+            animator.duration = duration
+            animator.addUpdateListener { animation: ValueAnimator ->
+                try {
+                    val vol = animation.animatedValue as Float
+                    player.setVolume(vol, vol)
+                } catch (e: Exception) {
+                }
+            }
+            animator.doOnEnd {
+                onEnd?.invoke()
+            }
+            return animator
+        }
+
+        fun createCrossFadeAnimator(
+            fadeInMp: MediaPlayer,
+            fadeOutMp: MediaPlayer,
+            duration: Long,
+            onEnd: (() -> Unit)? = null
+        ): Animator {
+            val animator = ValueAnimator.ofFloat(0f, 1.0f)
+            animator.duration = duration
+            animator.addUpdateListener { animation: ValueAnimator ->
+                try {
+                    val vol = animation.animatedValue as Float
+                    fadeInMp.setVolume(vol, vol)
+                    fadeOutMp.setVolume(1.0f - vol, 1.0f - vol)
+                } catch (e: Exception) {
+                }
+            }
+            animator.doOnEnd {
+                onEnd?.invoke()
+            }
+            return animator
         }
     }
 }

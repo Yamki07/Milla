@@ -14,7 +14,6 @@ import androidx.media3.datasource.ResolvingDataSource
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.source.MediaSource
 import androidx.media3.exoplayer.source.ProgressiveMediaSource
-import code.name.monkey.retromusic.automix.TidalApiClient
 import code.name.monkey.retromusic.db.AutomixAnalysisDao
 import code.name.monkey.retromusic.db.TrackAnalysisEntity
 import code.name.monkey.retromusic.db.TransitionPlanEntity
@@ -28,8 +27,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -44,6 +44,7 @@ import kotlin.math.sin
  * facilitar reversión durante la migración.
  */
 class PlaybackOrchestrator(private val context: Context) : Playback {
+    private val transitionMutex = Mutex()
     enum class SessionReason { NONE, CLUB, INFINITE_RADIO, SMART_DJ }
 
     data class AutomixState(
@@ -142,16 +143,18 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         if (song == null) return
         if (!state().active) {
             scope.launch {
-                val mediaSource = resolveTidalStreamUrlAsync(song)
-                withContext(Dispatchers.Main) {
-                    if (nextSong?.id == song.id) {
-                        val count = activePlayer.mediaItemCount
-                        if (count > 1) {
-                            activePlayer.removeMediaItems(1, count)
-                        } else if (count == 0) {
-                            activePlayer.clearMediaItems()
+                val mediaSource = resolveStreamUrlAsync(song)
+                withContext(Dispatchers.Main.immediate) {
+                    transitionMutex.withLock {
+                        if (nextSong?.id == song.id) {
+                            val count = activePlayer.mediaItemCount
+                            if (count > 1) {
+                                activePlayer.removeMediaItems(1, count)
+                            } else if (count == 0) {
+                                activePlayer.clearMediaItems()
+                            }
+                            activePlayer.addMediaSource(mediaSource)
                         }
-                        activePlayer.addMediaSource(mediaSource)
                     }
                 }
             }
@@ -172,7 +175,7 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         activePlayer.stop()
         activePlayer.clearMediaItems()
         scope.launch {
-            val mediaSource = resolveTidalStreamUrlAsync(song)
+            val mediaSource = resolveStreamUrlAsync(song)
             withContext(Dispatchers.Main) {
                 if (currentSong?.id == song.id) {
                     activePlayer.setMediaSource(mediaSource)
@@ -274,19 +277,25 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
             })
         }
 
-    private suspend fun resolveTidalStreamUrlAsync(song: Song): MediaSource {
-        val path = song.data.trim()
-        if (!path.startsWith("tidal://track/", true)) {
-            val item = MediaItem.Builder().setMediaId(song.id.toString()).setUri(song.uri).build()
-            return ProgressiveMediaSource.Factory(DefaultDataSource.Factory(context)).createMediaSource(item)
+    private suspend fun resolveStreamUrlAsync(song: Song): MediaSource {
+        val resolvedUri: Uri = if (song.data.startsWith("tidal://track/", true)) {
+            // Extract track ID and resolve the real streaming URL via Tidal API
+            val trackId = song.data.removePrefix("tidal://track/")
+                .substringBefore("::")
+                .toLongOrNull() ?: 0L
+            val streamUrl = withContext(Dispatchers.IO) {
+                code.name.monkey.retromusic.automix.TidalHifiApiClient.getStreamUrl(trackId)
+            }
+            if (!streamUrl.isNullOrEmpty()) {
+                Uri.parse(streamUrl)
+            } else {
+                // Fallback — will likely fail but keeps the pipeline consistent
+                song.uri
+            }
+        } else {
+            song.uri
         }
-        val trackId = path.removePrefix("tidal://track/").substringBefore("::")
-        val streamUrl = withContext(Dispatchers.IO) { TidalApiClient.getStreamUrl(trackId) }
-        val finalUri = if (!streamUrl.isNullOrEmpty()) Uri.parse(streamUrl) else Uri.parse("https://tidal.com/stream/$trackId")
-        val item = MediaItem.Builder()
-            .setMediaId(song.id.toString())
-            .setUri(finalUri)
-            .build()
+        val item = MediaItem.Builder().setMediaId(song.id.toString()).setUri(resolvedUri).build()
         return ProgressiveMediaSource.Factory(DefaultDataSource.Factory(context)).createMediaSource(item)
     }
 
@@ -408,7 +417,7 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
         preloadPlayer.volume = 0f
         
         scope.launch {
-            val mediaSource = resolveTidalStreamUrlAsync(incoming)
+            val mediaSource = resolveStreamUrlAsync(incoming)
             withContext(Dispatchers.Main) {
                 if (nextSong?.id != incoming.id) return@withContext
                 preloadPlayer.setMediaSource(mediaSource)
@@ -438,20 +447,24 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
     }
 
     private fun completeTransition(incoming: Song) {
-        activePlayer.stop()
-        activePlayer.clearMediaItems()
-        val old = activePlayer
-        activePlayer = preloadPlayer
-        preloadPlayer = old
-        activePlayer.volume = 1f
-        activePlayer.playbackParameters = PlaybackParameters(1f, 1f)
-        currentSong = incoming
-        nextSong = null
-        pendingPlan = null
-        transitionRunning = false
-        fade = null
-        _automixTransitionState.value = AutoMixTransitionState()
-        callbacks?.onTrackEndedWithCrossfade()
+        scope.launch(Dispatchers.Main.immediate) {
+            transitionMutex.withLock {
+                activePlayer.stop()
+                activePlayer.clearMediaItems()
+                val old = activePlayer
+                activePlayer = preloadPlayer
+                preloadPlayer = old
+                activePlayer.volume = 1f
+                activePlayer.playbackParameters = PlaybackParameters(1f, 1f)
+                currentSong = incoming
+                nextSong = null
+                pendingPlan = null
+                transitionRunning = false
+                fade = null
+                _automixTransitionState.value = AutoMixTransitionState()
+                callbacks?.onTrackEndedWithCrossfade()
+            }
+        }
     }
 
     private fun stopTransition() {

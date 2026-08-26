@@ -25,11 +25,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
-import code.name.monkey.retromusic.automix.DeezerApiClient
-
+import code.name.monkey.retromusic.automix.TidalHifiApiClient
 import code.name.monkey.retromusic.automix.TidalDownloadManager
-import code.name.monkey.retromusic.automix.DeezerTrack
-import code.name.monkey.retromusic.automix.MillayTrackAdapter
+import code.name.monkey.retromusic.model.Song
+import code.name.monkey.retromusic.fragments.millay.MillaySongRowAdapter
 import code.name.monkey.retromusic.automix.MillayAlbumAdapter
 import code.name.monkey.retromusic.automix.MillayGenreAdapter
 import code.name.monkey.retromusic.db.toSong
@@ -82,14 +81,14 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
     private lateinit var miniDownload: ImageButton
 
     // ─────────── State ───────────
-    private lateinit var trackAdapter: MillayTrackAdapter
-    private lateinit var topTracksAdapter: MillayTrackAdapter
+    private lateinit var trackAdapter: MillaySongRowAdapter
+    private lateinit var topTracksAdapter: MillaySongRowAdapter
     private lateinit var topAlbumsAdapter: MillayAlbumAdapter
     private lateinit var genresAdapter: MillayGenreAdapter
 
     private var searchJob: Job? = null
     private var mediaPlayer: MediaPlayer? = null
-    private var currentTrack: DeezerTrack? = null
+    private var currentTrack: Song? = null
     private var isPlaying = false
     private val httpClient = OkHttpClient()
 
@@ -132,14 +131,10 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
 
     // ─────────── RecyclerView ───────────
     private fun setupRecyclerView() {
-        trackAdapter = MillayTrackAdapter(
-            onPlay = { track -> playTrack(track) },
-            onDownload = { track ->
-                // Use user's preferred quality from Millay Settings
-                val quality = MillaySettingsFragment.getDownloadQualityInt(requireContext())
-                val format = MillaySettingsFragment.getDownloadQuality(requireContext()).uppercase()
-                startDownload(track, quality, format)
-            }
+        trackAdapter = MillaySongRowAdapter(
+            songs = emptyList(),
+            onDownloadClick = { track -> showQualityDialog(track) },
+            onSongClick = { track -> playTrack(track) }
         )
         tracksList.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -147,13 +142,10 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
             setHasFixedSize(false)
         }
 
-        topTracksAdapter = MillayTrackAdapter(
-            onPlay = { track -> playTrack(track) },
-            onDownload = { track ->
-                val quality = MillaySettingsFragment.getDownloadQualityInt(requireContext())
-                val format = MillaySettingsFragment.getDownloadQuality(requireContext()).uppercase()
-                startDownload(track, quality, format)
-            }
+        topTracksAdapter = MillaySongRowAdapter(
+            songs = emptyList(),
+            onDownloadClick = { track -> showQualityDialog(track) },
+            onSongClick = { track -> playTrack(track) }
         )
         topTracksList.apply {
             adapter = topTracksAdapter
@@ -187,15 +179,25 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
     private fun loadHomeData() {
         lifecycleScope.launch {
             try {
-                val albums = DeezerApiClient.getTopAlbums()
-                val tracks = DeezerApiClient.getTopTracks()
+                val tracks = TidalHifiApiClient.searchTracks("Top Hits")
+
+                val albums = listOf(
+                    mapOf("title" to "Populares", "cover" to ""),
+                    mapOf("title" to "Global", "cover" to ""),
+                    mapOf("title" to "Novedades", "cover" to "")
+                )
 
                 topAlbumsAdapter = MillayAlbumAdapter(albums) { album ->
                     performSearch(album["title"] ?: "")
                 }
                 topAlbumsList.adapter = topAlbumsAdapter
 
-                topTracksAdapter.submitList(tracks)
+                topTracksAdapter = MillaySongRowAdapter(
+                    songs = tracks,
+                    onDownloadClick = { track -> showQualityDialog(track) },
+                    onSongClick = { track -> playTrack(track) }
+                )
+                topTracksList.adapter = topTracksAdapter
             } catch (e: Exception) {
                 // Ignore silently
             }
@@ -226,11 +228,16 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
         showState(State.LOADING)
         viewLifecycleOwner.lifecycleScope.launch {
             try {
-                val tracks = DeezerApiClient.search(query)
+                val tracks = TidalHifiApiClient.searchTracks(query)
                 if (tracks.isEmpty()) {
                     showState(State.EMPTY)
                 } else {
-                    trackAdapter.submitList(tracks)
+                    trackAdapter = MillaySongRowAdapter(
+                        songs = tracks,
+                        onDownloadClick = { track -> showQualityDialog(track) },
+                        onSongClick = { track -> playTrack(track) }
+                    )
+                    tracksList.adapter = trackAdapter
                     resultsCount.text = "${tracks.size} canciones"
                     showState(State.RESULTS)
                 }
@@ -253,30 +260,30 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
     }
 
     // ─────────── Playback (Streaming Nativo) ───────────
-    private fun playTrack(track: DeezerTrack) {
+    private fun playTrack(track: Song) {
         val ctx = context ?: return
         try {
             Toast.makeText(ctx, "▶ Conectando stream: ${track.title}...", Toast.LENGTH_SHORT).show()
 
             val songEntity = code.name.monkey.retromusic.db.SongEntity(
                 playlistCreatorId = 0L,
-                id = track.id.toLongOrNull() ?: System.currentTimeMillis(),
+                id = track.id,
                 title = track.title,
-                trackNumber = 1,
-                year = 2026,
-                duration = track.durationSec * 1000L,
-                data = "deezer://track/${track.id}",
+                trackNumber = track.trackNumber,
+                year = track.year,
+                duration = track.duration,
+                data = track.data,
                 dateModified = System.currentTimeMillis(),
-                albumId = 0L,
-                albumName = track.albumTitle,
-                artistId = 0L,
+                albumId = track.albumId,
+                albumName = track.albumName,
+                artistId = track.artistId,
                 artistName = track.artistName,
-                composer = "",
-                albumArtist = track.artistName,
+                composer = track.composer,
+                albumArtist = track.albumArtist,
                 bpm = 120f
             )
 
-            MusicPlayerRemote.openQueue(listOf(songEntity.toSong()), 0, true)
+            code.name.monkey.retromusic.helper.MusicPlayerRemote.openQueue(listOf(songEntity.toSong()), 0, true)
             
             currentTrack = track
             isPlaying = true
@@ -288,14 +295,15 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
         }
     }
 
-    private fun showMiniPlayer(track: DeezerTrack) {
+    private fun showMiniPlayer(track: Song) {
         miniTitle.text = track.title
         miniArtist.text = track.artistName
         miniPlayPause.setImageResource(R.drawable.ic_pause_white_48dp)
         miniPlayer.visibility = View.VISIBLE
 
+        val uri = code.name.monkey.retromusic.glide.RetroGlideExtension.getSongModel(track)
         Glide.with(miniArt.context)
-            .load(track.coverUrlThumb)
+            .load(uri)
             .apply(RequestOptions().transform(RoundedCorners(12)).placeholder(R.drawable.millay_art_placeholder))
             .into(miniArt)
     }
@@ -328,65 +336,32 @@ class MillayFragment : AbsMainActivityFragment(R.layout.fragment_millay) {
     }
 
     // ─────────── Quality Selection Dialog ───────────
-    private fun showQualityDialog(track: DeezerTrack) {
+    private fun showQualityDialog(track: Song) {
         val ctx = context ?: return
-        viewLifecycleOwner.lifecycleScope.launch {
-            try {
-                Toast.makeText(ctx, "🔍 Verificando calidades disponibles...", Toast.LENGTH_SHORT).show()
-
-                val qualities = DeezerApiClient.getAvailableQualities(track.id)
-                if (qualities.isEmpty()) {
-                    val currentContext = context ?: return@launch
-                    Toast.makeText(currentContext, "❌ No se pudieron obtener las calidades", Toast.LENGTH_SHORT).show()
-                    return@launch
+        
+        val labels = arrayOf("HI_RES_LOSSLESS (FLAC)", "HIGH (MP3 320kbps)", "LOW (MP3 96kbps)")
+        
+        AlertDialog.Builder(ctx)
+            .setTitle("⬇️ Descargar: ${track.title}")
+            .setItems(labels) { _, which ->
+                val (quality, format) = when(which) {
+                    0 -> Pair(9, "FLAC")
+                    1 -> Pair(3, "MP3_320")
+                    else -> Pair(1, "MP3_96")
                 }
-
-                val labels = qualities.map { "${it["label"]} (${it["size"]})" }.toTypedArray()
-
-                withContext(Dispatchers.Main) {
-                    val currentContext = context ?: return@withContext
-                    AlertDialog.Builder(currentContext)
-                        .setTitle("⬇️ Descargar: ${track.title}")
-                        .setItems(labels) { _, which ->
-                            val selected = qualities[which]
-                            val qualityInt = selected["quality"]?.toIntOrNull() ?: 3
-                            val format = selected["format"] ?: "MP3_320"
-                            startDownload(track, qualityInt, format)
-                        }
-                        .setNegativeButton("Cancelar", null)
-                        .show()
-                }
-            } catch (e: Exception) {
-                val currentContext = context ?: return@launch
-                Toast.makeText(currentContext, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                startDownload(track, quality, format)
             }
-        }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     // ─────────── Download ───────────
-    private fun startDownload(track: DeezerTrack, quality: Int, format: String) {
+    private fun startDownload(track: Song, quality: Int, format: String) {
         val ctx = context ?: return
         viewLifecycleOwner.lifecycleScope.launch {
             try {
                 Toast.makeText(ctx, "⬇️ Descargando en $format: ${track.title}", Toast.LENGTH_SHORT).show()
-
-                val song = code.name.monkey.retromusic.model.Song(
-                    id = track.id.toLongOrNull() ?: 0L,
-                    title = track.title,
-                    trackNumber = 1,
-                    year = 2026,
-                    duration = track.durationSec * 1000L,
-                    data = "deezer://track/${track.id}",
-                    dateModified = System.currentTimeMillis(),
-                    albumId = 0L,
-                    albumName = track.albumTitle,
-                    artistId = 0L,
-                    artistName = track.artistName,
-                    composer = "",
-                    albumArtist = track.artistName
-                )
-                val currentContext = context ?: return@launch
-                TidalDownloadManager.downloadTrack(currentContext, song, quality)
+                TidalDownloadManager.downloadTrack(ctx, track, quality)
             } catch (e: Exception) {
                 val currentContext = context ?: return@launch
                 Toast.makeText(currentContext, "Error al descargar: ${e.message}", Toast.LENGTH_SHORT).show()

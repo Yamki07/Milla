@@ -32,7 +32,7 @@ import code.name.monkey.retromusic.activities.base.AbsBaseActivity.Companion.BLU
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.util.NavigationUtil
 import code.name.monkey.retromusic.util.LocalMetadataScanner
-import kotlinx.coroutines.GlobalScope
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
 /**
@@ -72,7 +72,7 @@ class AudioSettings : AbsSettingsFragment() {
         val scanPreference: Preference? = findPreference("scan_local_metadata")
         scanPreference?.setOnPreferenceClickListener {
             Toast.makeText(requireContext(), "Escaneando archivos locales y extrayendo BPM/Key...", Toast.LENGTH_SHORT).show()
-            GlobalScope.launch {
+            lifecycleScope.launch {
                 LocalMetadataScanner.scanAndUploadLocalTags(requireContext())
                 requireActivity().runOnUiThread {
                     Toast.makeText(requireContext(), "¡Escaneo y subida completados!", Toast.LENGTH_SHORT).show()

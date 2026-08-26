@@ -28,19 +28,16 @@
         app:fel_size_bottom="100dp"
         app:fel_size_top="100dp">
 
-        <code.name.monkey.retromusic.lyrics.CoverLrcView
+        <TextView
             android:id="@+id/lyricsView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="16dp"
             android:visibility="gone"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-            app:lrcLabel="@string/no_lyrics_found"
-            app:lrcNormalTextSize="28sp"
-            app:lrcPadding="24dp"
-            app:lrcTextGravity="center"
-            app:lrcTextSize="32sp"
-            app:lrcTimelineColor="@color/transparent"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="28sp"
+            android:text="@string/no_lyrics_found"
             tools:visibility="visible" />
     </com.bosphere.fadingedgelayout.FadingEdgeLayout>
 </FrameLayout>

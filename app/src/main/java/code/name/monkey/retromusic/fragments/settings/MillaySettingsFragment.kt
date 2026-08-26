@@ -7,7 +7,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.automix.LocalMetadataScanner
-import kotlinx.coroutines.GlobalScope
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 
 /**
@@ -32,7 +32,7 @@ class MillaySettingsFragment : PreferenceFragmentCompat() {
                     show()
                 }
                 
-                GlobalScope.launch {
+                lifecycleScope.launch {
                     val currentContext = context ?: return@launch
                     LocalMetadataScanner.scanEntireDeviceAndUpload(currentContext) { progress, total, title ->
                         val act = activity ?: return@scanEntireDeviceAndUpload

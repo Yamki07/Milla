@@ -12,7 +12,8 @@ import code.name.monkey.retromusic.network.RemoteTrackMetadata
 import code.name.monkey.retromusic.network.SupabaseClientManager
 import code.name.monkey.retromusic.repository.RoomRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jaudiotagger.audio.AudioFileIO
@@ -102,6 +103,7 @@ fun SongEntity.withAutomixMetadata(
 object BpmScanner {
 
     private const val TAG = "BpmScanner"
+    private val scannerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private const val DEFAULT_UNKNOWN_BPM = 0.0f
     private const val DEFAULT_UNKNOWN_CROSSFADE_MS = 5000L
 
@@ -329,7 +331,7 @@ object BpmScanner {
 
             // c) Subir datos calculados a Supabase en segundo plano para enriquecer la DB global
             if (artist.isNotBlank() && title.isNotBlank() && bpm > 0f) {
-                GlobalScope.launch(Dispatchers.IO) {
+                scannerScope.launch {
                     SupabaseClientManager.uploadMetadata(
                         RemoteTrackMetadata(
                             trackId = trackId,

@@ -47,10 +47,10 @@ object SupabaseClientManager {
 
     private const val TAG = "SupabaseClientManager"
 
-    private const val SUPABASE_URL = "https://brgwlyixvgdvzahmsusf.supabase.co"
-    private const val SUPABASE_ANON_KEY = "sb_publishable_4qGbvRV8ArCt3OkFe4mcCQ_r9DpCKM1"
+    private val SUPABASE_URL = code.name.monkey.retromusic.BuildConfig.SUPABASE_URL
+    private val SUPABASE_ANON_KEY = code.name.monkey.retromusic.BuildConfig.SUPABASE_ANON_KEY
 
-    private const val TABLE_ENDPOINT = "$SUPABASE_URL/rest/v1/track_metadata"
+    private val TABLE_ENDPOINT = "$SUPABASE_URL/rest/v1/track_metadata"
 
     /**
      * Consulta de forma segura un metadato en la tabla `track_metadata` de Supabase

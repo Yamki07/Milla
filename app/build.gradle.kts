@@ -33,6 +33,12 @@ android {
         buildConfigField("String", "TIDAL_REFRESH_TOKEN", buildConfigString(getProperty(localProperties, "TIDAL_REFRESH_TOKEN", defaultRefreshToken)))
         buildConfigField("String", "TIDAL_CLIENT_ID", buildConfigString(getProperty(localProperties, "TIDAL_CLIENT_ID", defaultClientId)))
         buildConfigField("String", "TIDAL_CLIENT_SECRET", buildConfigString(getProperty(localProperties, "TIDAL_CLIENT_SECRET", defaultClientSecret)))
+        
+        // Supabase configuration
+        val defaultSupabaseUrl = "https://example.supabase.co"
+        val defaultSupabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.dummy_key"
+        buildConfigField("String", "SUPABASE_URL", buildConfigString(getProperty(localProperties, "SUPABASE_URL", defaultSupabaseUrl)))
+        buildConfigField("String", "SUPABASE_ANON_KEY", buildConfigString(getProperty(localProperties, "SUPABASE_ANON_KEY", defaultSupabaseKey)))
     }
     val signingProperties = getProperties("retro.properties")
     val theSigningConfig = if (signingProperties != null) {

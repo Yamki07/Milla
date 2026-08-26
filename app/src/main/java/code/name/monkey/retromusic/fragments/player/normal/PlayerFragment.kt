@@ -29,17 +29,14 @@ import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.util.PreferenceUtil
 import code.name.monkey.retromusic.util.color.MediaNotificationProcessor
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
-import code.name.monkey.retromusic.compose.player.PlayerScreen
 import code.name.monkey.retromusic.util.MusicUtil
+import android.animation.ValueAnimator
+import androidx.preference.PreferenceManager
 
 class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
     SharedPreferences.OnSharedPreferenceChangeListener {
 
-    // Compose State
-    private var currentSong by mutableStateOf<Song?>(null)
+    // Stale compose states removed
 
     private var lastColor: Int = 0
     override val paletteColor: Int
@@ -97,22 +94,6 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
         _binding = FragmentPlayerBinding.bind(view)
         
         // Init Compose View
-        currentSong = MusicPlayerRemote.currentSong
-        binding.composePlayerView.setContent {
-            val song = currentSong
-            if (song != null) {
-                PlayerScreen(
-                    coverUri = MusicUtil.getMediaStoreAlbumCoverUri(song.albumId),
-                    songTitle = song.title,
-                    artistName = song.artistName,
-                    onDominantColorExtracted = { color ->
-                        lastColor = color
-                        libraryViewModel.updateColor(color)
-                    }
-                )
-            }
-        }
-
         setUpSubFragments()
         setUpPlayerToolbar()
         startOrStopSnow(PreferenceUtil.isSnowFalling)
@@ -158,12 +139,10 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
 
     override fun onServiceConnected() {
         updateIsFavorite()
-        currentSong = MusicPlayerRemote.currentSong
     }
 
     override fun onPlayingMetaChanged() {
         updateIsFavorite()
-        currentSong = MusicPlayerRemote.currentSong
     }
 
     override fun playerToolbar(): Toolbar {

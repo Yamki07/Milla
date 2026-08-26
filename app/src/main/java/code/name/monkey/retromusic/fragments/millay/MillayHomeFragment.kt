@@ -12,11 +12,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.launch
 import code.name.monkey.retromusic.R
-import code.name.monkey.retromusic.automix.TidalApiClient
-import code.name.monkey.retromusic.automix.toSongEntity
+import code.name.monkey.retromusic.automix.TidalHifiApiClient
 import code.name.monkey.retromusic.db.toSong
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
 import com.bumptech.glide.Glide
@@ -98,8 +99,9 @@ class MillayHomeFragment : Fragment() {
 
     private fun setupTopCharts() {
         topChartsRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        TidalApiClient.searchTracks("Top 50 Global", onResult = { songs ->
-            val act = activity ?: return@searchTracks
+        lifecycleScope.launch {
+            val songs = TidalHifiApiClient.searchTracks("Top 50 Global")
+            val act = activity ?: return@launch
             if (songs.isNotEmpty()) act.runOnUiThread {
                 if (isAdded && view != null) {
                     val mixes = songs.take(10).map { song ->
@@ -111,26 +113,28 @@ class MillayHomeFragment : Fragment() {
                     topChartsRecycler.adapter = MillaySongCardAdapter(mixes) { mix -> searchAndPlay(mix.title) }
                 }
             }
-        })
+        }
     }
 
     private fun playFlowMix(mood: String) {
         context?.let { Toast.makeText(it, "Iniciando Flow ($mood)...", Toast.LENGTH_SHORT).show() }
-        TidalApiClient.searchTracks(mood, onResult = { tracks ->
-            val first = tracks.firstOrNull() ?: return@searchTracks
+        lifecycleScope.launch {
+            val tracks = TidalHifiApiClient.searchTracks(mood)
+            val first = tracks.firstOrNull() ?: return@launch
             activity?.runOnUiThread {
-                if (isAdded) MusicPlayerRemote.openQueue(listOf(first.toSongEntity().toSong()), 0, true)
+                if (isAdded) MusicPlayerRemote.openQueue(listOf(first), 0, true)
             }
-        })
+        }
     }
 
     private fun searchAndPlay(query: String) {
-        TidalApiClient.searchTracks(query, onResult = { tracks ->
-            val first = tracks.firstOrNull() ?: return@searchTracks
+        lifecycleScope.launch {
+            val tracks = TidalHifiApiClient.searchTracks(query)
+            val first = tracks.firstOrNull() ?: return@launch
             activity?.runOnUiThread {
-                if (isAdded) MusicPlayerRemote.openQueue(listOf(first.toSongEntity().toSong()), 0, true)
+                if (isAdded) MusicPlayerRemote.openQueue(listOf(first), 0, true)
             }
-        })
+        }
     }
 
     data class ArtistItem(val name: String, val imageUrl: String)

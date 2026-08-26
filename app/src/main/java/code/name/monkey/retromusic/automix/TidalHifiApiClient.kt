@@ -31,12 +31,8 @@ object TidalHifiApiClient {
     /**
      * Busca pistas en Tidal a través de la hifi-api.
      */
-    fun searchTracks(
-        query: String,
-        onResult: (List<Song>) -> Unit,
-        onError: (Exception) -> Unit = {}
-    ) {
-        Thread {
+    suspend fun searchTracks(query: String): List<Song> {
+        return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             try {
                 val encodedQuery = URLEncoder.encode(query.trim(), "UTF-8")
                 val url = "$baseUrl/search/?s=$encodedQuery&limit=25"
@@ -83,24 +79,23 @@ object TidalHifiApiClient {
                             )
                         }
                     }
-                    onResult(songs)
+                    songs
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error en búsqueda Tidal hifi-api: $e")
-                onError(e)
+                emptyList<Song>()
             }
-        }.start()
+        }
     }
 
     /**
      * Obtiene la URL del manifiesto o archivo directo Hi-Res FLAC (24-bit / 192kHz).
      */
-    fun fetchTrackManifest(
+    suspend fun fetchTrackManifest(
         trackId: Long,
-        quality: String = "HI_RES_LOSSLESS",
-        onResult: (String?, String) -> Unit
-    ) {
-        Thread {
+        quality: String = "HI_RES_LOSSLESS"
+    ): Pair<String?, String> {
+        return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
             try {
                 val url = "$baseUrl/track/?id=$trackId&quality=$quality"
                 val request = Request.Builder().url(url).get().build()
@@ -114,15 +109,37 @@ object TidalHifiApiClient {
                     val audioQuality = dataObj?.optString("audioQuality", quality) ?: quality
 
                     if (manifestB64.isNotEmpty()) {
-                        onResult(manifestB64, audioQuality)
+                        Pair(manifestB64, audioQuality)
                     } else {
-                        onResult(null, audioQuality)
+                        Pair<String?, String>(null, audioQuality)
                     }
                 }
             } catch (e: Exception) {
                 Log.e(TAG, "Error obteniendo manifiesto Tidal Hi-Res para id=$trackId: $e")
-                onResult(null, quality)
+                Pair<String?, String>(null, quality)
             }
-        }.start()
+        }
+    }
+
+    suspend fun getStreamUrl(trackId: Long, quality: String = "HI_RES_LOSSLESS"): String? {
+        return kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+            val (manifestB64, _) = fetchTrackManifest(trackId, quality)
+            if (manifestB64.isNullOrEmpty()) return@withContext null
+            
+            try {
+                val decodedBytes = android.util.Base64.decode(manifestB64, android.util.Base64.DEFAULT)
+                val decodedString = String(decodedBytes, Charsets.UTF_8)
+                val json = JSONObject(decodedString)
+                val urls = json.optJSONArray("urls")
+                if (urls != null && urls.length() > 0) {
+                    urls.getString(0)
+                } else {
+                    null
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error decoding manifest for trackId=$trackId: $e")
+                null
+            }
+        }
     }
 }

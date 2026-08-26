@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.automix.BpmScanner
 import code.name.monkey.retromusic.helper.MusicPlayerRemote
-import code.name.monkey.retromusic.automix.TidalApiClient
+import code.name.monkey.retromusic.automix.TidalHifiApiClient
 import code.name.monkey.retromusic.automix.TidalDownloadManager
 import code.name.monkey.retromusic.db.SongEntity
 import code.name.monkey.retromusic.model.Song
@@ -91,28 +91,8 @@ class MillaySearchFragment : Fragment(R.layout.fragment_millay_search) {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val tidalDeferred = async { TidalApiClient.search(query) }
-                val tidalTracks = try { tidalDeferred.await() } catch(e: Exception) { emptyList() }
-                val mergedSongs = mutableListOf<Song>()
-                
-                for (i in tidalTracks.indices) {
-                    val t = tidalTracks[i]
-                    mergedSongs.add(Song(
-                        id = t.id.toLongOrNull() ?: 0L,
-                        title = t.title,
-                        trackNumber = 1,
-                        year = 2026,
-                        duration = t.durationSec * 1000L,
-                        data = "tidal://track/${t.id}::${t.albumCoverId}",
-                        dateModified = System.currentTimeMillis(),
-                        albumId = 0L,
-                        albumName = t.albumTitle,
-                        artistId = 0L,
-                        artistName = t.artistName,
-                        composer = "tidal",
-                        albumArtist = t.artistName
-                    ))
-                }
+                val tidalDeferred = async { TidalHifiApiClient.searchTracks(query) }
+                val mergedSongs = try { tidalDeferred.await() } catch(e: Exception) { emptyList() }
 
                 withContext(Dispatchers.Main) {
                     if (mergedSongs.isEmpty()) {

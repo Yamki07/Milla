@@ -5,7 +5,18 @@ import android.support.v4.media.session.MediaSessionCompat.QueueItem
 import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.util.MusicUtil
 
-val Song.uri get() = MusicUtil.getSongFileUri(songId = id)
+import android.net.Uri
+
+val Song.uri: Uri get() {
+    val path = data.trim()
+    return if (path.startsWith("tidal://", true) ||
+               path.startsWith("http://", true) ||
+               path.startsWith("https://", true)) {
+        Uri.parse(path)
+    } else {
+        MusicUtil.getSongFileUri(songId = id)
+    }
+}
 
 val Song.albumArtUri get() = MusicUtil.getMediaStoreAlbumCoverUri(albumId)
 

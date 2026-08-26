@@ -49,9 +49,9 @@ import com.google.android.material.slider.Slider
 abstract class AbsPlayerControlsFragment(@LayoutRes layout: Int) : AbsMusicServiceFragment(layout),
     MusicProgressViewUpdateHelper.Callback {
 
-    protected abstract fun show()
+    abstract fun show()
 
-    protected abstract fun hide()
+    abstract fun hide()
 
     abstract fun setColor(color: MediaNotificationProcessor)
 

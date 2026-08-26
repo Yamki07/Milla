@@ -361,7 +361,6 @@ class MusicService : MediaBrowserServiceCompat(),
         mMusicProvider.setMusicService(this)
         storage = PersistentStorage.getInstance(this)
         code.name.monkey.retromusic.workers.BpmScannerWorker.schedule(this)
-        code.name.monkey.retromusic.workers.SongBpmScraperWorker.schedule(this)
     }
 
 
