@@ -1,0 +1,22 @@
+$kind: http-request
+name: 'Refresh Access Token'
+method: POST
+url: 'https://auth.tidal.com/v1/oauth2/token'
+order: 2000
+auth:
+  type: basic
+  credentials:
+    - key: username
+      value: '{{tidal_client_id}}'
+    - key: password
+      value: '{{tidal_client_secret}}'
+body:
+  type: urlencoded
+  content:
+    - key: refresh_token
+      value: '{{tidal_refresh_token}}'
+    - key: client_id
+      value: '{{tidal_client_id}}'
+    - key: grant_type
+      value: refresh_token
+description: 'Refresh an existing access token using a refresh token. Used by TidalApiClient.kt in the Android app.'

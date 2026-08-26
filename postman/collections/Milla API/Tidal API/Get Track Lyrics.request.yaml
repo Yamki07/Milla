@@ -1,0 +1,14 @@
+$kind: http-request
+name: 'Get Track Lyrics'
+method: GET
+url: '{{tidal_base_url}}/v1/tracks/{{track_id}}/lyrics'
+order: 3000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{tidal_access_token}}'
+queryParams:
+  - key: countryCode
+    value: US
+description: 'Get lyrics for a specific track from Tidal. Used by TidalApiClient.kt.'

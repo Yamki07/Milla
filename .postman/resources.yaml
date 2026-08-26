@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: b67be5c9-ebf2-4d2d-8996-0e9e18eb2507
+
+localResources:
+  specs:
+    - ../Lyrics/applemusic-like-lyrics-main/packages/docs/public/api/ttml/openapi.yaml

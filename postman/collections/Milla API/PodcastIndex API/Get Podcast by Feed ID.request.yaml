@@ -1,0 +1,20 @@
+$kind: http-request
+name: 'Get Podcast by Feed ID'
+method: GET
+url: '{{podcast_base_url}}/podcasts/byfeedid'
+order: 1000
+queryParams:
+  - key: id
+    value: '{{podcast_id}}'
+  - key: pretty
+    value: ''
+headers:
+  - key: User-Agent
+    value: MonochromeMusic/1.0
+  - key: X-Auth-Key
+    value: '{{podcast_api_key}}'
+  - key: X-Auth-Date
+    value: '{{podcast_api_date}}'
+  - key: Authorization
+    value: '{{podcast_auth_hash}}'
+description: 'Get podcast feed metadata by feed ID from PodcastIndex. Auth header must be SHA-1(apiKey + apiSecret + unixTimestamp). Used by the Monochrome web functions/podcasts/[id].js for OG tag generation.'

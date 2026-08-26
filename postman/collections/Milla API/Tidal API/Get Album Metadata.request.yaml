@@ -1,0 +1,14 @@
+$kind: http-request
+name: 'Get Album Metadata'
+method: GET
+url: 'https://api.tidal.com/v1/albums/{{album_id}}'
+order: 4000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{tidal_access_token}}'
+queryParams:
+  - key: countryCode
+    value: US
+description: 'Get metadata for a specific album by ID. Returns title, artist, release date, track count, and cover image ID.'

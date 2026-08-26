@@ -1,0 +1,9 @@
+$kind: http-request
+name: 'Get Track Info (Proxy)'
+method: GET
+url: '{{base_url}}/info/'
+order: 4000
+queryParams:
+  - key: id
+    value: '{{track_id}}'
+description: 'Get full track metadata via the Monochrome Proxy (ServerAPI /info/ endpoint). Used by web functions for OG tag generation.'

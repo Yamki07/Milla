@@ -1,0 +1,14 @@
+$kind: http-request
+name: 'Get Track Metadata'
+method: GET
+url: '{{tidal_base_url}}/v1/tracks/{{track_id}}'
+order: 2000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{tidal_access_token}}'
+queryParams:
+  - key: countryCode
+    value: US
+description: 'Get metadata for a specific track by ID. Returns title, artist, album, duration, explicit flag, and album cover ID.'

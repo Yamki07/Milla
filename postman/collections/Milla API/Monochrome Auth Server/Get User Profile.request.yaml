@@ -1,0 +1,6 @@
+$kind: http-request
+name: 'Get User Profile'
+method: GET
+url: '{{auth_server_url}}/api/users/{{username}}'
+order: 1000
+description: 'Get a public user profile from the Monochrome auth server. Returns display_name, username, about, status (now-playing), avatar_url, and banner_url.'

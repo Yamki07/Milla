@@ -1,0 +1,11 @@
+$kind: http-request
+name: 'Search Tracks (Monochrome Proxy)'
+method: GET
+url: '{{base_url}}/search/'
+order: 3000
+queryParams:
+  - key: s
+    value: '{{search_query}}'
+  - key: limit
+    value: '25'
+description: 'Search for tracks via the Monochrome Proxy API. Used by TidalHifiApiClient.kt in the Android app.'

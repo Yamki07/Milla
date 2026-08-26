@@ -1,0 +1,9 @@
+$kind: http-request
+name: 'Get Artist (Proxy)'
+method: GET
+url: '{{base_url}}/artist/'
+order: 6000
+queryParams:
+  - key: id
+    value: '{{artist_id}}'
+description: 'Get artist metadata via the Monochrome Proxy.'

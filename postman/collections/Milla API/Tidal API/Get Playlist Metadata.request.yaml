@@ -1,0 +1,14 @@
+$kind: http-request
+name: 'Get Playlist Metadata'
+method: GET
+url: 'https://api.tidal.com/v1/playlists/{{playlist_id}}'
+order: 6000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{tidal_access_token}}'
+queryParams:
+  - key: countryCode
+    value: US
+description: 'Get metadata for a specific playlist by ID. Returns title, track count, and cover image ID.'

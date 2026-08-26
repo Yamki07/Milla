@@ -1,0 +1,20 @@
+$kind: http-request
+name: 'Search Tracks'
+method: GET
+url: '{{tidal_base_url}}/v1/search'
+order: 1000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{tidal_access_token}}'
+queryParams:
+  - key: query
+    value: '{{search_query}}'
+  - key: limit
+    value: '20'
+  - key: types
+    value: TRACKS
+  - key: countryCode
+    value: US
+description: 'Search for tracks on Tidal HiFi. Requires a valid Bearer access token.'

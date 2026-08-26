@@ -1,0 +1,51 @@
+$kind: collection
+name: Milla API
+variables:
+  - key: base_url
+    value: 'https://api.monochrome.tf'
+  - key: tidal_base_url
+    value: 'https://api.tidalhifi.com'
+  - key: podcast_base_url
+    value: 'https://api.podcastindex.org/api/1.0'
+  - key: tidal_client_id
+    value: ''
+  - key: tidal_client_secret
+    value: ''
+  - key: tidal_refresh_token
+    value: ''
+  - key: tidal_access_token
+    value: ''
+  - key: tidal_token_expires_at
+    value: ''
+  - key: track_id
+    value: '349425939'
+  - key: album_id
+    value: '349425938'
+  - key: artist_id
+    value: '3490760'
+  - key: playlist_id
+    value: ''
+  - key: search_query
+    value: 'Billie Eilish'
+  - key: artist_name
+    value: 'Billie Eilish'
+  - key: podcast_id
+    value: ''
+  - key: podcast_api_key
+    value: ''
+  - key: podcast_api_date
+    value: ''
+  - key: podcast_auth_hash
+    value: ''
+  - key: auth_server_url
+    value: ''
+  - key: username
+    value: ''
+  - key: supabase_url
+    value: ''
+  - key: supabase_anon_key
+    value: ''
+  - key: lyrics_text
+    value: ''
+  - key: target_language
+    value: 'Spanish'

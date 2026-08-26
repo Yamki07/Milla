@@ -1,0 +1,6 @@
+$kind: http-request
+name: 'Get Playlist (Proxy)'
+method: GET
+url: '{{base_url}}/playlist/{{playlist_id}}'
+order: 7000
+description: 'Get playlist metadata via the Monochrome Proxy.'

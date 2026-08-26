@@ -1,0 +1,11 @@
+$kind: http-request
+name: 'Get Track Manifest — HiFi FLAC (Primary)'
+method: GET
+url: '{{base_url}}/track/'
+order: 1000
+queryParams:
+  - key: id
+    value: '{{track_id}}'
+  - key: quality
+    value: HI_RES_LOSSLESS
+description: '[PRIMARY] Get the Hi-Res FLAC manifest for a track via the Monochrome Proxy. This is the exclusive and authoritative method for fetching stream manifests. Returns a base64-encoded manifest containing CDN URLs for 24-bit/192kHz audio. Quality options (in priority order): HI_RES_LOSSLESS → LOSSLESS → HIGH → LOW. Direct Tidal streaming endpoints have been deprecated in favour of this proxy.'

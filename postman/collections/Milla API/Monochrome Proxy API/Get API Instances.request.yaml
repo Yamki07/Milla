@@ -1,0 +1,6 @@
+$kind: http-request
+name: 'Get Available Proxy Instances'
+method: GET
+url: 'https://tidal-uptime.geeked.wtf'
+order: 8000
+description: 'Get the list of all available Monochrome Proxy API instances. Returns a JSON object with an "api" array of instance URLs. The app uses this to find the fastest available proxy at runtime.'

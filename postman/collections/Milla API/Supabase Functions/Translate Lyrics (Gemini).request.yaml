@@ -1,0 +1,14 @@
+$kind: http-request
+name: 'Translate Lyrics (Gemini)'
+method: POST
+url: '{{supabase_url}}/functions/v1/translate-lyrics'
+order: 1000
+headers:
+  - key: Authorization
+    value: 'Bearer {{supabase_anon_key}}'
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: '{"lyrics":"{{lyrics_text}}","targetLanguage":"{{target_language}}"}'
+description: 'Translate song lyrics using Google Gemini AI (gemini-2.5-flash) via a Supabase Edge Function. Preserves all LRC timestamps ([mm:ss.xx]) in the output. Deployed at supabase/functions/translate-lyrics/index.ts.'

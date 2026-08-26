@@ -26,7 +26,6 @@ import code.name.monkey.appthemehelper.util.ToolbarContentTintHelper
 import code.name.monkey.appthemehelper.util.VersionUtils
 import code.name.monkey.retromusic.R
 import code.name.monkey.retromusic.activities.tageditor.TagWriter
-import code.name.monkey.retromusic.adapter.lyrics.LyricsAdapter
 import code.name.monkey.retromusic.automix.AudioPlayerHandler
 import code.name.monkey.retromusic.databinding.FragmentLyricsBinding
 import code.name.monkey.retromusic.extensions.accentColor
@@ -56,6 +55,11 @@ import java.io.FileOutputStream
 import java.util.*
 import kotlin.collections.set
 import kotlinx.coroutines.Dispatchers
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.ui.graphics.Color
+import code.name.monkey.retromusic.compose.lyrics.KaraokeLyricsScreen
+import code.name.monkey.retromusic.compose.theme.MillaTheme
 
 class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     MusicProgressViewUpdateHelper.Callback {
@@ -74,8 +78,11 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     private var lyricsType: LyricsType = LyricsType.NORMAL_LYRICS
 
     // Motor nativo FASE 7: Letras Sincrónicas Dinámicas (Efecto Ola / Centrado Orgánico)
-    private lateinit var lyricsAdapter: LyricsAdapter
-    private lateinit var centerSmoothScroller: CenterSmoothScroller
+    // Compose State para Karaoke 60 FPS
+    private val currentLyricsState = mutableStateOf<List<LyricLine>>(emptyList())
+    private val currentPositionState = mutableLongStateOf(0L)
+    private var currentTimeOffsetMs: Long = 0L
+
     private var currentLyricsList: List<LyricLine> = emptyList()
     private var tickerJob: Job? = null
 
@@ -146,16 +153,14 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     }
 
     private fun setupLyricsRecyclerView() {
-        lyricsAdapter = LyricsAdapter().apply {
-            setWaveColor(accentColor())
-            onLyricLineClickListener = { line, _ ->
-                MusicPlayerRemote.seekTo(line.timeMs.toInt())
+        binding.composeLyricsView.setContent {
+            MillaTheme {
+                KaraokeLyricsScreen(
+                    lines = currentLyricsState.value,
+                    currentPositionMs = currentPositionState.longValue,
+                    activeColor = Color(accentColor())
+                )
             }
-        }
-        centerSmoothScroller = CenterSmoothScroller(requireContext())
-        binding.recyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = lyricsAdapter
         }
     }
 
@@ -176,31 +181,9 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
     }
 
     override fun onUpdateProgressViews(progress: Int, total: Int) {
-        
-        if (::lyricsAdapter.isInitialized && currentLyricsList.isNotEmpty()) {
-            val progressMs = progress.toLong()
-            lyricsAdapter.updateTime(progressMs)
-            
-            // Buscar la línea activa actual
-            var activeIndex = -1
-            for (i in currentLyricsList.indices.reversed()) {
-                if (progressMs >= currentLyricsList[i].timeMs) {
-                    activeIndex = i
-                    break
-                }
-            }
-            
-            if (activeIndex != -1 && activeIndex != lyricsAdapter.currentLineIndex) {
-                lyricsAdapter.setCurrentLineIndex(activeIndex)
-                
-                // Desplazamiento suave al centro
-                if (::centerSmoothScroller.isInitialized) {
-                    centerSmoothScroller.targetPosition = activeIndex
-                    binding.recyclerView.layoutManager?.startSmoothScroll(centerSmoothScroller)
-                } else {
-                    binding.recyclerView.smoothScrollToPosition(activeIndex)
-                }
-            }
+        if (currentLyricsList.isNotEmpty()) {
+            // Compose handlea la animación de progreso inter-línea sin necesidad de invocar scroll aquí.
+            // El scroll se maneja dentro de KaraokeLyricsScreen mediante LaunchedEffect y auto-scroll.
         }
     }
 
@@ -218,15 +201,15 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         
         // Sync Buttons
         binding.btnSyncMinus.setOnClickListener {
-            lyricsAdapter.currentTimeOffsetMs -= 500L
-            val seconds = lyricsAdapter.currentTimeOffsetMs / 1000.0
+            currentTimeOffsetMs -= 500L
+            val seconds = currentTimeOffsetMs / 1000.0
             val sign = if (seconds >= 0) "+" else ""
             binding.headerTitle.text = "$sign${String.format(java.util.Locale.US, "%.1f", seconds)}s"
         }
 
         binding.btnSyncPlus.setOnClickListener {
-            lyricsAdapter.currentTimeOffsetMs += 500L
-            val seconds = lyricsAdapter.currentTimeOffsetMs / 1000.0
+            currentTimeOffsetMs += 500L
+            val seconds = currentTimeOffsetMs / 1000.0
             val sign = if (seconds >= 0) "+" else ""
             binding.headerTitle.text = "$sign${String.format(java.util.Locale.US, "%.1f", seconds)}s"
         }
@@ -240,7 +223,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                     try {
                         val translated = code.name.monkey.retromusic.util.TranslationHelper.translateLyrics(requireContext(), song, currentLyricsList)
                         currentLyricsList = translated
-                        lyricsAdapter.submitList(translated)
+                        currentLyricsState.value = translated
                     } catch (e: Exception) {
                         e.printStackTrace()
                     } finally {
@@ -266,9 +249,6 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
 
     private fun updateTitleSong() {
         song = MusicPlayerRemote.currentSong
-        if (::lyricsAdapter.isInitialized) {
-            lyricsAdapter.setWaveColor(accentColor())
-        }
 
         // In the new Monochrome layout:
         // headerTitle = shows timing offset ("+0.0s" label)
@@ -441,12 +421,12 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
             val cleanedLyrics = lyrics.replace(Regex("\\[\\d{2}:\\d{2}\\.\\d{2,3}\\]|<\\d{2}:\\d{2}\\.\\d{2,3}>"), "")
             binding.normalLyrics.text = cleanedLyrics.trim()
             binding.normalLyrics.isVisible = true
-            binding.recyclerView.isVisible = false
+            binding.composeLyricsView.isVisible = false
             binding.noLyricsFound.isVisible = false
         } else {
             binding.normalLyrics.isVisible = false
             binding.noLyricsFound.isVisible = true
-            binding.recyclerView.isVisible = false
+            binding.composeLyricsView.isVisible = false
         }
     }
 
@@ -468,13 +448,13 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         }
 
         return if (currentLyricsList.isNotEmpty()) {
-            lyricsAdapter.submitList(currentLyricsList)
-            binding.recyclerView.isVisible = true
+            currentLyricsState.value = currentLyricsList
+            binding.composeLyricsView.isVisible = true
             binding.normalLyrics.isVisible = false
             binding.noLyricsFound.isVisible = false
             true
         } else {
-            binding.recyclerView.isVisible = false
+            binding.composeLyricsView.isVisible = false
             false
         }
     }
@@ -490,7 +470,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         } else {
             binding.normalLyrics.isVisible = false
             binding.noLyricsFound.isVisible = false
-            binding.recyclerView.isVisible = true
+            binding.composeLyricsView.isVisible = true
             LyricsType.SYNCED_LYRICS
         }
     }
@@ -502,8 +482,8 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
             val advancedResult = code.name.monkey.retromusic.lyrics.AdvancedLyricsProvider.fetchAdvancedLyrics(song.title, song.artistName)
             if (advancedResult != null && advancedResult.isNotEmpty()) {
                 currentLyricsList = advancedResult
-                lyricsAdapter.submitList(currentLyricsList)
-                binding.recyclerView.isVisible = true
+                currentLyricsState.value = currentLyricsList
+                binding.composeLyricsView.isVisible = true
                 binding.normalLyrics.isVisible = false
                 binding.noLyricsFound.isVisible = false
                 lyricsType = LyricsType.SYNCED_LYRICS
@@ -534,8 +514,8 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                     // Cargar en memoria inmediatamente para que el usuario no espere
                     currentLyricsList = LrcParser.parse(result)
                     if (currentLyricsList.isNotEmpty()) {
-                        lyricsAdapter.submitList(currentLyricsList)
-                        binding.recyclerView.isVisible = true
+                        currentLyricsState.value = currentLyricsList
+                        binding.composeLyricsView.isVisible = true
                         binding.normalLyrics.isVisible = false
                         binding.noLyricsFound.isVisible = false
                         lyricsType = LyricsType.SYNCED_LYRICS
@@ -551,7 +531,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                     }
                 } else {
                     binding.noLyricsFound.isVisible = false
-                    binding.recyclerView.isVisible = false
+                    binding.composeLyricsView.isVisible = false
                     binding.normalLyrics.isVisible = true
                     binding.normalLyrics.text = result
                     lyricsType = LyricsType.NORMAL_LYRICS
@@ -573,7 +553,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
         tickerJob = lifecycleScope.launch {
             while (isActive) {
                 if (lyricsType == LyricsType.SYNCED_LYRICS && currentLyricsList.isNotEmpty()) {
-                    val offset = if (::lyricsAdapter.isInitialized) lyricsAdapter.currentTimeOffsetMs else 0L
+                    val offset = currentTimeOffsetMs
                     val basePos = AudioPlayerHandler.playbackState.position
                     val isPlaying = MusicPlayerRemote.isPlaying
                     
@@ -599,28 +579,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
 
     private fun updateSyncLine(currentPositionMs: Long) {
         if (currentLyricsList.isEmpty()) return
-
-        var activeIndex = -1
-        for (i in currentLyricsList.indices) {
-            if (currentPositionMs >= currentLyricsList[i].timeMs) {
-                activeIndex = i
-            } else {
-                break
-            }
-        }
-
-        if (activeIndex != -1 && activeIndex != lyricsAdapter.currentLineIndex) {
-            lyricsAdapter.setCurrentLineIndex(activeIndex)
-            binding.recyclerView.layoutManager?.let { layoutManager ->
-                centerSmoothScroller.targetPosition = activeIndex
-                layoutManager.startSmoothScroll(centerSmoothScroller)
-            }
-        }
-
-        if (activeIndex != -1) {
-            val holder = binding.recyclerView.findViewHolderForAdapterPosition(activeIndex) as? LyricsAdapter.LyricViewHolder
-            holder?.updateProgress(currentPositionMs)
-        }
+        currentPositionState.longValue = currentPositionMs
     }
 
     override fun onDestroyView() {

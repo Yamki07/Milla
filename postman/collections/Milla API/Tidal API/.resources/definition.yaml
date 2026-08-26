@@ -1,0 +1,69 @@
+$kind: folder
+name: Tidal API
+scripts:
+  - type: http:beforeRequest
+    language: text/javascript
+    code: |-
+      // Auto-refresh the Tidal access token before every request in this folder.
+      // Uses refresh_token grant. Token is cached until 60s before its expiry.
+
+      const clientId     = pm.collectionVariables.get('tidal_client_id');
+      const clientSecret = pm.collectionVariables.get('tidal_client_secret');
+      const refreshToken = pm.collectionVariables.get('tidal_refresh_token');
+      const currentToken = pm.collectionVariables.get('tidal_access_token');
+      const expiresAt    = parseInt(pm.collectionVariables.get('tidal_token_expires_at') || '0', 10);
+      const nowMs        = Date.now();
+      const bufferMs     = 60 * 1000; // 60-second safety buffer
+
+      // Skip refresh if token is still valid
+      if (currentToken && expiresAt && nowMs < expiresAt - bufferMs) {
+          console.log('[Tidal Auth] Token still valid, skipping refresh.');
+          return;
+      }
+
+      if (!clientId || !clientSecret || !refreshToken) {
+          console.warn('[Tidal Auth] Missing tidal_client_id, tidal_client_secret, or tidal_refresh_token. Set them in collection variables.');
+          return;
+      }
+
+      console.log('[Tidal Auth] Refreshing access token...');
+
+      const basicCreds = btoa(clientId + ':' + clientSecret);
+
+      const tokenRequest = {
+          url: 'https://auth.tidal.com/v1/oauth2/token',
+          method: 'POST',
+          header: {
+              'Authorization': 'Basic ' + basicCreds,
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'User-Agent': 'Tidal/2.36.1 Android/10'
+          },
+          body: {
+              mode: 'urlencoded',
+              urlencoded: [
+                  { key: 'grant_type',    value: 'refresh_token' },
+                  { key: 'refresh_token', value: refreshToken },
+                  { key: 'client_id',     value: clientId }
+              ]
+          }
+      };
+
+      pm.sendRequest(tokenRequest, (err, res) => {
+          if (err) {
+              console.error('[Tidal Auth] Request error:', err);
+              throw new Error('[Tidal Auth] Token refresh failed: ' + err);
+          }
+
+          const body = res.json();
+
+          if (!body.access_token) {
+              console.error('[Tidal Auth] No access_token in response:', JSON.stringify(body));
+              throw new Error('[Tidal Auth] Token refresh failed — no access_token returned.');
+          }
+
+          const expiresInMs = (body.expires_in || 3600) * 1000;
+          pm.collectionVariables.set('tidal_access_token',    body.access_token);
+          pm.collectionVariables.set('tidal_token_expires_at', String(Date.now() + expiresInMs));
+
+          console.log('[Tidal Auth] Token refreshed successfully. Expires in', Math.round(expiresInMs / 1000), 'seconds.');
+      });

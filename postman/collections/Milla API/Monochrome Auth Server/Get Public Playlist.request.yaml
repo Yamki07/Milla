@@ -1,0 +1,6 @@
+$kind: http-request
+name: 'Get Public Playlist'
+method: GET
+url: '{{auth_server_url}}/api/public/playlists/{{playlist_id}}'
+order: 2000
+description: 'Get a public user-created playlist from the Monochrome auth server. Returns name, tracks array (with item_id, item_type, metadata), and cover_url.'

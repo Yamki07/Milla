@@ -1,0 +1,6 @@
+$kind: http-request
+name: 'Get Album (Proxy)'
+method: GET
+url: '{{base_url}}/album/{{album_id}}'
+order: 5000
+description: 'Get album metadata via the Monochrome Proxy.'
