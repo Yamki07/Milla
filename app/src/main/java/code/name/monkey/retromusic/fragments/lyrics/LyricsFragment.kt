@@ -43,7 +43,7 @@ import code.name.monkey.retromusic.model.Song
 import code.name.monkey.retromusic.util.*
 import com.afollestad.materialdialogs.input.input
 import com.bumptech.glide.Glide
-import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -323,7 +323,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                     LyricUtil.writeLrc(song, input.toString())
                     requireActivity().runOnUiThread { loadNormalLyrics() }
                 } else {
-                    lifecycleScope.launch {
+                    GlobalScope.launch {
                         if (VersionUtils.hasR()) {
                             cacheFile = TagWriter.writeTagsToFilesR(
                                 requireContext(), AudioTagInfo(
@@ -378,7 +378,7 @@ class LyricsFragment : AbsMainActivityFragment(R.layout.fragment_lyrics),
                     LyricUtil.writeLrc(song, input.toString())
                     requireActivity().runOnUiThread { loadLRCLyrics() }
                 } else {
-                    lifecycleScope.launch {
+                    GlobalScope.launch {
                         if (VersionUtils.hasR()) {
                             cacheFile = TagWriter.writeTagsToFilesR(
                                 requireContext(),
