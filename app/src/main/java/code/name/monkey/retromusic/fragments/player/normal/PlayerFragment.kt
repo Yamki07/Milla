@@ -73,7 +73,7 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
                         surfaceColor()
                     ), 0
                 )
-                binding.colorGradientBackground.background = drawable
+                binding.colorGradientBackground?.background = drawable
             }
         }
         valueAnimator?.setDuration(ViewUtil.RETRO_MUSIC_ANIM_TIME.toLong())?.start()
@@ -163,11 +163,11 @@ class PlayerFragment : AbsPlayerFragment(R.layout.fragment_player),
     private fun startOrStopSnow(isSnowFalling: Boolean) {
         if (_binding == null) return
         if (isSnowFalling && !surfaceColor().isColorLight) {
-            binding.snowfallView.isVisible = true
-            binding.snowfallView.restartFalling()
+            binding.snowfallView?.isVisible = true
+            binding.snowfallView?.restartFalling()
         } else {
-            binding.snowfallView.isVisible = false
-            binding.snowfallView.stopFalling()
+            binding.snowfallView?.isVisible = false
+            binding.snowfallView?.stopFalling()
         }
     }
 

@@ -91,10 +91,10 @@ object TidalDownloadManager {
                         android.widget.Toast.makeText(context, "Buscando en Tidal: ${song.title}...", android.widget.Toast.LENGTH_SHORT).show()
                     }
                     val query = "${song.artistName} ${song.title}"
-                    val searchResults = TidalHifiApiClient.searchTracks(query)
+                    val searchResults = TidalApiClient.search(query)
                     if (searchResults.isNotEmpty()) {
-                        realTrackId = searchResults[0].id.toString()
-                        coverId = ""
+                        realTrackId = searchResults[0].id
+                        coverId = searchResults[0].albumCoverId
                         Log.d(TAG, "Deezer to Tidal map: $query -> Tidal ID $realTrackId, Cover $coverId")
                     } else {
                         realTrackId = trackId
@@ -103,7 +103,7 @@ object TidalDownloadManager {
                     realTrackId = trackId
                 }
 
-                val streamUrl = TidalHifiApiClient.getStreamUrl(realTrackId.toLongOrNull() ?: 0L)
+                val streamUrl = TidalApiClient.getStreamUrl(realTrackId)
 
                 if (streamUrl.isNullOrEmpty()) {
                     _downloadState.value = DownloadState.Error(trackId, "No se pudo obtener el enlace del proxy Tidal")

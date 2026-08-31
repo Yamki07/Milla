@@ -284,7 +284,7 @@ class PlaybackOrchestrator(private val context: Context) : Playback {
                 .substringBefore("::")
                 .toLongOrNull() ?: 0L
             val streamUrl = withContext(Dispatchers.IO) {
-                code.name.monkey.retromusic.automix.TidalHifiApiClient.getStreamUrl(trackId)
+                code.name.monkey.retromusic.automix.TidalApiClient.getStreamUrl(trackId.toString())
             }
             if (!streamUrl.isNullOrEmpty()) {
                 Uri.parse(streamUrl)
